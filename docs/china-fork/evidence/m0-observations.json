@@ -1,0 +1,1066 @@
+{
+  "captured_at": "2026-10-14T23:46:19.912446+08:00",
+  "source_sha": "8d2420f0305c96a4f798f3a111509827260f6df7",
+  "branch": "audit/m0-baseline-v2.4.0",
+  "flutter_in_path": null,
+  "dart_in_path": null,
+  "java": {
+    "version": "OpenJDK 17.0.20 (arm64)",
+    "java_home_inventory_exit_code": 0
+  },
+  "android_platforms": [
+    "android-34",
+    "android-35",
+    "android-36",
+    "android-37.0"
+  ],
+  "android_build_tools": [
+    "34.0.0",
+    "35.0.0",
+    "36.0.0"
+  ],
+  "ndk_versions": [
+    "28.2.13676358"
+  ],
+  "test_file_count": 222,
+  "integration_test_file_count": 2,
+  "probes": [
+    {
+      "name": "off_zh_search",
+      "url": "https://search.openfoodfacts.org/search?q=%E7%89%9B%E5%A5%B6&fields=code%2Cbrands%2Cproduct_name%2Cproduct_name_en%2Cproduct_name_de%2Cproduct_name_fr%2Cproduct_name_cs%2Cproduct_name_it%2Cproduct_name_sk%2Cproduct_name_tr%2Cproduct_name_uk%2Cproduct_name_hu%2Cproduct_name_es%2Curl%2Cimage_url%2Cimage_front_thumb_url%2Cimage_front_url%2Cquantity%2Cnutriments%2Cpopularity_key%2Ccountries_tags&langs=zh%2Cen&page_size=100&page=1",
+      "curl_exit": 0,
+      "http_status": "200",
+      "error": "",
+      "result_count_in_response": 100,
+      "examples": [
+        {
+          "code": "25888880",
+          "product_name": "牛奶",
+          "brands": null
+        },
+        {
+          "code": "6901209263309",
+          "product_name": "牛奶",
+          "brands": null
+        },
+        {
+          "code": "6907992507385",
+          "product_name": "伊利纯牛奶",
+          "brands": [
+            "伊利"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "off_barcode",
+      "url": "https://world.openfoodfacts.org/api/v2/product/3017620422003?fields=code%2Cbrands%2Cproduct_name%2Cproduct_name_en%2Cproduct_name_de%2Cproduct_name_fr%2Cproduct_name_cs%2Cproduct_name_it%2Cproduct_name_sk%2Cproduct_name_tr%2Cproduct_name_uk%2Cproduct_name_hu%2Cproduct_name_es%2Curl%2Cimage_url%2Cimage_front_thumb_url%2Cimage_front_url%2Cproduct_quantity%2Cquantity%2Cserving_quantity%2Cserving_quantity_unit%2Cserving_size%2Cnutriments&json=true",
+      "curl_exit": 0,
+      "http_status": "200",
+      "error": "",
+      "result_count_in_response": 0,
+      "examples": [],
+      "product": {
+        "code": "3017620422003",
+        "product_name": "Nutella",
+        "brands": "Nutella, Ferrero",
+        "nutriments": {
+          "added-sugars": 52.13,
+          "added-sugars_100g": 52.13,
+          "added-sugars_unit": "g",
+          "added-sugars_value": 52.13,
+          "carbohydrates": 57.5,
+          "carbohydrates_100g": 57.5,
+          "carbohydrates_unit": "g",
+          "carbohydrates_value": 57.5,
+          "energy": 2252,
+          "energy-kcal": 539,
+          "energy-kcal_100g": 539,
+          "energy-kcal_unit": "kcal",
+          "energy-kcal_value": 539,
+          "energy-kj": 2252,
+          "energy-kj_100g": 2252,
+          "energy-kj_unit": "kJ",
+          "energy-kj_value": 2252,
+          "energy_100g": 2252,
+          "energy_unit": "kJ",
+          "energy_value": 2252,
+          "fat": 30.9,
+          "fat_100g": 30.9,
+          "fat_unit": "g",
+          "fat_value": 30.9,
+          "fiber": 0,
+          "fiber_100g": 0,
+          "fiber_unit": "g",
+          "fiber_value": 0,
+          "fruits-vegetables-legumes-estimate-from-ingredients_100g": 0,
+          "fruits-vegetables-nuts-estimate-from-ingredients_100g": 13,
+          "nova-group": 4,
+          "nova-group_100g": 4,
+          "nova-group_serving": 4,
+          "nova-group_unit": "",
+          "nova-group_value": 4,
+          "proteins": 6.3,
+          "proteins_100g": 6.3,
+          "proteins_unit": "g",
+          "proteins_value": 6.3,
+          "salt": 0.107,
+          "salt_100g": 0.107,
+          "salt_unit": "g",
+          "salt_value": 0.107,
+          "saturated-fat": 10.6,
+          "saturated-fat_100g": 10.6,
+          "saturated-fat_unit": "g",
+          "saturated-fat_value": 10.6,
+          "sodium": 0.0428,
+          "sodium_100g": 0.0428,
+          "sodium_modifier": "~",
+          "sodium_unit": "g",
+          "sodium_value": 0.0428,
+          "sugars": 56.3,
+          "sugars_100g": 56.3,
+          "sugars_unit": "g",
+          "sugars_value": 56.3
+        }
+      }
+    },
+    {
+      "name": "latest_release",
+      "url": "https://api.github.com/repos/simonoppowa/OpenNutriTracker/releases/latest",
+      "curl_exit": 0,
+      "http_status": "200",
+      "error": "",
+      "tag_name": "v2.4.0",
+      "published_at": "2026-09-26T21:58:39Z",
+      "prerelease": false,
+      "html_url": "https://github.com/simonoppowa/OpenNutriTracker/releases/tag/v2.4.0"
+    },
+    {
+      "name": "fork",
+      "url": "https://api.github.com/repos/94huangyu/OpenNutriTracker",
+      "curl_exit": 0,
+      "http_status": "200",
+      "error": "",
+      "full_name": "94huangyu/OpenNutriTracker",
+      "fork": true,
+      "default_branch": "main",
+      "parent": "simonoppowa/OpenNutriTracker"
+    },
+    {
+      "name": "upstream_ci",
+      "url": "https://api.github.com/repos/simonoppowa/OpenNutriTracker/actions/runs?head_sha=8d2420f0305c96a4f798f3a111509827260f6df7&per_page=10",
+      "curl_exit": 0,
+      "http_status": "200",
+      "error": "",
+      "runs": [
+        {
+          "id": 38475291266,
+          "name": "Add issues to projects",
+          "status": "completed",
+          "conclusion": "cancelled",
+          "head_sha": "8d2420f0305c96a4f798f3a111509827260f6df7",
+          "html_url": "https://github.com/simonoppowa/OpenNutriTracker/actions/runs/38475291266"
+        },
+        {
+          "id": 38475291306,
+          "name": "Add issues to projects",
+          "status": "completed",
+          "conclusion": "success",
+          "head_sha": "8d2420f0305c96a4f798f3a111509827260f6df7",
+          "html_url": "https://github.com/simonoppowa/OpenNutriTracker/actions/runs/38475291306"
+        },
+        {
+          "id": 38475291584,
+          "name": "Add issues to projects",
+          "status": "completed",
+          "conclusion": "success",
+          "head_sha": "8d2420f0305c96a4f798f3a111509827260f6df7",
+          "html_url": "https://github.com/simonoppowa/OpenNutriTracker/actions/runs/38475291584"
+        },
+        {
+          "id": 38323164421,
+          "name": "Add issues to projects",
+          "status": "completed",
+          "conclusion": "success",
+          "head_sha": "8d2420f0305c96a4f798f3a111509827260f6df7",
+          "html_url": "https://github.com/simonoppowa/OpenNutriTracker/actions/runs/38323164421"
+        },
+        {
+          "id": 38323164296,
+          "name": "Add issues to projects",
+          "status": "completed",
+          "conclusion": "success",
+          "head_sha": "8d2420f0305c96a4f798f3a111509827260f6df7",
+          "html_url": "https://github.com/simonoppowa/OpenNutriTracker/actions/runs/38323164296"
+        },
+        {
+          "id": 38294070252,
+          "name": "Add issues to projects",
+          "status": "completed",
+          "conclusion": "success",
+          "head_sha": "8d2420f0305c96a4f798f3a111509827260f6df7",
+          "html_url": "https://github.com/simonoppowa/OpenNutriTracker/actions/runs/38294070252"
+        },
+        {
+          "id": 38294070177,
+          "name": "Add issues to projects",
+          "status": "completed",
+          "conclusion": "success",
+          "head_sha": "8d2420f0305c96a4f798f3a111509827260f6df7",
+          "html_url": "https://github.com/simonoppowa/OpenNutriTracker/actions/runs/38294070177"
+        },
+        {
+          "id": 38244390269,
+          "name": "Add issues to projects",
+          "status": "completed",
+          "conclusion": "success",
+          "head_sha": "8d2420f0305c96a4f798f3a111509827260f6df7",
+          "html_url": "https://github.com/simonoppowa/OpenNutriTracker/actions/runs/38244390269"
+        },
+        {
+          "id": 38244390263,
+          "name": "Add issues to projects",
+          "status": "completed",
+          "conclusion": "success",
+          "head_sha": "8d2420f0305c96a4f798f3a111509827260f6df7",
+          "html_url": "https://github.com/simonoppowa/OpenNutriTracker/actions/runs/38244390263"
+        },
+        {
+          "id": 38216246136,
+          "name": "Privacy policy snapshot",
+          "status": "completed",
+          "conclusion": "success",
+          "head_sha": "8d2420f0305c96a4f798f3a111509827260f6df7",
+          "html_url": "https://github.com/simonoppowa/OpenNutriTracker/actions/runs/38216246136"
+        }
+      ]
+    },
+    {
+      "name": "off_cn_barcode",
+      "url": "https://world.openfoodfacts.org/api/v2/product/6907992507385?fields=code%2Cbrands%2Cproduct_name%2Cproduct_name_en%2Cproduct_name_de%2Cproduct_name_fr%2Cproduct_name_cs%2Cproduct_name_it%2Cproduct_name_sk%2Cproduct_name_tr%2Cproduct_name_uk%2Cproduct_name_hu%2Cproduct_name_es%2Curl%2Cimage_url%2Cimage_front_thumb_url%2Cimage_front_url%2Cproduct_quantity%2Cquantity%2Cserving_quantity%2Cserving_quantity_unit%2Cserving_size%2Cnutriments&json=true",
+      "curl_exit": 0,
+      "http_status": "200",
+      "error": "",
+      "product": {
+        "code": "6907992507385",
+        "product_name": "伊利纯牛奶",
+        "brands": "伊利",
+        "nutriments": null,
+        "quantity": "12x250ml",
+        "serving_quantity": null,
+        "serving_size": null
+      }
+    },
+    {
+      "name": "upstream_default_ci",
+      "url": "https://api.github.com/repos/simonoppowa/OpenNutriTracker/actions/workflows/default_workflow.yml/runs?head_sha=8d2420f0305c96a4f798f3a111509827260f6df7&per_page=3",
+      "curl_exit": 0,
+      "http_status": "200",
+      "error": "",
+      "runs": [
+        {
+          "id": 36272991336,
+          "name": "Default Workflow",
+          "status": "completed",
+          "conclusion": "success",
+          "head_sha": "8d2420f0305c96a4f798f3a111509827260f6df7",
+          "html_url": "https://github.com/simonoppowa/OpenNutriTracker/actions/runs/36272991336"
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "Public HTTP probes are not Dart DTO tests or Android app interaction tests.",
+    "No SDK install, dependency resolution, Flutter tests, build, device install or Supabase call was performed."
+  ],
+  "raw_search_completeness": {
+    "query": "牛奶",
+    "rows": 100,
+    "rows_with_all_four_required_nutrients": 37,
+    "meaning": "Field presence only; no correctness or app parsing validation."
+  },
+  "upstream_default_ci_jobs": {
+    "url": "https://api.github.com/repos/simonoppowa/OpenNutriTracker/actions/runs/36272991336/jobs?per_page=100",
+    "jobs": [
+      {
+        "name": "android-integration-tests",
+        "conclusion": "success",
+        "steps": [
+          {
+            "name": "Set up job",
+            "conclusion": "success"
+          },
+          {
+            "name": "Checkout code",
+            "conclusion": "success"
+          },
+          {
+            "name": "Free up disk space for the emulator",
+            "conclusion": "success"
+          },
+          {
+            "name": "Setup Java (Zulu)",
+            "conclusion": "success"
+          },
+          {
+            "name": "Setup Java (Temurin fallback)",
+            "conclusion": "skipped"
+          },
+          {
+            "name": "Setup Flutter + cache packages",
+            "conclusion": "success"
+          },
+          {
+            "name": "Cache Gradle",
+            "conclusion": "success"
+          },
+          {
+            "name": "Cache AVD",
+            "conclusion": "success"
+          },
+          {
+            "name": "Enable KVM (so the Android emulator runs at native speed)",
+            "conclusion": "success"
+          },
+          {
+            "name": "Generate stub .env for CI",
+            "conclusion": "success"
+          },
+          {
+            "name": "Install Flutter packages",
+            "conclusion": "success"
+          },
+          {
+            "name": "Generate code",
+            "conclusion": "success"
+          },
+          {
+            "name": "Generate AVD snapshot (cache miss only)",
+            "conclusion": "skipped"
+          },
+          {
+            "name": "Run integration tests (attempt 1)",
+            "conclusion": "success"
+          },
+          {
+            "name": "Run integration tests (retry once)",
+            "conclusion": "skipped"
+          },
+          {
+            "name": "Post Cache AVD",
+            "conclusion": "success"
+          },
+          {
+            "name": "Post Cache Gradle",
+            "conclusion": "success"
+          },
+          {
+            "name": "Post Setup Flutter + cache packages",
+            "conclusion": "success"
+          },
+          {
+            "name": "Post Setup Java (Zulu)",
+            "conclusion": "success"
+          },
+          {
+            "name": "Post Checkout code",
+            "conclusion": "success"
+          },
+          {
+            "name": "Complete job",
+            "conclusion": "success"
+          }
+        ]
+      },
+      {
+        "name": "android-build",
+        "conclusion": "success",
+        "steps": [
+          {
+            "name": "Set up job",
+            "conclusion": "success"
+          },
+          {
+            "name": "Checkout code",
+            "conclusion": "success"
+          },
+          {
+            "name": "Setup Java (Zulu)",
+            "conclusion": "success"
+          },
+          {
+            "name": "Setup Java (Temurin fallback)",
+            "conclusion": "skipped"
+          },
+          {
+            "name": "Setup Flutter + cache packages",
+            "conclusion": "success"
+          },
+          {
+            "name": "Cache Gradle",
+            "conclusion": "success"
+          },
+          {
+            "name": "Generate stub .env for CI",
+            "conclusion": "success"
+          },
+          {
+            "name": "Install Flutter packages",
+            "conclusion": "success"
+          },
+          {
+            "name": "Generate code",
+            "conclusion": "success"
+          },
+          {
+            "name": "Build APK (debug)",
+            "conclusion": "success"
+          },
+          {
+            "name": "Post Cache Gradle",
+            "conclusion": "success"
+          },
+          {
+            "name": "Post Setup Flutter + cache packages",
+            "conclusion": "success"
+          },
+          {
+            "name": "Post Setup Java (Zulu)",
+            "conclusion": "success"
+          },
+          {
+            "name": "Post Checkout code",
+            "conclusion": "success"
+          },
+          {
+            "name": "Complete job",
+            "conclusion": "success"
+          }
+        ]
+      },
+      {
+        "name": "changes",
+        "conclusion": "success",
+        "steps": [
+          {
+            "name": "Set up job",
+            "conclusion": "success"
+          },
+          {
+            "name": "Check for iOS-relevant file changes",
+            "conclusion": "skipped"
+          },
+          {
+            "name": "Complete job",
+            "conclusion": "success"
+          }
+        ]
+      },
+      {
+        "name": "release-gate",
+        "conclusion": "success",
+        "steps": [
+          {
+            "name": "Set up job",
+            "conclusion": "success"
+          },
+          {
+            "name": "Checkout code",
+            "conclusion": "success"
+          },
+          {
+            "name": "Decide what this push may deploy and what it may publish",
+            "conclusion": "success"
+          },
+          {
+            "name": "Post Checkout code",
+            "conclusion": "success"
+          },
+          {
+            "name": "Complete job",
+            "conclusion": "success"
+          }
+        ]
+      },
+      {
+        "name": "linux-checks",
+        "conclusion": "success",
+        "steps": [
+          {
+            "name": "Set up job",
+            "conclusion": "success"
+          },
+          {
+            "name": "Checkout code",
+            "conclusion": "success"
+          },
+          {
+            "name": "Setup Flutter + cache packages",
+            "conclusion": "success"
+          },
+          {
+            "name": "Setup Just",
+            "conclusion": "success"
+          },
+          {
+            "name": "Generate stub .env for CI",
+            "conclusion": "success"
+          },
+          {
+            "name": "Guard AGENTS.md size (fails before Codex silently truncates it)",
+            "conclusion": "success"
+          },
+          {
+            "name": "Install Flutter packages",
+            "conclusion": "success"
+          },
+          {
+            "name": "Generate localizations (fails on structural errors, reports untranslated)",
+            "conclusion": "success"
+          },
+          {
+            "name": "Generate code (env.g.dart, Hive adapters, JSON serializers)",
+            "conclusion": "success"
+          },
+          {
+            "name": "Static analysis",
+            "conclusion": "success"
+          },
+          {
+            "name": "Run tests",
+            "conclusion": "success"
+          },
+          {
+            "name": "Test the iOS pod-install fallback parser",
+            "conclusion": "success"
+          },
+          {
+            "name": "Post Setup Flutter + cache packages",
+            "conclusion": "success"
+          },
+          {
+            "name": "Post Checkout code",
+            "conclusion": "success"
+          },
+          {
+            "name": "Complete job",
+            "conclusion": "success"
+          }
+        ]
+      },
+      {
+        "name": "ios-integration-tests / run",
+        "conclusion": "success",
+        "steps": [
+          {
+            "name": "Set up job",
+            "conclusion": "success"
+          },
+          {
+            "name": "Checkout code",
+            "conclusion": "success"
+          },
+          {
+            "name": "Setup Flutter + cache packages",
+            "conclusion": "success"
+          },
+          {
+            "name": "Disable Swift Package Manager",
+            "conclusion": "success"
+          },
+          {
+            "name": "Cache CocoaPods",
+            "conclusion": "success"
+          },
+          {
+            "name": "Generate stub .env for CI",
+            "conclusion": "success"
+          },
+          {
+            "name": "Install Flutter packages",
+            "conclusion": "success"
+          },
+          {
+            "name": "Generate code",
+            "conclusion": "success"
+          },
+          {
+            "name": "Pod install (regenerate lockfile if constraints have shifted)",
+            "conclusion": "success"
+          },
+          {
+            "name": "Pick + boot iPhone simulator",
+            "conclusion": "success"
+          },
+          {
+            "name": "Run integration tests",
+            "conclusion": "success"
+          },
+          {
+            "name": "Record the verdict",
+            "conclusion": "success"
+          },
+          {
+            "name": "Post Cache CocoaPods",
+            "conclusion": "success"
+          },
+          {
+            "name": "Post Setup Flutter + cache packages",
+            "conclusion": "success"
+          },
+          {
+            "name": "Post Checkout code",
+            "conclusion": "success"
+          },
+          {
+            "name": "Complete job",
+            "conclusion": "success"
+          }
+        ]
+      },
+      {
+        "name": "ios-build",
+        "conclusion": "success",
+        "steps": [
+          {
+            "name": "Set up job",
+            "conclusion": "success"
+          },
+          {
+            "name": "Checkout code",
+            "conclusion": "success"
+          },
+          {
+            "name": "Setup Flutter + cache packages",
+            "conclusion": "success"
+          },
+          {
+            "name": "Disable Swift Package Manager",
+            "conclusion": "success"
+          },
+          {
+            "name": "Cache CocoaPods",
+            "conclusion": "success"
+          },
+          {
+            "name": "Generate stub .env for CI",
+            "conclusion": "success"
+          },
+          {
+            "name": "Install Flutter packages",
+            "conclusion": "success"
+          },
+          {
+            "name": "Generate code",
+            "conclusion": "success"
+          },
+          {
+            "name": "Pod install (regenerate lockfile if constraints have shifted)",
+            "conclusion": "success"
+          },
+          {
+            "name": "Auto-commit refreshed iOS project files",
+            "conclusion": "skipped"
+          },
+          {
+            "name": "Upload Podfile.lock artifact",
+            "conclusion": "success"
+          },
+          {
+            "name": "Build iOS (no codesign)",
+            "conclusion": "success"
+          },
+          {
+            "name": "Post Cache CocoaPods",
+            "conclusion": "success"
+          },
+          {
+            "name": "Post Setup Flutter + cache packages",
+            "conclusion": "success"
+          },
+          {
+            "name": "Post Checkout code",
+            "conclusion": "success"
+          },
+          {
+            "name": "Complete job",
+            "conclusion": "success"
+          }
+        ]
+      },
+      {
+        "name": "ios-podfile-lock-guard",
+        "conclusion": "skipped",
+        "steps": []
+      },
+      {
+        "name": "android-package",
+        "conclusion": "success",
+        "steps": [
+          {
+            "name": "Set up job",
+            "conclusion": "success"
+          },
+          {
+            "name": "Checkout code",
+            "conclusion": "success"
+          },
+          {
+            "name": "Setup Java (Zulu)",
+            "conclusion": "success"
+          },
+          {
+            "name": "Setup Java (Temurin fallback)",
+            "conclusion": "skipped"
+          },
+          {
+            "name": "Setup Ruby + Bundler",
+            "conclusion": "success"
+          },
+          {
+            "name": "Setup Flutter + cache packages",
+            "conclusion": "success"
+          },
+          {
+            "name": "Cache Gradle",
+            "conclusion": "success"
+          },
+          {
+            "name": "Generate .env from GitHub Secrets",
+            "conclusion": "success"
+          },
+          {
+            "name": "Restore Android signing material",
+            "conclusion": "success"
+          },
+          {
+            "name": "Install Flutter packages",
+            "conclusion": "success"
+          },
+          {
+            "name": "Generate code",
+            "conclusion": "success"
+          },
+          {
+            "name": "Build Android App Bundle",
+            "conclusion": "success"
+          },
+          {
+            "name": "Build Android APK",
+            "conclusion": "success"
+          },
+          {
+            "name": "Upload Android AAB artifact",
+            "conclusion": "success"
+          },
+          {
+            "name": "Upload Android APK artifact",
+            "conclusion": "success"
+          },
+          {
+            "name": "Post Cache Gradle",
+            "conclusion": "success"
+          },
+          {
+            "name": "Post Setup Flutter + cache packages",
+            "conclusion": "success"
+          },
+          {
+            "name": "Post Setup Java (Zulu)",
+            "conclusion": "success"
+          },
+          {
+            "name": "Post Checkout code",
+            "conclusion": "success"
+          },
+          {
+            "name": "Complete job",
+            "conclusion": "success"
+          }
+        ]
+      },
+      {
+        "name": "ios-package",
+        "conclusion": "success",
+        "steps": [
+          {
+            "name": "Set up job",
+            "conclusion": "success"
+          },
+          {
+            "name": "Checkout code",
+            "conclusion": "success"
+          },
+          {
+            "name": "Setup Ruby + Bundler",
+            "conclusion": "success"
+          },
+          {
+            "name": "Load SSH key for match repository",
+            "conclusion": "success"
+          },
+          {
+            "name": "Install GitHub SSH host keys",
+            "conclusion": "success"
+          },
+          {
+            "name": "Cache CocoaPods",
+            "conclusion": "success"
+          },
+          {
+            "name": "Install FVM",
+            "conclusion": "success"
+          },
+          {
+            "name": "Install Flutter version for FVM",
+            "conclusion": "success"
+          },
+          {
+            "name": "Generate .env from GitHub Secrets",
+            "conclusion": "success"
+          },
+          {
+            "name": "Install Flutter packages",
+            "conclusion": "success"
+          },
+          {
+            "name": "Generate code",
+            "conclusion": "success"
+          },
+          {
+            "name": "Precache iOS Flutter engine",
+            "conclusion": "success"
+          },
+          {
+            "name": "Install CocoaPods dependencies",
+            "conclusion": "success"
+          },
+          {
+            "name": "Build signed iOS IPA via Fastlane",
+            "conclusion": "success"
+          },
+          {
+            "name": "Upload IPA artifact",
+            "conclusion": "success"
+          },
+          {
+            "name": "Post Cache CocoaPods",
+            "conclusion": "success"
+          },
+          {
+            "name": "Post Load SSH key for match repository",
+            "conclusion": "success"
+          },
+          {
+            "name": "Post Checkout code",
+            "conclusion": "success"
+          },
+          {
+            "name": "Complete job",
+            "conclusion": "success"
+          }
+        ]
+      },
+      {
+        "name": "ios-integration-tests-result",
+        "conclusion": "success",
+        "steps": [
+          {
+            "name": "Set up job",
+            "conclusion": "success"
+          },
+          {
+            "name": "Require one of the two runners to have passed",
+            "conclusion": "success"
+          },
+          {
+            "name": "Complete job",
+            "conclusion": "success"
+          }
+        ]
+      },
+      {
+        "name": "ios-integration-tests-retry",
+        "conclusion": "skipped",
+        "steps": []
+      },
+      {
+        "name": "ios-smoke-alarm",
+        "conclusion": "skipped",
+        "steps": []
+      },
+      {
+        "name": "ios-deploy",
+        "conclusion": "success",
+        "steps": [
+          {
+            "name": "Set up job",
+            "conclusion": "success"
+          },
+          {
+            "name": "Checkout code",
+            "conclusion": "success"
+          },
+          {
+            "name": "Setup Ruby + Bundler",
+            "conclusion": "success"
+          },
+          {
+            "name": "Download iOS IPA artifact",
+            "conclusion": "success"
+          },
+          {
+            "name": "Deploy iOS build to TestFlight via Fastlane",
+            "conclusion": "success"
+          },
+          {
+            "name": "Record that this build number has been deployed",
+            "conclusion": "success"
+          },
+          {
+            "name": "Post Checkout code",
+            "conclusion": "success"
+          },
+          {
+            "name": "Complete job",
+            "conclusion": "success"
+          }
+        ]
+      },
+      {
+        "name": "android-deploy",
+        "conclusion": "success",
+        "steps": [
+          {
+            "name": "Set up job",
+            "conclusion": "success"
+          },
+          {
+            "name": "Checkout code",
+            "conclusion": "success"
+          },
+          {
+            "name": "Setup Ruby + Bundler",
+            "conclusion": "success"
+          },
+          {
+            "name": "Download Android AAB artifact",
+            "conclusion": "success"
+          },
+          {
+            "name": "Upload Android App Bundle to Google Play Internal Testing via Fastlane",
+            "conclusion": "success"
+          },
+          {
+            "name": "Record that this build number has been deployed",
+            "conclusion": "success"
+          },
+          {
+            "name": "Post Checkout code",
+            "conclusion": "success"
+          },
+          {
+            "name": "Complete job",
+            "conclusion": "success"
+          }
+        ]
+      },
+      {
+        "name": "github-release",
+        "conclusion": "success",
+        "steps": [
+          {
+            "name": "Set up job",
+            "conclusion": "success"
+          },
+          {
+            "name": "Checkout code",
+            "conclusion": "success"
+          },
+          {
+            "name": "Download iOS IPA artifact",
+            "conclusion": "success"
+          },
+          {
+            "name": "Download Android AAB artifact",
+            "conclusion": "success"
+          },
+          {
+            "name": "Download Android APK artifact",
+            "conclusion": "success"
+          },
+          {
+            "name": "Prepare release tag and asset names",
+            "conclusion": "success"
+          },
+          {
+            "name": "Create GitHub release and upload assets",
+            "conclusion": "success"
+          },
+          {
+            "name": "Assert the release exists and carries all three binaries",
+            "conclusion": "success"
+          },
+          {
+            "name": "Post Checkout code",
+            "conclusion": "success"
+          },
+          {
+            "name": "Complete job",
+            "conclusion": "success"
+          }
+        ]
+      },
+      {
+        "name": "release-summary",
+        "conclusion": "success",
+        "steps": [
+          {
+            "name": "Set up job",
+            "conclusion": "success"
+          },
+          {
+            "name": "Checkout code",
+            "conclusion": "success"
+          },
+          {
+            "name": "Assert this run produced what the gate promised",
+            "conclusion": "success"
+          },
+          {
+            "name": "Post Checkout code",
+            "conclusion": "success"
+          },
+          {
+            "name": "Complete job",
+            "conclusion": "success"
+          }
+        ]
+      }
+    ],
+    "meaning": "Historical upstream evidence only, not tests performed in this workspace."
+  },
+  "upstream_branches": {
+    "main": "8d2420f0305c96a4f798f3a111509827260f6df7",
+    "develop": "05fcce7eff41668e8cd8838d4ce107bdcb223f07",
+    "main_only_commits": 39,
+    "develop_only_commits": 99,
+    "fork_main_matches_stable": true
+  },
+  "upstream_readme_screenshot_hashes": {
+    "docs/screenshots/1_en-US.png": "b4d271fed6b4ab1d0143e244348fa277ba6a92f5df309578c0ea1dd543795ddd",
+    "docs/screenshots/2_en-US.png": "bee77dce451e60b56f51e75412a9cc45e81f71913c2c66be9d33e411b3ff6fea",
+    "docs/screenshots/3_en-US.png": "b5d8c6e9386916b94308a836ba328ef27d12dcba2d54cf0b3e871cbf6ef67b3f"
+  },
+  "backend_reference": {
+    "repository": "simonoppowa/OpenNutriTracker-Backend",
+    "main_sha": "df5b2e484c4b8f8e8a1c13e3ee19436f0b5ec627",
+    "files_read": [
+      "README.md",
+      "AGENTS.md",
+      "sql/schema.sql"
+    ],
+    "license": "GPL-3.0",
+    "not_deployed": true
+  }
+}
