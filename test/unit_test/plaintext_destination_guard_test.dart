@@ -209,9 +209,9 @@ void main() {
         return;
       }
       final url = Uri.parse('http://[fe80::1%$zone]:11434/v1/chat/completions');
-      // What the guard actually sees, and what `tryParse` answers to it.
+      // URI escaping is stable; whether tryParse accepts this escaped zone
+      // varies by platform. The contract is no DNS and no URL rewriting.
       expect(url.host, 'fe80::1%25$zone');
-      expect(InternetAddress.tryParse(url.host), isNull);
 
       // Returned untouched: the socket layer does its own unescaping, and
       // rewriting the host here would only cost the zone.

@@ -105,8 +105,9 @@ class EditMealBloc extends Bloc<EditMealEvent, EditMealState> {
       return nutrimentValue != null ? nutrimentValue * factorTo100g : null;
     }
 
+    // Omitted fields are already per 100; only newly entered values scale.
     double? fromTextOrOld(String? text, double? oldValue) =>
-        multiplyIfNotNull(text?.toDoubleOrNull() ?? oldValue);
+        text == null ? oldValue : multiplyIfNotNull(text.toDoubleOrNull());
 
     final newMealNutriments = MealNutrimentsEntity(
       energyKcal100: multiplyIfNotNull(kcalText.toDoubleOrNull()),
@@ -123,6 +124,16 @@ class EditMealBloc extends Bloc<EditMealEvent, EditMealState> {
       magnesium100: fromTextOrOld(magnesiumText, oldMealEntity.nutriments.magnesium100),
       vitaminD100: fromTextOrOld(vitaminDText, oldMealEntity.nutriments.vitaminD100),
       vitaminB12100: fromTextOrOld(vitaminB12Text, oldMealEntity.nutriments.vitaminB12100),
+      monounsaturatedFat100: oldMealEntity.nutriments.monounsaturatedFat100,
+      polyunsaturatedFat100: oldMealEntity.nutriments.polyunsaturatedFat100,
+      transFat100: oldMealEntity.nutriments.transFat100,
+      cholesterol100: oldMealEntity.nutriments.cholesterol100,
+      zinc100: oldMealEntity.nutriments.zinc100,
+      phosphorus100: oldMealEntity.nutriments.phosphorus100,
+      vitaminA100: oldMealEntity.nutriments.vitaminA100,
+      vitaminC100: oldMealEntity.nutriments.vitaminC100,
+      vitaminB6100: oldMealEntity.nutriments.vitaminB6100,
+      niacin100: oldMealEntity.nutriments.niacin100,
     );
 
     return MealEntity(
@@ -148,6 +159,12 @@ class EditMealBloc extends Bloc<EditMealEvent, EditMealState> {
       servingSize: oldMealEntity.servingSize,
       nutriments: newMealNutriments,
       source: oldMealEntity.source,
+      backendSource: oldMealEntity.backendSource,
+      machineTranslatedName: oldMealEntity.machineTranslatedName,
+      servingSizeIsLocalized: oldMealEntity.servingSizeIsLocalized,
+      portions: oldMealEntity.portions,
+      portionsUnavailable: oldMealEntity.portionsUnavailable,
+      detailed: oldMealEntity.detailed,
       // #64 follow-up: a freshly-picked local photo wins over what was
       // on the old entity; a clear flag means the user removed the
       // photo and the slug should be wiped from the saved meal.
