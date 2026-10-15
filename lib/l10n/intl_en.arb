@@ -314,10 +314,10 @@
   "customMealBarcodeLabel": "Barcode",
   "customMealBarcodeScanButton": "Scan barcode",
   "customMealFormAdvanced": "Advanced",
-  "customMealFormAdvancedHelp": "Set the sizes and per-100 values for precise scaling.",
+  "customMealFormAdvancedHelp": "Add sugars, fibre, minerals and vitamins using the same nutrition basis.",
   "customMealFormModeLabel": "Form view",
   "customMealFormSimple": "Simple",
-  "customMealFormSimpleHelp": "Type the totals for one serving.",
+  "customMealFormSimpleHelp": "Set package, serving and nutrition basis independently, then enter basic nutrients.",
   "customMealFormSimpleFieldHelper": "{unit} in one serving",
   "@customMealFormSimpleFieldHelper": {
     "placeholders": {
@@ -391,7 +391,7 @@
   "duplicateRecipeLabel": "Duplicate",
   "duplicateRecipeNameSuffix": "(copy)",
   "editItemDialogTitle": "Edit item",
-  "editMealLabel": "Edit meal",
+  "editMealLabel": "Edit food",
   "editRecipeTitle": "Edit Recipe",
   "energyLabel": "energy",
   "energyLeftLabel": "left",
@@ -1371,5 +1371,18 @@
   "healthSyncDisclosureContinueAction": "Continue",
   "healthSyncUnavailableLabel": "Health data is not available on this device. Workout import needs Health Connect on Android or Apple Health on iOS.",
   "sourcesEnergyCompensationTitle": "Workout calorie credit",
-  "sourcesEnergyCompensationDescription": "Imported workouts are credited with less than the energy your device reports. People compensate for exercise by burning fewer calories through the rest of the day — about 28% on average, and more at a higher body fat percentage. The suggested credit comes from that research and you can override it under Settings → Health sync. The energy itself is reported by the app or device that recorded the workout, not calculated with the app’s MET formula."
+  "sourcesEnergyCompensationDescription": "Imported workouts are credited with less than the energy your device reports. People compensate for exercise by burning fewer calories through the rest of the day — about 28% on average, and more at a higher body fat percentage. The suggested credit comes from that research and you can override it under Settings → Health sync. The energy itself is reported by the app or device that recorded the workout, not calculated with the app’s MET formula.",
+  "customMealBasisHelp": "Package and serving sizes are optional. All nutrients below use the nutrition basis. Check values after changing the basis.",
+  "customMealQuantityInvalid": "Enter a valid positive number for {field}.",
+  "@customMealQuantityInvalid": {
+    "placeholders": {
+      "field": {
+        "type": "String"
+      }
+    }
+  },
+  "customMealNutrientInvalid": "Enter finite, non-negative nutrient values, or leave unknown values blank.",
+  "customMealUnknownNutrientsHint": "Leave unknown nutrients blank. Enter 0 only when you know there is none.",
+  "customMealNutrientDifferenceHint": "Label energy differs from the macro estimate. Fibre, labelling conventions and rounding can explain differences. Your entered energy will be kept.",
+  "customMealBarcodeInUse": "This barcode or name belongs to another food. Nothing was saved; change it or edit that food."
 }

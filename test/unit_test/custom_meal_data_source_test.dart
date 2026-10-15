@@ -113,6 +113,56 @@ void main() {
               'name-only entry; both are kept');
     });
 
+    test('editing a barcode keeps the same custom-food row', () async {
+      await ds.saveCustomMeal(_meal(code: 'old', name: 'Apple', kcal: 52));
+      final oldKey = ds.getAllCustomMeals().single.key;
+      expect(await ds.updateCustomMeal(_meal(code: 'new', name: 'Apple', kcal: 60),
+        originalCode: 'old'), isTrue);
+      expect(ds.getAllCustomMeals(), hasLength(1));
+      expect(ds.getAllCustomMeals().single.key, oldKey);
+      expect(ds.getAllCustomMeals().single.code, 'new');
+    });
+
+    test('a colliding barcode cannot overwrite either existing food', () async {
+      await ds.saveCustomMeal(_meal(code: 'a', name: 'Apple', kcal: 52));
+      await ds.saveCustomMeal(_meal(code: 'b', name: 'Banana', kcal: 89));
+      expect(await ds.updateCustomMeal(_meal(code: 'b', name: 'Changed', kcal: 1),
+        originalCode: 'a'), isFalse);
+      expect(ds.getAllCustomMeals(), hasLength(2));
+      expect(ds.getAllCustomMeals().map((meal) => meal.name), ['Apple','Banana']);
+      expect(ds.getAllCustomMeals().map((meal) => meal.nutriments.energyKcal100), [52,89]);
+    });
+
+    test('legacy name-only food can be renamed without duplicating it', () async {
+      await ds.saveCustomMeal(_meal(name: 'Apple', kcal: 52));
+      expect(await ds.updateCustomMeal(_meal(name: 'Apple edited', kcal: 60),
+        originalName: 'Apple'), isTrue);
+      expect(ds.getAllCustomMeals(), hasLength(1));
+      expect(ds.getAllCustomMeals().single.name, 'Apple edited');
+    });
+
+    test('a missing original cannot overwrite another food', () async {
+      await ds.saveCustomMeal(_meal(code: 'taken', name: 'Apple', kcal: 52));
+      expect(await ds.updateCustomMeal(_meal(code: 'taken', name: 'Changed'),
+        originalCode: 'missing'), isFalse);
+      expect(ds.getAllCustomMeals().single.name, 'Apple');
+      expect(ds.getAllCustomMeals().single.nutriments.energyKcal100, 52);
+    });
+
+    test('a legacy name collision is rejected before replacing a row', () async {
+      await ds.saveCustomMeal(_meal(name: 'Apple'));
+      await ds.saveCustomMeal(_meal(name: 'Banana'));
+      expect(await ds.updateCustomMeal(_meal(name: 'Banana'),
+        originalName: 'Apple'), isFalse);
+      expect(ds.getAllCustomMeals().map((meal) => meal.name), ['Apple', 'Banana']);
+    });
+
+    test('creating with an existing barcode leaves its food intact', () async {
+      await ds.saveCustomMeal(_meal(code: 'taken', name: 'Apple'));
+      expect(await ds.updateCustomMeal(_meal(code: 'taken', name: 'Changed')), isFalse);
+      expect(ds.getAllCustomMeals().single.name, 'Apple');
+    });
+
     test('deleteCustomMeal removes a meal by its barcode', () async {
       await ds.saveCustomMeal(_meal(code: '1', name: 'Apple'));
       await ds.saveCustomMeal(_meal(code: '2', name: 'Banana'));

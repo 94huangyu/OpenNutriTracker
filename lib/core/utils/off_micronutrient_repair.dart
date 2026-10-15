@@ -75,6 +75,7 @@ class OffMicronutrientRepair {
       servingQuantity: meal.servingQuantity,
       servingUnit: meal.servingUnit,
       servingSize: meal.servingSize,
+      nutritionBasisQuantity: meal.nutritionBasisQuantity,
       source: meal.source,
       nutriments: MealNutrimentsDBO(
         energyKcal100: n.energyKcal100,

@@ -40,6 +40,15 @@ class MealEntity extends Equatable {
   final String? servingUnit;
   final String? servingSize;
 
+  /// Label basis retained for editing, independent of package and serving.
+  /// All nutriments remain canonical per-100 values.
+  final double? nutritionBasisQuantity;
+
+  double get effectiveNutritionBasis {
+    final basis = nutritionBasisQuantity;
+    return basis != null && basis.isFinite && basis > 0 ? basis : 100;
+  }
+
   // Issue #158: many OFF products carry serving data (servingQuantity or
   // servingSize) but no overall package `quantity`, which left `servingUnit`
   // null and made the meal-detail dropdown default to 100 g/ml on every
@@ -236,6 +245,7 @@ class MealEntity extends Equatable {
     this.portions = const [],
     this.portionsUnavailable = false,
     this.localImagePath,
+    this.nutritionBasisQuantity,
     this.detailed = false,
   });
 
@@ -267,6 +277,7 @@ class MealEntity extends Equatable {
     portions: portions,
     portionsUnavailable: portionsUnavailable,
     localImagePath: localImagePath,
+    nutritionBasisQuantity: nutritionBasisQuantity,
     detailed: detailed,
   );
 
@@ -295,6 +306,7 @@ class MealEntity extends Equatable {
     portions: found,
     portionsUnavailable: portionsUnavailable,
     localImagePath: localImagePath,
+    nutritionBasisQuantity: nutritionBasisQuantity,
     detailed: detailed,
   );
 
@@ -323,6 +335,7 @@ class MealEntity extends Equatable {
     portions: portions,
     portionsUnavailable: true,
     localImagePath: localImagePath,
+    nutritionBasisQuantity: nutritionBasisQuantity,
     detailed: detailed,
   );
 
@@ -351,6 +364,7 @@ class MealEntity extends Equatable {
     servingQuantity: mealDBO.servingQuantity,
     servingUnit: mealDBO.servingUnit,
     servingSize: mealDBO.servingSize,
+    nutritionBasisQuantity: mealDBO.nutritionBasisQuantity,
     nutriments: MealNutrimentsEntity.fromMealNutrimentsDBO(mealDBO.nutriments),
     source: MealSourceEntity.fromMealSourceDBO(mealDBO.source),
     backendSource: mealDBO.backendSource,

@@ -5,6 +5,7 @@ import 'package:opennutritracker/core/data/dbo/meal_dbo.dart';
 import 'package:opennutritracker/core/data/repository/config_repository.dart';
 import 'package:opennutritracker/core/domain/usecase/get_config_usecase.dart';
 import 'package:opennutritracker/core/utils/extensions.dart';
+import 'package:opennutritracker/core/utils/id_generator.dart';
 import 'package:opennutritracker/features/add_meal/domain/entity/meal_entity.dart';
 import 'package:opennutritracker/features/add_meal/domain/entity/meal_nutriments_entity.dart';
 
@@ -29,6 +30,23 @@ part 'edit_meal_event.dart';
 double factorTo100gFromBase(String baseQuantity) {
   final parsed = double.tryParse(baseQuantity);
   return (parsed != null && parsed.isFinite && parsed > 0) ? (100 / parsed) : 1;
+}
+
+/// A review hint only: fibre conventions and rounding can explain a gap.
+/// Missing values give no opinion; entered energy is always preserved.
+bool labelEnergyNeedsReview({
+  required double? kcal,
+  required double? carbs,
+  required double? fat,
+  required double? protein,
+}) {
+  if (kcal == null || carbs == null || fat == null || protein == null) {
+    return false;
+  }
+  final estimate = 4 * carbs + 9 * fat + 4 * protein;
+  final gap = (kcal - estimate).abs();
+  final largest = kcal.abs() > estimate.abs() ? kcal.abs() : estimate.abs();
+  return gap > 5 && gap > atwaterEnergyTolerance * largest;
 }
 
 /// Custom meal form view mode (#232). Persisted on ConfigDBO so the form
@@ -95,11 +113,26 @@ class EditMealBloc extends Bloc<EditMealEvent, EditMealState> {
     String? magnesiumText,
     String? vitaminDText,
     String? vitaminB12Text,
+    String? monounsaturatedFatText,
+    String? polyunsaturatedFatText,
+    String? transFatText,
+    String? cholesterolText,
+    String? zincText,
+    String? phosphorusText,
+    String? vitaminAText,
+    String? vitaminCText,
+    String? vitaminB6Text,
+    String? niacinText,
     String? barcodeOverride,
     String? localImagePathOverride,
     bool clearLocalImagePath = false,
   }) {
     final double factorTo100g = factorTo100gFromBase(baseQuantity);
+    final parsedBasis = double.tryParse(baseQuantity);
+    final savedBasis =
+        parsedBasis != null && parsedBasis.isFinite && parsedBasis > 0
+        ? parsedBasis
+        : null;
 
     double? multiplyIfNotNull(double? nutrimentValue) {
       return nutrimentValue != null ? nutrimentValue * factorTo100g : null;
@@ -115,25 +148,67 @@ class EditMealBloc extends Bloc<EditMealEvent, EditMealState> {
       fat100: multiplyIfNotNull(fatText.toDoubleOrNull()),
       proteins100: multiplyIfNotNull(proteinText.toDoubleOrNull()),
       sugars100: fromTextOrOld(sugarsText, oldMealEntity.nutriments.sugars100),
-      saturatedFat100: fromTextOrOld(saturatedFatText, oldMealEntity.nutriments.saturatedFat100),
+      saturatedFat100: fromTextOrOld(
+        saturatedFatText,
+        oldMealEntity.nutriments.saturatedFat100,
+      ),
       fiber100: fromTextOrOld(fiberText, oldMealEntity.nutriments.fiber100),
       sodium100: fromTextOrOld(sodiumText, oldMealEntity.nutriments.sodium100),
-      calcium100: fromTextOrOld(calciumText, oldMealEntity.nutriments.calcium100),
+      calcium100: fromTextOrOld(
+        calciumText,
+        oldMealEntity.nutriments.calcium100,
+      ),
       iron100: fromTextOrOld(ironText, oldMealEntity.nutriments.iron100),
-      potassium100: fromTextOrOld(potassiumText, oldMealEntity.nutriments.potassium100),
-      magnesium100: fromTextOrOld(magnesiumText, oldMealEntity.nutriments.magnesium100),
-      vitaminD100: fromTextOrOld(vitaminDText, oldMealEntity.nutriments.vitaminD100),
-      vitaminB12100: fromTextOrOld(vitaminB12Text, oldMealEntity.nutriments.vitaminB12100),
-      monounsaturatedFat100: oldMealEntity.nutriments.monounsaturatedFat100,
-      polyunsaturatedFat100: oldMealEntity.nutriments.polyunsaturatedFat100,
-      transFat100: oldMealEntity.nutriments.transFat100,
-      cholesterol100: oldMealEntity.nutriments.cholesterol100,
-      zinc100: oldMealEntity.nutriments.zinc100,
-      phosphorus100: oldMealEntity.nutriments.phosphorus100,
-      vitaminA100: oldMealEntity.nutriments.vitaminA100,
-      vitaminC100: oldMealEntity.nutriments.vitaminC100,
-      vitaminB6100: oldMealEntity.nutriments.vitaminB6100,
-      niacin100: oldMealEntity.nutriments.niacin100,
+      potassium100: fromTextOrOld(
+        potassiumText,
+        oldMealEntity.nutriments.potassium100,
+      ),
+      magnesium100: fromTextOrOld(
+        magnesiumText,
+        oldMealEntity.nutriments.magnesium100,
+      ),
+      vitaminD100: fromTextOrOld(
+        vitaminDText,
+        oldMealEntity.nutriments.vitaminD100,
+      ),
+      vitaminB12100: fromTextOrOld(
+        vitaminB12Text,
+        oldMealEntity.nutriments.vitaminB12100,
+      ),
+      monounsaturatedFat100: fromTextOrOld(
+        monounsaturatedFatText,
+        oldMealEntity.nutriments.monounsaturatedFat100,
+      ),
+      polyunsaturatedFat100: fromTextOrOld(
+        polyunsaturatedFatText,
+        oldMealEntity.nutriments.polyunsaturatedFat100,
+      ),
+      transFat100: fromTextOrOld(
+        transFatText,
+        oldMealEntity.nutriments.transFat100,
+      ),
+      cholesterol100: fromTextOrOld(
+        cholesterolText,
+        oldMealEntity.nutriments.cholesterol100,
+      ),
+      zinc100: fromTextOrOld(zincText, oldMealEntity.nutriments.zinc100),
+      phosphorus100: fromTextOrOld(
+        phosphorusText,
+        oldMealEntity.nutriments.phosphorus100,
+      ),
+      vitaminA100: fromTextOrOld(
+        vitaminAText,
+        oldMealEntity.nutriments.vitaminA100,
+      ),
+      vitaminC100: fromTextOrOld(
+        vitaminCText,
+        oldMealEntity.nutriments.vitaminC100,
+      ),
+      vitaminB6100: fromTextOrOld(
+        vitaminB6Text,
+        oldMealEntity.nutriments.vitaminB6100,
+      ),
+      niacin100: fromTextOrOld(niacinText, oldMealEntity.nutriments.niacin100),
     );
 
     return MealEntity(
@@ -141,7 +216,9 @@ class EditMealBloc extends Bloc<EditMealEvent, EditMealState> {
       // from the originating OFF/FDC record, but only when the override
       // was actually supplied. Empty-string is treated as "clear" so a
       // user can erase a stored code by blanking the field.
-      code: barcodeOverride ?? oldMealEntity.code,
+      code: barcodeOverride == ''
+          ? IdGenerator.getUniqueID()
+          : barcodeOverride ?? oldMealEntity.code,
       name: nameText.toStringOrNull(),
       brands: brandsText.toStringOrNull(),
       url: oldMealEntity.url,
@@ -150,6 +227,7 @@ class EditMealBloc extends Bloc<EditMealEvent, EditMealState> {
       mealQuantity: mealQuantityText.toStringOrNull(),
       mealUnit: unitText,
       servingQuantity: servingQuantityText.toDoubleOrNull(),
+      nutritionBasisQuantity: savedBasis,
       // The custom-meal form has a single unit selector shared by the meal
       // size and the serving size, so the serving unit is that selected unit
       // — not the serving *quantity* text, which used to land here and made
@@ -175,7 +253,15 @@ class EditMealBloc extends Bloc<EditMealEvent, EditMealState> {
   }
 
   /// Persist custom meal template so it appears in Recent Meals before first log (#267)
-  Future<void> saveCustomMeal(MealEntity mealEntity) async {
-    await _customMealDataSource.saveCustomMeal(MealDBO.fromMealEntity(mealEntity));
+  Future<bool> saveCustomMeal(
+    MealEntity mealEntity, {
+    MealEntity? original,
+  }) async {
+    final dbo = MealDBO.fromMealEntity(mealEntity);
+    return _customMealDataSource.updateCustomMeal(
+      dbo,
+      originalCode: original?.code,
+      originalName: original?.name,
+    );
   }
 }

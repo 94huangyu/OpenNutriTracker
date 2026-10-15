@@ -1,3 +1,6 @@
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:opennutritracker/core/styles/app_palette.dart';
+import 'package:opennutritracker/core/styles/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -28,12 +31,9 @@ import 'package:opennutritracker/features/meal_detail/presentation/bloc/meal_det
 import 'package:opennutritracker/generated/l10n.dart';
 import 'package:provider/provider.dart';
 
-// Screen-level counterpart to `quick_serving_chips_widget_test.dart`.
-// Drives the real [MealDetailScreen] with a scalable-serving solid product
-// (30 g serving), taps a chip through its Semantics identifier, and
-// asserts against [MealDetailBloc]'s state — not just the widget callback.
-// This is the coverage #577 asks for: chip -> unit switch + converted
-// quantity + typing after the chip keeps the chip's unit.
+import '../../helpers/widget_capture.dart';
+
+// Uses the real detail screen and bloc; repositories are isolated fakes.
 
 const _nutriments = MealNutrimentsEntity(
   energyKcal100: 100,
@@ -46,21 +46,23 @@ const _nutriments = MealNutrimentsEntity(
 );
 
 MealEntity _solidThirtyGramServing() => MealEntity(
-      code: 'chip-screen-test',
-      name: 'Test product',
-      url: null,
-      mealQuantity: null,
-      mealUnit: 'g',
-      servingQuantity: 30,
-      servingUnit: 'g',
-      servingSize: '30 g',
-      nutriments: _nutriments,
-      source: MealSourceEntity.custom,
-    );
+  code: 'chip-screen-test',
+  name: '薯片样例',
+  url: null,
+  mealQuantity: null,
+  mealUnit: 'g',
+  servingQuantity: 30,
+  servingUnit: 'g',
+  servingSize: '30 g',
+  nutriments: _nutriments,
+  source: MealSourceEntity.custom,
+);
 
 void main() {
   final getIt = GetIt.instance;
   MealDetailBloc? bloc;
+  final captureKey = GlobalKey();
+  setUpAll(loadCaptureFonts);
 
   setUp(() {
     bloc = null;
@@ -88,7 +90,7 @@ void main() {
   });
 
   Future<void> pumpMealDetail(WidgetTester tester, MealEntity meal) async {
-    tester.view.physicalSize = const Size(1080, 2400);
+    tester.view.physicalSize = const Size(390, 844);
     tester.view.devicePixelRatio = 1.0;
     addTearDown(tester.view.reset);
 
@@ -101,91 +103,75 @@ void main() {
     }
 
     await tester.pumpWidget(
-      ChangeNotifierProvider<EnergyUnitProvider>(
-        create: (_) => EnergyUnitProvider(),
-        child: MaterialApp(
-          navigatorKey: navigatorKey,
-          localizationsDelegates: const [S.delegate],
-          supportedLocales: S.supportedLocales,
-          initialRoute: NavigationOptions.mealDetailRoute,
-          onGenerateInitialRoutes: (_) => [
-            routeFor(
-              RouteSettings(
-                name: NavigationOptions.mealDetailRoute,
-                arguments: MealDetailScreenArguments(
-                  meal,
-                  IntakeTypeEntity.breakfast,
-                  DateTime(2026, 9, 14),
-                  false,
+      RepaintBoundary(
+        key: captureKey,
+        child: ChangeNotifierProvider<EnergyUnitProvider>(
+          create: (_) => EnergyUnitProvider(),
+          child: MaterialApp(
+            debugShowCheckedModeBanner: false,
+            theme: buildAppTheme(AppPalette.light),
+            locale: const Locale('zh'),
+            navigatorKey: navigatorKey,
+            localizationsDelegates: const [
+              S.delegate,
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+            supportedLocales: S.supportedLocales,
+            initialRoute: NavigationOptions.mealDetailRoute,
+            onGenerateInitialRoutes: (_) => [
+              routeFor(
+                RouteSettings(
+                  name: NavigationOptions.mealDetailRoute,
+                  arguments: MealDetailScreenArguments(
+                    meal,
+                    IntakeTypeEntity.breakfast,
+                    DateTime(2026, 9, 14),
+                    false,
+                  ),
                 ),
               ),
-            ),
-          ],
-          onGenerateRoute: routeFor,
+            ],
+            onGenerateRoute: routeFor,
+          ),
         ),
       ),
     );
     await tester.pumpAndSettle();
   }
 
-  Finder chip(String id) => find.byWidgetPredicate(
-        (w) => w is Semantics && w.properties.identifier == 'meal-detail-chip-$id',
-      );
+  testWidgets('arbitrary fractional servings update the real detail bloc', (
+    tester,
+  ) async {
+    await pumpMealDetail(tester, _solidThirtyGramServing());
+    expect(find.byType(ActionChip), findsNothing);
+    expect(bloc!.state.selectedUnit, 'serving');
+    await tester.enterText(find.byType(TextFormField).first, '0.75');
+    await tester.pumpAndSettle();
+    expect(bloc!.state.totalQuantityConverted, '22.5');
+    await tester.enterText(find.byType(TextFormField).first, '1.25');
+    await tester.pumpAndSettle();
+    expect(bloc!.state.totalQuantityConverted, '37.5');
+    await captureWidget(tester, captureKey, 'intake-1.25-servings');
+    expect(tester.takeException(), isNull);
+  });
 
-  testWidgets(
-    '0.5x on a 30 g serving lands 15 g in state.totalQuantityConverted',
-    (tester) async {
-      await pumpMealDetail(tester, _solidThirtyGramServing());
-
-      // Baseline from _applyInitialSelection: quantity 1, unit 'serving'
-      // -> 1 x 30 g = 30 g.
-      expect(bloc!.state.selectedUnit, 'serving');
-      expect(bloc!.state.totalQuantityConverted, '30.0');
-
-      await tester.tap(chip('half-serving'));
-      await tester.pumpAndSettle();
-
-      expect(bloc!.state.selectedUnit, 'serving');
-      expect(bloc!.state.totalQuantityConverted, '15.0');
-    },
-  );
-
-  testWidgets(
-    'typing after tapping the half-serving chip keeps the chip unit '
-    'and recomputes against it',
-    (tester) async {
-      await pumpMealDetail(tester, _solidThirtyGramServing());
-
-      await tester.tap(chip('half-serving'));
-      await tester.pumpAndSettle();
-      expect(bloc!.state.totalQuantityConverted, '15.0');
-
-      // The bottom-sheet quantity field is the enabled TextFormField; typing
-      // '3' replaces the chip's 0.5 and recomputes 3 x 30 g = 90 g while the
-      // unit stays 'serving'.
-      final field = find.byType(TextFormField).first;
-      await tester.enterText(field, '3');
-      await tester.pumpAndSettle();
-
-      expect(bloc!.state.selectedUnit, 'serving');
-      expect(bloc!.state.totalQuantityConverted, '90.0');
-    },
-  );
-
-  testWidgets(
-    '100 g chip from a serving unit switches state.selectedUnit to g',
-    (tester) async {
-      await pumpMealDetail(tester, _solidThirtyGramServing());
-
-      expect(bloc!.state.selectedUnit, 'serving');
-
-      await tester.tap(chip('100g'));
-      await tester.pumpAndSettle();
-
-      expect(bloc!.state.selectedUnit, 'g');
-      expect(bloc!.state.totalQuantityConverted, '100.0');
-    },
-  );
+  testWidgets('switching to grams uses the typed amount directly', (
+    tester,
+  ) async {
+    await pumpMealDetail(tester, _solidThirtyGramServing());
+    await tester.tap(find.byType(DropdownButtonFormField<String>));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('g').last);
+    await tester.pumpAndSettle();
+    await tester.enterText(find.byType(TextFormField).first, '47.5');
+    await tester.pumpAndSettle();
+    expect(bloc!.state.selectedUnit, 'g');
+    expect(bloc!.state.totalQuantityConverted, '47.5');
+    await captureWidget(tester, captureKey, 'intake-47.5-grams');
+    expect(tester.takeException(), isNull);
+  });
 }
 
 class _FakeGetConfigUsecase implements GetConfigUsecase {
@@ -280,8 +266,7 @@ class _FakeGetIntakeUsecase implements GetIntakeUsecase {
     DateTime day, {
     int dayStartOffsetHours = 0,
     int dayStartOffsetMinutes = 0,
-  }) async =>
-      [];
+  }) async => [];
 
   @override
   dynamic noSuchMethod(Invocation invocation) =>
@@ -322,8 +307,7 @@ class _FakeCacheManager implements CacheManager {
     String? key,
     Map<String, String>? headers,
     bool withProgress = false,
-  }) =>
-      const Stream<FileResponse>.empty();
+  }) => const Stream<FileResponse>.empty();
 
   @override
   dynamic noSuchMethod(Invocation invocation) =>

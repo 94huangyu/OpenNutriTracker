@@ -14,11 +14,7 @@ import 'package:opennutritracker/features/meal_detail/presentation/bloc/meal_det
 import 'package:opennutritracker/features/meal_detail/presentation/widgets/meal_detail_bottom_sheet.dart';
 import 'package:opennutritracker/generated/l10n.dart';
 
-// Widget-side counterpart to `quick_serving_option_test.dart`. Drives the
-// real MealDetailBottomSheet with a scalable-serving solid product,
-// finds each chip by its stable ASCII Semantics identifier (locked in
-// via option.id — see review round on #1101), taps it, and asserts that
-// the callback fires with the paired quantity + unit for that chip.
+// Exercises the real intake controls without preset quantity chips.
 
 class _FakeAddIntakeUsecase extends Fake implements AddIntakeUsecase {}
 
@@ -96,122 +92,54 @@ Future<void> _pumpSheet(
 }
 
 void main() {
-  testWidgets('renders one chip per option with a stable ASCII identifier', (
-    tester,
-  ) async {
-    final quantityController = TextEditingController(text: '1');
+  testWidgets(
+    'free quantity input has no presets and keeps fractional servings',
+    (tester) async {
+      final controller = TextEditingController(text: '1');
+      String? quantity;
+      String? unit;
+      await _pumpSheet(
+        tester,
+        product: _solidWithServing(),
+        quantityController: controller,
+        onChanged: (q, u) {
+          quantity = q;
+          unit = u;
+        },
+      );
+      expect(find.byType(ActionChip), findsNothing);
+      await tester.enterText(find.byType(TextFormField), '0.75');
+      await tester.pumpAndSettle();
+      expect(quantity, '0.75');
+      expect(unit, 'serving');
+      await tester.tap(find.byType(DropdownButtonFormField<String>));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('g').last);
+      await tester.pumpAndSettle();
+      expect(quantity, '0.75');
+      expect(unit, 'g');
+    },
+  );
 
-    await _pumpSheet(
+  for (final width in [320.0, 390.0]) {
+    testWidgets('quantity and unit have aligned bounds at width $width', (
       tester,
-      product: _solidWithServing(),
-      quantityController: quantityController,
-      onChanged: (_, _) {},
-    );
-
-    for (final id in const [
-      'half-serving',
-      'one-serving',
-      'double-serving',
-      '100g',
-    ]) {
-      expect(find.byWidgetPredicate((w) {
-        if (w is! Semantics) return false;
-        return w.properties.identifier == 'meal-detail-chip-$id';
-      }), findsOneWidget, reason: 'chip identifier meal-detail-chip-$id');
-    }
-  });
-
-  testWidgets(
-    'tapping the 100 g chip writes 100 into the quantity field and fires the '
-    'callback with unit=g',
-    (tester) async {
-      final quantityController = TextEditingController(text: '1');
-      String? cbQuantity;
-      String? cbUnit;
-
+    ) async {
+      tester.view.physicalSize = Size(width, 844);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.reset);
+      final controller = TextEditingController(text: '0.75');
       await _pumpSheet(
         tester,
         product: _solidWithServing(),
-        quantityController: quantityController,
-        onChanged: (q, u) {
-          cbQuantity = q;
-          cbUnit = u;
-        },
+        quantityController: controller,
+        onChanged: (_, _) {},
       );
-
-      final chip = find.byWidgetPredicate(
-        (w) => w is Semantics && w.properties.identifier == 'meal-detail-chip-100g',
-      );
-      await tester.tap(chip);
-      await tester.pumpAndSettle();
-
-      expect(quantityController.text, '100');
-      expect(cbQuantity, '100');
-      expect(cbUnit, 'g');
-    },
-  );
-
-  testWidgets(
-    'tapping the 1× chip writes 1 into the quantity field and fires the '
-    'callback with unit=serving',
-    (tester) async {
-      final quantityController = TextEditingController(text: '30');
-      String? cbQuantity;
-      String? cbUnit;
-
-      await _pumpSheet(
-        tester,
-        product: _solidWithServing(),
-        quantityController: quantityController,
-        onChanged: (q, u) {
-          cbQuantity = q;
-          cbUnit = u;
-        },
-        initialUnit: 'g',
-      );
-
-      final chip = find.byWidgetPredicate(
-        (w) =>
-            w is Semantics &&
-            w.properties.identifier == 'meal-detail-chip-one-serving',
-      );
-      await tester.tap(chip);
-      await tester.pumpAndSettle();
-
-      expect(quantityController.text, '1');
-      expect(cbQuantity, '1');
-      expect(cbUnit, 'serving');
-    },
-  );
-
-  testWidgets(
-    'tapping the 0.5× chip writes 0.5 (not 1 or 0) into the quantity field',
-    (tester) async {
-      final quantityController = TextEditingController(text: '1');
-      String? cbQuantity;
-      String? cbUnit;
-
-      await _pumpSheet(
-        tester,
-        product: _solidWithServing(),
-        quantityController: quantityController,
-        onChanged: (q, u) {
-          cbQuantity = q;
-          cbUnit = u;
-        },
-      );
-
-      final chip = find.byWidgetPredicate(
-        (w) =>
-            w is Semantics &&
-            w.properties.identifier == 'meal-detail-chip-half-serving',
-      );
-      await tester.tap(chip);
-      await tester.pumpAndSettle();
-
-      expect(quantityController.text, '0.5');
-      expect(cbQuantity, '0.5');
-      expect(cbUnit, 'serving');
-    },
-  );
+      final number = tester.getRect(find.byType(TextFormField));
+      final unit = tester.getRect(find.byType(DropdownButtonFormField<String>));
+      expect(number.top, unit.top);
+      expect(number.height, unit.height);
+      expect(tester.takeException(), isNull);
+    });
+  }
 }

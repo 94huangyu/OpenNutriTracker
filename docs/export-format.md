@@ -87,6 +87,7 @@ Array of intake records:
       "servingQuantity": 250.0,
       "servingUnit": "ml",
       "servingSize": "250 ml",
+      "nutritionBasisQuantity": 100.0, // optional fork metadata; see below
       "source": "off",               // unknown | custom | off | fdc | recipe
       "nutriments": {
         "energyKcal100": 61.0,
@@ -194,6 +195,19 @@ Array of per-day calorie/macro totals:
 ]
 ```
 
+### Original label basis (China fork)
+
+`meal.nutritionBasisQuantity` optionally remembers the g/mL basis entered on a
+food label, independently of package size and serving size. For example, a
+60 g package with a 15 g serving and an 80 kcal / 15 g label keeps `15` here,
+while `energyKcal100` remains `80 * 100 / 15`. Intake calculations continue to
+use the canonical per-100 values. Missing, non-finite or non-positive metadata
+is displayed with a basis of 100; no existing nutrient value is rewritten.
+
+This metadata is serialized wherever an existing MealDBO is serialized; it does
+not add saved custom-food templates to the export bundle. The existing backup
+coverage limitations below still apply.
+
 ### `user_recipes.json`
 
 Array of recipe records, each holding an `ingredients` list referencing
@@ -263,6 +277,8 @@ Header lookup is case-insensitive.
 | `vitamin_b6_per_100g`           | number | no       | mg.                                            |
 | `vitamin_b12_per_100g`          | number | no       | µg.                                            |
 | `niacin_per_100g`               | number | no       | mg (B3).                                       |
+| `meal_data_version`             | number | no       | Micronutrient unit stamp; missing means legacy. |
+| `meal_nutrition_basis_quantity` | number | no       | Original label basis in g/mL; absent displays as 100. |
 | `meal_data_version`             | number | no       | See [Micronutrient units](#micronutrient-units-on-open-food-facts-rows). |
 
 ### `user_activity.csv`

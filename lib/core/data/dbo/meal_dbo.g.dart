@@ -35,13 +35,14 @@ class MealDBOAdapter extends TypeAdapter<MealDBO> {
       backendSource: fields[15] as String?,
       machineTranslatedName: fields[16] as bool?,
       dataVersion: (fields[17] as num?)?.toInt(),
+      nutritionBasisQuantity: (fields[18] as num?)?.toDouble(),
     );
   }
 
   @override
   void write(BinaryWriter writer, MealDBO obj) {
     writer
-      ..writeByte(18)
+      ..writeByte(19)
       ..writeByte(0)
       ..write(obj.code)
       ..writeByte(1)
@@ -77,7 +78,9 @@ class MealDBOAdapter extends TypeAdapter<MealDBO> {
       ..writeByte(16)
       ..write(obj.machineTranslatedName)
       ..writeByte(17)
-      ..write(obj.dataVersion);
+      ..write(obj.dataVersion)
+      ..writeByte(18)
+      ..write(obj.nutritionBasisQuantity);
   }
 
   @override
@@ -165,6 +168,7 @@ MealDBO _$MealDBOFromJson(Map<String, dynamic> json) => MealDBO(
   backendSource: json['backendSource'] as String?,
   machineTranslatedName: json['machineTranslatedName'] as bool?,
   dataVersion: (json['dataVersion'] as num?)?.toInt(),
+  nutritionBasisQuantity: (json['nutritionBasisQuantity'] as num?)?.toDouble(),
 );
 
 Map<String, dynamic> _$MealDBOToJson(MealDBO instance) => <String, dynamic>{
@@ -186,6 +190,7 @@ Map<String, dynamic> _$MealDBOToJson(MealDBO instance) => <String, dynamic>{
   'backendSource': instance.backendSource,
   'machineTranslatedName': instance.machineTranslatedName,
   'dataVersion': instance.dataVersion,
+  'nutritionBasisQuantity': instance.nutritionBasisQuantity,
 };
 
 const _$MealSourceDBOEnumMap = {

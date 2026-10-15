@@ -24,6 +24,38 @@ class CustomMealDataSource {
 
   List<MealDBO> getAllCustomMeals() => _customMealBox.values.toList();
 
+  /// Keep the same Hive row when editing its name or barcode.
+  /// A barcode owned by another food must never overwrite that food.
+  Future<bool> updateCustomMeal(
+    MealDBO updated, {
+    String? originalCode,
+    String? originalName,
+  }) async {
+    final previous = _customMealBox.values.cast<MealDBO?>().firstWhere(
+      (meal) => originalCode != null
+          ? meal?.code == originalCode
+          : originalName != null &&
+                meal?.code == null &&
+                meal?.name == originalName,
+      orElse: () => null,
+    );
+    if (_customMealBox.values.any(
+      (meal) =>
+          meal.key != previous?.key &&
+          (updated.code != null
+              ? meal.code == updated.code
+              : meal.name == updated.name),
+    )) {
+      return false;
+    }
+    if (previous == null) {
+      await _customMealBox.add(updated);
+    } else {
+      await _customMealBox.put(previous.key, updated);
+    }
+    return true;
+  }
+
   Future<void> deleteCustomMeal(String mealKey) async {
     final toDelete = _customMealBox.values
         .where((m) => (m.code ?? m.name) == mealKey)

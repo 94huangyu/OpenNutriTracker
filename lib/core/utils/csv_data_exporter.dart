@@ -71,6 +71,7 @@ class CsvDataExporter {
     // here was written before #775 and holds its micronutrients in raw
     // grams, which the importer scales into app units (#1152).
     'meal_data_version',
+    'meal_nutrition_basis_quantity',
   ];
 
   static const userActivityColumns = <String>[
@@ -155,6 +156,7 @@ class CsvDataExporter {
         _num(n.vitaminB12100),
         _num(n.niacin100),
         _num(meal.dataVersion?.toDouble()),
+        _num(meal.nutritionBasisQuantity),
       ];
       buf.writeln(cells.join(','));
     }
@@ -267,6 +269,8 @@ class CsvDataExporter {
             CsvRowParser.parseDoubleOrNull(row['meal_serving_quantity']),
         servingUnit: _nullable(row['meal_serving_unit']),
         servingSize: _nullable(row['meal_serving_size']),
+        nutritionBasisQuantity:
+            CsvRowParser.parseDoubleOrNull(row['meal_nutrition_basis_quantity']),
         source: _parseMealSource(row['meal_source']),
         nutriments: nutriments,
         dataVersion: CsvRowParser.parseDoubleOrNull(

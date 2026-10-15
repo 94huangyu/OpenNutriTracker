@@ -286,17 +286,14 @@ void main() {
       await tester.pumpAndSettle();
       expect(sheetProduct(tester).detailed, isTrue);
       expect(sheetProduct(tester).scalableServingQuantity, 31.8);
-      await tester.tap(find.text(naLabel()).last);
+      await tester.tap(find.text('g').last);
       await tester.pumpAndSettle();
 
-      // The explicit N/A pick above stands in for the state the stale echo
-      // used to leave behind (first test): "N/A" showing, quantity 1. The
-      // `detailed` check right after the menu opened is what turns red
-      // without the read-once guard; the pick below then walks the fixed
-      // path end to end — the serving entry stays selected and scales the
-      // amount, instead of vanishing from the button and logging 1 g.
-      expect(bloc!.state.selectedUnit, UnitDropdownItem.gml.toString());
-      expect(find.text(naLabel()), findsOneWidget);
+      // Known metric foods now offer grams rather than the ambiguous N/A
+      // entry. Switching away and back must still keep the hydrated product
+      // when the menu route re-runs didChangeDependencies.
+      expect(bloc!.state.selectedUnit, UnitDropdownItem.g.toString());
+      expect(find.text(naLabel()), findsNothing);
       await pickUnit(tester, '31.8g');
 
       expect(bloc!.state.selectedUnit, UnitDropdownItem.serving.toString());

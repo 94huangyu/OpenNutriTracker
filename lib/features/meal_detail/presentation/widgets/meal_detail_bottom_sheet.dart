@@ -14,7 +14,6 @@ import 'package:opennutritracker/features/diary/presentation/bloc/calendar_day_b
 import 'package:opennutritracker/features/diary/presentation/bloc/diary_bloc.dart';
 import 'package:opennutritracker/features/home/presentation/bloc/home_bloc.dart';
 import 'package:opennutritracker/features/meal_detail/presentation/bloc/meal_detail_bloc.dart';
-import 'package:opennutritracker/features/meal_detail/util/quick_serving_option.dart';
 import 'package:opennutritracker/generated/l10n.dart';
 
 class MealDetailBottomSheet extends StatefulWidget {
@@ -85,26 +84,6 @@ class _MealDetailBottomSheetState extends State<MealDetailBottomSheet> {
     );
   }
 
-  void _onQuickServingSelected(QuickServingOption option) {
-    final quantityText = _formatQuantity(option.quantity);
-    // Detach the change listener before the programmatic write, otherwise
-    // setting the controller's text fires _onQuantityChanged with the OLD
-    // unit before the callback below applies option.unit — so every chip
-    // tap emitted a stale-unit UpdateKcalEvent (100 g briefly computed as
-    // 100 servings) before landing on the right one.
-    widget.quantityTextController.removeListener(_onQuantityChanged);
-    widget.quantityTextController.text = quantityText;
-    widget.quantityTextController.addListener(_onQuantityChanged);
-    widget.onQuantityOrUnitChanged(quantityText, option.unit);
-  }
-
-  String _formatQuantity(double value) {
-    if (value == value.roundToDouble()) {
-      return value.toInt().toString();
-    }
-    return value.toString();
-  }
-
   @override
   Widget build(BuildContext context) {
     final productMissingRequiredInfo = _hasRequiredProductInfoMissing();
@@ -115,16 +94,8 @@ class _MealDetailBottomSheetState extends State<MealDetailBottomSheet> {
       onClosing: () {},
       enableDrag: false,
       builder: (context) {
-        // Quick-quantity presets — one tap to a common portion instead of
-        // typing. Uses the food's own serving when it has one and 100 g
-        // for solids. Computed once so the collection-if below can drop
-        // the row entirely when nothing applies (no orphan SizedBox).
-        final quickOptions = productMissingRequiredInfo
-            ? const <QuickServingOption>[]
-            : quickServingOptionsFor(
-                widget.product,
-                S.of(context).gramUnit,
-              );
+        final inputHeight =
+            32 + MediaQuery.textScalerOf(context).scale(16) * 1.5;
         return Container(
           decoration: BoxDecoration(
             border: Border(
@@ -147,87 +118,104 @@ class _MealDetailBottomSheetState extends State<MealDetailBottomSheet> {
                       Row(
                         children: [
                           Expanded(
-                            child: TextFormField(
-                              enabled: !productMissingRequiredInfo,
-                              controller: widget.quantityTextController,
-                              focusNode: _quantityFocusNode,
-                              onTap: _selectAllQuantityText,
-                              keyboardType: TextInputType.numberWithOptions(
-                                decimal: true,
-                              ),
-                              inputFormatters: [
-                                FilteringTextInputFormatter.allow(
-                                  RegExp(r'^\d+([.,]\d{0,2})?$'),
+                            child: SizedBox(
+                              height: inputHeight,
+                              child: Semantics(
+                                container: true,
+                                identifier: 'meal-detail-quantity',
+                                child: TextFormField(
+                                  enabled: !productMissingRequiredInfo,
+                                  controller: widget.quantityTextController,
+                                  focusNode: _quantityFocusNode,
+                                  onTap: _selectAllQuantityText,
+                                  keyboardType:
+                                      const TextInputType.numberWithOptions(
+                                        decimal: true,
+                                      ),
+                                  inputFormatters: [
+                                    FilteringTextInputFormatter.allow(
+                                      RegExp(r'^\d+([.,]\d{0,2})?$'),
+                                    ),
+                                  ],
+                                  decoration: InputDecoration(
+                                    isDense: true,
+                                    contentPadding: const EdgeInsets.symmetric(
+                                      horizontal: 12,
+                                      vertical: 16,
+                                    ),
+                                    border: const OutlineInputBorder(
+                                      borderRadius: Dimens.borderRadiusM,
+                                    ),
+                                    labelText: S.of(context).quantityLabel,
+                                  ),
                                 ),
-                              ],
-                              decoration: InputDecoration(
-                                border: const OutlineInputBorder(
-                                  borderRadius: Dimens.borderRadiusM,
-                                ),
-                                labelText: S.of(context).quantityLabel,
                               ),
                             ),
                           ),
-                          const SizedBox(width: 16.0),
+                          const SizedBox(width: 12),
                           Expanded(
-                            child: DropdownButtonFormField(
-                              isExpanded: true,
-                              itemHeight: null,
-                              initialValue: widget.selectedUnit,
-                              key: ValueKey(widget.selectedUnit),
-                              decoration: InputDecoration(
-                                border: const OutlineInputBorder(
-                                  borderRadius: Dimens.borderRadiusM,
+                            child: SizedBox(
+                              height: inputHeight,
+                              child: Semantics(
+                                container: true,
+                                identifier: 'meal-detail-unit',
+                                child: DropdownButtonFormField<String>(
+                                  isExpanded: true,
+                                  itemHeight: null,
+                                  initialValue: widget.selectedUnit,
+                                  key: ValueKey(widget.selectedUnit),
+                                  decoration: InputDecoration(
+                                    isDense: true,
+                                    contentPadding: const EdgeInsets.symmetric(
+                                      horizontal: 12,
+                                      vertical: 16,
+                                    ),
+                                    border: const OutlineInputBorder(
+                                      borderRadius: Dimens.borderRadiusM,
+                                    ),
+                                    labelText: S.of(context).unitLabel,
+                                  ),
+                                  items: [
+                                    if (widget
+                                            .product
+                                            .scalableServingQuantity !=
+                                        null)
+                                      _getServingDropdownItem(context),
+                                    if (!widget.product.isLiquid)
+                                      ..._getSolidUnitDropdownItems(context),
+                                    if (!widget.product.isSolid)
+                                      ..._getLiquidUnitDropdownItems(context),
+                                    if (widget.selectedUnit ==
+                                            UnitDropdownItem.gml.toString() ||
+                                        (!widget.product.isSolid &&
+                                            !widget.product.isLiquid))
+                                      ..._getOtherDropdownItems(context),
+                                  ],
+                                  onChanged: productMissingRequiredInfo
+                                      ? null
+                                      : (value) {
+                                          widget.onQuantityOrUnitChanged(
+                                            widget.quantityTextController.text,
+                                            value,
+                                          );
+                                        },
                                 ),
-                                labelText: S.of(context).unitLabel,
                               ),
-                              items: <DropdownMenuItem<String>>[
-                                // #629: a serving the app cannot scale
-                                // is a no-op dressed as a unit.
-                                if (widget.product.scalableServingQuantity !=
-                                    null)
-                                  _getServingDropdownItem(context),
-                                if (widget.product.isSolid ||
-                                    !widget.product.isLiquid &&
-                                        !widget.product.isSolid)
-                                  ..._getSolidUnitDropdownItems(context),
-                                if (widget.product.isLiquid ||
-                                    !widget.product.isLiquid &&
-                                        !widget.product.isSolid)
-                                  ..._getLiquidUnitDropdownItems(context),
-                                ..._getOtherDropdownItems(context),
-                              ],
-                              onChanged: (value) {
-                                widget.onQuantityOrUnitChanged(
-                                  widget.quantityTextController.text,
-                                  value,
-                                );
-                              },
                             ),
                           ),
                         ],
                       ),
-                      if (quickOptions.isNotEmpty)
+                      if (widget.selectedUnit == 'serving' &&
+                          widget.product.scalableServingQuantity != null)
                         Padding(
-                          padding: const EdgeInsets.only(
-                            top: Dimens.spacing12,
-                          ),
+                          padding: const EdgeInsets.only(top: 8),
                           child: Align(
                             alignment: Alignment.centerLeft,
-                            child: Wrap(
-                              spacing: Dimens.spacing8,
-                              children: [
-                                for (final option in quickOptions)
-                                  Semantics(
-                                    identifier:
-                                        'meal-detail-chip-${option.id}',
-                                    child: ActionChip(
-                                      label: Text(option.label),
-                                      onPressed: () =>
-                                          _onQuickServingSelected(option),
-                                    ),
-                                  ),
-                              ],
+                            child: Text(
+                              '1 ${S.of(context).servingLabel} = '
+                              '${widget.product.scalableServingQuantity!.toString().replaceFirst(RegExp(r"\.0$"), "")} '
+                              '${widget.product.servingUnit ?? widget.product.mealUnit ?? S.of(context).gramMilliliterUnit}',
+                              style: Theme.of(context).textTheme.bodySmall,
                             ),
                           ),
                         ),
@@ -295,7 +283,7 @@ class _MealDetailBottomSheetState extends State<MealDetailBottomSheet> {
     );
     final quantity = double.tryParse(quantityText);
 
-    if (quantity == null || quantity <= 0) {
+    if (quantity == null || !quantity.isFinite || quantity <= 0) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
@@ -415,7 +403,9 @@ class _MealDetailBottomSheetState extends State<MealDetailBottomSheet> {
     final servingSize = widget.product.servingSize;
     // Serving labels are stored in English (see MealEntity._spServingLabel);
     // translate the common household units at display time.
-    final servingText = (servingSize != null && servingSize.trim().isNotEmpty)
+    final servingText = widget.product.source == MealSourceEntity.custom
+        ? S.of(context).servingLabel
+        : (servingSize != null && servingSize.trim().isNotEmpty)
         ? localizeServingLabel(S.of(context), servingSize)
         : '${S.of(context).servingLabel} (${widget.product.servingQuantity} ${widget.product.servingUnit})';
     return DropdownMenuItem(

@@ -82,6 +82,11 @@ class MealDBO extends HiveObject {
   @HiveField(17)
   final int? dataVersion;
 
+  /// Original label basis in g/mL; nutrition storage remains per 100.
+  /// Absent on upstream/legacy rows, which continue to display per 100.
+  @HiveField(18)
+  final double? nutritionBasisQuantity;
+
   /// Rows at this version or above carry every micronutrient in the app's
   /// units: milligrams for the minerals, cholesterol and vitamins C, B6 and
   /// niacin, micrograms for vitamins A, D and B12. Below it (null included)
@@ -114,6 +119,7 @@ class MealDBO extends HiveObject {
     this.backendSource,
     this.machineTranslatedName,
     this.dataVersion,
+    this.nutritionBasisQuantity,
   });
 
   /// Entities always carry app units — every remote mapping converts on
@@ -130,6 +136,7 @@ class MealDBO extends HiveObject {
         servingQuantity: mealEntity.servingQuantity,
         servingUnit: mealEntity.servingUnit,
         servingSize: mealEntity.servingSize,
+        nutritionBasisQuantity: mealEntity.nutritionBasisQuantity,
         nutriments: MealNutrimentsDBO.fromProductNutrimentsEntity(
           mealEntity.nutriments,
         ),

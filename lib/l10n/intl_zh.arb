@@ -214,10 +214,10 @@
   "customMealBarcodeLabel": "条形码",
   "customMealBarcodeScanButton": "扫描条形码",
   "customMealFormAdvanced": "高级",
-  "customMealFormAdvancedHelp": "设置份量和每 100 克/毫升的数值以进行精确换算。",
+  "customMealFormAdvancedHelp": "补充糖、纤维、矿物质和维生素，营养数值仍对应同一基准。",
   "customMealFormModeLabel": "表单视图",
   "customMealFormSimple": "简单",
-  "customMealFormSimpleHelp": "输入一份的总量。",
+  "customMealFormSimpleHelp": "填写规格和基础营养值；包装大小、单份分量与营养基准分别设置。",
   "customMealFormSimpleFieldHelper": "每份 {unit}",
   "@customMealFormSimpleFieldHelper": {
     "placeholders": {
@@ -315,7 +315,7 @@
   "duplicateRecipeLabel": "复制",
   "duplicateRecipeNameSuffix": "（副本）",
   "editItemDialogTitle": "编辑项目",
-  "editMealLabel": "编辑餐食",
+  "editMealLabel": "编辑食品",
   "editRecipeTitle": "编辑食谱",
   "energyLabel": "能量",
   "energyLeftLabel": "剩余",
@@ -460,8 +460,8 @@
   "kcalGoalInfoTdeeExplanation": "您的每日总能量消耗（TDEE）——即您在平常一天中消耗的能量——根据年龄、体重、身高和活动水平，用 IOM 2005 公式估算。",
   "kcalGoalInfoTdeeResultLabel": "您的 TDEE",
   "kcalGoalInfoTdeeSection": "第 1 步 · 维持能量（TDEE）",
-  "kcalLabel": "卡路里",
-  "kjLabel": "千焦",
+  "kcalLabel": "kcal",
+  "kjLabel": "kJ",
   "kcalLeftLabel": "剩余卡路里",
   "kcalTooMuchLabel": "卡路里过多",
   "kgLabel": "千克",
@@ -483,7 +483,7 @@
   "mealImageReplace": "更换照片",
   "mealImageTakePhoto": "拍照",
   "mealKcalLabel": "卡路里每",
-  "mealNameLabel": "餐食名称",
+  "mealNameLabel": "食品名称",
   "mealNameValidationError": "餐食名称必须至少包含一个字母",
   "mealNutrientsPerQtyLabel": "每 {qty} {unit}",
   "mealNutrientsTotalLabel": "总量",
@@ -508,7 +508,7 @@
   "noResultsFound": "未找到结果",
   "noResultsSubtitle": "没有找到与该搜索匹配的食物。请尝试其他名称、扫描条形码或创建自定义食物。",
   "noResultsScanBarcode": "扫描条形码",
-  "noResultsCreateCustomFood": "创建自定义食物",
+  "noResultsCreateCustomFood": "创建食品",
   "notAvailableLabel": "不可用",
   "nothingAddedLabel": "未添加任何内容",
   "notificationsDailyReminderBody": "别忘了记录您今天的饮食！",
@@ -921,7 +921,7 @@
     }
   },
   "sendCrashReports": "发送崩溃报告",
-  "servingLabel": "份量",
+  "servingLabel": "份",
   "servingSizeLabelImperial": "单份分量 (盎司/液量盎司)",
   "servingSizeLabelMetric": "单份分量",
   "settingAboutLabel": "关于",
@@ -1327,5 +1327,18 @@
   "healthSyncDisclosureContinueAction": "继续",
   "healthSyncUnavailableLabel": "此设备上无法使用健康数据。导入锻炼需要 Android 上的 Health Connect 或 iOS 上的 Apple Health。",
   "sourcesEnergyCompensationTitle": "锻炼热量计入比例",
-  "sourcesEnergyCompensationDescription": "导入的锻炼计入的热量少于设备报告的数值。人体会在一天中的其余时间少消耗热量来补偿运动，平均约为 28%，体脂率越高补偿越多。建议值来自该研究，你可以在设置 → 健康同步中修改。热量数值由记录该锻炼的应用或设备提供，并非由应用内的 MET 公式计算。"
+  "sourcesEnergyCompensationDescription": "导入的锻炼计入的热量少于设备报告的数值。人体会在一天中的其余时间少消耗热量来补偿运动，平均约为 28%，体脂率越高补偿越多。建议值来自该研究，你可以在设置 → 健康同步中修改。热量数值由记录该锻炼的应用或设备提供，并非由应用内的 MET 公式计算。",
+  "customMealBasisHelp": "包装大小、单份分量可留空。下方营养值均对应营养基准；更改基准后请核对数值。",
+  "customMealQuantityInvalid": "{field}请填写大于0的有效数值。",
+  "@customMealQuantityInvalid": {
+    "placeholders": {
+      "field": {
+        "type": "String"
+      }
+    }
+  },
+  "customMealNutrientInvalid": "营养值请填写不小于0的有效数值；不详可留空。",
+  "customMealUnknownNutrientsHint": "不详请留空；已确认没有的营养素请填0。",
+  "customMealNutrientDifferenceHint": "标签热量与三大营养素估算有差异，请核对。膳食纤维、计量口径和舍入都可能导致差异；仍按你填写的热量保存。",
+  "customMealBarcodeInUse": "该条码或名称已关联另一食品，未保存。请更改它，或编辑已有食品。"
 }
