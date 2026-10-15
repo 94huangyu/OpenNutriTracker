@@ -16,6 +16,34 @@ test('per-portion data without weight can be logged in portions only', () => {
   assert.equal(M.totals(portion, 2, 'serving').energy, 246);
   assert.throws(() => M.totals(portion, 100, 'g'));
 });
+test('per-serving nutrition with editable 150 g weight accepts half and one-and-a-half servings or grams', () => {
+  const portion = { ...food, basisAmount: 1, basisUnit: 'serving', portion: { label: '份', amount: 150, unit: 'g' } };
+  for (const servings of [.5, 1.5]) {
+    assert.deepEqual(M.totals(portion, servings, 'serving'), M.totals(portion, servings * 150, 'g'));
+    assert.equal(M.convertAmount(portion, servings, 'serving', 'g'), servings * 150);
+    assert.equal(M.convertAmount(portion, servings * 150, 'g', 'serving'), servings);
+  }
+});
+test('per-serving mL conversion respects nutrition basis of two servings and does not guess density', () => {
+  const portion = { ...food, basisAmount: 2, basisUnit: 'serving', portion: { label: '盒', amount: 250, unit: 'ml' } };
+  assert.equal(M.totals(portion, 250, 'ml').energy, 61.5);
+  assert.deepEqual(M.totals(portion, 1.5, 'serving'), M.totals(portion, 375, 'ml'));
+  assert.throws(() => M.convertAmount(portion, 375, 'ml', 'g'), /换算依据/);
+});
+test('template portion weight edits do not change recorded serving snapshots', () => {
+  const template = { ...structuredClone(food), basisUnit: 'serving', basisAmount: 1 };
+  const entry = M.makeEntry(template, 75, 'g', 'lunch', '2026-10-15', 'half');
+  template.portion.amount = 200;
+  assert.equal(M.totals(entry.food, entry.amount, entry.unit).energy, 61.5);
+  assert.equal(M.convertAmount(entry.food, entry.amount, 'g', 'serving'), .5);
+});
+test('invalid portion mappings cannot be saved or converted', () => {
+  for (const amount of [0, -1, Infinity, NaN]) {
+    const invalid = { ...food, basisUnit: 'serving', portion: { label: '份', amount, unit: 'g' } };
+    assert.match(M.validateFood(invalid), /每份重量/);
+    assert.throws(() => M.convertAmount(invalid, 1, 'serving', 'g'));
+  }
+});
 test('unknown nutrients remain null while a known zero remains zero', () => {
   const result = M.totals(food, 150, 'g');
   assert.equal(result.sodium, null);

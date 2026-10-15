@@ -22,10 +22,21 @@
   function toBase(food, amount, unit) {
     if (!Number.isFinite(amount) || amount < 0) throw new Error('摄入量需要是非负数');
     if (unit === food.basisUnit) return amount;
-    if (unit === 'serving' && food.portion?.unit === food.basisUnit && food.portion.amount > 0) {
+    if (unit === 'serving' && food.portion?.unit === food.basisUnit && Number.isFinite(food.portion.amount) && food.portion.amount > 0) {
       return amount * food.portion.amount;
     }
+    if (food.basisUnit === 'serving' && unit === food.portion?.unit && Number.isFinite(food.portion.amount) && food.portion.amount > 0) {
+      return amount / food.portion.amount;
+    }
     throw new Error('没有重量与容量的换算依据');
+  }
+  function convertAmount(food, amount, from, to) {
+    const base = toBase(food, amount, from);
+    const targetFactor = toBase(food, 1, to);
+    if (from === to) return amount;
+    if (from === 'serving') return amount * food.portion.amount;
+    if (to === 'serving') return amount / food.portion.amount;
+    return base / targetFactor;
   }
   function totals(food, amount, unit) {
     if (!Number.isFinite(food.basisAmount) || food.basisAmount <= 0) throw new Error('营养基准必须大于零');
@@ -43,6 +54,7 @@
     if (!Number.isFinite(food.basisAmount) || food.basisAmount <= 0) return '营养基准必须大于零';
     if (food.nutrients.energy == null) return '请填写标示热量，其他未知营养素可以留空';
     if (nutrientFields.some(([key]) => food.nutrients[key] != null && (!Number.isFinite(food.nutrients[key]) || food.nutrients[key] < 0))) return '营养数值需要是零或正数';
+    if (food.portion && (!['g', 'ml'].includes(food.portion.unit) || !Number.isFinite(food.portion.amount) || food.portion.amount <= 0 || (food.basisUnit !== 'serving' && food.portion.unit !== food.basisUnit))) return '请填写有效的每份重量或容量，且单位与营养基准一致';
     if (food.checked && (!food.evidence?.trim() || !food.evidenceType || food.evidenceType === 'none')) return '标记个人核对前，请选择来源并填写核对依据';
     return null;
   }
@@ -58,7 +70,7 @@
     totals(food, amount, unit);
     return { id, food: structuredClone(food), amount, unit, meal, date };
   }
-  const api = { nutrientFields, nutrients, toBase, totals, energyComparison, validateFood, personalCopy, makeEntry, kcalToKj: v => v * 4.184, kjToKcal: v => v / 4.184 };
+  const api = { nutrientFields, nutrients, toBase, convertAmount, totals, energyComparison, validateFood, personalCopy, makeEntry, kcalToKj: v => v * 4.184, kjToKcal: v => v / 4.184 };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   else root.NutritionPrototype = api;
 })(globalThis);

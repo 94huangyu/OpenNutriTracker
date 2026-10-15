@@ -54,8 +54,23 @@
     "保存后首页仍保持四餐简洁汇总",
     "展开餐次显示按盒记录的名称份量与热量",
     "再次编辑食品时每份名称与含量可直接修改",
+    "切换每份营养基准不会隐藏或清除已填写的150g换算",
+    "每份营养仍有独立的重量容量单位选择",
+    "切换简单高级模式保留每份营养的物理分量",
+    "每份300kcal且150g的食品保存后展示明确换算",
+    "0.5份实时显示75g和150kcal",
+    "半份切换为克精确保留75g与营养总量",
+    "每份营养也能直接输入225g计算",
+    "225g切回1.5份不改变营养",
+    "清空摄入量时禁用保存且不产生换算异常",
+    "重新打开已记录的半份保留份数和重量",
+    "再次编辑每份营养的食品读回150g",
+    "每份重量可修改为200g供以后记录使用",
+    "修改每份重量不追溯改变历史半份75g记录",
+    "每份营养也支持250mL每盒与半盒125mL双向换算",
+    "每份毫升换算不凭空提供克数",
     "本地食品照片可预览且无需上传到服务端",
-    "320/360/412宽度 × 四页 × 1.2倍字号无横向溢出",
+    "320/360/412宽度 × 四页 × 正常和1.2倍字号：无横向溢出，同排输入下拉框等高齐平且关闭原生外观",
     "浏览器无未处理脚本错误",
     "原型未发出外部网络请求"
   ],
@@ -63,74 +78,584 @@
     {
       "width": 320,
       "screen": "home",
+      "largeText": false,
+      "horizontalOverflow": false,
+      "controlPairs": []
+    },
+    {
+      "width": 320,
+      "screen": "home",
       "largeText": true,
-      "horizontalOverflow": false
+      "horizontalOverflow": false,
+      "controlPairs": []
+    },
+    {
+      "width": 320,
+      "screen": "search",
+      "largeText": false,
+      "horizontalOverflow": false,
+      "controlPairs": []
     },
     {
       "width": 320,
       "screen": "search",
       "largeText": true,
-      "horizontalOverflow": false
+      "horizontalOverflow": false,
+      "controlPairs": []
+    },
+    {
+      "width": 320,
+      "screen": "detail",
+      "largeText": false,
+      "horizontalOverflow": false,
+      "controlPairs": [
+        {
+          "labels": [
+            "摄入量",
+            "计量单位"
+          ],
+          "heights": [
+            48,
+            48
+          ],
+          "heightDelta": 0,
+          "topDelta": 0,
+          "appearanceNone": true
+        }
+      ]
     },
     {
       "width": 320,
       "screen": "detail",
       "largeText": true,
-      "horizontalOverflow": false
+      "horizontalOverflow": false,
+      "controlPairs": [
+        {
+          "labels": [
+            "摄入量",
+            "计量单位"
+          ],
+          "heights": [
+            57.59,
+            57.59
+          ],
+          "heightDelta": 0,
+          "topDelta": 0,
+          "appearanceNone": true
+        }
+      ]
+    },
+    {
+      "width": 320,
+      "screen": "edit",
+      "largeText": false,
+      "horizontalOverflow": false,
+      "controlPairs": [
+        {
+          "labels": [
+            "营养基准数量",
+            "营养基准单位"
+          ],
+          "heights": [
+            48,
+            48
+          ],
+          "heightDelta": 0,
+          "topDelta": 0,
+          "appearanceNone": true
+        },
+        {
+          "labels": [
+            "每份数量",
+            "每份单位"
+          ],
+          "heights": [
+            48,
+            48
+          ],
+          "heightDelta": 0,
+          "topDelta": 0,
+          "appearanceNone": true
+        },
+        {
+          "labels": [
+            "热量",
+            "热量单位"
+          ],
+          "heights": [
+            48,
+            48
+          ],
+          "heightDelta": 0,
+          "topDelta": 0,
+          "appearanceNone": true
+        },
+        {
+          "labels": [
+            "蛋白质",
+            "脂肪",
+            "碳水化合物"
+          ],
+          "heights": [
+            48,
+            48,
+            48
+          ],
+          "heightDelta": 0,
+          "topDelta": 0,
+          "appearanceNone": true
+        }
+      ]
     },
     {
       "width": 320,
       "screen": "edit",
       "largeText": true,
-      "horizontalOverflow": false
+      "horizontalOverflow": false,
+      "controlPairs": [
+        {
+          "labels": [
+            "营养基准数量",
+            "营养基准单位"
+          ],
+          "heights": [
+            57.59,
+            57.59
+          ],
+          "heightDelta": 0,
+          "topDelta": 0,
+          "appearanceNone": true
+        },
+        {
+          "labels": [
+            "每份数量",
+            "每份单位"
+          ],
+          "heights": [
+            57.59,
+            57.59
+          ],
+          "heightDelta": 0,
+          "topDelta": 0,
+          "appearanceNone": true
+        },
+        {
+          "labels": [
+            "热量",
+            "热量单位"
+          ],
+          "heights": [
+            57.59,
+            57.59
+          ],
+          "heightDelta": 0,
+          "topDelta": 0,
+          "appearanceNone": true
+        },
+        {
+          "labels": [
+            "蛋白质",
+            "脂肪",
+            "碳水化合物"
+          ],
+          "heights": [
+            57.59,
+            57.59,
+            57.59
+          ],
+          "heightDelta": 0,
+          "topDelta": 0,
+          "appearanceNone": true
+        }
+      ]
+    },
+    {
+      "width": 360,
+      "screen": "home",
+      "largeText": false,
+      "horizontalOverflow": false,
+      "controlPairs": []
     },
     {
       "width": 360,
       "screen": "home",
       "largeText": true,
-      "horizontalOverflow": false
+      "horizontalOverflow": false,
+      "controlPairs": []
+    },
+    {
+      "width": 360,
+      "screen": "search",
+      "largeText": false,
+      "horizontalOverflow": false,
+      "controlPairs": []
     },
     {
       "width": 360,
       "screen": "search",
       "largeText": true,
-      "horizontalOverflow": false
+      "horizontalOverflow": false,
+      "controlPairs": []
+    },
+    {
+      "width": 360,
+      "screen": "detail",
+      "largeText": false,
+      "horizontalOverflow": false,
+      "controlPairs": [
+        {
+          "labels": [
+            "摄入量",
+            "计量单位"
+          ],
+          "heights": [
+            48,
+            48
+          ],
+          "heightDelta": 0,
+          "topDelta": 0,
+          "appearanceNone": true
+        }
+      ]
     },
     {
       "width": 360,
       "screen": "detail",
       "largeText": true,
-      "horizontalOverflow": false
+      "horizontalOverflow": false,
+      "controlPairs": [
+        {
+          "labels": [
+            "摄入量",
+            "计量单位"
+          ],
+          "heights": [
+            57.59,
+            57.59
+          ],
+          "heightDelta": 0,
+          "topDelta": 0,
+          "appearanceNone": true
+        }
+      ]
+    },
+    {
+      "width": 360,
+      "screen": "edit",
+      "largeText": false,
+      "horizontalOverflow": false,
+      "controlPairs": [
+        {
+          "labels": [
+            "营养基准数量",
+            "营养基准单位"
+          ],
+          "heights": [
+            48,
+            48
+          ],
+          "heightDelta": 0,
+          "topDelta": 0,
+          "appearanceNone": true
+        },
+        {
+          "labels": [
+            "每份数量",
+            "每份单位"
+          ],
+          "heights": [
+            48,
+            48
+          ],
+          "heightDelta": 0,
+          "topDelta": 0,
+          "appearanceNone": true
+        },
+        {
+          "labels": [
+            "热量",
+            "热量单位"
+          ],
+          "heights": [
+            48,
+            48
+          ],
+          "heightDelta": 0,
+          "topDelta": 0,
+          "appearanceNone": true
+        },
+        {
+          "labels": [
+            "蛋白质",
+            "脂肪",
+            "碳水化合物"
+          ],
+          "heights": [
+            48,
+            48,
+            48
+          ],
+          "heightDelta": 0,
+          "topDelta": 0,
+          "appearanceNone": true
+        }
+      ]
     },
     {
       "width": 360,
       "screen": "edit",
       "largeText": true,
-      "horizontalOverflow": false
+      "horizontalOverflow": false,
+      "controlPairs": [
+        {
+          "labels": [
+            "营养基准数量",
+            "营养基准单位"
+          ],
+          "heights": [
+            57.59,
+            57.59
+          ],
+          "heightDelta": 0,
+          "topDelta": 0,
+          "appearanceNone": true
+        },
+        {
+          "labels": [
+            "每份数量",
+            "每份单位"
+          ],
+          "heights": [
+            57.59,
+            57.59
+          ],
+          "heightDelta": 0,
+          "topDelta": 0,
+          "appearanceNone": true
+        },
+        {
+          "labels": [
+            "热量",
+            "热量单位"
+          ],
+          "heights": [
+            57.59,
+            57.59
+          ],
+          "heightDelta": 0,
+          "topDelta": 0,
+          "appearanceNone": true
+        },
+        {
+          "labels": [
+            "蛋白质",
+            "脂肪",
+            "碳水化合物"
+          ],
+          "heights": [
+            57.59,
+            57.59,
+            57.59
+          ],
+          "heightDelta": 0,
+          "topDelta": 0,
+          "appearanceNone": true
+        }
+      ]
+    },
+    {
+      "width": 412,
+      "screen": "home",
+      "largeText": false,
+      "horizontalOverflow": false,
+      "controlPairs": []
     },
     {
       "width": 412,
       "screen": "home",
       "largeText": true,
-      "horizontalOverflow": false
+      "horizontalOverflow": false,
+      "controlPairs": []
+    },
+    {
+      "width": 412,
+      "screen": "search",
+      "largeText": false,
+      "horizontalOverflow": false,
+      "controlPairs": []
     },
     {
       "width": 412,
       "screen": "search",
       "largeText": true,
-      "horizontalOverflow": false
+      "horizontalOverflow": false,
+      "controlPairs": []
+    },
+    {
+      "width": 412,
+      "screen": "detail",
+      "largeText": false,
+      "horizontalOverflow": false,
+      "controlPairs": [
+        {
+          "labels": [
+            "摄入量",
+            "计量单位"
+          ],
+          "heights": [
+            48,
+            48
+          ],
+          "heightDelta": 0,
+          "topDelta": 0,
+          "appearanceNone": true
+        }
+      ]
     },
     {
       "width": 412,
       "screen": "detail",
       "largeText": true,
-      "horizontalOverflow": false
+      "horizontalOverflow": false,
+      "controlPairs": [
+        {
+          "labels": [
+            "摄入量",
+            "计量单位"
+          ],
+          "heights": [
+            57.59,
+            57.59
+          ],
+          "heightDelta": 0,
+          "topDelta": 0,
+          "appearanceNone": true
+        }
+      ]
+    },
+    {
+      "width": 412,
+      "screen": "edit",
+      "largeText": false,
+      "horizontalOverflow": false,
+      "controlPairs": [
+        {
+          "labels": [
+            "营养基准数量",
+            "营养基准单位"
+          ],
+          "heights": [
+            48,
+            48
+          ],
+          "heightDelta": 0,
+          "topDelta": 0,
+          "appearanceNone": true
+        },
+        {
+          "labels": [
+            "每份数量",
+            "每份单位"
+          ],
+          "heights": [
+            48,
+            48
+          ],
+          "heightDelta": 0,
+          "topDelta": 0,
+          "appearanceNone": true
+        },
+        {
+          "labels": [
+            "热量",
+            "热量单位"
+          ],
+          "heights": [
+            48,
+            48
+          ],
+          "heightDelta": 0,
+          "topDelta": 0,
+          "appearanceNone": true
+        },
+        {
+          "labels": [
+            "蛋白质",
+            "脂肪",
+            "碳水化合物"
+          ],
+          "heights": [
+            48,
+            48,
+            48
+          ],
+          "heightDelta": 0,
+          "topDelta": 0,
+          "appearanceNone": true
+        }
+      ]
     },
     {
       "width": 412,
       "screen": "edit",
       "largeText": true,
-      "horizontalOverflow": false
+      "horizontalOverflow": false,
+      "controlPairs": [
+        {
+          "labels": [
+            "营养基准数量",
+            "营养基准单位"
+          ],
+          "heights": [
+            57.59,
+            57.59
+          ],
+          "heightDelta": 0,
+          "topDelta": 0,
+          "appearanceNone": true
+        },
+        {
+          "labels": [
+            "每份数量",
+            "每份单位"
+          ],
+          "heights": [
+            57.59,
+            57.59
+          ],
+          "heightDelta": 0,
+          "topDelta": 0,
+          "appearanceNone": true
+        },
+        {
+          "labels": [
+            "热量",
+            "热量单位"
+          ],
+          "heights": [
+            57.59,
+            57.59
+          ],
+          "heightDelta": 0,
+          "topDelta": 0,
+          "appearanceNone": true
+        },
+        {
+          "labels": [
+            "蛋白质",
+            "脂肪",
+            "碳水化合物"
+          ],
+          "heights": [
+            57.59,
+            57.59,
+            57.59
+          ],
+          "heightDelta": 0,
+          "topDelta": 0,
+          "appearanceNone": true
+        }
+      ]
     }
   ],
   "errors": [],

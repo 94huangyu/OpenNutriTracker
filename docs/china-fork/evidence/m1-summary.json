@@ -1,21 +1,25 @@
 {
   "date": "2026-10-15",
   "timezone": "Asia/Shanghai",
-  "stage": "M1 revision 2 awaiting user review",
+  "stage": "M1 revision 3 awaiting user review",
   "upstreamBaseline": "8d2420f0305c96a4f798f3a111509827260f6df7",
-  "parentCommit": "6d62c1c99104edb36f6c74d324b2a4cf919f0611",
+  "parentCommit": "3403c4feaa93c10bcc35072f1b05130c2f3436e6",
   "branch": "design/m1-core-prototype",
   "results": {
     "prototypeModelTests": {
-      "passed": 11,
+      "passed": 15,
       "failed": 0
     },
-    "browserAssertions": 57,
-    "layoutCases": 12,
+    "browserAssertions": 72,
+    "layoutCases": 24,
     "textContrastPairs": 28,
     "minimumTextContrast": 4.75,
     "browserErrors": [],
-    "externalRequests": []
+    "externalRequests": [],
+    "pairedControlGroups": 30,
+    "maximumControlHeightDelta": 0,
+    "maximumControlTopDelta": 0,
+    "inAppBrowserManualCheck": "390px editor and intake groups align at 48px; half-serving round trip checked"
   },
   "productionAppChanged": false,
   "flutterBuildOrRuntimeVerified": false,
@@ -24,8 +28,8 @@
   "sourceFiles": [
     {
       "path": "docs/china-fork/prototype/README.md",
-      "bytes": 3195,
-      "sha256": "cbb0a8410420724c824a116113b2ff281ea2c693b671b167dd8a7ff0f37a9e27"
+      "bytes": 3298,
+      "sha256": "bc9dd613709d0041369ef18f142aa1e6626e90c6a48f9674cfcb9e0ce41f49e5"
     },
     {
       "path": "docs/china-fork/prototype/capture-review.js",
@@ -34,38 +38,38 @@
     },
     {
       "path": "docs/china-fork/prototype/index.html",
-      "bytes": 4420,
-      "sha256": "0b87b9ab6dbfabc0ff1ff5c5262e3fb79c065d0234df861eeaac68be50722c3e"
+      "bytes": 4428,
+      "sha256": "ca38ea62b74fbe72f0b12dd9e06ea6b35c8b7acbaaabb0d0dc82ad0fd875780d"
     },
     {
       "path": "docs/china-fork/prototype/model.js",
-      "bytes": 3703,
-      "sha256": "15c3b317b71493cfba86881afa2e7e31e2eefe82a01e8eef3431dd3fb4c4f651"
+      "bytes": 4581,
+      "sha256": "fe233ee0f0cfa344dedf02995f51c61e6360f1b0da0bc177844b88446c027555"
     },
     {
       "path": "docs/china-fork/prototype/model.test.cjs",
-      "bytes": 3388,
-      "sha256": "d81cad84a4cbdfe4a250709810bde03d63ea529e9fefbf56600325a4898a2a48"
+      "bytes": 5206,
+      "sha256": "472161a6ad49c4567fa04cfd6671daae1b81c667f882e9c58aaa501bef0f74f0"
     },
     {
       "path": "docs/china-fork/prototype/overview.html",
       "bytes": 2499,
-      "sha256": "5a84d7d552642f56471bae09bf7d1cb88c5654f50062fb90ef5ebb0ae0200dc0"
+      "sha256": "2c76ae6a42608b33d2c7b4bd61cb2efe272a1e48c4590114ad8e49e984086674"
     },
     {
       "path": "docs/china-fork/prototype/prototype.css",
-      "bytes": 26908,
-      "sha256": "a25dcd32358be59466ec646b21b07dcb09458cdaf7bb359fc1159087b6d2ef58"
+      "bytes": 27564,
+      "sha256": "4758dc6c20f1d7591efac70a3d0434782cc9ae379d4f9c0dcbb588fbbf8ad94e"
     },
     {
       "path": "docs/china-fork/prototype/prototype.js",
-      "bytes": 46819,
-      "sha256": "281703e447ea013642147ebae05516904d59b58edb7713244a206cb3a3ea682a"
+      "bytes": 48127,
+      "sha256": "3b10ce6eb96d7ae34652ecd42d2e24190a02aeeae3e02851448bc858daf68bd6"
     },
     {
       "path": "docs/china-fork/prototype/verify-browser.js",
-      "bytes": 18480,
-      "sha256": "e72c9eb1c7108d4b1dcedccdc0834ee9887b9e9a68cba33b03a6be0b035826c3"
+      "bytes": 24856,
+      "sha256": "44d7aace5a29d1a2d6fe4ae9088241a65e3db9e8da2574d6a4f94d935f2e70d6"
     }
   ],
   "localScreenshots": [
@@ -81,13 +85,13 @@
     },
     {
       "path": "output/playwright/m1/detail.png",
-      "bytes": 63526,
-      "sha256": "87d984f2486b7003e5758ce74a1b54f24f8974bc4bc13617f5a455aa75d50fc9"
+      "bytes": 64988,
+      "sha256": "e7e80203924eb1031f8470250f404ad5e0111b1635835a4df1bc0926eb105690"
     },
     {
       "path": "output/playwright/m1/edit.png",
-      "bytes": 49411,
-      "sha256": "4f6eb25a01cc1bc9b0343b7bb41fcbf20b5cbef072e27cb79ebed280463c67f8"
+      "bytes": 47592,
+      "sha256": "8607fc36848ea75a6ce3b11cb243c7540cfbf5b7abfc0deeaa3e9cbb1b6a6c6a"
     },
     {
       "path": "output/playwright/m1/clear-light.png",
@@ -111,23 +115,38 @@
     },
     {
       "path": "output/playwright/m1/compact-height.png",
-      "bytes": 42789,
-      "sha256": "156abf5271a4667ada2f1fa80ed388bdbda4350c2dd2533c7596297ba24cf3dd"
+      "bytes": 44876,
+      "sha256": "daa2303151ed98750315ec0f39ab302a52c8fffe5a8096824a6955f97cd15625"
     },
     {
       "path": "output/playwright/m1/overview.png",
-      "bytes": 292029,
-      "sha256": "79b69d049e163a5e4e91f6e9e4e66656f6415378e8fe39030c36fa1fc52559be"
+      "bytes": 287101,
+      "sha256": "56f47c685d321732fd509d53ff2e8d7b64db0d60bcd3780838f2b393d44a9096"
     },
     {
       "path": "output/playwright/m1/portion-edit.png",
-      "bytes": 51450,
-      "sha256": "ced2f4456aa697c10aebbbc25d447927eb4eb05ca5bff57bb548f0097ec24afe"
+      "bytes": 46436,
+      "sha256": "6693587603343426c2a6e87ff9bcd79e597b5e8fe042e0544954ced17c5c8295"
     },
     {
       "path": "output/playwright/m1/meal-expanded.png",
-      "bytes": 62504,
-      "sha256": "98d8da71140def7ca35243d3b447712e42272c3530a7b4176a97f9a9614a8ae1"
+      "bytes": 62677,
+      "sha256": "9f70f41be113354cd9be60b57fb2ad39e0dae224b1a4ebea2fc3006ee758621a"
+    },
+    {
+      "path": "output/playwright/m1/per-serving-edit.png",
+      "bytes": 47550,
+      "sha256": "bd4ffe86d2ce41bdeda3137b3b724216cf94612277aae007f7e7f84f0ce48161"
+    },
+    {
+      "path": "output/playwright/m1/half-serving.png",
+      "bytes": 45793,
+      "sha256": "64be8b8ac21e52b68a186208aa8c3713b59092c16d4532e06163207c53ead223"
+    },
+    {
+      "path": "output/playwright/m1/grams-intake.png",
+      "bytes": 43808,
+      "sha256": "7a08c981c8daec0bd2f0bc5010eae30de174a650a95094eab276be4f5e685da0"
     }
   ],
   "notes": [
@@ -135,12 +154,14 @@
     "Screenshots are local ignored artifacts; checks and scripts are committed.",
     "Browser passing does not verify Android UI, original nutrition logic or migration."
   ],
-  "revision": 2,
+  "revision": 3,
   "m0Commit": "809576425de953fa141ce20e1e1cfdc0c3a93623",
   "changes": [
-    "Visible portion name and quantity inputs in simple mode",
-    "Default to one named serving where conversion exists; keep old record quantities",
-    "Named servings without required mass or volume",
-    "Collapsed meal summaries with direct add and expandable editable records"
+    "Uniform 48px input/select boxes with appearance none and custom chevrons",
+    "Always editable physical serving amount regardless of nutrition basis",
+    "Per-serving nutrition converts between fractional servings and physical g/mL amounts",
+    "Portion weights survive saving and re-editing; recorded snapshots unchanged",
+    "24 viewport/font combinations assert paired-control size, alignment and appearance",
+    "In-app browser manual check at 390px"
   ]
 }

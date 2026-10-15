@@ -179,6 +179,59 @@ async (page) => {
   check(await page.getByRole('textbox', { name: '每份名称', exact: true }).inputValue() === '盒' && await page.getByRole('spinbutton', { name: '每份数量', exact: true }).inputValue() === '250', '再次编辑食品时每份名称与含量可直接修改');
   await page.locator('#phone').screenshot({ path: 'output/playwright/m1/portion-edit.png' });
   await page.getByRole('button', { name: '04 创建与修正 →', exact: true }).click();
+  await page.getByRole('textbox', { name: '食品名称', exact: true }).fill('份量换算测试');
+  await page.getByRole('spinbutton', { name: '每份数量', exact: true }).fill('150');
+  await page.getByRole('combobox', { name: '营养基准单位', exact: true }).selectOption('serving');
+  check(await page.getByRole('spinbutton', { name: '每份数量', exact: true }).inputValue() === '150', '切换每份营养基准不会隐藏或清除已填写的150g换算');
+  check(await page.getByRole('combobox', { name: '每份单位', exact: true }).inputValue() === 'g', '每份营养仍有独立的重量容量单位选择');
+  await page.getByRole('spinbutton', { name: '热量', exact: true }).fill('300');
+  await click('高级模式');
+  await click('简单模式');
+  check(await page.getByRole('spinbutton', { name: '每份数量', exact: true }).inputValue() === '150', '切换简单高级模式保留每份营养的物理分量');
+  await page.locator('#serving-fields').evaluate(el => el.scrollIntoView({ block: 'center' }));
+  await page.locator('#phone').screenshot({ path: 'output/playwright/m1/per-serving-edit.png' });
+  await click('保存并继续记录');
+  check((await page.locator('.portion-hint').innerText()).includes('150 g') && await text('#intake-energy') === '300', '每份300kcal且150g的食品保存后展示明确换算');
+  await page.getByRole('spinbutton', { name: '摄入量', exact: true }).fill('0.5');
+  check(await text('#intake-energy') === '150' && (await text('#consumed')).includes('75 g'), '0.5份实时显示75g和150kcal');
+  await page.getByRole('combobox', { name: '计量单位', exact: true }).selectOption('g');
+  check(await page.locator('#quantity').inputValue() === '75' && await text('#intake-energy') === '150', '半份切换为克精确保留75g与营养总量');
+  await page.locator('#quantity').fill('225');
+  check(await text('#intake-energy') === '450', '每份营养也能直接输入225g计算');
+  await page.getByRole('combobox', { name: '计量单位', exact: true }).selectOption('serving');
+  check(await page.locator('#quantity').inputValue() === '1.5' && await text('#intake-energy') === '450', '225g切回1.5份不改变营养');
+  await page.locator('#quantity').fill('');
+  check(await page.locator('#save-intake').isDisabled(), '清空摄入量时禁用保存且不产生换算异常');
+  await page.locator('#quantity').fill('0.5');
+  await page.locator('#phone').screenshot({ path: 'output/playwright/m1/half-serving.png' });
+  await page.getByRole('combobox', { name: '计量单位', exact: true }).selectOption('g');
+  await page.locator('#phone').screenshot({ path: 'output/playwright/m1/grams-intake.png' });
+  await page.getByRole('combobox', { name: '计量单位', exact: true }).selectOption('serving');
+  await page.locator('#save-intake').click();
+  await editRecord('份量换算测试', '午餐');
+  check(await page.locator('#quantity').inputValue() === '0.5' && (await text('#consumed')).includes('75 g'), '重新打开已记录的半份保留份数和重量');
+  await click('编辑食品资料');
+  check(await page.getByRole('spinbutton', { name: '每份数量', exact: true }).inputValue() === '150', '再次编辑每份营养的食品读回150g');
+  await page.getByRole('spinbutton', { name: '每份数量', exact: true }).fill('200');
+  await click('保存食品资料');
+  await click('查看份量换算测试');
+  check((await page.locator('.portion-hint').innerText()).includes('200 g'), '每份重量可修改为200g供以后记录使用');
+  await page.getByRole('button', { name: '01 饮食日记 →', exact: true }).click();
+  await editRecord('份量换算测试', '午餐');
+  check((await page.locator('.portion-hint').innerText()).includes('150 g') && await text('#intake-energy') === '150', '修改每份重量不追溯改变历史半份75g记录');
+  await page.getByRole('button', { name: '04 创建与修正 →', exact: true }).click();
+  await page.getByRole('textbox', { name: '食品名称', exact: true }).fill('每份容量测试');
+  await page.getByRole('combobox', { name: '营养基准单位', exact: true }).selectOption('serving');
+  await page.getByRole('textbox', { name: '每份名称', exact: true }).fill('盒');
+  await page.getByRole('combobox', { name: '每份单位', exact: true }).selectOption('ml');
+  await page.getByRole('spinbutton', { name: '每份数量', exact: true }).fill('250');
+  await page.getByRole('spinbutton', { name: '热量', exact: true }).fill('150');
+  await click('保存并继续记录');
+  await page.getByRole('spinbutton', { name: '摄入量', exact: true }).fill('0.5');
+  await page.getByRole('combobox', { name: '计量单位', exact: true }).selectOption('ml');
+  check(await page.locator('#quantity').inputValue() === '125' && await text('#intake-energy') === '75', '每份营养也支持250mL每盒与半盒125mL双向换算');
+  check(!(await page.locator('#quantity-unit option').allTextContents()).includes('g'), '每份毫升换算不凭空提供克数');
+  await page.getByRole('button', { name: '04 创建与修正 →', exact: true }).click();
   await page.locator('#food-photo').setInputFiles('assets/demo/meals/1548807371-30dc1bbe6cb5.jpg');
   await page.waitForFunction(() => document.querySelector('.edit-photo img')?.getAttribute('src').startsWith('data:image/'));
   check(await page.locator('.edit-photo img').count() === 1, '本地食品照片可预览且无需上传到服务端');
@@ -200,9 +253,9 @@ async (page) => {
   for (const width of [320, 360, 412]) {
     await page.setViewportSize({ width, height: 844 });
     await page.goto(base + 'index.html?standalone=1&screen=home');
-    for (const screen of ['home', 'search', 'detail', 'edit']) {
+    for (const screen of ['home', 'search', 'detail', 'edit']) for (const largeText of [false, true]) {
       await page.goto(base + `index.html?standalone=1&screen=${screen}`);
-      await page.locator('#text-toggle').evaluate(el => el.click());
+      if (largeText) await page.locator('#text-toggle').evaluate(el => el.click());
       const result = await page.evaluate(() => {
         const app = document.querySelector('#app');
         const body = document.querySelector('.screen-body');
@@ -211,13 +264,23 @@ async (page) => {
           const r = el.getBoundingClientRect();
           return r.width > 0 && (r.left < bounds.left - 1 || r.right > bounds.right + 1);
         }).map(el => el.getAttribute('aria-label') || el.textContent.trim());
-        return { documentOverflow: document.documentElement.scrollWidth > innerWidth + 1, bodyOverflow: body.scrollWidth > body.clientWidth + 1, bad };
+        const controlPairs = [...app.querySelectorAll('.form-grid, .quantity-row, .energy-input')].map(group => {
+          const controls = [...group.querySelectorAll('input,select')].filter(el => el.getBoundingClientRect().width > 0);
+          if (controls.length < 2) return null;
+          const bounds = controls.map(el => el.getBoundingClientRect());
+          const heightDelta = Math.max(...bounds.map(r => r.height)) - Math.min(...bounds.map(r => r.height));
+          const topDelta = Math.max(...bounds.map(r => r.top)) - Math.min(...bounds.map(r => r.top));
+          const appearanceNone = controls.every(el => getComputedStyle(el).appearance === 'none');
+          return { labels: controls.map(el => el.getAttribute('aria-label')), heights: bounds.map(r => Number(r.height.toFixed(2))), heightDelta, topDelta, appearanceNone };
+        }).filter(Boolean);
+        return { controlPairs, documentOverflow: document.documentElement.scrollWidth > innerWidth + 1, bodyOverflow: body.scrollWidth > body.clientWidth + 1, bad };
       });
       if (result.documentOverflow || result.bodyOverflow || result.bad.length) throw new Error(`布局溢出 ${width}px ${screen}: ${JSON.stringify(result)}`);
-      layouts.push({ width, screen, largeText: true, horizontalOverflow: false });
+      if (result.controlPairs.some(pair => pair.heightDelta > .25 || pair.topDelta > .25 || !pair.appearanceNone)) throw new Error(`输入框不齐 ${width}px ${screen}: ${JSON.stringify(result.controlPairs)}`);
+      layouts.push({ width, screen, largeText, horizontalOverflow: false, controlPairs: result.controlPairs });
     }
   }
-  passed.push('320/360/412宽度 × 四页 × 1.2倍字号无横向溢出');
+  passed.push('320/360/412宽度 × 四页 × 正常和1.2倍字号：无横向溢出，同排输入下拉框等高齐平且关闭原生外观');
   check(errors.length === 0, '浏览器无未处理脚本错误');
   check(external.length === 0, '原型未发出外部网络请求');
   await page.setViewportSize({ width: 1100, height: 980 });
