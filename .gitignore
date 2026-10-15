@@ -81,3 +81,7 @@ ios/vendor/
 # Local browser verification captures and isolated CLI sessions.
 .playwright-cli/
 output/playwright/
+
+# Project-local SDKs, dependency caches and build logs.
+.tools/
+output/flutter/

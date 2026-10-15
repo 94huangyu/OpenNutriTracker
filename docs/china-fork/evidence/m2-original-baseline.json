@@ -1,0 +1,58 @@
+{
+  "date": "2026-10-15",
+  "originalSourceSha": "8d2420f0305c96a4f798f3a111509827260f6df7",
+  "flutter": "3.44.6",
+  "dart": "3.12.2",
+  "pubGetEnforceLockfileExit": 0,
+  "generatedTrackedSourceChanged": false,
+  "dartAnalyzeExit": 0,
+  "dartAnalyzeDiagnostics": 0,
+  "flutterAnalyze": "SDK LSP message length uses UTF-16 count for UTF-8 content; crashes with Chinese workspace path; SDK not patched",
+  "tests": {
+    "passed": 2592,
+    "skipped": [
+      "the merged manifest Gradle produced declares those two health permissions and no others"
+    ],
+    "failed": [
+      {
+        "name": "what may actually be sent a zoned link-local literal is allowed, and left alone",
+        "url": "file:///Users/huangyu/Documents/Codex/%E9%A5%AE%E9%A3%9F%E8%AE%B0%E5%BD%95APP/OpenNutriTracker/test/unit_test/plaintext_destination_guard_test.dart",
+        "result": "failure"
+      }
+    ],
+    "errors": [
+      {
+        "test": "what may actually be sent a zoned link-local literal is allowed, and left alone",
+        "error": "Expected: null\n  Actual: _InternetAddress:<InternetAddress('fe80::1%25lo0', IPv6)>\n"
+      }
+    ],
+    "durationMs": 100470,
+    "success": false
+  },
+  "androidBuild": {
+    "path": "output/flutter/m0/original-v2.4.0-66-develop-arm64-8d2420f.apk",
+    "bytes": 137591756,
+    "sha256": "d528fb05dcd24a426f10ce750c9b330eaedc7ea940498d2207d20da4f4eba52d",
+    "sourceUnmodified": true,
+    "sourceSha": "8d2420f0305c96a4f798f3a111509827260f6df7",
+    "buildExit": 0,
+    "command": "./android/gradlew -p android --max-workers=2 -Pkotlin.compiler.execution.strategy=in-process -Ptarget-platform=android-arm64 -Ptarget=lib/main.dart -Ptrack-widget-creation=true assembleDevelopDebug",
+    "flutterEngineAbis": [
+      "arm64-v8a"
+    ],
+    "nativeDirectoryAbis": [
+      "arm64-v8a",
+      "armeabi-v7a",
+      "x86_64"
+    ],
+    "versionCode": 66,
+    "versionName": "2.4.0-develop",
+    "applicationId": "com.opennutritracker.ont.opennutritracker.develop",
+    "minSdk": 26,
+    "targetSdk": 36,
+    "signatureVerified": true,
+    "certificateSha256": "8b5adf8691201ac71c7fc4037f5121e639b0e8f84269902cb52d5bb1eb4e61e0"
+  },
+  "deviceTesting": false,
+  "supabaseConfigured": false
+}
