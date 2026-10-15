@@ -1,0 +1,61 @@
+{
+  "date": "2026-10-15",
+  "stage": "M2 preparation; installation not authorized",
+  "machineArchitecture": "arm64",
+  "diskFreeGiB": 71.7,
+  "flutterFoundInPath": false,
+  "commonSdkLocationsFound": [],
+  "sdk": {
+    "version": "3.44.6",
+    "dartVersion": "3.12.2",
+    "source": "https://storage.googleapis.com/flutter_infra_release/releases/releases_macos.json",
+    "archive": "https://storage.googleapis.com/flutter_infra_release/releases/stable/macos/flutter_macos_arm64_3.44.6-stable.zip",
+    "sha256": "e4824875f22cc7e0f4878bfc8b9382e98ff0137074c5d3ab4686f7a4b5ac775c",
+    "compressedBytes": 2211701158,
+    "uncompressedFileBytes": 4245087045,
+    "zipEntries": 22420,
+    "metadataBytesRead": 3245283,
+    "archiveDownloaded": false,
+    "extracted": false,
+    "defaultNdkVersion": "28.2.13676358"
+  },
+  "existingAndroid": {
+    "platform36": true,
+    "buildTools36": "36.0.0",
+    "ndk": "28.2.13676358"
+  },
+  "estimates": {
+    "totalDiskPeakGiB": [
+      10,
+      15
+    ],
+    "networkGiB": [
+      3,
+      5
+    ],
+    "buildMemoryGiB": [
+      6,
+      10
+    ],
+    "sdkDownloadMinutesAt1To10MBps": [
+      4,
+      40
+    ],
+    "setupAndFirstBuildMinutes": [
+      20,
+      60
+    ]
+  },
+  "notMeasured": [
+    "actual download throughput",
+    "actual build peak memory"
+  ],
+  "userInstruction": "以后请示必须先说明资源需求",
+  "sdkInstallAuthorized": false,
+  "machineHardware": {
+    "chip": "Apple M5",
+    "physicalMemory": "16 GB",
+    "cpuCores": 10,
+    "method": "system_profiler SPHardwareDataType JSON; only non-identifying summary retained"
+  }
+}
