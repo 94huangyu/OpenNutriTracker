@@ -1,25 +1,25 @@
 {
   "date": "2026-10-15",
   "timezone": "Asia/Shanghai",
-  "stage": "M1 revision 3 awaiting user review",
+  "stage": "M1 revision 4 awaiting user review",
   "upstreamBaseline": "8d2420f0305c96a4f798f3a111509827260f6df7",
-  "parentCommit": "3403c4feaa93c10bcc35072f1b05130c2f3436e6",
+  "parentCommit": "dc60bf39d113988b0430282765b8e07d807a9af5",
   "branch": "design/m1-core-prototype",
   "results": {
     "prototypeModelTests": {
-      "passed": 15,
+      "passed": 18,
       "failed": 0
     },
-    "browserAssertions": 72,
+    "browserAssertions": 65,
     "layoutCases": 24,
     "textContrastPairs": 28,
     "minimumTextContrast": 4.75,
     "browserErrors": [],
     "externalRequests": [],
-    "pairedControlGroups": 30,
+    "pairedControlGroups": 24,
     "maximumControlHeightDelta": 0,
     "maximumControlTopDelta": 0,
-    "inAppBrowserManualCheck": "390px editor and intake groups align at 48px; half-serving round trip checked"
+    "inAppBrowserManualCheck": "390px 200/50/100 fields align at 48px; scan-to-field preserves values; 2 servings are 100g and 400kcal; no presets"
   },
   "productionAppChanged": false,
   "flutterBuildOrRuntimeVerified": false,
@@ -28,48 +28,48 @@
   "sourceFiles": [
     {
       "path": "docs/china-fork/prototype/README.md",
-      "bytes": 3298,
-      "sha256": "bc9dd613709d0041369ef18f142aa1e6626e90c6a48f9674cfcb9e0ce41f49e5"
+      "bytes": 3449,
+      "sha256": "d1682aa91be34de6db394273e3b1a22ad0aa25e8e24cb704f3be7b009598a0c3"
     },
     {
       "path": "docs/china-fork/prototype/capture-review.js",
-      "bytes": 3911,
-      "sha256": "8e483d8b85152e868a497ec24c3ec7f42cc9563bc864a3fde9ce068bd92e9b94"
+      "bytes": 3914,
+      "sha256": "60de117745594d4060ae090db66f76c4dcde07e568f33a73bb73d3b0d2455c71"
     },
     {
       "path": "docs/china-fork/prototype/index.html",
       "bytes": 4428,
-      "sha256": "ca38ea62b74fbe72f0b12dd9e06ea6b35c8b7acbaaabb0d0dc82ad0fd875780d"
+      "sha256": "14510a597853adcf28e49d29d1a83932c41696d4e8b898dc7be6c59d843c6856"
     },
     {
       "path": "docs/china-fork/prototype/model.js",
-      "bytes": 4581,
-      "sha256": "fe233ee0f0cfa344dedf02995f51c61e6360f1b0da0bc177844b88446c027555"
+      "bytes": 4742,
+      "sha256": "92d04ffd3490759c20ea0cb729b4c2df13f71aa60a3fcf053e862cf82e968e2d"
     },
     {
       "path": "docs/china-fork/prototype/model.test.cjs",
-      "bytes": 5206,
-      "sha256": "472161a6ad49c4567fa04cfd6671daae1b81c667f882e9c58aaa501bef0f74f0"
+      "bytes": 6541,
+      "sha256": "6a89b84536cdb1b0c52cfe03503f99c44569862d190b26cf17b8106744503d3f"
     },
     {
       "path": "docs/china-fork/prototype/overview.html",
       "bytes": 2499,
-      "sha256": "2c76ae6a42608b33d2c7b4bd61cb2efe272a1e48c4590114ad8e49e984086674"
+      "sha256": "3b13d9ce704ea48687f983e3d0c533ae069dcfe5d025b51c13e0a050f5e3f5ba"
     },
     {
       "path": "docs/china-fork/prototype/prototype.css",
-      "bytes": 27564,
-      "sha256": "4758dc6c20f1d7591efac70a3d0434782cc9ae379d4f9c0dcbb588fbbf8ad94e"
+      "bytes": 27580,
+      "sha256": "c41ea203dad95789c3d3bbc0acd35996b21f8c05dca4bd67509709c1a6f9a670"
     },
     {
       "path": "docs/china-fork/prototype/prototype.js",
-      "bytes": 48127,
-      "sha256": "3b10ce6eb96d7ae34652ecd42d2e24190a02aeeae3e02851448bc858daf68bd6"
+      "bytes": 47170,
+      "sha256": "9a52b02944e910a5c0bfc9e5296760e3353819aaa50765f92e47a1279dd7f183"
     },
     {
       "path": "docs/china-fork/prototype/verify-browser.js",
-      "bytes": 24856,
-      "sha256": "44d7aace5a29d1a2d6fe4ae9088241a65e3db9e8da2574d6a4f94d935f2e70d6"
+      "bytes": 22182,
+      "sha256": "9b39736a84ed98fde27dca6d3198cd29b84da1d31dc0ef840415070e370c1d5b"
     }
   ],
   "localScreenshots": [
@@ -80,18 +80,18 @@
     },
     {
       "path": "output/playwright/m1/search.png",
-      "bytes": 95690,
-      "sha256": "5843294c470ea8954cf585cf4bc4f6dcfabe35f3a6aafd5dde0d6cdcc8f7189b"
+      "bytes": 95859,
+      "sha256": "4817c3106d209bf9a6a8bc074870f4b6e15405c38bdd794e36c18c6f6972c3f7"
     },
     {
       "path": "output/playwright/m1/detail.png",
-      "bytes": 64988,
-      "sha256": "e7e80203924eb1031f8470250f404ad5e0111b1635835a4df1bc0926eb105690"
+      "bytes": 69877,
+      "sha256": "ee2c2c6690b569a21b145e3f5b5915ee07357e59a0c5083962aad2dc756dc3be"
     },
     {
       "path": "output/playwright/m1/edit.png",
-      "bytes": 47592,
-      "sha256": "8607fc36848ea75a6ce3b11cb243c7540cfbf5b7abfc0deeaa3e9cbb1b6a6c6a"
+      "bytes": 55175,
+      "sha256": "e56d34626a9b39ea046335c783da8e3140f26db946d73e4c23323feb65e8f870"
     },
     {
       "path": "output/playwright/m1/clear-light.png",
@@ -115,38 +115,33 @@
     },
     {
       "path": "output/playwright/m1/compact-height.png",
-      "bytes": 44876,
-      "sha256": "daa2303151ed98750315ec0f39ab302a52c8fffe5a8096824a6955f97cd15625"
+      "bytes": 45737,
+      "sha256": "7fa5a9e828bab978a07b3595aee9ee630606e91c8f1d868dd524e911b8e1838c"
     },
     {
       "path": "output/playwright/m1/overview.png",
-      "bytes": 287101,
-      "sha256": "56f47c685d321732fd509d53ff2e8d7b64db0d60bcd3780838f2b393d44a9096"
+      "bytes": 295378,
+      "sha256": "85be9130cc506046f53810884f6fe6f7781e29e5f0e2dc1196d02fc15cd59cfb"
     },
     {
-      "path": "output/playwright/m1/portion-edit.png",
-      "bytes": 46436,
-      "sha256": "6693587603343426c2a6e87ff9bcd79e597b5e8fe042e0544954ced17c5c8295"
+      "path": "output/playwright/m1/spec-60-15-15.png",
+      "bytes": 50135,
+      "sha256": "5cc9caa2adc4366f119795bfafb6c582ddb92f6a24855e2a6d3721f695096c1f"
     },
     {
-      "path": "output/playwright/m1/meal-expanded.png",
-      "bytes": 62677,
-      "sha256": "9f70f41be113354cd9be60b57fb2ad39e0dae224b1a4ebea2fc3006ee758621a"
+      "path": "output/playwright/m1/spec-200-50-100.png",
+      "bytes": 50298,
+      "sha256": "583a3f32b798236ea8ab7b98fcb3b633f9acadfde70242df5c4772fa73542c91"
     },
     {
-      "path": "output/playwright/m1/per-serving-edit.png",
-      "bytes": 47550,
-      "sha256": "bd4ffe86d2ce41bdeda3137b3b724216cf94612277aae007f7e7f84f0ce48161"
-    },
-    {
-      "path": "output/playwright/m1/half-serving.png",
-      "bytes": 45793,
-      "sha256": "64be8b8ac21e52b68a186208aa8c3713b59092c16d4532e06163207c53ead223"
+      "path": "output/playwright/m1/two-servings.png",
+      "bytes": 47793,
+      "sha256": "76ff172810c06d52b9628d48bd07e38fbbd7d1d5fa3f24a5f2352fa4f13ca4ec"
     },
     {
       "path": "output/playwright/m1/grams-intake.png",
-      "bytes": 43808,
-      "sha256": "7a08c981c8daec0bd2f0bc5010eae30de174a650a95094eab276be4f5e685da0"
+      "bytes": 47156,
+      "sha256": "77935ab4b62b6818b8ff917246cf9e39b13ba8e09ef898cba475246c5af74aa2"
     }
   ],
   "notes": [
@@ -154,14 +149,14 @@
     "Screenshots are local ignored artifacts; checks and scripts are committed.",
     "Browser passing does not verify Android UI, original nutrition logic or migration."
   ],
-  "revision": 3,
+  "revision": 4,
   "m0Commit": "809576425de953fa141ce20e1e1cfdc0c3a93623",
   "changes": [
-    "Uniform 48px input/select boxes with appearance none and custom chevrons",
-    "Always editable physical serving amount regardless of nutrition basis",
-    "Per-serving nutrition converts between fractional servings and physical g/mL amounts",
-    "Portion weights survive saving and re-editing; recorded snapshots unchanged",
-    "24 viewport/font combinations assert paired-control size, alignment and appearance",
-    "In-app browser manual check at 390px"
+    "Independent package size, serving size and nutrition basis fields with shared g/mL unit",
+    "User examples 60/15/15 and 200/50/100 validated through create/save/edit/log",
+    "No preset quantity chips on intake page",
+    "Visible barcode input with scanner action and scan-to-field routing; no camera invoked",
+    "Dedicated v4 prototype storage preserves v1 demo state",
+    "Upstream three-field and scan-to-field implementations inspected without changing production code"
   ]
 }

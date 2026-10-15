@@ -1,95 +1,51 @@
 {
   "date": "2026-10-15",
+  "revision": 4,
   "surface": "Codex in-app browser, independent agent-created tab",
-  "method": "UI actions followed by read-only DOM measurements and native accessibility snapshot; screenshot visually inspected",
   "viewportWidth": 390,
-  "fontScale": 1,
-  "editorGroups": [
+  "method": "UI fill, simulated scan sample, save and intake entry; accessibility snapshot and read-only DOM measurements",
+  "specification": {
+    "package": 200,
+    "serving": 50,
+    "nutritionBasis": 100,
+    "unit": "g",
+    "energyPerBasisKcal": 400
+  },
+  "fields": [
     {
-      "labels": [
-        "营养基准数量",
-        "营养基准单位"
-      ],
-      "heights": [
-        48,
-        48
-      ],
-      "tops": [
-        433.5,
-        433.5
-      ]
+      "label": "包装大小",
+      "value": "200",
+      "height": 48,
+      "top": 583.5
     },
     {
-      "labels": [
-        "每份数量",
-        "每份单位"
-      ],
-      "heights": [
-        48,
-        48
-      ],
-      "tops": [
-        673.5,
-        673.5
-      ]
+      "label": "单份份量",
+      "value": "50",
+      "height": 48,
+      "top": 583.5
     },
     {
-      "labels": [
-        "热量",
-        "热量单位"
-      ],
-      "heights": [
-        48,
-        48
-      ],
-      "tops": [
-        798.5,
-        798.5
-      ]
-    },
-    {
-      "labels": [
-        "蛋白质",
-        "脂肪",
-        "碳水化合物"
-      ],
-      "heights": [
-        48,
-        48,
-        48
-      ],
-      "tops": [
-        883.5,
-        883.5,
-        883.5
-      ]
+      "label": "营养基准数量",
+      "value": "100",
+      "height": 48,
+      "top": 583.5
     }
   ],
-  "detailControls": {
-    "labels": [
-      "摄入量",
-      "计量单位"
-    ],
-    "heights": [
-      48,
-      48
-    ],
-    "tops": [
-      656,
-      656
-    ]
+  "barcode": {
+    "simulatedRecognition": "3017620422003",
+    "filledField": "3017620422003",
+    "preservedName": "内置浏览器规格示例",
+    "otherFieldsPreserved": true,
+    "cameraInvoked": false
   },
-  "appearance": "none for every measured control",
-  "conversion": {
-    "servingGrams": 150,
-    "energyPerServingKcal": 300,
-    "fromServings": 0.5,
-    "toGrams": 75,
-    "resultEnergyKcal": 150,
-    "roundTripServings": 0.5
+  "intake": {
+    "quantity": 2,
+    "unit": "serving",
+    "physicalGrams": 100,
+    "energyKcal": 400,
+    "presetButtons": 0
   },
   "limitations": [
-    "Observed manually through browser tools, not an automated cross-engine suite.",
-    "No Android or iOS app runtime tested."
+    "Manual browser check, not a camera or Flutter test."
   ]
 }

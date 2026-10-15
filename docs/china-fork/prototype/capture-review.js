@@ -9,8 +9,8 @@ async (page) => {
     if (screen === 'edit') {
       await page.getByRole('textbox', { name: '食品名称', exact: true }).fill('盒装豆奶');
       await page.getByRole('combobox', { name: '营养基准单位', exact: true }).selectOption('ml');
-      await page.getByRole('textbox', { name: '每份名称', exact: true }).fill('盒');
-      await page.getByRole('spinbutton', { name: '每份数量', exact: true }).fill('250');
+      await page.getByRole('spinbutton', { name: '包装大小', exact: true }).fill('250');
+      await page.getByRole('spinbutton', { name: '单份份量', exact: true }).fill('125');
       for (const [name, value] of [['热量', '60'], ['蛋白质', '3'], ['脂肪', '2'], ['碳水化合物', '7']]) await page.getByRole('spinbutton', { name, exact: true }).fill(value);
       await page.evaluate(() => { document.activeElement.blur(); document.querySelector('.screen-body').scrollTop = 0; });
     }

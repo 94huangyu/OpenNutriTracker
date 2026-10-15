@@ -6,6 +6,26 @@ test('150 g and one 150 g portion use the same nutrition basis', () => {
   assert.equal(M.totals(food, 150, 'g').energy, 184.5);
   assert.deepEqual(M.totals(food, 150, 'g'), M.totals(food, 1, 'serving'));
 });
+test('60 g package, 15 g serving, 15 g nutrient basis stay independent', () => {
+  const chips = { ...food, packageAmount: 60, basisAmount: 15, portion: { label: '份', amount: 15, unit: 'g' }, nutrients: M.nutrients({ energy: 80 }) };
+  assert.equal(M.totals(chips, 1, 'serving').energy, 80);
+  assert.equal(M.totals(chips, 2, 'serving').energy, 160);
+  assert.equal(M.totals(chips, 30, 'g').energy, 160);
+  assert.equal(M.totals(chips, 60, 'g').energy, 320);
+  chips.packageAmount = 120;
+  assert.equal(M.totals(chips, 2, 'serving').energy, 160);
+});
+test('200 g package, 50 g serving, 100 g nutrient basis scale only intake over nutrient basis', () => {
+  const chips = { ...food, packageAmount: 200, basisAmount: 100, portion: { label: '份', amount: 50, unit: 'g' }, nutrients: M.nutrients({ energy: 400 }) };
+  assert.equal(M.totals(chips, 1, 'serving').energy, 200);
+  assert.equal(M.totals(chips, 2, 'serving').energy, 400);
+  assert.equal(M.totals(chips, 100, 'g').energy, 400);
+  assert.equal(M.convertAmount(chips, 2, 'serving', 'g'), 100);
+});
+test('package metadata accepts unknown but rejects invalid sizes', () => {
+  assert.equal(M.validateFood({ ...food, packageAmount: null }), null);
+  for (const packageAmount of [0, -1, Infinity, NaN]) assert.match(M.validateFood({ ...food, packageAmount }), /包装大小/);
+});
 test('100 mL data stays in mL; absent density never permits grams', () => {
   const milk = { ...food, basisUnit: 'ml', portion: { unit: 'ml', amount: 250 } };
   assert.equal(M.totals(milk, 250, 'ml').energy, 307.5);

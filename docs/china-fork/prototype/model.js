@@ -52,6 +52,7 @@
   function validateFood(food) {
     if (!food.name?.trim()) return '请填写食品名称';
     if (!Number.isFinite(food.basisAmount) || food.basisAmount <= 0) return '营养基准必须大于零';
+    if (food.packageAmount != null && (!Number.isFinite(food.packageAmount) || food.packageAmount <= 0)) return '包装大小需要大于零，未知可留空';
     if (food.nutrients.energy == null) return '请填写标示热量，其他未知营养素可以留空';
     if (nutrientFields.some(([key]) => food.nutrients[key] != null && (!Number.isFinite(food.nutrients[key]) || food.nutrients[key] < 0))) return '营养数值需要是零或正数';
     if (food.portion && (!['g', 'ml'].includes(food.portion.unit) || !Number.isFinite(food.portion.amount) || food.portion.amount <= 0 || (food.basisUnit !== 'serving' && food.portion.unit !== food.basisUnit))) return '请填写有效的每份重量或容量，且单位与营养基准一致';
