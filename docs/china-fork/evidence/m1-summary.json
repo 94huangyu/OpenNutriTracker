@@ -1,7 +1,7 @@
 {
   "date": "2026-10-15",
   "timezone": "Asia/Shanghai",
-  "stage": "M1 revision 4 awaiting user review",
+  "stage": "M1 revision 4 core prototype accepted by user; runtime baseline remains deferred",
   "upstreamBaseline": "8d2420f0305c96a4f798f3a111509827260f6df7",
   "parentCommit": "dc60bf39d113988b0430282765b8e07d807a9af5",
   "branch": "design/m1-core-prototype",
@@ -158,5 +158,20 @@
     "Visible barcode input with scanner action and scan-to-field routing; no camera invoked",
     "Dedicated v4 prototype storage preserves v1 demo state",
     "Upstream three-field and scan-to-field implementations inspected without changing production code"
-  ]
+  ],
+  "userAcceptance": {
+    "date": "2026-10-15",
+    "statement": "看起来没啥问题",
+    "prototypeCommit": "a3f05ccebcad5f41bcb81c35a3e47fe3c4d0c316",
+    "scope": "Current revision 4 core interaction prototype",
+    "doesNotVerify": [
+      "Flutter runtime",
+      "real camera",
+      "live APIs",
+      "migration",
+      "unbuilt pages",
+      "final app name and icon"
+    ],
+    "sdkInstallationAuthorized": false
+  }
 }
