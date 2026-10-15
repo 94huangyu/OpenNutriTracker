@@ -5,11 +5,13 @@ async (page) => {
   await page.setViewportSize({ width: 390, height: 844 });
   for (const screen of ['home', 'search', 'detail', 'edit']) {
     await page.goto(base + `index.html?standalone=1&screen=${screen}`);
-    if (screen === 'detail') await page.locator('#quantity').fill('150');
+    if (screen === 'detail') { await page.locator('#quantity-unit').selectOption('serving'); await page.locator('#quantity').fill('1'); }
     if (screen === 'edit') {
-      await page.getByRole('textbox', { name: '食品名称', exact: true }).fill('自制鸡蛋羹');
-      await page.getByRole('combobox', { name: '营养基准单位', exact: true }).selectOption('serving');
-      for (const [name, value] of [['热量', '110'], ['蛋白质', '9'], ['脂肪', '7'], ['碳水化合物', '2']]) await page.getByRole('spinbutton', { name, exact: true }).fill(value);
+      await page.getByRole('textbox', { name: '食品名称', exact: true }).fill('盒装豆奶');
+      await page.getByRole('combobox', { name: '营养基准单位', exact: true }).selectOption('ml');
+      await page.getByRole('textbox', { name: '每份名称', exact: true }).fill('盒');
+      await page.getByRole('spinbutton', { name: '每份数量', exact: true }).fill('250');
+      for (const [name, value] of [['热量', '60'], ['蛋白质', '3'], ['脂肪', '2'], ['碳水化合物', '7']]) await page.getByRole('spinbutton', { name, exact: true }).fill(value);
       await page.evaluate(() => { document.activeElement.blur(); document.querySelector('.screen-body').scrollTop = 0; });
     }
     await page.waitForFunction(() => [...document.images].every(img => img.complete));

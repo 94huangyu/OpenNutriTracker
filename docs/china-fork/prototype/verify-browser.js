@@ -1,5 +1,7 @@
 async (page) => {
   const base = 'http://127.0.0.1:8815/docs/china-fork/prototype/';
+  // Routing disables the browser cache so edits to local prototype files are exercised.
+  await page.route('**/prototype/*', route => route.continue());
   const passed = [];
   const errors = [];
   const external = [];
@@ -8,6 +10,11 @@ async (page) => {
   const check = (condition, message) => { if (!condition) throw new Error(message); passed.push(message); };
   const text = selector => page.locator(selector).innerText();
   const click = name => page.getByRole('button', { name, exact: true }).click();
+  const editRecord = async (name, meal) => {
+    const section = page.getByRole('region', { name: `${meal}记录`, exact: true });
+    if (await section.locator('details').getAttribute('open') === null) await section.locator('summary').click();
+    await section.getByRole('button', { name: `修改${name}的摄入量`, exact: true }).click();
+  };
   await page.setViewportSize({ width: 1100, height: 980 });
   await page.goto(base + 'index.html');
   await click('重置示例数据');
@@ -17,6 +24,8 @@ async (page) => {
   await click('后一天');
   check(await text('#day-energy') === '870.5', '切回原日期保留日记');
   check(await page.getByRole('region', { name: /记录$/ }).count() === 4, '四餐均有独立记录区域');
+  check(await page.locator('.meal-details[open]').count() === 0 && await page.getByRole('button', { name: '修改燕麦粥的摄入量' }).count() === 0, '首页四餐默认仅显示汇总，不展开食品行');
+  check(await page.getByRole('region', { name: '早餐记录', exact: true }).locator('.meal-total').innerText() === '359 kcal', '折叠餐次显示真实合计');
   await page.locator('#phone').screenshot({ path: 'output/playwright/m1/home.png' });
 
   await click('向午餐添加食品');
@@ -24,6 +33,8 @@ async (page) => {
   check(await page.getByRole('button', { name: '查看家常鸡蛋羹', exact: true }).count() === 1, '单字中文可搜索本地食品');
   await page.getByRole('searchbox').fill('牛奶');
   await click('查看纯牛奶');
+  check(await page.locator('#quantity-unit').inputValue() === 'serving' && await page.locator('#quantity').inputValue() === '1' && await text('#intake-energy') === '152.5', '有每盒换算的食品默认一盒，不必记毫升数');
+  await page.getByRole('combobox', { name: '计量单位' }).selectOption('ml');
   await page.getByRole('spinbutton', { name: '摄入量', exact: true }).fill('250');
   check(await text('#intake-energy') === '152.5', '250mL按每100mL基准实时得到152.5kcal');
   check(await page.locator('.quick-amounts .active').count() === 0, '手动输入非预设摄入量时不保留过期快捷选中状态');
@@ -34,18 +45,18 @@ async (page) => {
   await page.getByRole('combobox', { name: '记录餐次' }).selectOption('snack');
   await page.locator('#save-intake').click();
   check(await text('#day-energy') === '1,023', '食品可记录到用户选择的餐次并更新汇总');
-  check(await page.getByRole('region', { name: '加餐记录', exact: true }).getByRole('button', { name: '修改纯牛奶的摄入量' }).count() === 1, '餐次选择实际影响日记归属');
-  await click('修改纯牛奶的摄入量');
+  check(await page.getByRole('region', { name: '加餐记录', exact: true }).getByRole('button', { name: '修改纯牛奶的摄入量', includeHidden: true }).count() === 1, '餐次选择实际影响日记归属');
+  await editRecord('纯牛奶', '加餐');
   await page.getByRole('combobox', { name: '计量单位' }).selectOption('ml');
   await page.getByRole('spinbutton', { name: '摄入量', exact: true }).fill('300');
   await page.locator('#save-intake').click();
   check(await text('#day-energy') === '1,053.5', '修改记录量只更新当前日记');
-  await click('修改纯牛奶的摄入量');
+  await editRecord('纯牛奶', '加餐');
   await click('再记一份');
   check(await text('#day-energy') === '1,236.5', '重复添加创建独立记录');
   await click('撤销');
   check(await text('#day-energy') === '1,053.5', '撤销重复添加恢复合计');
-  await click('修改纯牛奶的摄入量');
+  await editRecord('纯牛奶', '加餐');
   await click('删除记录');
   check(await text('#day-energy') === '870.5', '删除记录扣除当前摄入');
   await click('撤销');
@@ -93,11 +104,11 @@ async (page) => {
   await click('修正数据，另存为我的食品');
   await page.getByRole('spinbutton', { name: '热量', exact: true }).fill('180');
   await click('保存并继续记录');
-  check(await page.locator('.detail-energy').first().innerText() === '180kcal', '公共食品修正可保存为自己的版本');
+  check(await page.locator('.detail-energy').first().innerText() === '216kcal', '公共食品修正可保存为自己的版本');
   await page.locator('summary').filter({ hasText: '来源与个人核对' }).click();
   check((await page.locator('details').first().innerText()).includes('原始来源') && (await page.locator('details').first().innerText()).includes('尚未标记'), '修正版保留原始来源且不自动核验');
   await page.getByRole('button', { name: '01 饮食日记 →', exact: true }).click();
-  await click('修改鸡胸肉（熟）的摄入量');
+  await editRecord('鸡胸肉（熟）', '午餐');
   check((await page.locator('.basis-title').innerText()).includes('165 kcal') && await text('#intake-energy') === '198', '修正模板不改变已有日记营养快照');
 
   await page.getByRole('button', { name: '02 食品搜索 →', exact: true }).click();
@@ -129,9 +140,11 @@ async (page) => {
   check(await page.getByRole('spinbutton', { name: '营养基准数量', exact: true }).inputValue() === '1', '每份基准默认一份，仍允许手动修改数量');
   await page.getByRole('textbox', { name: '食品名称', exact: true }).fill('单次食品示例');
   await page.getByRole('spinbutton', { name: '热量', exact: true }).fill('80');
+  await page.getByRole('textbox', { name: '每份名称', exact: true }).fill('包');
   await page.locator('#save-template').uncheck();
   await click('保存并继续记录');
   await page.getByRole('spinbutton', { name: '摄入量', exact: true }).fill('2');
+  check(await page.locator('#quantity-unit option:checked').innerText() === '包', '每份营养可用自定义包单位，不要求重量或容量');
   check(await text('#intake-energy') === '160', '每份食品在界面按份计算，无重量时不猜克数');
   await page.locator('#save-intake').click();
   await page.getByRole('button', { name: '02 食品搜索 →', exact: true }).click();
@@ -140,6 +153,31 @@ async (page) => {
   check(await page.getByRole('button', { name: '查看单次食品示例', exact: true }).count() === 0, '取消保存模板时不写入我的食品列表');
   await click('最近');
   check(await page.getByRole('button', { name: '查看单次食品示例', exact: true }).count() === 1, '单次食品仍可从已有日记的最近记录找回');
+  await page.getByRole('button', { name: '04 创建与修正 →', exact: true }).click();
+  check(await page.getByRole('textbox', { name: '每份名称', exact: true }).isVisible() && await page.getByRole('spinbutton', { name: '每份数量', exact: true }).isVisible(), '简单模式直接显示每份名称和含量，不在折叠面板中');
+  await page.getByRole('textbox', { name: '食品名称', exact: true }).fill('测试盒装豆奶');
+  await page.getByRole('combobox', { name: '营养基准单位', exact: true }).selectOption('ml');
+  await page.getByRole('textbox', { name: '每份名称', exact: true }).fill('盒');
+  await page.getByRole('spinbutton', { name: '每份数量', exact: true }).fill('250');
+  await page.getByRole('spinbutton', { name: '热量', exact: true }).fill('60');
+  await click('高级模式');
+  await click('简单模式');
+  check(await page.getByRole('spinbutton', { name: '每份数量', exact: true }).inputValue() === '250', '切换高级模式保留每份换算');
+  await click('保存并继续记录');
+  check(await page.locator('#quantity-unit option:checked').innerText() === '盒' && await text('#intake-energy') === '150', '自建250mL每盒后默认一盒并正确换算热量');
+  await page.getByRole('spinbutton', { name: '摄入量', exact: true }).fill('2');
+  check(await text('#intake-energy') === '300', '自建食品可直接按两盒计算');
+  await page.locator('#save-intake').click();
+  check(await page.locator('.meal-details[open]').count() === 0, '保存后首页仍保持四餐简洁汇总');
+  await page.getByRole('region', { name: '午餐记录', exact: true }).locator('summary').click();
+  check((await page.getByRole('button', { name: '修改测试盒装豆奶的摄入量', exact: true }).innerText()).includes('2 盒'), '展开餐次显示按盒记录的名称份量与热量');
+  await page.getByRole('button', { name: '修改测试盒装豆奶的摄入量', exact: true }).scrollIntoViewIfNeeded();
+  await page.locator('#toast').evaluate(el => { el.hidden = true; });
+  await page.locator('#phone').screenshot({ path: 'output/playwright/m1/meal-expanded.png' });
+  await editRecord('测试盒装豆奶', '午餐');
+  await click('编辑食品资料');
+  check(await page.getByRole('textbox', { name: '每份名称', exact: true }).inputValue() === '盒' && await page.getByRole('spinbutton', { name: '每份数量', exact: true }).inputValue() === '250', '再次编辑食品时每份名称与含量可直接修改');
+  await page.locator('#phone').screenshot({ path: 'output/playwright/m1/portion-edit.png' });
   await page.getByRole('button', { name: '04 创建与修正 →', exact: true }).click();
   await page.locator('#food-photo').setInputFiles('assets/demo/meals/1548807371-30dc1bbe6cb5.jpg');
   await page.waitForFunction(() => document.querySelector('.edit-photo img')?.getAttribute('src').startsWith('data:image/'));

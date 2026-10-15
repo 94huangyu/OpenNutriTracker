@@ -83,7 +83,19 @@ button, input, select { touch-action: manipulation; }
 .section-heading { display: flex; align-items: center; justify-content: space-between; gap: 9px; margin-bottom: 6px; }
 .section-heading .subtext { flex: 1; text-align: right; font-size: calc(11px * var(--font-scale)); color: var(--secondary); }
 .app .meal-add { display: flex; width: 38px; min-width: 44px; min-height: 44px; justify-content: center; align-items: center; border-radius: 50%; color: var(--accent); }
-.meal-section { margin-bottom: 18px; }
+.meal-section { position: relative; margin-bottom: 10px; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; }
+.meal-details > summary { display: flex; align-items: center; gap: 10px; min-height: 68px; padding: 10px 60px 10px 16px; cursor: pointer; list-style: none; }
+.meal-details > summary::-webkit-details-marker { display: none; }
+.meal-details > summary h2 { flex: 1; min-width: 0; margin: 0; }
+.meal-total { font-size: calc(14px * var(--font-scale)); font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.meal-total small { font-size: calc(10px * var(--font-scale)); font-weight: 400; color: var(--secondary); }
+.meal-details > summary > .icon { width: 16px; height: 16px; color: var(--secondary); flex-shrink: 0; }
+.meal-details[open] > summary > .icon { transform: rotate(180deg); }
+.meal-section > .meal-add { position: absolute; right: 7px; top: 12px; }
+.meal-details .food-list { border: 0; border-top: 1px solid var(--line); border-radius: 0 0 14px 14px; }
+.meal-details .empty-meal { margin: 0; border: 0; border-top: 1px solid var(--line); border-radius: 0; }
+.serving-fields { border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); padding: 14px 0 4px; margin-bottom: 18px; }
+.serving-fields h2 { margin: 0 0 12px; font-size: calc(14px * var(--font-scale)); }
 .food-list { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; overflow: hidden; }
 .food-row { display: flex; align-items: center; gap: 10px; min-width: 0; padding: 11px 12px; border-bottom: 1px solid var(--line); }
 .food-row:last-child { border-bottom: 0; }
