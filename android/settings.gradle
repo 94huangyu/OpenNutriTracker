@@ -1,7 +1,8 @@
 pluginManagement {
     def flutterSdkPath = {
         def properties = new Properties()
-        file("local.properties").withInputStream { properties.load(it) }
+        // Flutter writes SDK paths as UTF-8, including Chinese workspace names.
+        file("local.properties").withReader("UTF-8") { properties.load(it) }
         def flutterSdkPath = properties.getProperty("flutter.sdk")
         assert flutterSdkPath != null, "flutter.sdk not set in local.properties"
         return flutterSdkPath

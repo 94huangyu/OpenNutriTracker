@@ -72,6 +72,7 @@ class SpFoodDataSource {
     String searchString, {
     bool forResolution = false,
   }) async {
+    if (!locator.isRegistered<SupabaseClient>()) return const <SpFoodDTO>[];
     try {
       return await withRetry(() async {
         log.fine('Fetching Supabase food results');

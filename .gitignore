@@ -85,3 +85,6 @@ output/playwright/
 # Project-local SDKs, dependency caches and build logs.
 .tools/
 output/flutter/
+
+# Kotlin project-local session cache.
+android/.kotlin/

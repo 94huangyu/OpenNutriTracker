@@ -1,6 +1,6 @@
 {
   "date": "2026-10-15",
-  "stage": "M2.0 SDK verified, original tests complete, Android build in progress",
+  "stage": "M2.0 baseline and protection verified; M2.1 functionality, tests and Android debug build verified; M2.2 pending",
   "machineArchitecture": "arm64",
   "diskFreeGiB": 71.7,
   "flutterFoundInPath": false,
@@ -67,5 +67,5 @@
     "userReply": "允许，按上述预算执行",
     "scope": "project-local Flutter 3.44.6, first original debug build and M2; max 2 Gradle workers, no emulator, no global PATH changes; ask before additional Android components or material budget overrun"
   },
-  "currentDiskFreeGiB": 62.56
+  "currentDiskFreeGiB": 58.75
 }

@@ -1,0 +1,90 @@
+{
+  "date": "2026-10-15",
+  "stage": "M2.1 functional batch, not full M2 acceptance",
+  "foodEntryCommit": "343b36fab5a81854232c2bf39dc546d604243460",
+  "applicationSourceFingerprintSha256": "bc350fee3f84eb22054d2bfa5768e9f6472c9a73c0cf1be541c86814bb9ca485",
+  "fingerprintFileCount": 581,
+  "sourceFingerprintScope": "sorted version-controlled and unignored lib/android/pubspec paths and SHA256 contents; excludes local.env and generated ignored outputs; backend and UTF8 fix included",
+  "tests": {
+    "passed": 2614,
+    "failed": 0,
+    "durationSeconds": 103.197,
+    "log": ".tools/logs/m2-final-tests-r2.jsonl",
+    "countScope": "non-hidden testDone events; runner setup/teardown excluded",
+    "dartAnalyzeDiagnostics": 0,
+    "dartAnalyzeLog": ".tools/logs/m2-final-analyze.log",
+    "actualScreenCaptureTestsPassed": 11,
+    "captureLog": ".tools/logs/m2-final-captures-r3.log"
+  },
+  "androidBuild": {
+    "command": "flutter build apk --debug --flavor develop --target-platform android-arm64 --no-pub",
+    "exitCode": 0,
+    "durationSeconds": 95.6,
+    "log": ".tools/logs/m2-android-build.log",
+    "maxGradleWorkers": 2,
+    "emulatorStarted": false,
+    "additionalAndroidComponentsInstalled": false
+  },
+  "apk": {
+    "path": "output/flutter/m2.1/m2.1-food-entry-v2.4.0-66-develop-arm64-debug.apk",
+    "bytes": 181240003,
+    "sha256": "b318b9c151b5cd924aa739683407183901117c93d183c915b1020401c83d48e7",
+    "flutterEngines": [
+      {
+        "path": "lib/arm64-v8a/libflutter.so",
+        "bytes": 37584608
+      }
+    ],
+    "flavor": "develop",
+    "buildType": "debug",
+    "package": "com.opennutritracker.ont.opennutritracker.develop",
+    "versionName": "2.4.0-develop",
+    "versionCode": 66,
+    "minSdk": 26,
+    "targetSdk": 36,
+    "signatureVerified": true,
+    "signerCertificateSha256": "8b5adf8691201ac71c7fc4037f5121e639b0e8f84269902cb52d5bb1eb4e61e0",
+    "deviceInstalled": false
+  },
+  "captures": [
+    {
+      "path": "output/flutter/m2.1/create-200-50-100.png",
+      "sha256": "cf4703113e49b155681b6582e5da0228e2bb8dc4d9ba69fa56a83ca5e8e4bb7d"
+    },
+    {
+      "path": "output/flutter/m2.1/create-60-15-15.png",
+      "sha256": "849f8749c9d78d35637e167e94baef45d4015e33937bdad776593183a86ea55c"
+    },
+    {
+      "path": "output/flutter/m2.1/create-layout-320.0-1.0-false.png",
+      "sha256": "5844fa437855f5b0d3dcfdb1858e635f24811decdacd9704afb985f9608cc3fc"
+    },
+    {
+      "path": "output/flutter/m2.1/create-layout-390.0-1.0-true.png",
+      "sha256": "fade87e66892abd0d228d1a0b4f014a511ce573c79e65b7f7c4ea5c87e53046a"
+    },
+    {
+      "path": "output/flutter/m2.1/create-layout-390.0-1.3-false.png",
+      "sha256": "7b11565327cd8fec11ce33760c9b93f4b2ed435fdcfba7bed60ae87261561c32"
+    },
+    {
+      "path": "output/flutter/m2.1/intake-1.25-servings.png",
+      "sha256": "26aa977fb25dd90da2a68793405b00d363da57a6b2e538d7caebd62dafac91f0"
+    },
+    {
+      "path": "output/flutter/m2.1/intake-47.5-grams.png",
+      "sha256": "9f447cfb1e92361922bcb9a0b480b0fbd10d832603d335f1a3de3cc882f06b66"
+    }
+  ],
+  "captureFontNote": "read-only macOS Arial Unicode loaded only in widget tests; not bundled; not proof of Android typography",
+  "knownPending": [
+    "M2.2 accepted green design system and search",
+    "M2.3 collapsed daily meal groups",
+    "public food correction as a saved personal food",
+    "full backup coverage and restore safety",
+    "Android startup, keyboard and physical camera/gallery validation",
+    "real-user database upgrade/downgrade",
+    "configured live Supabase and iOS"
+  ],
+  "sourceConfiguration": "example placeholders only; optional reference backend skipped; no paid service account"
+}

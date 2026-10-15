@@ -73,6 +73,7 @@ import 'package:opennutritracker/core/utils/config_initializer.dart';
 import 'package:opennutritracker/core/utils/off_micronutrient_repair.dart';
 import 'package:opennutritracker/core/utils/tracked_day_total_repair.dart';
 import 'package:opennutritracker/core/utils/env.dart';
+import 'package:opennutritracker/core/utils/optional_food_backend.dart';
 import 'package:http/http.dart' as http;
 import 'package:opennutritracker/core/utils/ai_credential_storage.dart';
 import 'package:opennutritracker/features/add_meal/data/meal_items_api_factory.dart';
@@ -133,7 +134,6 @@ import 'package:opennutritracker/features/settings/domain/usecase/import_recipes
 import 'package:opennutritracker/features/settings/presentation/bloc/custom_meals_bloc.dart';
 import 'package:opennutritracker/features/settings/presentation/bloc/export_import_bloc.dart';
 import 'package:opennutritracker/features/settings/presentation/bloc/settings_bloc.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 final locator = GetIt.instance;
 
@@ -192,17 +192,9 @@ Future<void> initLocator() async {
     ),
   );
 
-  // Backend
-  await Supabase.initialize(
-    url: Env.supabaseProjectUrl,
-    publishableKey: Env.supabaseProjectAnonKey,
-    // In debug builds supabase_flutter attaches its own printer to the
-    // shared root log stream (hierarchical logging is off), duplicating
-    // every app log line in a second format. LoggerConfig already prints
-    // everything — including supabase records — once.
-    debug: false,
-  );
-  locator.registerLazySingleton<SupabaseClient>(() => Supabase.instance.client);
+  // Reference foods are optional; local foods and OFF do not need this account.
+  await registerOptionalFoodBackend(locator,
+    url: Env.supabaseProjectUrl, key: Env.supabaseProjectAnonKey);
 
   // Notification service (#312)
   locator.registerLazySingleton<NotificationService>(
