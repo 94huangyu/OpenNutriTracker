@@ -1,0 +1,128 @@
+{
+  "date": "2026-10-15",
+  "timezone": "Asia/Shanghai",
+  "stage": "M1 prototype awaiting user review",
+  "upstreamBaseline": "8d2420f0305c96a4f798f3a111509827260f6df7",
+  "parentCommit": "809576425de953fa141ce20e1e1cfdc0c3a93623",
+  "branch": "design/m1-core-prototype",
+  "results": {
+    "prototypeModelTests": {
+      "passed": 11,
+      "failed": 0
+    },
+    "browserAssertions": 46,
+    "layoutCases": 12,
+    "textContrastPairs": 28,
+    "minimumTextContrast": 4.75,
+    "browserErrors": [],
+    "externalRequests": []
+  },
+  "productionAppChanged": false,
+  "flutterBuildOrRuntimeVerified": false,
+  "realFoodApiConnected": false,
+  "cameraUsed": false,
+  "sourceFiles": [
+    {
+      "path": "docs/china-fork/prototype/README.md",
+      "bytes": 3029,
+      "sha256": "aff59de4b91092163f53284868abd391e31ea4be48992aed2ef8a15cc6c44d02"
+    },
+    {
+      "path": "docs/china-fork/prototype/capture-review.js",
+      "bytes": 3673,
+      "sha256": "2e7ad0b83ff9265909ebb188d998b47e82ce58b4e3b7958e194c59667b323733"
+    },
+    {
+      "path": "docs/china-fork/prototype/index.html",
+      "bytes": 4404,
+      "sha256": "033bf4433105f4346deb4c5b6809d25978a9c2006f9273b194d76cc84a3ee4f8"
+    },
+    {
+      "path": "docs/china-fork/prototype/model.js",
+      "bytes": 3703,
+      "sha256": "15c3b317b71493cfba86881afa2e7e31e2eefe82a01e8eef3431dd3fb4c4f651"
+    },
+    {
+      "path": "docs/china-fork/prototype/model.test.cjs",
+      "bytes": 3388,
+      "sha256": "d81cad84a4cbdfe4a250709810bde03d63ea529e9fefbf56600325a4898a2a48"
+    },
+    {
+      "path": "docs/china-fork/prototype/overview.html",
+      "bytes": 2490,
+      "sha256": "aceeee7a7fc505ccbdcd7a256cd5aa3730db5f90e10d68b1e34b1e055ada33e4"
+    },
+    {
+      "path": "docs/china-fork/prototype/prototype.css",
+      "bytes": 25601,
+      "sha256": "8a7c0c47860a0b0101900ab04039098363db076a3b5fd44cec7278ab2bd43cec"
+    },
+    {
+      "path": "docs/china-fork/prototype/prototype.js",
+      "bytes": 45852,
+      "sha256": "aa26562690ae9395507841f0330fb71d75734695f5e5e219d021d08dc5ea6101"
+    },
+    {
+      "path": "docs/china-fork/prototype/verify-browser.js",
+      "bytes": 14442,
+      "sha256": "a10269a33e018ffb2fdc076602554682cca8bd8c9d35225ddec8cdc3dd921f41"
+    }
+  ],
+  "localScreenshots": [
+    {
+      "path": "output/playwright/m1/home.png",
+      "bytes": 65507,
+      "sha256": "913373d6d0482c4b805a3b6883cdec9bd2a13028dd9dbdb35defd74cae878d33"
+    },
+    {
+      "path": "output/playwright/m1/search.png",
+      "bytes": 95679,
+      "sha256": "51ac020a6252e84abfa6a7db26a85c25ba13fe8b300e0e35a0110658f3f9c1b9"
+    },
+    {
+      "path": "output/playwright/m1/detail.png",
+      "bytes": 64743,
+      "sha256": "bd9fe318e1e053611ab9371c0821f511ab8a0cc46fb6c3e1f1215285e4d302bd"
+    },
+    {
+      "path": "output/playwright/m1/edit.png",
+      "bytes": 51731,
+      "sha256": "dc3a71b2f9ed01fcde9036715537a1887b60611cf04a0e1ece306082a337eab7"
+    },
+    {
+      "path": "output/playwright/m1/clear-light.png",
+      "bytes": 65507,
+      "sha256": "913373d6d0482c4b805a3b6883cdec9bd2a13028dd9dbdb35defd74cae878d33"
+    },
+    {
+      "path": "output/playwright/m1/clear-dark.png",
+      "bytes": 65590,
+      "sha256": "603a40abf35be39cc6cc8c0c9195f8ce1fefcf53671f7ae2c13eb99999609822"
+    },
+    {
+      "path": "output/playwright/m1/warm-light.png",
+      "bytes": 65756,
+      "sha256": "d6fa3220ca743d6b70d07ef95e0f403d67ceef9bc48ede4361e6cee855dc2fa5"
+    },
+    {
+      "path": "output/playwright/m1/warm-dark.png",
+      "bytes": 65996,
+      "sha256": "bcd55b22015339b1fa56b937a428f68f1b1d612a831313482b8e3c2d577eecaf"
+    },
+    {
+      "path": "output/playwright/m1/compact-height.png",
+      "bytes": 42791,
+      "sha256": "44c5192c57b09dd2b28737af9819f71f6eb09d185c3d5819d714f4709614da7a"
+    },
+    {
+      "path": "output/playwright/m1/overview.png",
+      "bytes": 307906,
+      "sha256": "cd0d2e20f8d142aa52ecca66f7aae1e1dc795175b96a4b55e328612e0cbab71e"
+    }
+  ],
+  "notes": [
+    "All nutrition values are demonstration data.",
+    "Screenshots are local ignored artifacts; checks and scripts are committed.",
+    "Browser passing does not verify Android UI, original nutrition logic or migration."
+  ]
+}

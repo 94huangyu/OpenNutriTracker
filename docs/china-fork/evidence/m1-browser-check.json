@@ -1,0 +1,127 @@
+{
+  "status": "passed",
+  "checks": [
+    "首页合计来自示例记录，显示精度不产生1kcal差额",
+    "前一天显示独立空日记",
+    "切回原日期保留日记",
+    "四餐均有独立记录区域",
+    "单字中文可搜索本地食品",
+    "250mL按每100mL基准实时得到152.5kcal",
+    "手动输入非预设摄入量时不保留过期快捷选中状态",
+    "没有密度时不提供克与毫升混换",
+    "切换250mL到1盒保持营养总量",
+    "食品可记录到用户选择的餐次并更新汇总",
+    "餐次选择实际影响日记归属",
+    "修改记录量只更新当前日记",
+    "重复添加创建独立记录",
+    "撤销重复添加恢复合计",
+    "删除记录扣除当前摄入",
+    "删除可撤销并恢复原记录",
+    "无结果创建保留搜索词",
+    "切换简单高级不丢高级营养值",
+    "已知零保持为零",
+    "编辑kcal到kJ转换正确",
+    "切回kcal保留标示值",
+    "没有依据不能标记个人核对",
+    "填来源后可保存自建食品并继续记录",
+    "宏量估算差异不覆盖标示热量",
+    "保存后保留高级锌字段",
+    "未填写的钠保持未知",
+    "新建食品下次可从本地搜索找到",
+    "公共食品修正可保存为自己的版本",
+    "修正版保留原始来源且不自动核验",
+    "修正模板不改变已有日记营养快照",
+    "离线状态准确说明只提供本地结果",
+    "离线仍能查找自建食品",
+    "公共来源失败不伪装为没有食品",
+    "条码产品无营养信息时不伪造热量",
+    "国外样例条码可进入详情",
+    "收藏操作不自动产生个人核对状态",
+    "收藏后的食品可在收藏筛选中找到",
+    "最近食品按上次份量添加并清楚提示数量",
+    "每份基准默认一份，仍允许手动修改数量",
+    "每份食品在界面按份计算，无重量时不猜克数",
+    "取消保存模板时不写入我的食品列表",
+    "单次食品仍可从已有日记的最近记录找回",
+    "本地食品照片可预览且无需上传到服务端",
+    "320/360/412宽度 × 四页 × 1.2倍字号无横向溢出",
+    "浏览器无未处理脚本错误",
+    "原型未发出外部网络请求"
+  ],
+  "layouts": [
+    {
+      "width": 320,
+      "screen": "home",
+      "largeText": true,
+      "horizontalOverflow": false
+    },
+    {
+      "width": 320,
+      "screen": "search",
+      "largeText": true,
+      "horizontalOverflow": false
+    },
+    {
+      "width": 320,
+      "screen": "detail",
+      "largeText": true,
+      "horizontalOverflow": false
+    },
+    {
+      "width": 320,
+      "screen": "edit",
+      "largeText": true,
+      "horizontalOverflow": false
+    },
+    {
+      "width": 360,
+      "screen": "home",
+      "largeText": true,
+      "horizontalOverflow": false
+    },
+    {
+      "width": 360,
+      "screen": "search",
+      "largeText": true,
+      "horizontalOverflow": false
+    },
+    {
+      "width": 360,
+      "screen": "detail",
+      "largeText": true,
+      "horizontalOverflow": false
+    },
+    {
+      "width": 360,
+      "screen": "edit",
+      "largeText": true,
+      "horizontalOverflow": false
+    },
+    {
+      "width": 412,
+      "screen": "home",
+      "largeText": true,
+      "horizontalOverflow": false
+    },
+    {
+      "width": 412,
+      "screen": "search",
+      "largeText": true,
+      "horizontalOverflow": false
+    },
+    {
+      "width": 412,
+      "screen": "detail",
+      "largeText": true,
+      "horizontalOverflow": false
+    },
+    {
+      "width": 412,
+      "screen": "edit",
+      "largeText": true,
+      "horizontalOverflow": false
+    }
+  ],
+  "errors": [],
+  "externalRequests": []
+}

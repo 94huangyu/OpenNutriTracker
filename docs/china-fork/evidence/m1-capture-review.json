@@ -1,0 +1,157 @@
+{
+  "contrastChecks": [
+    {
+      "style": "clear",
+      "theme": "light",
+      "contrasts": [
+        {
+          "pair": "text/bg",
+          "ratio": 12.93
+        },
+        {
+          "pair": "secondary/bg",
+          "ratio": 4.77
+        },
+        {
+          "pair": "text/surface",
+          "ratio": 13.91
+        },
+        {
+          "pair": "secondary/surface",
+          "ratio": 5.14
+        },
+        {
+          "pair": "accent/on-accent",
+          "ratio": 5.98
+        },
+        {
+          "pair": "accent/soft",
+          "ratio": 5.14
+        },
+        {
+          "pair": "warning/warning-bg",
+          "ratio": 5.94
+        }
+      ]
+    },
+    {
+      "style": "clear",
+      "theme": "dark",
+      "contrasts": [
+        {
+          "pair": "text/bg",
+          "ratio": 15.02
+        },
+        {
+          "pair": "secondary/bg",
+          "ratio": 9.09
+        },
+        {
+          "pair": "text/surface",
+          "ratio": 13.19
+        },
+        {
+          "pair": "secondary/surface",
+          "ratio": 7.98
+        },
+        {
+          "pair": "accent/on-accent",
+          "ratio": 8.16
+        },
+        {
+          "pair": "accent/soft",
+          "ratio": 6.87
+        },
+        {
+          "pair": "warning/warning-bg",
+          "ratio": 8.09
+        }
+      ]
+    },
+    {
+      "style": "warm",
+      "theme": "light",
+      "contrasts": [
+        {
+          "pair": "text/bg",
+          "ratio": 11.92
+        },
+        {
+          "pair": "secondary/bg",
+          "ratio": 4.93
+        },
+        {
+          "pair": "text/surface",
+          "ratio": 12.68
+        },
+        {
+          "pair": "secondary/surface",
+          "ratio": 5.25
+        },
+        {
+          "pair": "accent/on-accent",
+          "ratio": 5.78
+        },
+        {
+          "pair": "accent/soft",
+          "ratio": 4.75
+        },
+        {
+          "pair": "warning/warning-bg",
+          "ratio": 5.94
+        }
+      ]
+    },
+    {
+      "style": "warm",
+      "theme": "dark",
+      "contrasts": [
+        {
+          "pair": "text/bg",
+          "ratio": 13.81
+        },
+        {
+          "pair": "secondary/bg",
+          "ratio": 8.59
+        },
+        {
+          "pair": "text/surface",
+          "ratio": 12.53
+        },
+        {
+          "pair": "secondary/surface",
+          "ratio": 7.79
+        },
+        {
+          "pair": "accent/on-accent",
+          "ratio": 8.94
+        },
+        {
+          "pair": "accent/soft",
+          "ratio": 7.22
+        },
+        {
+          "pair": "warning/warning-bg",
+          "ratio": 8.09
+        }
+      ]
+    }
+  ],
+  "smallHeightDock": {
+    "top": 241,
+    "bottom": 465,
+    "viewport": 480
+  },
+  "screenshots": [
+    "home",
+    "search",
+    "detail",
+    "edit",
+    "clear-light",
+    "clear-dark",
+    "warm-light",
+    "warm-dark",
+    "compact-height",
+    "overview"
+  ]
+}

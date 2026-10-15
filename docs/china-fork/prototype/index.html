@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, interactive-widget=resizes-content">
+  <meta name="color-scheme" content="light dark">
+  <title>营养记录 · M1 交互原型</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="prototype.css">
+  <script src="model.js" defer></script>
+  <script src="prototype.js" defer></script>
+</head>
+<body>
+  <div class="review-shell">
+    <aside class="review-tools" aria-label="原型评审控制">
+      <div class="review-kicker">OPEN NUTRITION / M1</div>
+      <h1>把记录，<br>变简单。</h1>
+      <p class="review-intro">四个核心页面，一条完整流程。<br>先试用，再决定设计。</p>
+      <div class="review-group">
+        <h2>视觉方向</h2>
+        <div class="review-options" id="style-options">
+          <button type="button" data-style="clear" aria-pressed="true"><span class="swatch clear"></span>青绿 · 清晰</button>
+          <button type="button" data-style="warm" aria-pressed="false"><span class="swatch warm"></span>暖白 · 柔和</button>
+        </div>
+      </div>
+      <div class="review-group">
+        <h2>外观与字号</h2>
+        <div class="review-options horizontal">
+          <button type="button" id="theme-toggle" aria-pressed="false">深色模式</button>
+          <button type="button" id="text-toggle" aria-pressed="false">大字号</button>
+        </div>
+      </div>
+      <nav class="review-group screen-links" aria-label="查看核心页面">
+        <h2>核心页面</h2>
+        <button type="button" data-screen="home">01<span>饮食日记</span><span>→</span></button>
+        <button type="button" data-screen="search">02<span>食品搜索</span><span>→</span></button>
+        <button type="button" data-screen="detail">03<span>食品详情</span><span>→</span></button>
+        <button type="button" data-screen="edit">04<span>创建与修正</span><span>→</span></button>
+      </nav>
+      <label class="review-field">搜索状态演示
+        <select id="network-mode"><option value="online">公共结果可用（模拟）</option><option value="offline">离线，仅本地食品</option><option value="error">公共来源请求失败</option></select>
+      </label>
+      <button type="button" class="review-reset" id="reset-demo">重置示例数据</button>
+      <p class="review-footnote">交互原型，所有营养数据均为示例。操作仅保存在当前浏览器标签页，不连接食品 API。趋势与我的仅展示导航位置。App 名称尚未确定。</p>
+      <a class="review-doc" href="../M1_DESIGN.md">阅读设计说明 ↗</a>
+    </aside>
+    <section class="preview-stage" aria-label="Android 界面预览">
+      <div class="preview-caption"><span id="preview-caption">青绿 · 清晰</span><span>可点击 · 示例数据</span></div>
+      <div class="phone" id="phone" data-style="clear" data-theme="light">
+        <div class="statusbar" aria-hidden="true"><span>09:41</span><span class="system-icons">▰ ▴ ▰</span></div>
+        <div id="app" class="app"></div>
+        <div class="gesture-area" aria-hidden="true"><span></span></div>
+        <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+      </div>
+      <p class="stage-note">从餐次旁的「＋」开始，或用左侧按钮切换页面。</p>
+    </section>
+  </div>
+  <dialog id="scanner" aria-labelledby="scanner-title">
+    <div class="dialog-heading"><h2 id="scanner-title">扫描条形码</h2><button type="button" class="icon-button" aria-label="关闭条码演示" id="close-scanner">×</button></div>
+    <div class="scan-frame" aria-hidden="true"><div class="barcode-drawing"></div><div class="scan-line"></div></div>
+    <p class="scanner-note">这是扫码交互演示，不调用相机。输入条码或选择下面的样例。</p>
+    <form id="barcode-form"><label>条形码<input id="barcode-input" inputmode="numeric" autocomplete="off" placeholder="输入包装上的条形码" required></label><button class="primary-button" type="submit">查找食品</button></form>
+    <div class="scan-samples"><button type="button" data-barcode="6907992507385">国内样例 · 数据缺失</button><button type="button" data-barcode="3017620422003">国外样例 · Nutella</button></div>
+  </dialog>
+</body>
+</html>
