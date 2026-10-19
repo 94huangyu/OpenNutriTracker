@@ -6,16 +6,16 @@
   <meta name="color-scheme" content="light dark">
   <title>营养记录 · M1 交互原型</title>
   <link rel="icon" href="data:,">
-  <link rel="stylesheet" href="prototype.css?v=m1-r4">
-  <script src="model.js?v=m1-r4" defer></script>
-  <script src="prototype.js?v=m1-r4" defer></script>
+  <link rel="stylesheet" href="prototype.css?v=m1-r5-recording">
+  <script src="model.js?v=m1-r5-recording" defer></script>
+  <script src="prototype.js?v=m1-r5-recording" defer></script>
 </head>
 <body>
   <div class="review-shell">
     <aside class="review-tools" aria-label="原型评审控制">
       <div class="review-kicker">OPEN NUTRITION / M1</div>
       <h1>把记录，<br>变简单。</h1>
-      <p class="review-intro">四个核心页面，一条完整流程。<br>先试用，再决定设计。</p>
+      <p class="review-intro">只记录饮食摄入，不采集身体资料。<br>四个核心页面，一条完整流程。</p>
       <div class="review-group">
         <h2>视觉方向</h2>
         <div class="review-options" id="style-options">
@@ -41,7 +41,7 @@
         <select id="network-mode"><option value="online">公共结果可用（模拟）</option><option value="offline">离线，仅本地食品</option><option value="error">公共来源请求失败</option></select>
       </label>
       <button type="button" class="review-reset" id="reset-demo">重置示例数据</button>
-      <p class="review-footnote">交互原型，所有营养数据均为示例。操作仅保存在当前浏览器标签页，不连接食品 API。趋势与我的仅展示导航位置。App 名称尚未确定。</p>
+      <p class="review-footnote">交互原型，所有营养数据均为示例。操作仅保存在当前浏览器标签页，不连接食品 API。营养趋势与设置仅展示导航位置。App 名称尚未确定。</p>
       <a class="review-doc" href="../M1_DESIGN.md">阅读设计说明 ↗</a>
     </aside>
     <section class="preview-stage" aria-label="Android 界面预览">

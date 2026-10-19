@@ -1,0 +1,170 @@
+{
+  "date": "2026-10-19",
+  "timezone": "Asia/Shanghai",
+  "phase": "M2 recording-only increment",
+  "userVisualAcceptance": false,
+  "source": {
+    "repository": "94huangyu/OpenNutriTracker",
+    "branch": "feature/m2-core-diary",
+    "commit": "e270672e13fd849423a4fb81a2a559439738d944",
+    "tree": "5080d98b47c7334d37461de899ff7c628d71b09c",
+    "mergedToMain": false
+  },
+  "apk": {
+    "path": "output/flutter/m2.2/m2.2-recording-only-v2.4.0-66-develop-arm64-debug.apk",
+    "bytes": 137591756,
+    "sha256": "07da39a40e3f48a817ea16455bb62a9a776f89ad3485d9ca99e0f0d64ef3eedf",
+    "package": "com.opennutritracker.ont.opennutritracker.develop",
+    "versionName": "2.4.0-develop",
+    "versionCode": 66,
+    "abi": "arm64-v8a",
+    "buildType": "debug",
+    "certificateSha256": "8b5adf8691201ac71c7fc4037f5121e639b0e8f84269902cb52d5bb1eb4e61e0",
+    "installedApkHashMatched": true
+  },
+  "validation": {
+    "fullTests": {
+      "counts": {
+        "passed": 2624,
+        "failed": 0,
+        "skipped": 0
+      },
+      "done": {
+        "success": true,
+        "type": "done",
+        "time": 97074
+      }
+    },
+    "analysis": {
+      "command": "dart analyze --format=machine",
+      "diagnostics": 0,
+      "exitCode": 0
+    },
+    "build": {
+      "success": true,
+      "elapsedSeconds": 36.0,
+      "maxGradleWorkers": 2,
+      "emulatorUsed": false
+    },
+    "prototypeModelTests": {
+      "passed": 18,
+      "failed": 0
+    },
+    "freshBodyFreeStorage": {
+      "realTemporaryHive": true,
+      "userBoxStayedEmpty": true,
+      "reopenedOriginalNutritionBasis": 15,
+      "intakeGrams": 7.5,
+      "intakeKcal": 40
+    }
+  },
+  "device": {
+    "model": "vivo X300 / V2509A",
+    "androidVersion": "16",
+    "screenPixels": [
+      1216,
+      2640
+    ],
+    "serialPublished": false,
+    "checks": {
+      "upgradeKeptThreePreviousTestIntakes": true,
+      "previousDayKcal": 495,
+      "breakfastKcalBeforeEdit": 120,
+      "lunchKcal": 375,
+      "halfServingGrams": 7.5,
+      "halfServingKcal": 40,
+      "dayKcalAfterEdit": 455,
+      "breakfastKcalAfterEdit": 80,
+      "deleteCancelKeptRecord": true,
+      "keyboardSaveButtonVisible": true,
+      "quantityAndUnitTopAndHeightAligned": true,
+      "collapsedMeals": true,
+      "settingsHasNoBodyOrActivityEntry": true,
+      "darkModeViewed": true,
+      "energyUnitLabelToggled": true,
+      "originalThemeAndEnergyPreferenceRestored": true,
+      "automaticDisclaimerAbsentOnStartup": true
+    },
+    "qaCleanup": {
+      "onlyKnownIntakesOn": "2026-10-15",
+      "removedIntakes": 3,
+      "remainingDayKcal": 0,
+      "knownQaTemplatesRetained": [
+        "QAFoodA",
+        "QAFoodB"
+      ],
+      "templateCascadeDeletionUsed": false
+    },
+    "bodyAndActivityBoxes": [
+      {
+        "box": "useractivitybox.hive",
+        "unchanged": true
+      },
+      {
+        "box": "userbox.hive",
+        "unchanged": true
+      },
+      {
+        "box": "weightlogbox.hive",
+        "unchanged": true
+      }
+    ],
+    "runtimeErrors": {
+      "unhandledOrOverflowCount": 0
+    },
+    "cleanup": {
+      "stayAwakeRestored": true,
+      "appStopped": true,
+      "independentAdbServerStopped": true
+    },
+    "newFoodDetailDeviceCoverage": "component screenshots and keyboard layout checks only in this build; recording edit was tested on hardware"
+  },
+  "localScreenshotEvidence": [
+    {
+      "path": "output/flutter/m2.2-device/home-today.png",
+      "sha256": "598e6d6748b7acceb305d13504ac71847e2cca46dc08af6a008173bf5a01270e"
+    },
+    {
+      "path": "output/flutter/m2.2-device/home-history-preserved.png",
+      "sha256": "6d338b3719f3b2c6121d0bb103495a2792aab6e86cbb73b2bb0a870baec0a14d"
+    },
+    {
+      "path": "output/flutter/m2.2-device/edit-half-serving.png",
+      "sha256": "045acfa5de876be6ebaf818028b44d63f0ed8ba3b1094e25e3b80187605938d9"
+    },
+    {
+      "path": "output/flutter/m2.2-device/edit-keyboard.png",
+      "sha256": "3eb85673d9a7b5a876147a7599916d7a19bc6ebbfbc24e320f2228aecca59e54"
+    },
+    {
+      "path": "output/flutter/m2.2-device/settings.png",
+      "sha256": "3eba6b57805e2d32c73e40f1e6938fecd0b8ed504115f1219b180d01910d83f6"
+    },
+    {
+      "path": "output/flutter/m2.2-device/home-dark.png",
+      "sha256": "65f2b4ae828e7e8af60280e72e47b78d16fedef85bf86955d352774d02b7f0ab"
+    },
+    {
+      "path": "output/flutter/m2.2-device/home-final.png",
+      "sha256": "202723ff6ad20b93eeed1cbde57f61b6c2ed892d614ff46b918f7363aba1682b"
+    }
+  ],
+  "dataProtection": {
+    "schemaChangedThisBatch": false,
+    "legacyBodyDataDeleted": false,
+    "syntheticBodyDataWritten": false,
+    "privatePreInstallSnapshotLocalOnly": true,
+    "telemetrySdkInitialized": false
+  },
+  "notVerified": [
+    "user visual acceptance",
+    "fresh device install without resetting existing user data",
+    "new food detail full hardware walkthrough",
+    "Supabase account queries",
+    "all barcode formats or Chinese food coverage",
+    "complete backup restore guarantees",
+    "iOS build",
+    "other Android devices",
+    "release distribution"
+  ]
+}
