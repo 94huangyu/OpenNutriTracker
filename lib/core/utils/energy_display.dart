@@ -37,6 +37,10 @@ class EnergyDisplay {
     return convert(context, kcal).toInt().toString();
   }
 
+  /// Whole-unit intake summaries round instead of flooring floating-point noise.
+  static String formatRoundedWithUnit(BuildContext context, double kcal) =>
+      '${convert(context, kcal).round()} ${unitLabel(context)}';
+
   /// Convenience: format a stored kcal value as `"<value> <unit>"`.
   static String formatWithUnit(BuildContext context, double kcal) {
     return '${formatValue(context, kcal)} ${unitLabel(context)}';

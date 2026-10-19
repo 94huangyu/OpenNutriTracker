@@ -1384,5 +1384,19 @@
   "customMealNutrientInvalid": "Enter finite, non-negative nutrient values, or leave unknown values blank.",
   "customMealUnknownNutrientsHint": "Leave unknown nutrients blank. Enter 0 only when you know there is none.",
   "customMealNutrientDifferenceHint": "Label energy differs from the macro estimate. Fibre, labelling conventions and rounding can explain differences. Your entered energy will be kept.",
-  "customMealBarcodeInUse": "This barcode or name belongs to another food. Nothing was saved; change it or edit that food."
+  "customMealBarcodeInUse": "This barcode or name belongs to another food. Nothing was saved; change it or edit that food.",
+  "recordingTitle": "Food diary",
+  "recordingConsumed": "Energy consumed",
+  "recordingEmptyMeal": "No food recorded",
+  "recordingPositiveQuantity": "Enter a quantity greater than zero",
+  "recordingSaveFailed": "Could not save. Please try again.",
+  "recordingSave": "Save changes",
+  "recordingDelete": "Delete record",
+  "recordingDeleteQuestion": "Delete this record?",
+  "recordingUseKj": "Display energy in kJ",
+  "recordingTheme": "Appearance",
+  "recordingThemeSystem": "Follow system",
+  "recordingThemeLight": "Light",
+  "recordingThemeDark": "Dark",
+  "recordingFoodSources": "Food data sources"
 }

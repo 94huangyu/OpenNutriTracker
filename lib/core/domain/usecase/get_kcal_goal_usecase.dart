@@ -7,6 +7,7 @@ import 'package:opennutritracker/core/utils/calc/calorie_goal_calc.dart';
 import 'package:opennutritracker/core/utils/calc/day_boundary_calc.dart';
 
 class GetKcalGoalUsecase {
+  final bool recordingOnly;
   final UserRepository _userRepository;
   final ConfigRepository _configRepository;
   final UserActivityRepository _userActivityRepository;
@@ -14,14 +15,17 @@ class GetKcalGoalUsecase {
   GetKcalGoalUsecase(
     this._userRepository,
     this._configRepository,
-    this._userActivityRepository,
-  );
+    this._userActivityRepository, {
+    this.recordingOnly = false,
+  });
 
   Future<double> getKcalGoal({
     UserEntity? userEntity,
     double? totalKcalActivitiesParam,
     double? kcalUserAdjustment,
   }) async {
+    // Intake logging does not require a body profile or exercise data.
+    if (recordingOnly) return 0;
     final user = userEntity ?? await _userRepository.getUserData();
     final config = await _configRepository.getConfig();
     final totalKcalActivities =

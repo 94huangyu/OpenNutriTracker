@@ -24,6 +24,7 @@ part 'meal_detail_event.dart';
 part 'meal_detail_state.dart';
 
 class MealDetailBloc extends Bloc<MealDetailEvent, MealDetailState> {
+  final bool recordingOnly;
   final log = Logger('MealDetailBloc');
   final AddIntakeUsecase _addIntakeUseCase;
   final AddTrackedDayUsecase _addTrackedDayUsecase;
@@ -40,13 +41,14 @@ class MealDetailBloc extends Bloc<MealDetailEvent, MealDetailState> {
     this._getMacroGoalUsecase,
     this._getTrackedDayUsecase,
     this._productsRepository,
-    this._remoteSearchCacheDataSource,
-  ) : super(
-          MealDetailInitial(
-            totalQuantityConverted: '100',
-            selectedUnit: UnitDropdownItem.gml.toString(),
-          ),
-        ) {
+    this._remoteSearchCacheDataSource, {
+    this.recordingOnly = false,
+  }) : super(
+         MealDetailInitial(
+           totalQuantityConverted: '100',
+           selectedUnit: UnitDropdownItem.gml.toString(),
+         ),
+       ) {
     on<UpdateKcalEvent>((event, emit) async {
       try {
         final selectedTotalQuantity =
@@ -96,7 +98,7 @@ class MealDetailBloc extends Bloc<MealDetailEvent, MealDetailState> {
           emit(
             state.copyWith(
               dayKcalConsumed: tracked.caloriesTracked,
-              dayKcalGoal: tracked.calorieGoal,
+              dayKcalGoal: recordingOnly ? 0 : tracked.calorieGoal,
             ),
           );
         } else {

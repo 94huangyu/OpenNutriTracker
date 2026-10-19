@@ -45,37 +45,35 @@ class AppPalette {
 
   static const light = AppPalette(
     brightness: Brightness.light,
-    canvas: Color(0xFFF7F4EF),
+    canvas: Color(0xFFF5F7F6),
     surface: Color(0xFFFFFFFF),
-    surfaceMuted: Color(0xFFEFEAE1),
-    border: Color(0xFFE7E1D6),
+    surfaceMuted: Color(0xFFEDF2EF),
+    border: Color(0xFFDFE7E2),
     shadow: Color(0x14403A2E),
-    // Deepened from #1FA971 so white-on-accent and accent-as-text both clear
-    // WCAG AA (~4.6:1) on the light surface — buttons, nav labels and the ring.
-    accent: Color(0xFF0E7A4D),
+    accent: Color(0xFF1F7057),
     onAccent: Color(0xFFFFFFFF),
-    carbsColor: Color(0xFFB87410),
-    fatColor: Color(0xFFD05536),
-    proteinColor: Color(0xFF1F8E80),
-    textStrong: Color(0xFF2B2A27),
+    carbsColor: Color(0xFF6B6DAA),
+    fatColor: Color(0xFFAB752E),
+    proteinColor: Color(0xFF2C7773),
+    textStrong: Color(0xFF1E3029),
     // Darkened from #8A857C (~3.5:1) to ~4.6:1 so secondary text passes AA.
-    textMuted: Color(0xFF6E685E),
+    textMuted: Color(0xFF62716A),
   );
 
   static const dark = AppPalette(
     brightness: Brightness.dark,
-    canvas: Color(0xFF1B1A18),
-    surface: Color(0xFF252320),
-    surfaceMuted: Color(0xFF302D28),
-    border: Color(0xFF38352F),
+    canvas: Color(0xFF131C18),
+    surface: Color(0xFF1C2821),
+    surfaceMuted: Color(0xFF24352B),
+    border: Color(0xFF35473B),
     shadow: Color(0x33000000),
-    accent: Color(0xFF34D08A),
-    onAccent: Color(0xFF06281A),
-    carbsColor: Color(0xFFF2B45A),
-    fatColor: Color(0xFFFF937B),
-    proteinColor: Color(0xFF49C9B8),
-    textStrong: Color(0xFFECE8E1),
-    textMuted: Color(0xFFA39E94),
+    accent: Color(0xFF91D7B0),
+    onAccent: Color(0xFF103424),
+    carbsColor: Color(0xFFB7B4EC),
+    fatColor: Color(0xFFDFB275),
+    proteinColor: Color(0xFF89CEC1),
+    textStrong: Color(0xFFE9F0EB),
+    textMuted: Color(0xFFB0BFB5),
   );
 
   /// Returns a copy with the accent swapped for [newAccent] (accent picker or a

@@ -1,15 +1,20 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:opennutritracker/core/styles/app_palette.dart';
 import 'package:opennutritracker/core/styles/dimens.dart';
 
-/// Friendly, highly readable type. Nunito carries everything — rounded enough to
-/// feel warm, calm enough to stay legible in dense lists. Heavy weights give the
-/// hero numbers presence without needing a separate display face.
+/// System sans-serif type keeps Chinese labels and numbers consistent.
 TextTheme appTextTheme(AppPalette p) {
-  const f = 'Nunito';
+  final fontFamily = ThemeData().textTheme.bodyMedium?.fontFamily;
   TextStyle s(double size, FontWeight w, {double spacing = 0, Color? color}) =>
-      TextStyle(fontFamily: f, fontSize: size, fontWeight: w, letterSpacing: spacing, color: color ?? p.textStrong);
+      TextStyle(
+        fontFamily: fontFamily,
+        fontSize: size,
+        fontWeight: w,
+        letterSpacing: spacing,
+        color: color ?? p.textStrong,
+      );
   return TextTheme(
     displayLarge: s(57, FontWeight.w800, spacing: -1),
     displayMedium: s(45, FontWeight.w800, spacing: -0.5),
@@ -35,7 +40,9 @@ TextTheme appTextTheme(AppPalette p) {
 ThemeData buildAppTheme(AppPalette p) {
   final scheme = p.colorScheme;
   final text = appTextTheme(p);
-  const pill = StadiumBorder();
+  const pill = RoundedRectangleBorder(
+    borderRadius: BorderRadius.all(Radius.circular(12)),
+  );
   return ThemeData(
     useMaterial3: true,
     colorScheme: scheme,
@@ -47,12 +54,15 @@ ThemeData buildAppTheme(AppPalette p) {
       surfaceTintColor: Colors.transparent,
       elevation: 0,
       shape: RoundedRectangleBorder(
-        borderRadius: Dimens.borderRadiusL,
+        borderRadius: BorderRadius.circular(16),
         side: BorderSide(color: p.border, width: Dimens.hairline),
       ),
       margin: EdgeInsets.zero,
     ),
     appBarTheme: AppBarThemeData(
+      systemOverlayStyle: p.brightness == Brightness.dark
+          ? SystemUiOverlayStyle.light
+          : SystemUiOverlayStyle.dark,
       backgroundColor: p.canvas,
       surfaceTintColor: Colors.transparent,
       foregroundColor: p.textStrong,
@@ -98,11 +108,20 @@ ThemeData buildAppTheme(AppPalette p) {
     inputDecorationTheme: InputDecorationThemeData(
       filled: true,
       fillColor: p.surfaceMuted,
-      contentPadding: const EdgeInsets.symmetric(horizontal: Dimens.spacing16, vertical: Dimens.spacing12),
-      border: const OutlineInputBorder(borderRadius: Dimens.borderRadiusM, borderSide: BorderSide.none),
-      enabledBorder: const OutlineInputBorder(borderRadius: Dimens.borderRadiusM, borderSide: BorderSide.none),
+      contentPadding: const EdgeInsets.symmetric(
+        horizontal: Dimens.spacing16,
+        vertical: Dimens.spacing12,
+      ),
+      border: const OutlineInputBorder(
+        borderRadius: BorderRadius.all(Radius.circular(10)),
+        borderSide: BorderSide.none,
+      ),
+      enabledBorder: const OutlineInputBorder(
+        borderRadius: BorderRadius.all(Radius.circular(10)),
+        borderSide: BorderSide.none,
+      ),
       focusedBorder: OutlineInputBorder(
-        borderRadius: Dimens.borderRadiusM,
+        borderRadius: const BorderRadius.all(Radius.circular(10)),
         borderSide: BorderSide(color: p.accent, width: 2),
       ),
     ),

@@ -1,17 +1,16 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:opennutritracker/core/presentation/widgets/intake_card.dart';
+import 'package:opennutritracker/core/presentation/widgets/image_full_screen.dart';
+import 'package:opennutritracker/core/utils/demo/unsplash_attribution.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:logging/logging.dart';
 import 'package:opennutritracker/core/domain/entity/intake_type_entity.dart';
 import 'package:opennutritracker/core/presentation/widgets/meal_value_unit_text.dart';
-import 'package:opennutritracker/core/presentation/widgets/image_full_screen.dart';
 import 'package:opennutritracker/core/styles/app_palette.dart';
 import 'package:opennutritracker/core/styles/dimens.dart';
 import 'package:opennutritracker/core/domain/usecase/get_config_usecase.dart';
 import 'package:opennutritracker/core/utils/energy_display.dart';
 import 'package:opennutritracker/core/utils/locator.dart';
-import 'package:opennutritracker/core/utils/demo/unsplash_attribution.dart';
 import 'package:opennutritracker/core/utils/navigation_options.dart';
 import 'package:opennutritracker/features/add_meal/domain/entity/meal_entity.dart';
 import 'package:opennutritracker/features/edit_meal/presentation/edit_meal_screen.dart';
@@ -21,8 +20,6 @@ import 'package:opennutritracker/features/meal_detail/presentation/widgets/meal_
 import 'package:opennutritracker/features/meal_detail/presentation/widgets/meal_detail_macro_nutrients.dart';
 import 'package:opennutritracker/features/meal_detail/presentation/widgets/meal_detail_nutriments_table.dart';
 import 'package:opennutritracker/features/meal_detail/presentation/widgets/meal_info_button.dart';
-import 'package:opennutritracker/features/meal_detail/presentation/widgets/meal_placeholder.dart';
-import 'package:opennutritracker/features/meal_detail/presentation/widgets/meal_title_expanded.dart';
 import 'package:opennutritracker/features/meal_detail/presentation/widgets/off_disclaimer.dart';
 import 'package:opennutritracker/generated/l10n.dart';
 
@@ -34,15 +31,12 @@ class MealDetailScreen extends StatefulWidget {
 }
 
 class _MealDetailScreenState extends State<MealDetailScreen> {
-  static const _containerSize = 350.0;
-
   static const String _initialQuantityMetric = '100';
   static const String _initialQuantityImperial = '1';
 
   final log = Logger('ItemDetailScreen');
 
   late MealDetailBloc _mealDetailBloc;
-  final _scrollController = ScrollController();
 
   late MealEntity meal;
   late DateTime _day;
@@ -76,34 +70,18 @@ class _MealDetailScreenState extends State<MealDetailScreen> {
   /// bar and push the product image out of view.
   bool _applyingInitialSelection = false;
 
-  // Scroll distance from expandedHeight down to the collapsed SliverAppBar
-  // (toolbar + bottom bar): 268-124 with the DailyKcalOverview bottom bar,
-  // 200-56 without it — always 144 either way, so no need to key it off
-  // dayKcalGoal.
-  static const double _collapseScrollThreshold = 144.0;
-  bool _showAppBarTitle = false;
-
   @override
   void initState() {
     _mealDetailBloc = locator<MealDetailBloc>();
     _loadDetailPreferences();
-    _scrollController.addListener(_handleScroll);
     super.initState();
   }
 
   @override
   void dispose() {
-    _scrollController.removeListener(_handleScroll);
-    _scrollController.dispose();
     quantityTextController.dispose();
+    _mealDetailBloc.close();
     super.dispose();
-  }
-
-  void _handleScroll() {
-    final show = _scrollController.offset >= _collapseScrollThreshold - 4;
-    if (show != _showAppBarTitle) {
-      setState(() => _showAppBarTitle = show);
-    }
   }
 
   Future<void> _loadDetailPreferences() async {
@@ -260,41 +238,60 @@ class _MealDetailScreenState extends State<MealDetailScreen> {
       child: SafeArea(
         child: Scaffold(
           backgroundColor:
-              (Theme.of(context).brightness == Brightness.dark ? AppPalette.dark : AppPalette.light).canvas,
-          body: BlocBuilder<MealDetailBloc, MealDetailState>(
-            bloc: _mealDetailBloc,
-            builder: (context, state) {
-              if (state is MealDetailInitial) {
-                return _getLoadedContent(
-                  context,
-                  state.totalQuantityConverted,
-                  state.totalKcal,
-                  state.totalCarbs,
-                  state.totalFat,
-                  state.totalProtein,
-                  state.selectedUnit,
-                  state.dayKcalConsumed,
-                  state.dayKcalGoal,
-                  state.isHydrating,
-                );
-              }
-              return const Center(child: CircularProgressIndicator());
-            },
-          ),
-        bottomSheet: BlocSelector<MealDetailBloc, MealDetailState, String>(
-          bloc: _mealDetailBloc,
-          selector: (state) => state.selectedUnit,
-          builder: (context, selectedUnit) {
-            return MealDetailBottomSheet(
-              product: meal,
-              day: _day,
-              intakeTypeEntity: intakeTypeEntity,
-              selectedUnit: selectedUnit,
-              mealDetailBloc: _mealDetailBloc,
-              quantityTextController: quantityTextController,
-              onQuantityOrUnitChanged: onQuantityOrUnitChanged,
-            );
-          },
+              (Theme.of(context).brightness == Brightness.dark
+                      ? AppPalette.dark
+                      : AppPalette.light)
+                  .canvas,
+          body: LayoutBuilder(
+            builder: (context, constraints) => Column(
+              children: [
+                Expanded(
+                  child: BlocBuilder<MealDetailBloc, MealDetailState>(
+                    bloc: _mealDetailBloc,
+                    builder: (context, state) {
+                      if (state is MealDetailInitial) {
+                        return _getLoadedContent(
+                          context,
+                          state.totalQuantityConverted,
+                          state.totalKcal,
+                          state.totalCarbs,
+                          state.totalFat,
+                          state.totalProtein,
+                          state.selectedUnit,
+                          state.dayKcalConsumed,
+                          state.dayKcalGoal,
+                          state.isHydrating,
+                        );
+                      }
+                      return const Center(child: CircularProgressIndicator());
+                    },
+                  ),
+                ),
+                ConstrainedBox(
+                  constraints: BoxConstraints(
+                    maxHeight: constraints.maxHeight * .6,
+                  ),
+                  child: SingleChildScrollView(
+                    child:
+                        BlocSelector<MealDetailBloc, MealDetailState, String>(
+                          bloc: _mealDetailBloc,
+                          selector: (state) => state.selectedUnit,
+                          builder: (context, selectedUnit) {
+                            return MealDetailBottomSheet(
+                              product: meal,
+                              day: _day,
+                              intakeTypeEntity: intakeTypeEntity,
+                              selectedUnit: selectedUnit,
+                              mealDetailBloc: _mealDetailBloc,
+                              quantityTextController: quantityTextController,
+                              onQuantityOrUnitChanged: onQuantityOrUnitChanged,
+                            );
+                          },
+                        ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -316,29 +313,16 @@ class _MealDetailScreenState extends State<MealDetailScreen> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final palette = isDark ? AppPalette.dark : AppPalette.light;
     return CustomScrollView(
-      controller: _scrollController,
       slivers: [
         SliverAppBar(
           pinned: true,
           backgroundColor: palette.surface,
           surfaceTintColor: Colors.transparent,
-          expandedHeight: dayKcalGoal > 0 ? 268 : 200,
-          // The real toolbar title slot, not FlexibleSpaceBar.title: that
-          // widget bottom-anchors itself within the whole flexible-space
-          // stack (which includes the `bottom` bar's height), so with the
-          // DailyKcalOverview bottom bar present it renders underneath that
-          // bar instead of in the visible toolbar row.
-          title: AnimatedOpacity(
-            opacity: _showAppBarTitle ? 1.0 : 0.0,
-            duration: const Duration(milliseconds: 200),
-            child: Text(
-              meal.name ?? '',
-              style: Theme.of(context)
-                  .textTheme
-                  .titleLarge
-                  ?.copyWith(fontWeight: FontWeight.w800),
-              overflow: TextOverflow.ellipsis,
-            ),
+          title: Text(
+            meal.name ?? '',
+            style: Theme.of(context).textTheme.titleLarge,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
           ),
           bottom: PreferredSize(
             preferredSize: Size.fromHeight(dayKcalGoal > 0 ? 68 : 0),
@@ -346,17 +330,6 @@ class _MealDetailScreenState extends State<MealDetailScreen> {
               dayKcalConsumed: dayKcalConsumed,
               dayKcalGoal: dayKcalGoal,
               currentSelectionKcal: totalKcal,
-            ),
-          ),
-          flexibleSpace: FlexibleSpaceBar(
-            background: Padding(
-              padding: EdgeInsets.only(
-                bottom: dayKcalGoal > 0 ? 68 : 0,
-              ),
-              child: MealTitleExpanded(
-                meal: meal,
-                usesImperialUnits: _usesImperialUnits,
-              ),
             ),
           ),
           actions: [
@@ -382,46 +355,48 @@ class _MealDetailScreenState extends State<MealDetailScreen> {
         SliverList(
           delegate: SliverChildListDelegate([
             const SizedBox(height: 16),
-            Center(
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(80),
-                child: GestureDetector(
-                  child: Hero(
-                    tag: ImageFullScreen.fullScreenHeroTag,
-                    child: CachedNetworkImage(
-                      width: 250,
-                      height: 250,
-                      cacheManager: locator<CacheManager>(),
-                      imageUrl: meal.mainImageUrl ?? "",
-                      fit: BoxFit.cover,
-                      placeholder: (context, string) => const MealPlaceholder(),
-                      errorWidget: (context, url, error) =>
-                          const MealPlaceholder(),
-                    ),
-                  ),
-                  onTap: () {
-                    Navigator.of(context).pushNamed(
-                      NavigationOptions.imageFullScreenRoute,
-                      arguments: ImageFullScreenArguments(
-                        meal.mainImageUrl ?? "",
-                      ),
-                    );
-                  },
-                ),
+            Center(child: Semantics(
+              identifier: 'meal-detail-photo',
+              child: InkWell(
+                onTap: meal.mainImageUrl?.isNotEmpty == true
+                    ? () => Navigator.of(context).pushNamed(
+                        NavigationOptions.imageFullScreenRoute,
+                        arguments: ImageFullScreenArguments(meal.mainImageUrl!),
+                      )
+                    : null,
+                child: Hero(tag: ImageFullScreen.fullScreenHeroTag,
+                  child: MealThumbnail(meal: meal, size: 88)),
               ),
-            ),
+            )),
             UnsplashCreditLine(imageUrl: meal.mainImageUrl),
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(
                 children: [
-                  Row(
+                  Text(
+                    meal.name ?? '',
+                    style: Theme.of(context).textTheme.titleLarge,
+                  ),
+                  if (meal.brands?.trim().isNotEmpty ?? false)
+                    Text(
+                      meal.brands!,
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
+                  if ((double.tryParse(meal.mealQuantity ?? '') ?? 0) > 0)
+                    MealValueUnitText(
+                      value: double.tryParse(meal.mealQuantity ?? '') ?? 0,
+                      meal: meal,
+                      usesImperialUnits: _usesImperialUnits,
+                      textStyle: Theme.of(context).textTheme.bodySmall,
+                    ),
+                  const SizedBox(height: 16),
+                  Wrap(
+                    spacing: 8,
+                    crossAxisAlignment: WrapCrossAlignment.center,
                     children: [
                       Text(
-                        EnergyDisplay.formatWithUnit(context, totalKcal),
-                        style: Theme.of(context)
-                            .textTheme
-                            .headlineSmall
+                        EnergyDisplay.formatRoundedWithUnit(context, totalKcal),
+                        style: Theme.of(context).textTheme.headlineSmall
                             ?.copyWith(fontWeight: FontWeight.w800),
                       ),
                       MealValueUnitText(
@@ -438,8 +413,9 @@ class _MealDetailScreenState extends State<MealDetailScreen> {
                     ],
                   ),
                   const SizedBox(height: Dimens.spacing16),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  Wrap(
+                    spacing: 24,
+                    runSpacing: 16,
                     children: [
                       MealDetailMacroNutrients(
                         typeString: S.of(context).carbsLabel,
@@ -484,7 +460,7 @@ class _MealDetailScreenState extends State<MealDetailScreen> {
                           children: [SizedBox(height: 32), OffDisclaimer()],
                         )
                       : const SizedBox(),
-                  const SizedBox(height: 200.0), // height added to scroll
+                  const SizedBox(height: 24.0),
                 ],
               ),
             ),
@@ -513,17 +489,6 @@ class _MealDetailScreenState extends State<MealDetailScreen> {
         selectedUnit: unit,
       ),
     );
-    _scrollToCalorieText();
-  }
-
-  void _scrollToCalorieText() {
-    if (_scrollController.hasClients) {
-      _scrollController.animateTo(
-        _containerSize - 50,
-        duration: const Duration(seconds: 1),
-        curve: Curves.easeInOut,
-      );
-    }
   }
 }
 

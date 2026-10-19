@@ -24,6 +24,7 @@ part 'calendar_day_event.dart';
 part 'calendar_day_state.dart';
 
 class CalendarDayBloc extends Bloc<CalendarDayEvent, CalendarDayState> {
+  final bool recordingOnly;
   final GetUserActivityUsecase _getUserActivityUsecase;
   final GetIntakeUsecase _getIntakeUsecase;
   final DeleteIntakeUsecase _deleteIntakeUsecase;
@@ -47,8 +48,9 @@ class CalendarDayBloc extends Bloc<CalendarDayEvent, CalendarDayState> {
     this._updateIntakeUsecase,
     this._updateUserActivityUsecase,
     this._getConfigUsecase,
-    this._addConfigUsecase,
-  ) : super(CalendarDayInitial()) {
+    this._addConfigUsecase, {
+    this.recordingOnly = false,
+  }) : super(CalendarDayInitial()) {
     on<LoadCalendarDayEvent>((event, emit) async {
       emit(CalendarDayLoading());
       _currentDay = event.day;
@@ -76,11 +78,13 @@ class CalendarDayBloc extends Bloc<CalendarDayEvent, CalendarDayState> {
     final dayStartOffsetHours = config.dayStartOffsetHours;
     final dayStartOffsetMinutes = config.dayStartOffsetMinutes;
 
-    final userActivities = await _getUserActivityUsecase.getUserActivityByDay(
-      day,
-      dayStartOffsetHours: dayStartOffsetHours,
-      dayStartOffsetMinutes: dayStartOffsetMinutes,
-    );
+    final userActivities = recordingOnly
+        ? <UserActivityEntity>[]
+        : await _getUserActivityUsecase.getUserActivityByDay(
+            day,
+            dayStartOffsetHours: dayStartOffsetHours,
+            dayStartOffsetMinutes: dayStartOffsetMinutes,
+          );
 
     final breakfastIntakeList = await _getIntakeUsecase.getBreakfastIntakeByDay(
       day,
@@ -126,6 +130,7 @@ class CalendarDayBloc extends Bloc<CalendarDayEvent, CalendarDayState> {
         ? configData.targetKcalForMeal(ConfigEntity.mealKeySnack, dailyKcalGoal)
         : 0.0;
 
+    if (_currentDay != day) return;
     emit(
       CalendarDayLoaded(
         trackedDayEntity,

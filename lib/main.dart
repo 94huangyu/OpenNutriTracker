@@ -1,7 +1,5 @@
 import 'dart:async';
 
-import 'package:dynamic_color/dynamic_color.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:logging/logging.dart';
@@ -18,11 +16,9 @@ import 'package:opennutritracker/core/styles/app_palette.dart';
 import 'package:opennutritracker/core/styles/app_theme.dart';
 import 'package:opennutritracker/core/utils/app_locale_service.dart';
 import 'package:opennutritracker/core/utils/app_locale_sync.dart';
-import 'package:opennutritracker/core/utils/env.dart';
 import 'package:opennutritracker/core/utils/hive_storage_integrity_exception.dart';
 import 'package:opennutritracker/core/utils/locator.dart';
 import 'package:opennutritracker/core/utils/logger_config.dart';
-import 'package:opennutritracker/core/utils/sentry_config.dart';
 import 'package:opennutritracker/core/utils/notification_service.dart';
 import 'package:opennutritracker/core/utils/navigation_options.dart';
 import 'package:opennutritracker/core/utils/energy_unit_provider.dart';
@@ -33,7 +29,6 @@ import 'package:opennutritracker/features/add_meal/presentation/add_meal_screen.
 import 'package:opennutritracker/features/add_meal/presentation/screens/bulk_add_screen.dart';
 import 'package:opennutritracker/features/add_activity/presentation/add_activity_screen.dart';
 import 'package:opennutritracker/features/edit_meal/presentation/edit_meal_screen.dart';
-import 'package:opennutritracker/features/onboarding/onboarding_screen.dart';
 import 'package:opennutritracker/features/fasting/presentation/fasting_screen.dart';
 import 'package:opennutritracker/features/profile/presentation/screens/manage_profiles_screen.dart';
 import 'package:opennutritracker/features/profile/presentation/weight_history_screen.dart';
@@ -47,10 +42,9 @@ import 'package:opennutritracker/features/scanner/scanner_screen.dart';
 import 'package:opennutritracker/features/meal_detail/meal_detail_screen.dart';
 import 'package:opennutritracker/features/settings/presentation/widgets/accent_colour_screen.dart';
 import 'package:opennutritracker/features/settings/presentation/widgets/health_sync_screen.dart';
-import 'package:opennutritracker/features/settings/settings_screen.dart';
+import 'package:opennutritracker/features/recording/presentation/recording_settings.dart';
 import 'package:opennutritracker/generated/l10n.dart';
 import 'package:provider/provider.dart';
-import 'package:sentry_flutter/sentry_flutter.dart';
 
 /// The locales the app resolves against: gen-l10n's list narrowed to the
 /// shipped languages, computed once (WidgetsApp compares the list by
@@ -127,56 +121,19 @@ Future<void> _bootstrapApp() async {
       channelDescription: s.notificationsDailyReminderChannelDescription,
     );
   }
-  final hasAcceptedAnonymousData = await configRepo
-      .getConfigHasAcceptedAnonymousData();
   final savedAppTheme = await configRepo.getConfigAppTheme();
   final savedUsesKilojoules = config.usesKilojoules;
   final savedUseMaterialYou = config.useMaterialYou;
   final savedAccentColor = config.accentColor;
 
-  // If the user has accepted anonymous data collection, run the app with
-  // sentry enabled, else run without it
-  if (kReleaseMode && hasAcceptedAnonymousData) {
-    log.info('Starting App with Sentry enabled ...');
-    _runAppWithSentryReporting(
-      isUserInitialized,
-      savedAppTheme,
-      savedLocale,
-      savedUsesKilojoules,
-      savedUseMaterialYou,
-      savedAccentColor,
-    );
-  } else {
-    log.info('Starting App ...');
-    runAppWithChangeNotifiers(
-      isUserInitialized,
-      savedAppTheme,
-      savedLocale,
-      savedUsesKilojoules,
-      savedUseMaterialYou,
-      savedAccentColor,
-    );
-  }
-}
-
-void _runAppWithSentryReporting(
-  bool isUserInitialized,
-  AppThemeEntity savedAppTheme,
-  Locale? savedLocale,
-  bool savedUsesKilojoules,
-  bool savedUseMaterialYou,
-  int? savedAccentColor,
-) async {
-  await SentryFlutter.init(
-    (options) => configureSentryOptions(options, dsn: Env.sentryDns),
-    appRunner: () => runAppWithChangeNotifiers(
-      isUserInitialized,
-      savedAppTheme,
-      savedLocale,
-      savedUsesKilojoules,
-      savedUseMaterialYou,
-      savedAccentColor,
-    ),
+  log.info('Starting intake recording app without telemetry ...');
+  runAppWithChangeNotifiers(
+    isUserInitialized,
+    savedAppTheme,
+    savedLocale,
+    savedUsesKilojoules,
+    savedUseMaterialYou,
+    savedAccentColor,
   );
 }
 
@@ -257,30 +214,7 @@ class _OpenNutriTrackerAppState extends State<OpenNutriTrackerApp>
 
   @override
   Widget build(BuildContext context) {
-    // #415: DynamicColorBuilder hands back null on platforms that don't
-    // support wallpaper-derived colours (iOS, older Android, desktop test
-    // builds), so the static palette always remains as a graceful fallback.
-    final themeProvider = Provider.of<ThemeModeProvider>(context);
-    final useMaterialYou = themeProvider.useMaterialYou;
-    final accentColor = themeProvider.accentColor;
-    return DynamicColorBuilder(
-      builder: (lightDynamic, darkDynamic) {
-        // The friendly-flat canvas, surfaces and macro colours are fixed; only
-        // the single vivid accent follows the user. Material You (when enabled)
-        // or a picked accent drives that one role, otherwise the brand green.
-        AppPalette light = AppPalette.light;
-        AppPalette dark = AppPalette.dark;
-        if (useMaterialYou && lightDynamic != null && darkDynamic != null) {
-          light = light.withAccent(lightDynamic.harmonized().primary);
-          dark = dark.withAccent(darkDynamic.harmonized().primary);
-        } else if (accentColor != null) {
-          final seed = Color(accentColor);
-          light = light.withAccent(seed);
-          dark = dark.withAccent(seed);
-        }
-        return _buildMaterialApp(context, light, dark);
-      },
-    );
+    return _buildMaterialApp(context, AppPalette.light, AppPalette.dark);
   }
 
   Widget _buildMaterialApp(
@@ -307,9 +241,8 @@ class _OpenNutriTrackerAppState extends State<OpenNutriTrackerApp>
         NavigationOptions.splashRoute: (context) =>
             SplashScreen(userInitialized: widget.userInitialized),
         NavigationOptions.mainRoute: (context) => const MainScreen(),
-        NavigationOptions.onboardingRoute: (context) =>
-            const OnboardingScreen(),
-        NavigationOptions.settingsRoute: (context) => const SettingsScreen(),
+        NavigationOptions.onboardingRoute: (context) => const MainScreen(),
+        NavigationOptions.settingsRoute: (context) => const RecordingSettings(),
         NavigationOptions.accentColourRoute: (context) =>
             const AccentColourScreen(),
         NavigationOptions.healthSyncRoute: (context) => const HealthSyncScreen(),

@@ -44,6 +44,7 @@ class MealDetailBottomSheet extends StatefulWidget {
 
 class _MealDetailBottomSheetState extends State<MealDetailBottomSheet> {
   final _quantityFocusNode = FocusNode();
+  bool _saving = false;
 
   @override
   void initState() {
@@ -225,7 +226,7 @@ class _MealDetailBottomSheetState extends State<MealDetailBottomSheet> {
                         child: SizedBox(
                           width: double.infinity, // Make button full width
                           child: FilledButton.icon(
-                            onPressed: !productMissingRequiredInfo
+                            onPressed: !productMissingRequiredInfo && !_saving
                                 ? () {
                                     onAddButtonPressed(context);
                                   }
@@ -276,6 +277,22 @@ class _MealDetailBottomSheetState extends State<MealDetailBottomSheet> {
   }
 
   Future<void> onAddButtonPressed(BuildContext context) async {
+    if (_saving) return;
+    setState(() => _saving = true);
+    try {
+      await _saveIntake(context);
+    } catch (_) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(S.of(context).recordingSaveFailed)),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _saving = false);
+    }
+  }
+
+  Future<void> _saveIntake(BuildContext context) async {
     // Validate quantity (#209, #210)
     final quantityText = widget.quantityTextController.text.replaceAll(
       ',',
@@ -315,7 +332,7 @@ class _MealDetailBottomSheetState extends State<MealDetailBottomSheet> {
       if (shouldAdd != true) return;
     }
 
-    widget.mealDetailBloc.addIntake(
+    await widget.mealDetailBloc.addIntake(
       context,
       widget.mealDetailBloc.state.selectedUnit,
       widget.mealDetailBloc.state.totalQuantityConverted,
@@ -323,6 +340,8 @@ class _MealDetailBottomSheetState extends State<MealDetailBottomSheet> {
       widget.product,
       widget.day,
     );
+
+    if (!context.mounted) return;
 
     // Refresh Home Page
     locator<HomeBloc>().add(const LoadItemsEvent());

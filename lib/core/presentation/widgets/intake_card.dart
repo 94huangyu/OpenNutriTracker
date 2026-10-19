@@ -5,6 +5,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:opennutritracker/core/domain/entity/intake_entity.dart';
+import 'package:opennutritracker/features/add_meal/domain/entity/meal_entity.dart';
 import 'package:opennutritracker/core/presentation/widgets/app_card.dart';
 import 'package:opennutritracker/core/presentation/widgets/meal_value_unit_text.dart';
 import 'package:opennutritracker/core/styles/app_palette.dart';
@@ -60,7 +61,7 @@ class IntakeCard extends StatelessWidget {
             padding: const EdgeInsets.all(Dimens.spacing12),
             child: Row(
               children: [
-                _Thumbnail(intake: intake, palette: palette),
+                MealThumbnail(meal: intake.meal),
                 const SizedBox(width: Dimens.spacing12),
                 Expanded(
                   child: Column(
@@ -86,7 +87,10 @@ class IntakeCard extends StatelessWidget {
                 ),
                 const SizedBox(width: Dimens.spacing8),
                 Text(
-                  EnergyDisplay.formatWithUnit(context, intake.totalKcal),
+                  EnergyDisplay.formatRoundedWithUnit(
+                    context,
+                    intake.totalKcal,
+                  ),
                   style: textTheme.labelMedium?.copyWith(
                     color: palette.textStrong,
                     fontWeight: FontWeight.w700,
@@ -111,42 +115,47 @@ class IntakeCard extends StatelessWidget {
 
 /// The leading thumbnail: a user photo, the remote OFF/FDC image, or a soft
 /// fallback chip with a food icon — clipped to a rounded square.
-class _Thumbnail extends StatelessWidget {
-  final IntakeEntity intake;
-  final AppPalette palette;
+class MealThumbnail extends StatelessWidget {
+  final MealEntity meal;
+  final double size;
 
-  const _Thumbnail({required this.intake, required this.palette});
+  const MealThumbnail({super.key, required this.meal, this.size = 52});
+
+  AppPalette _palette(BuildContext context) =>
+      Theme.of(context).brightness == Brightness.dark
+      ? AppPalette.dark
+      : AppPalette.light;
 
   @override
   Widget build(BuildContext context) {
     Widget content;
-    if (intake.meal.localImagePath != null) {
-      content = _LocalMealImage(relativePath: intake.meal.localImagePath!);
-    } else if (intake.meal.mainImageUrl != null) {
+    if (meal.localImagePath != null) {
+      content = _LocalMealImage(relativePath: meal.localImagePath!);
+    } else if (meal.mainImageUrl != null) {
       content = CachedNetworkImage(
         cacheManager: locator<CacheManager>(),
-        imageUrl: intake.meal.mainImageUrl ?? "",
+        imageUrl: meal.mainImageUrl ?? "",
         fit: BoxFit.cover,
-        errorWidget: (context, url, error) => _fallback(),
-        placeholder: (context, url) => _fallback(),
+        errorWidget: (context, url, error) => _fallback(context),
+        placeholder: (context, url) => _fallback(context),
       );
     } else {
-      content = _fallback();
+      content = _fallback(context);
     }
     return ClipRRect(
       borderRadius: BorderRadius.circular(Dimens.radiusS),
-      child: SizedBox(
-        width: IntakeCard.thumbSize,
-        height: IntakeCard.thumbSize,
-        child: content,
-      ),
+      child: SizedBox(width: size, height: size, child: content),
     );
   }
 
-  Widget _fallback() => Container(
-        color: palette.surfaceMuted,
-        child: Icon(Icons.restaurant_rounded, color: palette.textMuted, size: 24),
-      );
+  Widget _fallback(BuildContext context) => Container(
+    color: _palette(context).surfaceMuted,
+    child: Icon(
+      Icons.restaurant_rounded,
+      color: _palette(context).textMuted,
+      size: 24,
+    ),
+  );
 }
 
 class _LocalMealImage extends StatelessWidget {

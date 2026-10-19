@@ -5,15 +5,13 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:opennutritracker/core/utils/navigation_options.dart';
 
 /// First screen shown on launch: the OpenNutriTracker logo with the spoon
-/// making a single accelerating-then-settling spin, after which it routes on
-/// to the main screen (returning user) or onboarding (first run).
+/// making a single accelerating-then-settling spin, then opening the diary.
 ///
 /// The native launch screen (Android `launch_background`, iOS
 /// `LaunchScreen.storyboard`) paints the same canvas colour behind the Flutter
 /// engine while it boots, so the hand-off into this animated splash is seamless.
 class SplashScreen extends StatefulWidget {
-  /// Whether the user has already completed onboarding. Decides where the
-  /// splash routes once the animation finishes.
+  /// Legacy call-site compatibility; a body profile no longer gates entry.
   final bool userInitialized;
 
   const SplashScreen({super.key, required this.userInitialized});
@@ -64,9 +62,8 @@ class _SplashScreenState extends State<SplashScreen>
   void _goNext() {
     if (_navigated || !mounted) return;
     _navigated = true;
-    Navigator.of(context).pushReplacementNamed(widget.userInitialized
-        ? NavigationOptions.mainRoute
-        : NavigationOptions.onboardingRoute);
+    // The recording fork opens without collecting a body profile.
+    Navigator.of(context).pushReplacementNamed(NavigationOptions.mainRoute);
   }
 
   @override

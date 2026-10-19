@@ -1340,5 +1340,19 @@
   "customMealNutrientInvalid": "营养值请填写不小于0的有效数值；不详可留空。",
   "customMealUnknownNutrientsHint": "不详请留空；已确认没有的营养素请填0。",
   "customMealNutrientDifferenceHint": "标签热量与三大营养素估算有差异，请核对。膳食纤维、计量口径和舍入都可能导致差异；仍按你填写的热量保存。",
-  "customMealBarcodeInUse": "该条码或名称已关联另一食品，未保存。请更改它，或编辑已有食品。"
+  "customMealBarcodeInUse": "该条码或名称已关联另一食品，未保存。请更改它，或编辑已有食品。",
+  "recordingTitle": "饮食记录",
+  "recordingConsumed": "已摄入热量",
+  "recordingEmptyMeal": "还没有记录食品",
+  "recordingPositiveQuantity": "请输入大于 0 的摄入量",
+  "recordingSaveFailed": "保存失败，请重试",
+  "recordingSave": "保存修改",
+  "recordingDelete": "删除记录",
+  "recordingDeleteQuestion": "删除这条摄入记录？",
+  "recordingUseKj": "使用 kJ 显示热量",
+  "recordingTheme": "外观",
+  "recordingThemeSystem": "跟随系统",
+  "recordingThemeLight": "浅色",
+  "recordingThemeDark": "深色",
+  "recordingFoodSources": "食品数据来源"
 }

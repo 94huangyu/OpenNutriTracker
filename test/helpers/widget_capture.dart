@@ -10,9 +10,12 @@ import 'package:flutter_test/flutter_test.dart';
 Future<void> loadCaptureFonts() async {
   if (Platform.environment['ONT_CAPTURE_DIR'] == null) return;
   final font = File('/System/Library/Fonts/Supplemental/Arial Unicode.ttf');
-  await (FontLoader('Nunito')
-        ..addFont(Future.value(ByteData.sublistView(await font.readAsBytes()))))
-      .load();
+  for (final family in ['Nunito', 'Roboto']) {
+    await (FontLoader(family)..addFont(
+          Future.value(ByteData.sublistView(await font.readAsBytes())),
+        ))
+        .load();
+  }
   final root = Platform.environment['ONT_PROJECT_ROOT']!;
   final icons = File(
     '$root/.tools/flutter-3.44.6/flutter/bin/cache/artifacts/material_fonts/MaterialIcons-Regular.otf',

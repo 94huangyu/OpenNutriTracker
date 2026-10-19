@@ -75,6 +75,7 @@ void main() {
         _FakeGetTrackedDayUsecase(),
         _FakeProductsRepository(),
         _FakeRemoteSearchCacheDataSource(),
+        recordingOnly: true,
       ),
     );
     getIt.registerLazySingleton<GetConfigUsecase>(_FakeGetConfigUsecase.new);
@@ -89,8 +90,13 @@ void main() {
     await getIt.reset();
   });
 
-  Future<void> pumpMealDetail(WidgetTester tester, MealEntity meal) async {
-    tester.view.physicalSize = const Size(390, 844);
+  Future<void> pumpMealDetail(
+    WidgetTester tester,
+    MealEntity meal, {
+    Size size = const Size(390, 844),
+    double scale = 1,
+  }) async {
+    tester.view.physicalSize = size;
     tester.view.devicePixelRatio = 1.0;
     addTearDown(tester.view.reset);
 
@@ -111,6 +117,12 @@ void main() {
             debugShowCheckedModeBanner: false,
             theme: buildAppTheme(AppPalette.light),
             locale: const Locale('zh'),
+            builder: (context, child) => MediaQuery(
+              data: MediaQuery.of(
+                context,
+              ).copyWith(textScaler: TextScaler.linear(scale)),
+              child: child!,
+            ),
             navigatorKey: navigatorKey,
             localizationsDelegates: const [
               S.delegate,
@@ -172,6 +184,32 @@ void main() {
     await captureWidget(tester, captureKey, 'intake-47.5-grams');
     expect(tester.takeException(), isNull);
   });
+  testWidgets(
+    'narrow large text and keyboard keep the input footer reachable',
+    (tester) async {
+      await pumpMealDetail(
+        tester,
+        _solidThirtyGramServing(),
+        size: const Size(320, 700),
+        scale: 1.6,
+      );
+      tester.view.viewInsets = const FakeViewPadding(bottom: 260);
+      await tester.pumpAndSettle();
+      expect(tester.takeException(), isNull);
+      final save = find.byWidgetPredicate(
+        (w) => w is Semantics && w.properties.identifier == 'meal-detail-add',
+      );
+      await tester.ensureVisible(save);
+      await tester.pumpAndSettle();
+      expect(tester.getRect(save).bottom, lessThanOrEqualTo(440.1));
+      await captureWidget(
+        tester,
+        captureKey,
+        'intake-narrow-large-font-keyboard',
+      );
+      expect(tester.takeException(), isNull);
+    },
+  );
 }
 
 class _FakeGetConfigUsecase implements GetConfigUsecase {

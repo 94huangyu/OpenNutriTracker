@@ -227,6 +227,7 @@ Future<void> initLocator() async {
       locator(),
       locator(),
       locator(),
+      recordingOnly: true,
     ),
   );
   locator.registerLazySingleton(() => DiaryBloc(locator(), locator()));
@@ -242,6 +243,7 @@ Future<void> initLocator() async {
       locator(),
       locator(),
       locator(),
+      recordingOnly: true,
     ),
   );
   locator.registerLazySingleton<ProfileBloc>(
@@ -314,6 +316,7 @@ Future<void> initLocator() async {
       locator(),
       locator(),
       locator(),
+      recordingOnly: true,
     ),
   );
   locator.registerFactory<ScannerBloc>(() => ScannerBloc(locator(), locator()));
@@ -472,7 +475,12 @@ Future<void> initLocator() async {
     () => DeleteWaterIntakeUsecase(locator()),
   );
   locator.registerLazySingleton(
-    () => GetKcalGoalUsecase(locator(), locator(), locator()),
+    () => GetKcalGoalUsecase(
+      locator(),
+      locator(),
+      locator(),
+      recordingOnly: true,
+    ),
   );
   locator.registerLazySingleton(
     () => GetKcalGoalBreakdownUsecase(locator(), locator(), locator()),

@@ -35,6 +35,7 @@ part 'home_event.dart';
 part 'home_state.dart';
 
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
+  final bool recordingOnly;
   final GetConfigUsecase _getConfigUsecase;
   final AddConfigUsecase _addConfigUsecase;
   final GetIntakeUsecase _getIntakeUsecase;
@@ -68,9 +69,12 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     this._getUserUsecase,
     this._getWaterIntakeUsecase,
     this._addWaterIntakeUsecase,
-    this._deleteWaterIntakeUsecase,
-  ) : super(HomeInitial()) {
+    this._deleteWaterIntakeUsecase, {
+    this.recordingOnly = false,
+  }) : super(HomeInitial()) {
     on<LoadItemsEvent>((event, emit) async {
+      // Legacy refresh callers remain valid without loading body data.
+      if (recordingOnly) return;
       emit(HomeLoadingState());
 
       final configData = await _getConfigUsecase.getConfig();
