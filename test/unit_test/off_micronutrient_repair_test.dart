@@ -578,7 +578,8 @@ void main() {
     });
 
     test('ensureOffMicronutrientsRepaired covers all five stores', () async {
-      final personalBox = await Hive.openBox<MealDBO>('personal_foods');
+      final personalBox = await Hive.openBox<MealDBO>('off_repair_personal_${DateTime.now().microsecondsSinceEpoch}');
+      addTearDown(personalBox.deleteFromDisk);
       await personalBox.add(_meal(source: MealSourceDBO.off));
       await intakeBox.add(_intake('old-off', _meal(source: MealSourceDBO.off)));
       await cacheBox.add(_meal(source: MealSourceDBO.off, detailed: true));
