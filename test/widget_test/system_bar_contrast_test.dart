@@ -19,7 +19,19 @@ void main() {
           return null;
         },
       );
+      const systemUi = MethodChannel('com.opennutritracker/system_ui');
+      tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(systemUi, (
+        call,
+      ) async {
+        calls.add(call);
+        return SystemChrome.latestStyle?.statusBarIconBrightness ==
+            Brightness.dark;
+      });
       addTearDown(() {
+        tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+          systemUi,
+          null,
+        );
         tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
           SystemChannels.platform,
           null,
@@ -85,34 +97,38 @@ void main() {
         SystemChrome.latestStyle?.statusBarIconBrightness,
         Brightness.dark,
       );
-      List<String?> iconRequests() => calls
+      int prepares() => calls
+          .where((call) => call.method == 'prepareStatusBarRefresh')
+          .length;
+      int restores() => calls
           .where(
-            (call) => call.method == 'SystemChrome.setSystemUIOverlayStyle',
+            (call) => call.method == 'SystemChrome.restoreSystemUIOverlays',
           )
-          .map(
-            (call) =>
-                (call.arguments as Map)['statusBarIconBrightness'] as String?,
-          )
-          .toList();
+          .length;
       calls.clear();
       tester.view.viewInsets = const FakeViewPadding(bottom: 300);
       await tester.pump();
       tester.view.viewInsets = FakeViewPadding.zero;
       await tester.pump(const Duration(milliseconds: 900));
-      expect(iconRequests(), isEmpty);
-      // Reopening cancels the pending refresh while the IME owns the chrome.
+      expect(prepares(), 0);
       tester.view.viewInsets = const FakeViewPadding(bottom: 300);
       await tester.pump(const Duration(milliseconds: 400));
-      expect(iconRequests(), isEmpty);
+      expect(prepares(), 0);
       tester.view.viewInsets = FakeViewPadding.zero;
       await tester.pump(const Duration(milliseconds: 1100));
-      await tester.pump();
-      expect(iconRequests(), ['Brightness.light', 'Brightness.dark']);
+      expect(prepares(), 1);
+      expect(restores(), 0);
+      theme.updateTheme(AppThemeEntity.dark);
+      await tester.pumpAndSettle();
+      await tester.pump(const Duration(milliseconds: 200));
+      expect(restores(), 1);
       expect(
         SystemChrome.latestStyle?.statusBarIconBrightness,
-        Brightness.dark,
+        Brightness.light,
       );
-      // Use the route's current style, not a light theme captured at dismissal.
+      theme.updateTheme(AppThemeEntity.light);
+      await tester.pumpAndSettle();
+      // A dark route does not need the native refresh.
       tester.view.viewInsets = const FakeViewPadding(bottom: 300);
       await tester.pump();
       tester.view.viewInsets = FakeViewPadding.zero;
@@ -120,7 +136,8 @@ void main() {
       await tester.pumpAndSettle();
       calls.clear();
       await tester.pump(const Duration(milliseconds: 1100));
-      expect(iconRequests(), isEmpty);
+      expect(prepares(), 1);
+      expect(restores(), 0);
       expect(
         SystemChrome.latestStyle?.statusBarIconBrightness,
         Brightness.light,
@@ -128,14 +145,14 @@ void main() {
       theme.updateTheme(AppThemeEntity.light);
       await tester.pumpAndSettle();
       calls.clear();
-      // No platform operation after the app is disposed.
       tester.view.viewInsets = const FakeViewPadding(bottom: 300);
       await tester.pump();
       tester.view.viewInsets = FakeViewPadding.zero;
       await tester.pump();
       await tester.pumpWidget(const SizedBox());
       await tester.pump(const Duration(milliseconds: 1200));
-      expect(iconRequests(), isEmpty);
+      expect(prepares(), 0);
+      expect(restores(), 0);
       await tester.pumpAndSettle();
       theme.dispose();
       expect(tester.takeException(), isNull);

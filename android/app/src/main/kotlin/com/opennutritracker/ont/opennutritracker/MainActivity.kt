@@ -4,6 +4,7 @@ import android.app.LocaleManager
 import android.content.Intent
 import android.os.Build
 import android.os.LocaleList
+import androidx.core.view.WindowInsetsControllerCompat
 import io.flutter.embedding.android.FlutterFragmentActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
@@ -46,6 +47,22 @@ class MainActivity : FlutterFragmentActivity() {
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
+
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, "com.opennutritracker/system_ui")
+            .setMethodCallHandler { call, result ->
+                if (call.method != "prepareStatusBarRefresh") {
+                    result.notImplemented()
+                } else if (isFinishing || isDestroyed) {
+                    result.success(false)
+                } else {
+                    val controller = WindowInsetsControllerCompat(window, window.decorView)
+                    val requestedDarkIcons = controller.isAppearanceLightStatusBars
+                    // Some IMEs leave the actual tint stale despite this flag.
+                    // Dart restores Flutter's current route style after 200ms.
+                    if (requestedDarkIcons) controller.isAppearanceLightStatusBars = false
+                    result.success(requestedDarkIcons)
+                }
+            }
 
         // A cold start: the launching intent is the one held by the activity.
         // Or-ing rather than assigning so an intent that arrived through

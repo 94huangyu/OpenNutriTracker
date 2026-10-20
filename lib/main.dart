@@ -180,6 +180,7 @@ class _OpenNutriTrackerAppState extends State<OpenNutriTrackerApp>
     with WidgetsBindingObserver {
   Timer? _systemUiRestoreTimer;
   bool _keyboardVisible = false;
+  static const _systemUiChannel = MethodChannel('com.opennutritracker/system_ui');
 
   @override
   void initState() {
@@ -202,19 +203,28 @@ class _OpenNutriTrackerAppState extends State<OpenNutriTrackerApp>
     _keyboardVisible = visible;
     _systemUiRestoreTimer?.cancel();
     if (!visible) {
-      // Some Android IMEs leave light icons despite a cached dark-icon request.
-      // Change that request once, then let the next frame's annotated route
-      // restore its own style. Repeating the cached value does not refresh it.
       _systemUiRestoreTimer = Timer(const Duration(milliseconds: 1100), () {
         if (mounted && !_keyboardVisible) {
-          final style = SystemChrome.latestStyle;
-          if (style?.statusBarIconBrightness != Brightness.dark) return;
-          SystemChrome.setSystemUIOverlayStyle(
-            style!.copyWith(statusBarIconBrightness: Brightness.light),
-          );
-          WidgetsBinding.instance.scheduleFrame();
+          unawaited(_refreshStatusIcons());
         }
       });
+    }
+  }
+
+  Future<void> _refreshStatusIcons() async {
+    try {
+      // Keep Flutter's cached route style unchanged while the native request
+      // changes for long enough to reach SystemUI. Then reapply the current
+      // route, including any theme/navigation change made during this delay.
+      if (await _systemUiChannel.invokeMethod<bool>('prepareStatusBarRefresh') ==
+          true) {
+        await Future<void>.delayed(const Duration(milliseconds: 200));
+        await SystemChrome.restoreSystemUIOverlays();
+      }
+    } on PlatformException catch (error) {
+      Logger('SystemUI').warning('Could not refresh status icons', error);
+    } on MissingPluginException catch (error) {
+      Logger('SystemUI').warning('Status icon refresh unavailable', error);
     }
   }
 
