@@ -1,82 +1,21 @@
 {
-  "date": "2026-10-19",
-  "sourceCommit": "e270672e13fd849423a4fb81a2a559439738d944",
-  "documentationBaseline": "05ca67515935152667a70532f3c44d5c778c6800",
+  "date": "2026-10-20",
   "stage": "M2",
-  "stageSelfAcceptance": "not_passed",
+  "stageSelfAcceptance": "passed_for_core_recording_scope",
+  "publishedSourceCommit": "6b7fcebdfd7f940c10c396113ea793646c1377bc",
+  "sourceTree": "f74f1a50ee3117842acbc5a650883c1b42e6f8b1",
   "userDecisionRequiredNow": false,
-  "freshComponentChecks": {
-    "passed": 20,
-    "failed": 0,
-    "log": ".tools/logs/m2-self-review-ui.log"
-  },
-  "fullSuiteRerunThisTurn": false,
-  "businessCodeChanged": false,
-  "apkRebuiltOrInstalled": false,
-  "deviceUsed": false,
-  "externalAccountAccessed": false,
-  "knownFailures": [
-    "search result lacks energy and nutrition basis",
-    "single character local search blocked",
-    "local results wait for remote",
-    "unconfigured reference source not identified in UI",
-    "public correction not persisted as a custom food",
-    "food editor save placement and button styling differ from confirmed M1",
-    "undo deletion and repeat-record shortcut absent"
-  ],
-  "freshLocalCaptures": [
-    {
-      "path": "output/flutter/m2.2-self-review/create-200-50-100.png",
-      "sha256": "ffe185a379b74611677f5ba3c188cb8a1c933b65e64ccae5967a5f840e822b37"
-    },
-    {
-      "path": "output/flutter/m2.2-self-review/create-60-15-15.png",
-      "sha256": "4a9af52bad41d8893fea65c38856dac09bdeeb5e029af75fb8d277b8fce192a9"
-    },
-    {
-      "path": "output/flutter/m2.2-self-review/create-layout-320.0-1.0-false.png",
-      "sha256": "bbb46316d4702ddec76dfaf5fb5cc9e37297fc0efd9d6e7dedb28918e4416be3"
-    },
-    {
-      "path": "output/flutter/m2.2-self-review/create-layout-390.0-1.0-true.png",
-      "sha256": "46738a5fc55f21514f823c69b1fe6ef72f599aae2383259523f03385727ddc23"
-    },
-    {
-      "path": "output/flutter/m2.2-self-review/create-layout-390.0-1.3-false.png",
-      "sha256": "a2fea274aaa944dc783c615e80819c0752a7c3cf9c066da91c1e61853953920b"
-    },
-    {
-      "path": "output/flutter/m2.2-self-review/intake-1.25-servings.png",
-      "sha256": "eaeeb0867752ab93488d612e7c01339294a6d919cbb80450b3fd954b163be339"
-    },
-    {
-      "path": "output/flutter/m2.2-self-review/intake-47.5-grams.png",
-      "sha256": "a249e16c5d89797868762f14ce6a16938d1bdffbafca3cb74391855e29832d58"
-    },
-    {
-      "path": "output/flutter/m2.2-self-review/intake-narrow-large-font-keyboard.png",
-      "sha256": "e9bdac253d0745cd50734b5f0b3936fc6d2096be44e9310b0f2b09160ad29aef"
-    },
-    {
-      "path": "output/flutter/m2.2-self-review/recording-edit-half-serving.png",
-      "sha256": "fdf5e82ab4baeef637d6be9ba9986e3359df0190db2c61e004246da385ce1a6b"
-    },
-    {
-      "path": "output/flutter/m2.2-self-review/recording-home-320.0-1.6-false.png",
-      "sha256": "248775fa4d8118bcd0a8675558e8d6d497706054fb627a0f21d29d52c026ca75"
-    },
-    {
-      "path": "output/flutter/m2.2-self-review/recording-home-390.0-1.0-false.png",
-      "sha256": "9bcf186945a8cee60da7dda62b4a658f72c54a084b28f62747db90ea03f7280a"
-    },
-    {
-      "path": "output/flutter/m2.2-self-review/recording-home-390.0-1.0-true.png",
-      "sha256": "01da7100bf34c350b9d8a2b196e379ca47f22440016f6b6e38278e93f263b4a5"
-    },
-    {
-      "path": "output/flutter/m2.2-self-review/recording-home-390.0-2.0-false.png",
-      "sha256": "8899f86d11de5c608af3802b545efe33243ffca088e262817dc13d6eeadc3f85"
-    }
-  ],
-  "fullReport": "docs/china-fork/M2_SELF_ACCEPTANCE.md"
+  "knownOpenM2ImplementationFailures": [],
+  "currentEvidence": "docs/china-fork/evidence/m2-local-search.json",
+  "fullReport": "docs/china-fork/M2_SELF_ACCEPTANCE.md",
+  "priorAuditDate": "2026-10-19",
+  "priorAuditPreservedInGit": true,
+  "laterStagesNotComplete": true,
+  "hardwareLimits": {
+    "nativePermissionDialogObserved": true,
+    "returnedBarcodeValueObserved": true,
+    "controlledPhysicalBarcodeDecodeThisRunClaimed": false,
+    "permissionDenialRetrySequence": "unverified on hardware; current form returned before assertion; component tests pass",
+    "earlierActualDecodeEvidence": "M2_RECORDING_ONLY.md, 2026-10-15 single sample"
+  }
 }

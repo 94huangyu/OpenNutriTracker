@@ -1,0 +1,344 @@
+{
+  "date": "2026-10-20",
+  "phase": "M2.4",
+  "stage": "M2",
+  "stageSelfAcceptance": "passed_for_core_recording_scope",
+  "overallM2Accepted": true,
+  "userFinalProductAcceptanceClaimed": false,
+  "userDecisionRequiredNow": false,
+  "sourceCommit": "9aac03b4c11d70f17eeefd53b75feca7473c8481",
+  "publishedSourceCommit": "6b7fcebdfd7f940c10c396113ea793646c1377bc",
+  "sourceTree": "f74f1a50ee3117842acbc5a650883c1b42e6f8b1",
+  "developmentBranch": "feature/m2-core-diary",
+  "apk": {
+    "sourceCommit": "9aac03b4c11d70f17eeefd53b75feca7473c8481",
+    "sourceTree": "f74f1a50ee3117842acbc5a650883c1b42e6f8b1",
+    "publishedEquivalentSourceCommit": "6b7fcebdfd7f940c10c396113ea793646c1377bc",
+    "apk": "output/flutter/m2.4/m2.4-local-search-r3-v2.4.0-66-develop-arm64-debug.apk",
+    "bytes": 137591756,
+    "sha256": "a53f3b89f00dde7a51614454ed966d8fc9c7f42c625736f046c44bf0a1b4b572",
+    "certificateSha256": "8b5adf8691201ac71c7fc4037f5121e639b0e8f84269902cb52d5bb1eb4e61e0",
+    "badging": [
+      "package: name='com.opennutritracker.ont.opennutritracker.develop' versionCode='66' versionName='2.4.0-develop' platformBuildVersionName='16' platformBuildVersionCode='36' compileSdkVersion='36' compileSdkVersionCodename='16'",
+      "targetSdkVersion:'36'",
+      "application-label:'ONT Develop'",
+      "native-code: 'arm64-v8a' 'armeabi-v7a' 'x86_64'"
+    ]
+  },
+  "tests": {
+    "passed": 2659,
+    "failed": 0,
+    "skipped": 0,
+    "durationMs": 93295,
+    "log": ".tools/logs/m24-r3-final-full-tests.jsonl"
+  },
+  "staticAnalysis": {
+    "tool": "dart analyze --format=machine",
+    "diagnosticCount": 0,
+    "log": ".tools/logs/m24-r3-final-analyze.log"
+  },
+  "captureRun": {
+    "passed": 32,
+    "failed": 0,
+    "subsetOfFullSuite": true,
+    "log": ".tools/logs/m24-r3-ui-captures.log",
+    "componentCaptureCount": 28
+  },
+  "dataCompatibility": {
+    "newFieldsThisBatch": [],
+    "canonicalNutritionBasis": "per100 unchanged",
+    "existingNullableFields": {
+      "18": "nutritionBasisQuantity",
+      "19": "originalSource",
+      "20": "originalCode"
+    },
+    "all24NutrientsPreserved": true,
+    "templateDeletionPreservesIntakeSnapshots": true,
+    "realHiveDeletionReopenTest": true,
+    "completeBackupRestoreClaimed": false
+  },
+  "hardware": {
+    "model": "vivo X300 / V2509A",
+    "os": "Android 16",
+    "installedApkHashVerified": true,
+    "r1EarlierSourceScreenshots": "output/flutter/m2.4-device/",
+    "r3FinalSourceScreenshots": "output/flutter/m2.4-r3-device/",
+    "r1Coverage": [
+      "single-character Q local search",
+      "local result with independent source notices",
+      "detail half serving 7.5g / 40kcal",
+      "advanced form and keyboard save",
+      "delete own template while intake remains"
+    ],
+    "r3Coverage": [
+      "upgrade retains125kcal after template deletion",
+      "direct create without redundant dialog",
+      "readable status bars on editor and home",
+      "half serving50g basis ->25g125kcal",
+      "repeat, delete, undo",
+      "independent10g50kcal edit",
+      "restart retains175kcal",
+      "cleanup0kcal",
+      "two previous templates retained",
+      "appearance and energy unit restored"
+    ],
+    "r3IntakeTotalsKcal": [
+      125,
+      250,
+      125,
+      250,
+      175,
+      175,
+      125,
+      0
+    ],
+    "camera": {
+      "nativePermissionDialogObserved": true,
+      "returnedBarcodeValueObserved": true,
+      "controlledPhysicalBarcodeDecodeThisRunClaimed": false,
+      "permissionDenialRetrySequence": "unverified on hardware; current form returned before assertion; component tests pass",
+      "earlierActualDecodeEvidence": "M2_RECORDING_ONLY.md, 2026-10-15 single sample"
+    },
+    "safety": {
+      "installedApkHashVerified": true,
+      "protectedFilesUnchanged": {
+        "app_flutter/useractivitybox.hive": true,
+        "app_flutter/userbox.hive": true,
+        "app_flutter/weightlogbox.hive": true
+      },
+      "ownProcessCrashOrLayoutErrors": 0,
+      "logScope": "only final app process after explicit restart",
+      "originalStayAwake": "0",
+      "finalStayAwake": "0",
+      "appStopped": true,
+      "testIntakesRemoved": true,
+      "temporaryTemplateRemoved": true,
+      "previousFoodTemplatesRetained": true,
+      "appearanceSystemAndKcalVerified": true,
+      "cameraDenialRetryHardwareResult": "not established; returned to form before rejection assertion",
+      "cameraPermissionChangedByCleanup": false,
+      "usbTrustRevoked": false,
+      "sharedAdbServerModified": false,
+      "independentAdbServerStopped": true
+    }
+  },
+  "publication": {
+    "repository": "94huangyu/OpenNutriTracker",
+    "localHistoryBackupBranch": "archive/m2-local-search-local-20261020",
+    "method": "GitHub connector; exact tree checked for each commit",
+    "equivalentCommits": [
+      {
+        "local": "8cd2ed382a253bc85a0910aaf39d2f7647e0ce58",
+        "published": "d03b0573c1f98cc5afd3ab535199918728165e62",
+        "tree": "41c7a5d412e849e737d84705608650710a66dd5a"
+      },
+      {
+        "local": "3a69a04fb2825d03b20f4d277b0afa58a37c576c",
+        "published": "415a43274fbd48e12e12358234c023a64ed0badb",
+        "tree": "9fb660d688eb9d93866b29d5672be8739fdf031c"
+      },
+      {
+        "local": "b7702bc9bedbeefccda7f6d7843a900da410fd87",
+        "published": "649665180aa8858ca8348697fae4e1d61eb72ff8",
+        "tree": "ecde049943fdcc180737f9ea3f8a587154211783"
+      },
+      {
+        "local": "780e39769becaf16c7009810d7d8771e3e6c3913",
+        "published": "d4a0ccd334eafe3cd28e1389c7145ca4c5a48763",
+        "tree": "5493576d095661bfc1bcb93d0b16b9f7d2c5de9b"
+      },
+      {
+        "local": "90f9f2bb5eeeeb5622f791c6acbbc11af0b63613",
+        "published": "3dc345c1cbb29fda62bf0f8905e9c8ac76a3b0a6",
+        "tree": "37dafe53bda6ff0a7c773253742a8da649a319a3"
+      },
+      {
+        "local": "9aac03b4c11d70f17eeefd53b75feca7473c8481",
+        "published": "6b7fcebdfd7f940c10c396113ea793646c1377bc",
+        "tree": "f74f1a50ee3117842acbc5a650883c1b42e6f8b1"
+      }
+    ]
+  },
+  "limits": [
+    "Supabase unconfigured; no live reference-backend test",
+    "Physical camera denial/retry sequence not established this run; do not infer decode coverage from a filled barcode",
+    "Only one Android device; no iOS, release, performance or full device matrix acceptance",
+    "Personal verification and favorites persistence remain M3; no automatic verified badges",
+    "Full backup completeness, atomic restoration and duplicate-import remediation remain M4",
+    "No cross-box process-kill atomicity claimed",
+    "Component captures use test fonts; missing custom icon glyph is not hardware rendering evidence"
+  ],
+  "componentCaptures": [
+    {
+      "path": "output/flutter/m2.4-r3-self-review/advanced-editor-section-19.png",
+      "sha256": "4904797735dfe01487dcfd633efeec681148a0d445332b21ac94c050d74a0bd8"
+    },
+    {
+      "path": "output/flutter/m2.4-r3-self-review/advanced-editor-section-3.png",
+      "sha256": "d16c5c29bbcb86d849c5fc205be30f88e0ac5f5ee689f57737eac827d7cf2699"
+    },
+    {
+      "path": "output/flutter/m2.4-r3-self-review/advanced-editor-section-9.png",
+      "sha256": "8ffec660f3974344c6cba1081bca19360083fb7196c2e5f6c1250117536b02bb"
+    },
+    {
+      "path": "output/flutter/m2.4-r3-self-review/create-200-50-100.png",
+      "sha256": "0927db2838814d6a58514ecf53191fac451713969a2205e2163afd790986a701"
+    },
+    {
+      "path": "output/flutter/m2.4-r3-self-review/create-60-15-15.png",
+      "sha256": "d389fccc37d0448cda3553bfcdd0a2dbe4082ca8ab3a35a6a96a0a5868510353"
+    },
+    {
+      "path": "output/flutter/m2.4-r3-self-review/create-layout-320.0-1.6-false.png",
+      "sha256": "c82cd120d85ca67fee2d55f632e9fc8a4e838edb903e8544dff6ff3d6fdaa9b4"
+    },
+    {
+      "path": "output/flutter/m2.4-r3-self-review/create-layout-390.0-1.3-false.png",
+      "sha256": "12f4a79e915a031e75af80ea0660cc2ad0f26950d1ec81d6593a2460ce030218"
+    },
+    {
+      "path": "output/flutter/m2.4-r3-self-review/create-layout-390.0-2.0-true.png",
+      "sha256": "522eb162b03dcf5229269e0cde312b77d85cb793a7a8793eabc5cdd2374f4988"
+    },
+    {
+      "path": "output/flutter/m2.4-r3-self-review/detail-dark-large-text.png",
+      "sha256": "2c322715e6d95e1793eec5d76fa8ea8a15f5f2bb7a065fc0a0924ed6e66cfc95"
+    },
+    {
+      "path": "output/flutter/m2.4-r3-self-review/detail-unknown-versus-zero-false.png",
+      "sha256": "8db7ef7b6dd94f66358a37a7792a08ae6d7dd88bb6b5277304463a7ec5e60faf"
+    },
+    {
+      "path": "output/flutter/m2.4-r3-self-review/detail-unknown-versus-zero-true.png",
+      "sha256": "d04189e58555182180039796c157ea2eff585483dd0377de051fde06e9a18b21"
+    },
+    {
+      "path": "output/flutter/m2.4-r3-self-review/food-editor-keyboard-save.png",
+      "sha256": "cadf830e1c9d9244494a0a3f00f276292e80c99c2fa36e779e6d87f16c09e537"
+    },
+    {
+      "path": "output/flutter/m2.4-r3-self-review/intake-1.25-servings.png",
+      "sha256": "977960f0f790db0e089e457500ce5ef36592570af1f4aecb3d5157ff9a4a16e4"
+    },
+    {
+      "path": "output/flutter/m2.4-r3-self-review/intake-47.5-grams.png",
+      "sha256": "93255ae46feb270e964a2c7ec1256fc9700844dbb46112ab559f66ae35edcddc"
+    },
+    {
+      "path": "output/flutter/m2.4-r3-self-review/intake-narrow-large-font-keyboard.png",
+      "sha256": "c87dfbc0481b6ad96de4fff18aa8cc628ea09e566cbbbf16dd9e70dd3d3ad607"
+    },
+    {
+      "path": "output/flutter/m2.4-r3-self-review/recording-deleted-undo.png",
+      "sha256": "c98a9806ed10c8be4920ea67557d9c52e4183cd0183fef85317512058c0e4fd5"
+    },
+    {
+      "path": "output/flutter/m2.4-r3-self-review/recording-edit-half-serving.png",
+      "sha256": "48b4579e31e47e1b232faf846a032435d3a687707c403865532b82a410830228"
+    },
+    {
+      "path": "output/flutter/m2.4-r3-self-review/recording-home-320.0-1.6-false.png",
+      "sha256": "248775fa4d8118bcd0a8675558e8d6d497706054fb627a0f21d29d52c026ca75"
+    },
+    {
+      "path": "output/flutter/m2.4-r3-self-review/recording-home-390.0-1.0-false.png",
+      "sha256": "9bcf186945a8cee60da7dda62b4a658f72c54a084b28f62747db90ea03f7280a"
+    },
+    {
+      "path": "output/flutter/m2.4-r3-self-review/recording-home-390.0-1.0-true.png",
+      "sha256": "01da7100bf34c350b9d8a2b196e379ca47f22440016f6b6e38278e93f263b4a5"
+    },
+    {
+      "path": "output/flutter/m2.4-r3-self-review/recording-home-390.0-2.0-false.png",
+      "sha256": "8899f86d11de5c608af3802b545efe33243ffca088e262817dc13d6eeadc3f85"
+    },
+    {
+      "path": "output/flutter/m2.4-r3-self-review/scanner-camera-error-false.png",
+      "sha256": "3659db10505cde52c7ff7efa4536e1bee9e38502a6cf4b27fba0bf2ba57472eb"
+    },
+    {
+      "path": "output/flutter/m2.4-r3-self-review/scanner-camera-error-true.png",
+      "sha256": "adacf475594fc59b44dfec4402d5b8347aa3342d48fa298a868a537d9dedd79f"
+    },
+    {
+      "path": "output/flutter/m2.4-r3-self-review/search-full-320.0-1.6-false.png",
+      "sha256": "289935d7fe59d9636d5b5931c54260f4f1861dc0f647c2c1e3efff8dfa25ff87"
+    },
+    {
+      "path": "output/flutter/m2.4-r3-self-review/search-full-390.0-1.0-false.png",
+      "sha256": "6401ea2ad874c03be581974219979e65850987dac1fd3296ab7254155b1e6cdd"
+    },
+    {
+      "path": "output/flutter/m2.4-r3-self-review/search-full-390.0-2.0-true.png",
+      "sha256": "0faf96b46f2951a548efb504d2f05fee39a81f7aa37953e3d87a19b8e985087c"
+    },
+    {
+      "path": "output/flutter/m2.4-r3-self-review/source-settings-false.png",
+      "sha256": "19e9dc746d6227a8c2c2fd24864d7e3b0c782adfa25064d08bb4e97f6ca806a7"
+    },
+    {
+      "path": "output/flutter/m2.4-r3-self-review/source-settings-true.png",
+      "sha256": "bc9557147d97c82182df2e4c57ea31873d89dd7109a0a866a228796661a9c6ec"
+    }
+  ],
+  "deviceCaptures": [
+    {
+      "path": "output/flutter/m2.4-r3-device/01-upgraded-history-125.png",
+      "sha256": "0f8ed3ea75a281b5a08937258042403f9cc912f569207036681758e8e32c48e7"
+    },
+    {
+      "path": "output/flutter/m2.4-r3-device/02-direct-create-no-confirmation.png",
+      "sha256": "5cc0220b1b100c0b54088d468d96eb9eeefa902b0dd015041ee768d7043fac80"
+    },
+    {
+      "path": "output/flutter/m2.4-r3-device/03-camera-permission-feedback.png",
+      "sha256": "0455d1f99f30a2f155483154bdf4e11de69575fe171c121ed63d70b5a9b4bf35"
+    },
+    {
+      "path": "output/flutter/m2.4-r3-device/04-camera-denied-localized.png",
+      "sha256": "dddb7f87b6504378726f76c955414da54f795f7e2041e38ba9b2a8a5a0f71b5c"
+    },
+    {
+      "path": "output/flutter/m2.4-r3-device/05-home-status-bar-125.png",
+      "sha256": "cdea56f5e0a51bc05f57802cebb9c562b322d396cdfccd48249e64c2e27a7250"
+    },
+    {
+      "path": "output/flutter/m2.4-r3-device/06-record-half-serving.png",
+      "sha256": "0b9a91f9a5105762819f555da01199ba8dfa675327c88ccfc794f61d4cd34059"
+    },
+    {
+      "path": "output/flutter/m2.4-r3-device/07-deleted-125.png",
+      "sha256": "edb77b269028a064e5d6cd2d47066e04249e475ad25d926675a01aabda626542"
+    },
+    {
+      "path": "output/flutter/m2.4-r3-device/08-undo-250.png",
+      "sha256": "0900384c599e4ef65848af11251b29c8838e7e014e640526783734355a5799f2"
+    },
+    {
+      "path": "output/flutter/m2.4-r3-device/09-edit-ten-grams.png",
+      "sha256": "7685ac14b5585bbd77b3e1ddcd2b242bb070f1002b6cf4fe36ada551bc6c2723"
+    },
+    {
+      "path": "output/flutter/m2.4-r3-device/10-independent-edit-175.png",
+      "sha256": "0617d1c791831587b3c4c92abf4002c0bf6f29b06a0bd86405d44846469421dd"
+    },
+    {
+      "path": "output/flutter/m2.4-r3-device/11-cleaned-home-zero.png",
+      "sha256": "6dabbd49ae0f20df9fdfae3b6b90cbb639ddae32f7942da38b83804d2c2034ce"
+    },
+    {
+      "path": "output/flutter/m2.4-r3-device/12-original-templates-retained.png",
+      "sha256": "6eb1d6720b90aa763b55264536681f3fbfe9331900b4f39c1f54d538b7601199"
+    },
+    {
+      "path": "output/flutter/m2.4-r3-device/13-restored-settings.png",
+      "sha256": "06d9199fa12982cade665c02c2a758cf33e24e475c4c9eeccb8ed882482031e0"
+    },
+    {
+      "path": "output/flutter/m2.4-r3-device/14-final-home.png",
+      "sha256": "2811c8e3291ab37082b1c8f4f95cd394374325e960c36f552b06d0bf5b913aed"
+    }
+  ],
+  "fullReport": "docs/china-fork/M2_LOCAL_SEARCH.md"
+}
