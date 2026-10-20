@@ -87,7 +87,9 @@ void main() {
       );
       int restores() => calls
           .where(
-            (call) => call.method == 'SystemChrome.restoreSystemUIOverlays',
+            (call) =>
+                call.method == 'SystemChrome.setEnabledSystemUIMode' &&
+                call.arguments == 'SystemUiMode.edgeToEdge',
           )
           .length;
       tester.view.viewInsets = const FakeViewPadding(bottom: 300);

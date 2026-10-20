@@ -203,10 +203,10 @@ class _OpenNutriTrackerAppState extends State<OpenNutriTrackerApp>
     _systemUiRestoreTimer?.cancel();
     if (!visible) {
       // Android's IME can override icon appearance without changing Flutter's
-      // cached style. Restore the current route's style after Android's 1s lock.
+      // cached style. Reapply edge-to-edge and the current style after its 1s lock.
       _systemUiRestoreTimer = Timer(const Duration(milliseconds: 1100), () {
         if (mounted && !_keyboardVisible) {
-          unawaited(SystemChrome.restoreSystemUIOverlays());
+          unawaited(SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge));
         }
       });
     }
