@@ -1,0 +1,111 @@
+{
+  "date": "2026-10-20",
+  "phase": "M2.3",
+  "overallM2Accepted": false,
+  "sourceCommit": "e551eba4b7a64b490ce6ca046fefdd0ab40b707a",
+  "sourceTree": "83d322c2708cf2934f9444a4c8c1045c8ccca23b",
+  "developmentBranch": "feature/m2-core-diary",
+  "commits": [
+    "6271f42a",
+    "da86463f",
+    "c89ffed0",
+    "e551eba4"
+  ],
+  "apk": {
+    "path": "output/flutter/m2.3/m2.3-three-fixes-r2-v2.4.0-66-develop-arm64-debug.apk",
+    "bytes": 137591756,
+    "sha256": "0054d66fc2f5bd511fef2b1a95d1419c30659ce5304172d9f03d4a5ac5542d87",
+    "certificateSha256": "8b5adf8691201ac71c7fc4037f5121e639b0e8f84269902cb52d5bb1eb4e61e0",
+    "sourceCommit": "e551eba4b7a64b490ce6ca046fefdd0ab40b707a"
+  },
+  "tests": {
+    "passed": 2639,
+    "failed": 0,
+    "skipped": 0,
+    "durationMs": 95168
+  },
+  "staticAnalysis": {
+    "tool": "dart analyze --format=machine",
+    "passed": true,
+    "diagnosticCount": 0,
+    "log": ".tools/logs/m2-origin-analyze.log"
+  },
+  "dataCompatibility": {
+    "canonicalNutritionBasis": "per100 unchanged",
+    "newNullableHiveFields": {
+      "19": "originalSource",
+      "20": "originalCode"
+    },
+    "oldFields0To18Unchanged": true,
+    "oldHiveFixtureRead": true,
+    "oldJsonAndCsvRead": true,
+    "originJsonCsvHiveRoundTrip": true,
+    "csvOptionalTrailingColumns": [
+      "meal_original_source",
+      "meal_original_code"
+    ],
+    "eagerHistoricalRewrite": false
+  },
+  "hardware": {
+    "model": "vivo X300 / V2509A",
+    "os": "Android 16",
+    "installedApkHashVerified": true,
+    "r1Screenshots": "output/flutter/m2.3-device/",
+    "r2Screenshots": "output/flutter/m2.3-r2-device/",
+    "publicOFFSearchObserved": true,
+    "publicCopySaved540Original539": true,
+    "publicCopyOriginAfterRestart": true,
+    "publicCopyOrigin": {
+      "source": "off",
+      "code": "8000500278802"
+    },
+    "editorSaveWithKeyboard": true,
+    "r1IntakeTotalsKcal": [
+      0,
+      40,
+      80,
+      120,
+      40,
+      120,
+      40,
+      0
+    ],
+    "r2FinalSmokeAndCleanup": "passed",
+    "r2IntakeTotalsKcal": [
+      0,
+      40,
+      80,
+      40,
+      80,
+      40,
+      0
+    ],
+    "safety": {
+      "protectedFilesUnchanged": {
+        "app_flutter/useractivitybox.hive": true,
+        "app_flutter/userbox.hive": true,
+        "app_flutter/weightlogbox.hive": true
+      },
+      "ownProcessCrashOrLayoutErrors": 0,
+      "originalStayAwake": "0",
+      "finalStayAwake": "0",
+      "appStopped": true,
+      "testIntakesRemoved": true,
+      "temporaryPersonalCopyRemoved": true,
+      "previousFoodTemplatesRetained": true
+    },
+    "independentAdbServerStopped": true,
+    "sharedAdbServerModified": false,
+    "physicalCameraScanTested": false,
+    "r2ScreenshotCount": 12
+  },
+  "limits": [
+    "M2 overall remains incomplete",
+    "Single-character local search, local-first delivery and source availability messaging remain open",
+    "Supabase unconfigured; no live reference-backend test",
+    "No physical barcode scan, iOS build, full backup restoration or process-kill cross-box atomicity claimed",
+    "R1 origin display lacked the public reference when URL was absent; r2 fixes it, with separate screenshots",
+    "A private-food match still appears above a generic remote no-results message; known M2 search-status gap",
+    "Undo screenshot has low status-bar contrast; persistence and cause require follow-up, not claimed resolved"
+  ]
+}

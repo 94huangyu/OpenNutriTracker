@@ -279,7 +279,8 @@ Header lookup is case-insensitive.
 | `niacin_per_100g`               | number | no       | mg (B3).                                       |
 | `meal_data_version`             | number | no       | Micronutrient unit stamp; missing means legacy. |
 | `meal_nutrition_basis_quantity` | number | no       | Original label basis in g/mL; absent displays as 100. |
-| `meal_data_version`             | number | no       | See [Micronutrient units](#micronutrient-units-on-open-food-facts-rows). |
+| `meal_original_source`         | string | no       | Original public source code (e.g. `off`, `bls`) retained by a personal correction; absent is unknown. |
+| `meal_original_code`           | string | no       | Original public item identifier; independent of a later edited barcode. |
 
 ### `user_activity.csv`
 
