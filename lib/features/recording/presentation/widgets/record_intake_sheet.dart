@@ -56,16 +56,24 @@ class _RecordIntakeSheetState extends State<RecordIntakeSheet> {
     return convertQuantityToBaseUnit(value, _unit, widget.intake.meal);
   }
 
-  Future<void> _save({bool delete = false}) async {
+  Future<void> _save({bool delete = false, bool repeat = false}) async {
+    if (_saving) return;
     final amount = _amount;
     if (!delete && (amount == null || !amount.isFinite)) {
       setState(() => _error = S.of(context).recordingPositiveQuantity);
       return;
     }
     setState(() => _saving = true);
+    final messenger = ScaffoldMessenger.of(context);
+    final s = S.of(context);
+    final bloc = widget.bloc;
+    final intake = widget.intake;
+    final day = widget.day;
     try {
       if (delete) {
         await widget.bloc.deleteIntakeItem(context, widget.intake, widget.day);
+      } else if (repeat) {
+        await bloc.repeatIntakeItem(intake, day, amount!, _unit);
       } else {
         await widget.bloc.updateIntakeItem(widget.intake.id, {
           'amount': amount!,
@@ -73,6 +81,11 @@ class _RecordIntakeSheetState extends State<RecordIntakeSheet> {
         }, widget.day);
       }
       if (mounted) Navigator.of(context).pop();
+      if (delete) {
+        showDeletedIntakeUndo(messenger, s, bloc, intake, day);
+      } else if (repeat && messenger.mounted) {
+        messenger.showSnackBar(SnackBar(content: Text(s.recordingRepeated)));
+      }
     } catch (_) {
       if (mounted) {
         setState(() {
@@ -189,31 +202,16 @@ class _RecordIntakeSheetState extends State<RecordIntakeSheet> {
             ),
           ),
           Semantics(
+            identifier: 'recording-repeat-intake',
+            child: OutlinedButton(
+              onPressed: _saving ? null : () => _save(repeat: true),
+              child: Text(s.recordingRepeat),
+            ),
+          ),
+          Semantics(
             identifier: 'recording-delete-intake',
             child: TextButton(
-              onPressed: _saving
-                  ? null
-                  : () async {
-                      final confirmed = await showDialog<bool>(
-                        context: context,
-                        builder: (context) => AlertDialog(
-                          title: Text(s.recordingDeleteQuestion),
-                          actions: [
-                            TextButton(
-                              onPressed: () => Navigator.pop(context, false),
-                              child: Text(s.dialogCancelLabel),
-                            ),
-                            TextButton(
-                              onPressed: () => Navigator.pop(context, true),
-                              child: Text(s.recordingDelete),
-                            ),
-                          ],
-                        ),
-                      );
-                      if (confirmed == true && mounted) {
-                        await _save(delete: true);
-                      }
-                    },
+              onPressed: _saving ? null : () => _save(delete: true),
               child: Text(s.recordingDelete),
             ),
           ),
@@ -221,4 +219,46 @@ class _RecordIntakeSheetState extends State<RecordIntakeSheet> {
       ),
     );
   }
+}
+
+void showDeletedIntakeUndo(
+  ScaffoldMessengerState messenger,
+  S s,
+  CalendarDayBloc bloc,
+  IntakeEntity intake,
+  DateTime day, {
+  bool failed = false,
+}) {
+  if (!messenger.mounted) return;
+  var restoring = false;
+  messenger.showSnackBar(
+    SnackBar(
+      content: Text(failed ? s.recordingUndoFailed : s.recordingDeleted),
+      duration: const Duration(seconds: 8),
+      action: SnackBarAction(
+        label: s.recordingUndo,
+        onPressed: () async {
+          if (restoring) return;
+          restoring = true;
+          try {
+            await bloc.restoreIntakeItem(intake, day);
+            if (messenger.mounted) {
+              messenger.showSnackBar(
+                SnackBar(content: Text(s.recordingRestored)),
+              );
+            }
+          } catch (_) {
+            showDeletedIntakeUndo(
+              messenger,
+              s,
+              bloc,
+              intake,
+              day,
+              failed: true,
+            );
+          }
+        },
+      ),
+    ),
+  );
 }

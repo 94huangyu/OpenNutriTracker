@@ -125,6 +125,8 @@ class _Intakes extends Fake implements IntakeRepository {
 class _DayBloc extends CalendarDayBloc {
   Map<String, dynamic>? updated;
   IntakeEntity? deleted;
+  IntakeEntity? restored;
+  double? repeated;
   _DayBloc(_Intakes intakes, _Unused unused)
     : super(
         unused,
@@ -155,6 +157,21 @@ class _DayBloc extends CalendarDayBloc {
     DateTime day,
   ) async {
     deleted = item;
+  }
+
+  @override
+  Future<void> restoreIntakeItem(IntakeEntity item, DateTime day) async {
+    restored = item;
+  }
+
+  @override
+  Future<void> repeatIntakeItem(
+    IntakeEntity item,
+    DateTime day,
+    double amount,
+    String unit,
+  ) async {
+    repeated = amount;
   }
 }
 
@@ -295,7 +312,7 @@ void main() {
     });
   }
 
-  testWidgets('free servings edit, invalid input, and explicit deletion', (
+  testWidgets('free servings edit, independent repeat, and delete undo', (
     tester,
   ) async {
     await pump(tester);
@@ -336,14 +353,18 @@ void main() {
     await tester.pumpAndSettle();
     await tester.tap(identified('recording-delete-intake'));
     await tester.pumpAndSettle();
-    await tester.tap(find.text('取消'));
-    await tester.pumpAndSettle();
-    expect(bloc.deleted, isNull);
-    await tester.tap(identified('recording-delete-intake'));
-    await tester.pumpAndSettle();
-    await tester.tap(find.text('删除记录').last);
-    await tester.pumpAndSettle();
+    expect(find.byType(AlertDialog), findsNothing);
     expect(bloc.deleted?.id, 'a1');
+    expect(find.text('已删除记录'), findsOneWidget);
+    await captureWidget(tester, capture, 'recording-deleted-undo');
+    await tester.tap(find.text('撤销'));
+    await tester.pumpAndSettle();
+    expect(bloc.restored?.id, 'a1');
+    await tester.tap(find.text('测试食品A').first);
+    await tester.pumpAndSettle();
+    await tester.tap(identified('recording-repeat-intake'));
+    await tester.pumpAndSettle();
+    expect(bloc.repeated, 15);
     expect(tester.takeException(), isNull);
   });
 

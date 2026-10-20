@@ -7,6 +7,7 @@ import 'package:opennutritracker/core/domain/entity/tracked_day_entity.dart';
 import 'package:opennutritracker/core/domain/entity/user_activity_entity.dart';
 import 'package:opennutritracker/core/domain/usecase/add_config_usecase.dart';
 import 'package:opennutritracker/core/domain/usecase/add_tracked_day_usecase.dart';
+import 'package:opennutritracker/core/domain/usecase/change_recorded_intake_usecase.dart';
 import 'package:opennutritracker/core/domain/usecase/delete_intake_usecase.dart';
 import 'package:opennutritracker/core/domain/usecase/delete_user_activity_usecase.dart';
 import 'package:opennutritracker/core/domain/usecase/get_config_usecase.dart';
@@ -25,6 +26,7 @@ part 'calendar_day_state.dart';
 
 class CalendarDayBloc extends Bloc<CalendarDayEvent, CalendarDayState> {
   final bool recordingOnly;
+  final ChangeRecordedIntakeUsecase? recordingChanges;
   final GetUserActivityUsecase _getUserActivityUsecase;
   final GetIntakeUsecase _getIntakeUsecase;
   final DeleteIntakeUsecase _deleteIntakeUsecase;
@@ -50,6 +52,7 @@ class CalendarDayBloc extends Bloc<CalendarDayEvent, CalendarDayState> {
     this._getConfigUsecase,
     this._addConfigUsecase, {
     this.recordingOnly = false,
+    this.recordingChanges,
   }) : super(CalendarDayInitial()) {
     on<LoadCalendarDayEvent>((event, emit) async {
       emit(CalendarDayLoading());
@@ -166,6 +169,10 @@ class CalendarDayBloc extends Bloc<CalendarDayEvent, CalendarDayState> {
     IntakeEntity intakeEntity,
     DateTime day,
   ) async {
+    if (recordingChanges != null) {
+      await recordingChanges!.delete(intakeEntity, day);
+      return;
+    }
     await _deleteIntakeUsecase.deleteIntake(intakeEntity);
     await _addTrackedDayUsecase.removeDayCaloriesTracked(
       day,
@@ -177,6 +184,20 @@ class CalendarDayBloc extends Bloc<CalendarDayEvent, CalendarDayState> {
       fatTracked: intakeEntity.totalFatsGram,
       proteinTracked: intakeEntity.totalProteinsGram,
     );
+  }
+
+  Future<void> restoreIntakeItem(IntakeEntity intake, DateTime day) async {
+    await recordingChanges!.restore(intake, day);
+    add(const RefreshCalendarDayEvent());
+  }
+
+  Future<void> repeatIntakeItem(
+    IntakeEntity intake,
+    DateTime day,
+    double amount,
+    String unit,
+  ) async {
+    await recordingChanges!.repeat(intake, day, amount, unit);
   }
 
   Future<void> updateIntakeItem(

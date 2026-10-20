@@ -40,6 +40,7 @@ import 'package:opennutritracker/core/domain/usecase/create_profile_usecase.dart
 import 'package:opennutritracker/core/domain/usecase/delete_all_user_data_usecase.dart';
 import 'package:opennutritracker/core/domain/usecase/delete_profile_usecase.dart';
 import 'package:opennutritracker/core/domain/usecase/delete_custom_activity_template_usecase.dart';
+import 'package:opennutritracker/core/domain/usecase/change_recorded_intake_usecase.dart';
 import 'package:opennutritracker/core/domain/usecase/delete_intake_usecase.dart';
 import 'package:opennutritracker/core/domain/usecase/delete_recipe_usecase.dart';
 import 'package:opennutritracker/core/domain/usecase/merge_custom_meals_usecase.dart';
@@ -231,6 +232,9 @@ Future<void> initLocator() async {
     ),
   );
   locator.registerLazySingleton(() => DiaryBloc(locator(), locator()));
+  locator.registerLazySingleton<ChangeRecordedIntakeUsecase>(
+    () => ChangeRecordedIntakeUsecase(locator(), locator(), locator()),
+  );
   locator.registerLazySingleton(
     () => CalendarDayBloc(
       locator(),
@@ -244,6 +248,7 @@ Future<void> initLocator() async {
       locator(),
       locator(),
       recordingOnly: true,
+      recordingChanges: locator(),
     ),
   );
   locator.registerLazySingleton<ProfileBloc>(
