@@ -85,39 +85,57 @@ void main() {
         SystemChrome.latestStyle?.statusBarIconBrightness,
         Brightness.dark,
       );
-      int restores() => calls
+      List<String?> iconRequests() => calls
           .where(
-            (call) =>
-                call.method == 'SystemChrome.setEnabledSystemUIMode' &&
-                call.arguments == 'SystemUiMode.edgeToEdge',
+            (call) => call.method == 'SystemChrome.setSystemUIOverlayStyle',
           )
-          .length;
+          .map(
+            (call) =>
+                (call.arguments as Map)['statusBarIconBrightness'] as String?,
+          )
+          .toList();
+      calls.clear();
       tester.view.viewInsets = const FakeViewPadding(bottom: 300);
       await tester.pump();
       tester.view.viewInsets = FakeViewPadding.zero;
       await tester.pump(const Duration(milliseconds: 900));
-      expect(restores(), 0);
-      // Reopening cancels restoration; the platform must keep its IME chrome.
+      expect(iconRequests(), isEmpty);
+      // Reopening cancels the pending refresh while the IME owns the chrome.
       tester.view.viewInsets = const FakeViewPadding(bottom: 300);
       await tester.pump(const Duration(milliseconds: 400));
-      expect(restores(), 0);
+      expect(iconRequests(), isEmpty);
+      tester.view.viewInsets = FakeViewPadding.zero;
+      await tester.pump(const Duration(milliseconds: 1100));
+      await tester.pump();
+      expect(iconRequests(), ['Brightness.light', 'Brightness.dark']);
+      expect(
+        SystemChrome.latestStyle?.statusBarIconBrightness,
+        Brightness.dark,
+      );
+      // Use the route's current style, not a light theme captured at dismissal.
+      tester.view.viewInsets = const FakeViewPadding(bottom: 300);
+      await tester.pump();
       tester.view.viewInsets = FakeViewPadding.zero;
       theme.updateTheme(AppThemeEntity.dark);
       await tester.pumpAndSettle();
+      calls.clear();
       await tester.pump(const Duration(milliseconds: 1100));
-      expect(restores(), 1);
+      expect(iconRequests(), isEmpty);
       expect(
         SystemChrome.latestStyle?.statusBarIconBrightness,
         Brightness.light,
       );
-      // Disposal cancels the pending platform operation as well.
+      theme.updateTheme(AppThemeEntity.light);
+      await tester.pumpAndSettle();
+      calls.clear();
+      // No platform operation after the app is disposed.
       tester.view.viewInsets = const FakeViewPadding(bottom: 300);
       await tester.pump();
       tester.view.viewInsets = FakeViewPadding.zero;
       await tester.pump();
       await tester.pumpWidget(const SizedBox());
       await tester.pump(const Duration(milliseconds: 1200));
-      expect(restores(), 1);
+      expect(iconRequests(), isEmpty);
       await tester.pumpAndSettle();
       theme.dispose();
       expect(tester.takeException(), isNull);

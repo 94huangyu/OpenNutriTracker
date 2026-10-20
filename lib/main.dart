@@ -202,11 +202,17 @@ class _OpenNutriTrackerAppState extends State<OpenNutriTrackerApp>
     _keyboardVisible = visible;
     _systemUiRestoreTimer?.cancel();
     if (!visible) {
-      // Android's IME can override icon appearance without changing Flutter's
-      // cached style. Reapply edge-to-edge and the current style after its 1s lock.
+      // Some Android IMEs leave light icons despite a cached dark-icon request.
+      // Change that request once, then let the next frame's annotated route
+      // restore its own style. Repeating the cached value does not refresh it.
       _systemUiRestoreTimer = Timer(const Duration(milliseconds: 1100), () {
         if (mounted && !_keyboardVisible) {
-          unawaited(SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge));
+          final style = SystemChrome.latestStyle;
+          if (style?.statusBarIconBrightness != Brightness.dark) return;
+          SystemChrome.setSystemUIOverlayStyle(
+            style!.copyWith(statusBarIconBrightness: Brightness.light),
+          );
+          WidgetsBinding.instance.scheduleFrame();
         }
       });
     }
