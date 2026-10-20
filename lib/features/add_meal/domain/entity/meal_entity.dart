@@ -1,4 +1,4 @@
-
+import 'dart:convert';
 import 'package:equatable/equatable.dart';
 import 'package:opennutritracker/features/add_meal/domain/entity/meal_portion_entity.dart';
 import 'package:opennutritracker/core/data/dbo/meal_dbo.dart';
@@ -47,6 +47,31 @@ class MealEntity extends Equatable {
   /// Public source and item identity retained by a personal correction.
   final String? originalSource;
   final String? originalCode;
+
+  final bool isFavorite;
+  final String? reviewSource;
+  final String? reviewNote;
+  final DateTime? reviewedAt;
+
+  static const reviewSources = {
+    'package',
+    'manufacturer',
+    'reference',
+    'other',
+  };
+  bool get isPersonallyReviewed =>
+      reviewSources.contains(reviewSource) &&
+      (reviewNote?.trim().isNotEmpty ?? false) &&
+      reviewedAt != null;
+
+  /// Identity includes the corpus: equal codes from different databases differ.
+  String get personalKey =>
+      jsonEncode([source.name, backendSource, code ?? name]);
+  bool get canSavePersonalState =>
+      source != MealSourceEntity.unknown &&
+      ((code?.trim().isNotEmpty ?? false) ||
+          (source == MealSourceEntity.custom &&
+              (name?.trim().isNotEmpty ?? false)));
 
   double get effectiveNutritionBasis {
     final basis = nutritionBasisQuantity;
@@ -252,6 +277,10 @@ class MealEntity extends Equatable {
     this.nutritionBasisQuantity,
     this.originalSource,
     this.originalCode,
+    this.isFavorite = false,
+    this.reviewSource,
+    this.reviewNote,
+    this.reviewedAt,
     this.detailed = false,
   });
 
@@ -286,6 +315,10 @@ class MealEntity extends Equatable {
     nutritionBasisQuantity: nutritionBasisQuantity,
     originalSource: originalSource,
     originalCode: originalCode,
+    isFavorite: isFavorite,
+    reviewSource: reviewSource,
+    reviewNote: reviewNote,
+    reviewedAt: reviewedAt,
     detailed: detailed,
   );
 
@@ -317,6 +350,10 @@ class MealEntity extends Equatable {
     nutritionBasisQuantity: nutritionBasisQuantity,
     originalSource: originalSource,
     originalCode: originalCode,
+    isFavorite: isFavorite,
+    reviewSource: reviewSource,
+    reviewNote: reviewNote,
+    reviewedAt: reviewedAt,
     detailed: detailed,
   );
 
@@ -348,6 +385,45 @@ class MealEntity extends Equatable {
     nutritionBasisQuantity: nutritionBasisQuantity,
     originalSource: originalSource,
     originalCode: originalCode,
+    isFavorite: isFavorite,
+    reviewSource: reviewSource,
+    reviewNote: reviewNote,
+    reviewedAt: reviewedAt,
+    detailed: detailed,
+  );
+
+  MealEntity withPersonalState({
+    required bool isFavorite,
+    String? reviewSource,
+    String? reviewNote,
+    DateTime? reviewedAt,
+  }) => MealEntity(
+    code: code,
+    name: name,
+    brands: brands,
+    thumbnailImageUrl: thumbnailImageUrl,
+    mainImageUrl: mainImageUrl,
+    url: url,
+    mealQuantity: mealQuantity,
+    mealUnit: mealUnit,
+    servingQuantity: servingQuantity,
+    servingUnit: servingUnit,
+    servingSize: servingSize,
+    nutriments: nutriments,
+    source: source,
+    backendSource: backendSource,
+    machineTranslatedName: machineTranslatedName,
+    servingSizeIsLocalized: servingSizeIsLocalized,
+    portions: portions,
+    portionsUnavailable: portionsUnavailable,
+    localImagePath: localImagePath,
+    nutritionBasisQuantity: nutritionBasisQuantity,
+    originalSource: originalSource,
+    originalCode: originalCode,
+    isFavorite: isFavorite,
+    reviewSource: reviewSource,
+    reviewNote: reviewNote,
+    reviewedAt: reviewedAt,
     detailed: detailed,
   );
 
@@ -379,6 +455,10 @@ class MealEntity extends Equatable {
     nutritionBasisQuantity: mealDBO.nutritionBasisQuantity,
     originalSource: mealDBO.originalSource,
     originalCode: mealDBO.originalCode,
+    isFavorite: mealDBO.isFavorite ?? false,
+    reviewSource: mealDBO.reviewSource,
+    reviewNote: mealDBO.reviewNote,
+    reviewedAt: mealDBO.reviewedAt,
     nutriments: MealNutrimentsEntity.fromMealNutrimentsDBO(mealDBO.nutriments),
     source: MealSourceEntity.fromMealSourceDBO(mealDBO.source),
     backendSource: mealDBO.backendSource,

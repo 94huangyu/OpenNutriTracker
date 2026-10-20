@@ -92,6 +92,15 @@ class MealDBO extends HiveObject {
   @HiveField(20)
   final String? originalCode;
 
+  @HiveField(21)
+  final bool? isFavorite;
+  @HiveField(22)
+  final String? reviewSource;
+  @HiveField(23)
+  final String? reviewNote;
+  @HiveField(24)
+  final DateTime? reviewedAt;
+
   /// Rows at this version or above carry every micronutrient in the app's
   /// units: milligrams for the minerals, cholesterol and vitamins C, B6 and
   /// niacin, micrograms for vitamins A, D and B12. Below it (null included)
@@ -127,6 +136,10 @@ class MealDBO extends HiveObject {
     this.nutritionBasisQuantity,
     this.originalSource,
     this.originalCode,
+    this.isFavorite,
+    this.reviewSource,
+    this.reviewNote,
+    this.reviewedAt,
   });
 
   /// Entities always carry app units — every remote mapping converts on
@@ -146,6 +159,10 @@ class MealDBO extends HiveObject {
     nutritionBasisQuantity: mealEntity.nutritionBasisQuantity,
     originalSource: mealEntity.originalSource,
     originalCode: mealEntity.originalCode,
+    isFavorite: mealEntity.isFavorite,
+    reviewSource: mealEntity.reviewSource,
+    reviewNote: mealEntity.reviewNote,
+    reviewedAt: mealEntity.reviewedAt,
     nutriments: MealNutrimentsDBO.fromProductNutrimentsEntity(
       mealEntity.nutriments,
     ),

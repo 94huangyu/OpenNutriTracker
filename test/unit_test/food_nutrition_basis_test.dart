@@ -54,17 +54,44 @@ void main() {
   );
 
   test('energy review allows rounding, has no opinion on missing values', () {
-    expect(labelEnergyNeedsReview(kcal: 80, carbs: 8, fat: 4, protein: 3), isFalse);
-    expect(labelEnergyNeedsReview(kcal: 84, carbs: 8, fat: 4, protein: 3), isFalse);
-    expect(labelEnergyNeedsReview(kcal: 500, carbs: 8, fat: 4, protein: 3), isTrue);
-    expect(labelEnergyNeedsReview(kcal: 0, carbs: 10, fat: 0, protein: 0), isTrue);
-    expect(labelEnergyNeedsReview(kcal: 80, carbs: null, fat: 4, protein: 3), isFalse);
+    expect(
+      labelEnergyNeedsReview(kcal: 80, carbs: 8, fat: 4, protein: 3),
+      isFalse,
+    );
+    expect(
+      labelEnergyNeedsReview(kcal: 84, carbs: 8, fat: 4, protein: 3),
+      isFalse,
+    );
+    expect(
+      labelEnergyNeedsReview(kcal: 500, carbs: 8, fat: 4, protein: 3),
+      isTrue,
+    );
+    expect(
+      labelEnergyNeedsReview(kcal: 0, carbs: 10, fat: 0, protein: 0),
+      isTrue,
+    );
+    expect(
+      labelEnergyNeedsReview(kcal: 80, carbs: null, fat: 4, protein: 3),
+      isFalse,
+    );
   });
 
   test('clearing a barcode retains an internal custom-food identity', () {
-    final old = create('60','15','15','80');
-    final changed = bloc.createNewMealEntity(old,'薯片样例','','60','15','15','g',
-        '80','8','4','3',barcodeOverride:'');
+    final old = create('60', '15', '15', '80');
+    final changed = bloc.createNewMealEntity(
+      old,
+      '薯片样例',
+      '',
+      '60',
+      '15',
+      '15',
+      'g',
+      '80',
+      '8',
+      '4',
+      '3',
+      barcodeOverride: '',
+    );
     expect(changed.code, isNotEmpty);
     expect(changed.code, isNot(old.code));
     expect(changed.code, contains('-'));
@@ -130,7 +157,13 @@ void main() {
           .split('\n')
           .map((line) {
             final cells = line.split(',');
-            return cells.take(cells.length - 3).join(',');
+            return cells
+                .take(
+                  CsvDataExporter.intakeColumns.indexOf(
+                    'meal_nutrition_basis_quantity',
+                  ),
+                )
+                .join(',');
           })
           .join('\n');
       final legacy = CsvDataExporter.parseIntakesFromCsv(oldCsv).single;
@@ -157,6 +190,8 @@ void main() {
       expect(meal.nutritionBasisQuantity, isNull);
       expect(meal.originalSource, isNull);
       expect(meal.originalCode, isNull);
+      expect(meal.isFavorite, isNull);
+      expect(MealEntity.fromMealDBO(meal).isPersonallyReviewed, isFalse);
       expect(meal.mealQuantity, '60');
       expect(meal.servingQuantity, 15);
       expect(meal.nutriments.zinc100, 2);

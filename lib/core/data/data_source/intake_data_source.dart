@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:collection/collection.dart';
 import 'package:hive_ce_flutter/hive_flutter.dart';
 import 'package:logging/logging.dart';
@@ -105,8 +106,13 @@ class IntakeDataSource {
     final filterCodes = <String>{};
     final uniqueIntake = intakeList
         .where(
-          (intake) =>
-              filterCodes.add(intake.meal.code ?? intake.meal.name ?? ""),
+          (intake) => filterCodes.add(
+            jsonEncode([
+              intake.meal.source.name,
+              intake.meal.backendSource,
+              intake.meal.code ?? intake.meal.name,
+            ]),
+          ),
         )
         .toList();
 

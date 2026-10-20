@@ -1,3 +1,5 @@
+import 'package:opennutritracker/features/add_meal/domain/entity/meal_entity.dart';
+import 'package:opennutritracker/core/data/data_source/personal_food_data_source.dart';
 import 'package:hive_ce_flutter/hive_flutter.dart';
 import 'package:opennutritracker/core/data/dbo/meal_dbo.dart';
 import 'package:opennutritracker/core/utils/hive_db_provider.dart';
@@ -5,18 +7,24 @@ import 'package:opennutritracker/core/utils/hive_db_provider.dart';
 class CustomMealDataSource {
   final HiveDBProvider _db;
 
-  CustomMealDataSource(this._db);
+  final PersonalFoodDataSource? personalFoods;
+  CustomMealDataSource(this._db, {this.personalFoods});
 
   Box<MealDBO> get _customMealBox => _db.customMealBox;
 
   Future<void> saveCustomMeal(MealDBO mealDBO) async {
     final existing = _customMealBox.values.cast<MealDBO?>().firstWhere(
-        (m) =>
-            (mealDBO.code != null && m?.code == mealDBO.code) ||
-            (mealDBO.code == null && m?.name == mealDBO.name),
-        orElse: () => null);
+      (m) =>
+          (mealDBO.code != null && m?.code == mealDBO.code) ||
+          (mealDBO.code == null && m?.name == mealDBO.name),
+      orElse: () => null,
+    );
     if (existing != null) {
       await _customMealBox.put(existing.key, mealDBO);
+      await personalFoods?.updateTemplate(
+        MealEntity.fromMealDBO(existing),
+        MealEntity.fromMealDBO(mealDBO),
+      );
     } else {
       await _customMealBox.add(mealDBO);
     }
@@ -52,6 +60,10 @@ class CustomMealDataSource {
       await _customMealBox.add(updated);
     } else {
       await _customMealBox.put(previous.key, updated);
+      await personalFoods?.updateTemplate(
+        MealEntity.fromMealDBO(previous),
+        MealEntity.fromMealDBO(updated),
+      );
     }
     return true;
   }
@@ -62,6 +74,7 @@ class CustomMealDataSource {
         .toList();
     for (final meal in toDelete) {
       await meal.delete();
+      await personalFoods?.remove(MealEntity.fromMealDBO(meal));
     }
   }
 }

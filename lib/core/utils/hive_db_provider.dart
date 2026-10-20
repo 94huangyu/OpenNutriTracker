@@ -42,6 +42,7 @@ class HiveDBProvider extends ChangeNotifier {
   static const userActivityBoxName = 'UserActivityBox';
   static const userBoxName = 'UserBox';
   static const trackedDayBoxName = 'TrackedDayBox';
+  static const personalFoodBoxName = 'PersonalFoodBox';
   static const customMealBoxName = 'CustomMealBox';
   static const recipeBoxName = 'RecipeBox';
   static const cachedOffMealBoxName = 'CachedOffMealBox';
@@ -95,6 +96,7 @@ class HiveDBProvider extends ChangeNotifier {
   Box<ConfigDBO> get appConfigBox => _appConfigBox;
   // Shared content libraries — reusable definitions, not personal logs, so
   // every profile draws from the same set.
+  late final Box<MealDBO> personalFoodBox;
   late final Box<MealDBO> customMealBox;
   late final Box<RecipeDBO> recipeBox;
   late final Box<CustomActivityTemplateDBO> customActivityTemplateBox;
@@ -175,6 +177,7 @@ class HiveDBProvider extends ChangeNotifier {
       cachedOffMealTimestampsBoxName,
     );
     _appConfigBox = await _openEncryptedBox(appConfigBoxName);
+    personalFoodBox = await _openEncryptedBox(personalFoodBoxName);
     customMealBox = await _openEncryptedBox(customMealBoxName);
     recipeBox = await _openEncryptedBox(recipeBoxName);
     customActivityTemplateBox = await _openEncryptedBox(

@@ -1,3 +1,4 @@
+import 'package:opennutritracker/core/data/data_source/personal_food_data_source.dart';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
@@ -26,6 +27,7 @@ import 'package:opennutritracker/features/settings/domain/export_import_failure.
 enum ExportFormat { json, csv }
 
 class ExportDataUsecase {
+  final PersonalFoodDataSource? personalFoods;
   final UserActivityRepository _userActivityRepository;
   final IntakeRepository _intakeRepository;
   final TrackedDayRepository _trackedDayRepository;
@@ -41,8 +43,9 @@ class ExportDataUsecase {
     this._recipeRepository,
     this._customMealDataSource,
     this._weightLogRepository,
-    this._customActivityTemplateRepository,
-  );
+    this._customActivityTemplateRepository, {
+    this.personalFoods,
+  });
 
   /// Exports user activity, intake, tracked day, recipe, weight-log and
   /// Custom activity template data to a zip at a user-specified location,
@@ -142,6 +145,24 @@ class ExportDataUsecase {
   }) async {
     final archive = Archive();
 
+    final personal = personalFoods?.exportMeals();
+    if (personal != null) {
+      final bytes = utf8.encode(
+        format == ExportFormat.json
+            ? jsonEncode(personal.map((meal) => meal.toJson()).toList())
+            : CsvDataExporter.mealsToCsv(personal),
+      );
+      archive.addFile(
+        ArchiveFile(
+          format == ExportFormat.json
+              ? 'personal_foods.json'
+              : 'personal_foods.csv',
+          bytes.length,
+          bytes,
+        ),
+      );
+    }
+
     // Activity dataset
     final fullUserActivity = await _userActivityRepository
         .getAllUserActivityDBO();
@@ -209,7 +230,10 @@ class ExportDataUsecase {
       // translating filenames.
       for (final path in userImagePaths(
         recipes: fullRecipes,
-        customMeals: _customMealDataSource.getAllCustomMeals(),
+        customMeals: [
+          ..._customMealDataSource.getAllCustomMeals(),
+          ...?personal,
+        ],
         intakes: fullIntake,
       )) {
         await _addUserImage(archive, path);

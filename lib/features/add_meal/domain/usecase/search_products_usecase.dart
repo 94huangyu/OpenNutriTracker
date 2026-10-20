@@ -1,3 +1,4 @@
+import 'package:opennutritracker/core/data/data_source/personal_food_data_source.dart';
 import 'package:logging/logging.dart';
 import 'package:opennutritracker/features/add_meal/data/dto/sp/sp_const.dart';
 import 'package:opennutritracker/core/data/data_source/remote_search_cache_data_source.dart';
@@ -38,6 +39,7 @@ class SearchProductsResult {
 }
 
 class SearchProductsUseCase {
+  final PersonalFoodDataSource? personalFoods;
   final _log = Logger('SearchProductsUseCase');
 
   final ProductsRepository _productsRepository;
@@ -53,8 +55,36 @@ class SearchProductsUseCase {
     this._customMealDataSource,
     this._cachedOffMealDataSource,
     this._recipeDataSource,
-    this._getConfigUsecase,
-  );
+    this._getConfigUsecase, {
+    this.personalFoods,
+  });
+
+  /// Personal-library filters never issue a remote request, even for blank input.
+  Future<List<MealEntity>> getPersonalMeals(
+    String query, {
+    bool favoritesOnly = false,
+  }) async {
+    final normalized = query.trim().toLowerCase();
+    final meals = _deduplicateMeals([
+      ..._customMealDataSource.getAllCustomMeals().map(MealEntity.fromMealDBO),
+      ..._recipeDataSource.getAllRecipes().map(
+        (dbo) => RecipeEntity.fromDBO(dbo).toMealEntity(),
+      ),
+      ...?personalFoods?.getAll().where(
+        (meal) => meal.isFavorite || meal.isPersonallyReviewed,
+      ),
+    ]);
+    return meals
+        .where(
+          (meal) =>
+              (favoritesOnly
+                  ? meal.isFavorite
+                  : meal.source == MealSourceEntity.custom ||
+                        meal.source == MealSourceEntity.recipe) &&
+              (normalized.isEmpty || _mealMatchesSearch(meal, normalized)),
+        )
+        .toList();
+  }
 
   /// [skipRemote] limits the search to local matches (custom meals, recipes,
   /// recent intake, cached results) and does not touch the network — used for
@@ -64,8 +94,12 @@ class SearchProductsUseCase {
     bool skipRemote = false,
   }) async {
     if (skipRemote) {
-      return _buildResult(searchString, const [],
-          remoteSkipped: true, cacheSource: MealSourceEntity.off);
+      return _buildResult(
+        searchString,
+        const [],
+        remoteSkipped: true,
+        cacheSource: MealSourceEntity.off,
+      );
     }
     final remote = await _safeRemoteCall(
       'OFF',
@@ -77,9 +111,12 @@ class SearchProductsUseCase {
     // get their timestamp refreshed and stay until 90 days after the
     // last selection.
     await _cacheRemoteResults(remote ?? const []);
-    return _buildResult(searchString, remote ?? const [],
-        remoteFailed: remote == null,
-        cacheSource: MealSourceEntity.off);
+    return _buildResult(
+      searchString,
+      remote ?? const [],
+      remoteFailed: remote == null,
+      cacheSource: MealSourceEntity.off,
+    );
   }
 
   /// Searches the reference-food corpus. "FDC" here names the *data* (USDA
@@ -151,8 +188,9 @@ class SearchProductsUseCase {
     // newer timestamp even when a subsequent search re-includes it,
     // letting it remain at the top of the cache-sorted list.
     try {
-      await _cachedOffMealDataSource
-          .cacheFromSearch(remote.map(MealDBO.fromMealEntity));
+      await _cachedOffMealDataSource.cacheFromSearch(
+        remote.map(MealDBO.fromMealEntity),
+      );
     } catch (error, stack) {
       _log.warning('Could not cache search results', error, stack);
     }
@@ -199,10 +237,7 @@ class SearchProductsUseCase {
 
     final normalizedSearchString = searchString.trim().toLowerCase();
     if (normalizedSearchString.isEmpty) {
-      return SearchProductsResult(
-        meals: remoteResults,
-        remoteStatus: status,
-      );
+      return SearchProductsResult(meals: remoteResults, remoteStatus: status);
     }
 
     // Local sources of matches, in priority order:
@@ -275,9 +310,11 @@ class SearchProductsUseCase {
         .getAllByMostRecentlyTouched()
         .map(MealEntity.fromMealDBO)
         .where((meal) => meal.source == cacheSource)
-        .where((meal) =>
-            meal.backendSource == null ||
-            config.isFoodSourceEnabled(meal.backendSource!))
+        .where(
+          (meal) =>
+              meal.backendSource == null ||
+              config.isFoodSourceEnabled(meal.backendSource!),
+        )
         .where((meal) => _mealMatchesSearch(meal, normalizedSearchString))
         .map((meal) => _freshest(meal, freshByKey))
         .toList();
@@ -292,6 +329,11 @@ class SearchProductsUseCase {
       meals: _deduplicateMeals([
         ...fromCustomMealBox,
         ...fromRecipes,
+        ...?personalFoods?.getAll().where(
+          (meal) =>
+              (meal.isFavorite || meal.isPersonallyReviewed) &&
+              _mealMatchesSearch(meal, normalizedSearchString),
+        ),
         ...fromIntakeHistory,
         ...fromCache,
         ...remoteResults,
@@ -320,8 +362,7 @@ class SearchProductsUseCase {
     return fresh;
   }
 
-  String _dedupKey(MealEntity meal) =>
-      '${meal.source.name}:${meal.code ?? meal.name ?? ''}';
+  String _dedupKey(MealEntity meal) => meal.personalKey;
 
   List<MealEntity> _deduplicateMeals(List<MealEntity> meals) {
     final seenKeys = <String>{};
@@ -329,7 +370,7 @@ class SearchProductsUseCase {
 
     for (final meal in meals) {
       if (seenKeys.add(_dedupKey(meal))) {
-        uniqueMeals.add(meal);
+        uniqueMeals.add(personalFoods?.apply(meal) ?? meal);
       }
     }
 

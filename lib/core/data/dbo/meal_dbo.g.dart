@@ -38,13 +38,17 @@ class MealDBOAdapter extends TypeAdapter<MealDBO> {
       nutritionBasisQuantity: (fields[18] as num?)?.toDouble(),
       originalSource: fields[19] as String?,
       originalCode: fields[20] as String?,
+      isFavorite: fields[21] as bool?,
+      reviewSource: fields[22] as String?,
+      reviewNote: fields[23] as String?,
+      reviewedAt: fields[24] as DateTime?,
     );
   }
 
   @override
   void write(BinaryWriter writer, MealDBO obj) {
     writer
-      ..writeByte(21)
+      ..writeByte(25)
       ..writeByte(0)
       ..write(obj.code)
       ..writeByte(1)
@@ -86,7 +90,15 @@ class MealDBOAdapter extends TypeAdapter<MealDBO> {
       ..writeByte(19)
       ..write(obj.originalSource)
       ..writeByte(20)
-      ..write(obj.originalCode);
+      ..write(obj.originalCode)
+      ..writeByte(21)
+      ..write(obj.isFavorite)
+      ..writeByte(22)
+      ..write(obj.reviewSource)
+      ..writeByte(23)
+      ..write(obj.reviewNote)
+      ..writeByte(24)
+      ..write(obj.reviewedAt);
   }
 
   @override
@@ -177,6 +189,12 @@ MealDBO _$MealDBOFromJson(Map<String, dynamic> json) => MealDBO(
   nutritionBasisQuantity: (json['nutritionBasisQuantity'] as num?)?.toDouble(),
   originalSource: json['originalSource'] as String?,
   originalCode: json['originalCode'] as String?,
+  isFavorite: json['isFavorite'] as bool?,
+  reviewSource: json['reviewSource'] as String?,
+  reviewNote: json['reviewNote'] as String?,
+  reviewedAt: json['reviewedAt'] == null
+      ? null
+      : DateTime.parse(json['reviewedAt'] as String),
 );
 
 Map<String, dynamic> _$MealDBOToJson(MealDBO instance) => <String, dynamic>{
@@ -201,6 +219,10 @@ Map<String, dynamic> _$MealDBOToJson(MealDBO instance) => <String, dynamic>{
   'nutritionBasisQuantity': instance.nutritionBasisQuantity,
   'originalSource': instance.originalSource,
   'originalCode': instance.originalCode,
+  'isFavorite': instance.isFavorite,
+  'reviewSource': instance.reviewSource,
+  'reviewNote': instance.reviewNote,
+  'reviewedAt': instance.reviewedAt?.toIso8601String(),
 };
 
 const _$MealSourceDBOEnumMap = {

@@ -1,3 +1,4 @@
+import 'package:opennutritracker/core/data/data_source/personal_food_data_source.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:get_it/get_it.dart';
 import 'package:opennutritracker/core/data/data_source/config_data_source.dart';
@@ -194,8 +195,11 @@ Future<void> initLocator() async {
   );
 
   // Reference foods are optional; local foods and OFF do not need this account.
-  await registerOptionalFoodBackend(locator,
-    url: Env.supabaseProjectUrl, key: Env.supabaseProjectAnonKey);
+  await registerOptionalFoodBackend(
+    locator,
+    url: Env.supabaseProjectUrl,
+    key: Env.supabaseProjectAnonKey,
+  );
 
   // Notification service (#312)
   locator.registerLazySingleton<NotificationService>(
@@ -394,6 +398,7 @@ Future<void> initLocator() async {
       locator(),
       locator(),
       locator(),
+      personalFoods: locator(),
     ),
   );
   // Per-navigation, matching how the AddMeal / Products / Food blocs that
@@ -403,7 +408,12 @@ Future<void> initLocator() async {
     () => ResolveParsedMealsUseCase(locator()),
   );
   locator.registerLazySingleton<SearchProductByBarcodeUseCase>(
-    () => SearchProductByBarcodeUseCase(locator(), locator(), locator()),
+    () => SearchProductByBarcodeUseCase(
+      locator(),
+      locator(),
+      locator(),
+      personalFoods: locator(),
+    ),
   );
   locator.registerLazySingleton<GetIntakeUsecase>(
     () => GetIntakeUsecase(locator()),
@@ -500,6 +510,7 @@ Future<void> initLocator() async {
       locator(),
       locator(),
       locator(),
+      personalFoods: locator(),
     ),
   );
   locator.registerLazySingleton(
@@ -510,6 +521,7 @@ Future<void> initLocator() async {
       locator(),
       locator(),
       locator(),
+      personalFoods: locator(),
     ),
   );
   locator.registerLazySingleton(() => ImportMealsCsvUsecase(locator()));
@@ -612,8 +624,15 @@ Future<void> initLocator() async {
   locator.registerLazySingleton<WaterIntakeDataSource>(
     () => WaterIntakeDataSource(hiveDBProvider),
   );
-  locator.registerLazySingleton(() => CustomMealDataSource(hiveDBProvider));
-  locator.registerLazySingleton(() => RecipeDataSource(hiveDBProvider));
+  locator.registerLazySingleton(
+    () => PersonalFoodDataSource(hiveDBProvider.personalFoodBox),
+  );
+  locator.registerLazySingleton(
+    () => CustomMealDataSource(hiveDBProvider, personalFoods: locator()),
+  );
+  locator.registerLazySingleton(
+    () => RecipeDataSource(hiveDBProvider, personalFoods: locator()),
+  );
   locator.registerLazySingleton(
     () => RemoteSearchCacheDataSource(
       hiveDBProvider.cachedOffMealBox,

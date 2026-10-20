@@ -577,7 +577,9 @@ void main() {
       expect(events.map((e) => (e.value as IntakeDBO).id), ['control']);
     });
 
-    test('ensureOffMicronutrientsRepaired covers all four boxes', () async {
+    test('ensureOffMicronutrientsRepaired covers all five stores', () async {
+      final personalBox = await Hive.openBox<MealDBO>('personal_foods');
+      await personalBox.add(_meal(source: MealSourceDBO.off));
       await intakeBox.add(_intake('old-off', _meal(source: MealSourceDBO.off)));
       await cacheBox.add(_meal(source: MealSourceDBO.off, detailed: true));
       await customMealBox.add(_meal(source: MealSourceDBO.off));
@@ -587,6 +589,7 @@ void main() {
       final db = FakeHiveDBProvider(
         intakeBox: intakeBox,
         cachedOffMealBox: cacheBox,
+        personalFoodBox: personalBox,
         customMealBox: customMealBox,
         recipeBox: recipeBox,
       );
@@ -595,6 +598,7 @@ void main() {
 
       _expectAppUnits(intakeBox.values.single.meal.nutriments);
       _expectAppUnits(cacheBox.values.single.nutriments);
+      _expectAppUnits(personalBox.values.single.nutriments);
       _expectAppUnits(customMealBox.values.single.nutriments);
       _expectAppUnits(
         recipeBox.values.single.ingredients.single.snapshotMeal.nutriments,
@@ -604,6 +608,7 @@ void main() {
       final after = [
         _json(intakeBox.values.single.toJson()),
         _json(cacheBox.values.single.toJson()),
+        _json(personalBox.values.single.toJson()),
         _json(customMealBox.values.single.toJson()),
         _json(recipeBox.values.single.toJson()),
       ];
@@ -611,6 +616,7 @@ void main() {
       expect([
         _json(intakeBox.values.single.toJson()),
         _json(cacheBox.values.single.toJson()),
+        _json(personalBox.values.single.toJson()),
         _json(customMealBox.values.single.toJson()),
         _json(recipeBox.values.single.toJson()),
       ], after);
@@ -645,16 +651,8 @@ void main() {
     });
 
     test('a user_intake.csv without the version column is scaled', () {
-      final legacyColumns = CsvDataExporter.intakeColumns
-          .where(
-            (c) => !{
-              'meal_data_version',
-              'meal_nutrition_basis_quantity',
-              'meal_original_source',
-              'meal_original_code',
-            }.contains(c),
-          )
-          .toList();
+      final legacyColumns = CsvDataExporter.intakeColumns.take(
+        CsvDataExporter.intakeColumns.indexOf('meal_data_version')).toList();
       final csv = CsvDataExporter.intakesToCsv([
         _intake('old', _meal(source: MealSourceDBO.off)),
       ]);
@@ -682,9 +680,7 @@ void main() {
       ]);
       expect(
         csv.split('\n').first,
-        endsWith(
-          ',meal_data_version,meal_nutrition_basis_quantity,meal_original_source,meal_original_code',
-        ),
+        contains(',meal_data_version,meal_nutrition_basis_quantity,meal_original_source,meal_original_code,'),
       );
 
       final parsed = CsvDataExporter.parseIntakesFromCsv(csv).single;

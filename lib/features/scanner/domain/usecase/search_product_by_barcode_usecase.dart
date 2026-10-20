@@ -1,3 +1,4 @@
+import 'package:opennutritracker/core/data/data_source/personal_food_data_source.dart';
 import 'package:opennutritracker/core/data/data_source/remote_search_cache_data_source.dart';
 import 'package:opennutritracker/core/data/data_source/custom_meal_data_source.dart';
 import 'package:opennutritracker/core/data/dbo/meal_dbo.dart';
@@ -23,6 +24,7 @@ import 'package:opennutritracker/features/add_meal/domain/entity/meal_entity.dar
 /// A user who wants a scan to recall a saved meal should set the
 /// barcode on the meal itself via Edit Meal.
 class SearchProductByBarcodeUseCase {
+  final PersonalFoodDataSource? personalFoods;
   final ProductsRepository _productsRepository;
   final CustomMealDataSource _customMealDataSource;
   final RemoteSearchCacheDataSource _cachedOffMealDataSource;
@@ -30,8 +32,9 @@ class SearchProductByBarcodeUseCase {
   SearchProductByBarcodeUseCase(
     this._productsRepository,
     this._customMealDataSource,
-    this._cachedOffMealDataSource,
-  );
+    this._cachedOffMealDataSource, {
+    this.personalFoods,
+  });
 
   Future<MealEntity> searchProductByBarcode(String barcode) async {
     final customMatch = _customMealDataSource
@@ -41,6 +44,17 @@ class SearchProductByBarcodeUseCase {
     if (customMatch != null) {
       return MealEntity.fromMealDBO(customMatch);
     }
+
+    final saved = personalFoods
+        ?.getAll()
+        .where(
+          (meal) =>
+              meal.source == MealSourceEntity.off &&
+              meal.code == barcode &&
+              (meal.isFavorite || meal.isPersonallyReviewed),
+        )
+        .firstOrNull;
+    if (saved != null) return saved;
 
     final cachedMatch = _cachedOffMealDataSource.getDetailedByBarcode(barcode);
     if (cachedMatch != null) {

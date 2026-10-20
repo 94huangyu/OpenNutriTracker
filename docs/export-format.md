@@ -342,3 +342,29 @@ Syncthing folder and let the same bundle move between devices. The JSON
 files re-import losslessly; the CSV files are stable across versions
 (columns can be added at the end, never reordered or removed without a
 schema bump).
+
+### China fork M3: personal food choices
+
+Meal objects append optional `isFavorite` (boolean), `reviewSource` (`package`,
+`manufacturer`, `reference`, `other`), `reviewNote` (string) and `reviewedAt`
+(ISO 8601 UTC; new checks use millisecond precision). Missing fields mean no
+favorite and no personal check. A personal check requires all three evidence
+fields; a source database, custom origin, translation flag or favorite alone
+never supplies one. Existing intake and ingredient snapshots keep their saved
+values and evidence; editing a template does not rewrite them.
+
+JSON archives append optional `personal_foods.json`, an array of complete meal
+objects from the encrypted personal library. This includes saved public foods
+that have never been logged. CSV archives append `personal_foods.csv`, using the
+meal columns of the intake CSV, without its first five intake-only columns.
+Intake CSV appends favorite/evidence plus backend source, local photo path,
+full-record and translated-name flags; missing columns remain compatible.
+Quoted commas, escaped quotes and multiline evidence are supported. JSON also
+includes photos referenced only by this personal library. CSV keeps paths,
+without photo bytes, as before.
+
+Old archives without either optional file are still accepted. New personal-food
+records validate identity and complete evidence before writing their batch.
+This extension does not fix the older full-archive coverage, cross-dataset
+atomicity or repeated intake-import issues; those remain M4 work. A backup is
+local plaintext once exported, like the existing JSON/CSV archive.

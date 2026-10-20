@@ -1,3 +1,5 @@
+import 'package:opennutritracker/core/data/data_source/personal_food_data_source.dart';
+import 'package:opennutritracker/core/data/dbo/meal_dbo.dart';
 import 'dart:convert';
 import 'dart:io';
 
@@ -27,6 +29,7 @@ typedef PickImportFile = Future<PlatformFile?> Function();
 Future<PlatformFile?> _pickAnyFile() => FilePicker.pickFile(type: FileType.any);
 
 class ImportDataUsecase {
+  final PersonalFoodDataSource? personalFoods;
   final UserActivityRepository _userActivityRepository;
   final IntakeRepository _intakeRepository;
   final TrackedDayRepository _trackedDayRepository;
@@ -46,6 +49,7 @@ class ImportDataUsecase {
     this._recipeRepository,
     this._weightLogRepository,
     this._customActivityTemplateRepository, {
+    this.personalFoods,
     PickImportFile pickFile = _pickAnyFile,
   }) : _pickFile = pickFile;
 
@@ -141,6 +145,18 @@ class ImportDataUsecase {
       await _customActivityTemplateRepository.addAllTemplateDBOs(templateDBOs);
     }
 
+    final personalFile = archive.findFile('personal_foods.json');
+    if (personalFile != null) {
+      final meals = _decodeJsonList(
+        personalFile,
+        MealDBO.fromJson,
+      ).map(OffMicronutrientRepair.repairMeal).toList();
+      if (personalFoods == null) {
+        throw StateError('Personal food store unavailable');
+      }
+      await personalFoods!.importMeals(meals);
+    }
+
     // Restore any user-attached photos — recipes under `recipe_images/`
     // and custom meals under `meal_images/`. Each archive entry's name
     // already matches the relative slug we stored on the matching DBO,
@@ -216,6 +232,18 @@ class ImportDataUsecase {
       await _trackedDayRepository.addAllTrackedDays(dbos);
     } else {
       throw _missingEntry(trackedDayCsvFileName);
+    }
+
+    final personalFile = archive.findFile('personal_foods.csv');
+    if (personalFile != null) {
+      final meals = _decodeCsv(
+        personalFile,
+        CsvDataExporter.parseMealsFromCsv,
+      ).map(OffMicronutrientRepair.repairMeal).toList();
+      if (personalFoods == null) {
+        throw StateError('Personal food store unavailable');
+      }
+      await personalFoods!.importMeals(meals);
     }
 
     return true;

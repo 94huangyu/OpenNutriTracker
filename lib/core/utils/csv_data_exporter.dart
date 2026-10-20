@@ -74,6 +74,14 @@ class CsvDataExporter {
     'meal_nutrition_basis_quantity',
     'meal_original_source',
     'meal_original_code',
+    'meal_is_favorite',
+    'meal_review_source',
+    'meal_review_note',
+    'meal_reviewed_at',
+    'meal_backend_source',
+    'meal_local_image_path',
+    'meal_detailed',
+    'meal_machine_translated_name',
   ];
 
   static const userActivityColumns = <String>[
@@ -114,53 +122,13 @@ class CsvDataExporter {
     buf.writeln(intakeColumns.join(','));
     for (final intake in intakes) {
       final meal = intake.meal;
-      final n = meal.nutriments;
       final cells = <String>[
         _cell(intake.id),
         _cell(intake.dateTime.toIso8601String()),
         _cell(intake.type.name),
         _num(intake.amount),
         _cell(intake.unit),
-        _cell(meal.code),
-        _cell(meal.name),
-        _cell(meal.brands),
-        _cell(meal.source.name),
-        _cell(meal.mealQuantity),
-        _cell(meal.mealUnit),
-        _num(meal.servingQuantity),
-        _cell(meal.servingUnit),
-        _cell(meal.servingSize),
-        _cell(meal.thumbnailImageUrl),
-        _cell(meal.mainImageUrl),
-        _cell(meal.url),
-        _num(n.energyKcal100),
-        _num(n.carbohydrates100),
-        _num(n.fat100),
-        _num(n.proteins100),
-        _num(n.sugars100),
-        _num(n.saturatedFat100),
-        _num(n.fiber100),
-        _num(n.monounsaturatedFat100),
-        _num(n.polyunsaturatedFat100),
-        _num(n.transFat100),
-        _num(n.cholesterol100),
-        _num(n.sodium100),
-        _num(n.potassium100),
-        _num(n.magnesium100),
-        _num(n.calcium100),
-        _num(n.iron100),
-        _num(n.zinc100),
-        _num(n.phosphorus100),
-        _num(n.vitaminA100),
-        _num(n.vitaminC100),
-        _num(n.vitaminD100),
-        _num(n.vitaminB6100),
-        _num(n.vitaminB12100),
-        _num(n.niacin100),
-        _num(meal.dataVersion?.toDouble()),
-        _num(meal.nutritionBasisQuantity),
-        _cell(meal.originalSource),
-        _cell(meal.originalCode),
+        ..._mealCells(meal),
       ];
       buf.writeln(cells.join(','));
     }
@@ -227,63 +195,7 @@ class CsvDataExporter {
     final out = <IntakeDBO>[];
     for (var i = 1; i < rows.length; i++) {
       final row = _zip(header, rows[i]);
-      final nutriments = MealNutrimentsDBO(
-        energyKcal100: CsvRowParser.parseDoubleOrNull(row['kcal_per_100g']),
-        carbohydrates100: CsvRowParser.parseDoubleOrNull(row['carbs_per_100g']),
-        fat100: CsvRowParser.parseDoubleOrNull(row['fat_per_100g']),
-        proteins100: CsvRowParser.parseDoubleOrNull(row['protein_per_100g']),
-        sugars100: CsvRowParser.parseDoubleOrNull(row['sugars_per_100g']),
-        saturatedFat100:
-            CsvRowParser.parseDoubleOrNull(row['saturated_fat_per_100g']),
-        fiber100: CsvRowParser.parseDoubleOrNull(row['fiber_per_100g']),
-        monounsaturatedFat100:
-            CsvRowParser.parseDoubleOrNull(row['monounsaturated_fat_per_100g']),
-        polyunsaturatedFat100:
-            CsvRowParser.parseDoubleOrNull(row['polyunsaturated_fat_per_100g']),
-        transFat100: CsvRowParser.parseDoubleOrNull(row['trans_fat_per_100g']),
-        cholesterol100:
-            CsvRowParser.parseDoubleOrNull(row['cholesterol_per_100g']),
-        sodium100: CsvRowParser.parseDoubleOrNull(row['sodium_per_100g']),
-        potassium100: CsvRowParser.parseDoubleOrNull(row['potassium_per_100g']),
-        magnesium100: CsvRowParser.parseDoubleOrNull(row['magnesium_per_100g']),
-        calcium100: CsvRowParser.parseDoubleOrNull(row['calcium_per_100g']),
-        iron100: CsvRowParser.parseDoubleOrNull(row['iron_per_100g']),
-        zinc100: CsvRowParser.parseDoubleOrNull(row['zinc_per_100g']),
-        phosphorus100:
-            CsvRowParser.parseDoubleOrNull(row['phosphorus_per_100g']),
-        vitaminA100: CsvRowParser.parseDoubleOrNull(row['vitamin_a_per_100g']),
-        vitaminC100: CsvRowParser.parseDoubleOrNull(row['vitamin_c_per_100g']),
-        vitaminD100: CsvRowParser.parseDoubleOrNull(row['vitamin_d_per_100g']),
-        vitaminB6100:
-            CsvRowParser.parseDoubleOrNull(row['vitamin_b6_per_100g']),
-        vitaminB12100:
-            CsvRowParser.parseDoubleOrNull(row['vitamin_b12_per_100g']),
-        niacin100: CsvRowParser.parseDoubleOrNull(row['niacin_per_100g']),
-      );
-      final meal = MealDBO(
-        code: _nullable(row['meal_code']),
-        name: _nullable(row['meal_name']),
-        brands: _nullable(row['meal_brands']),
-        thumbnailImageUrl: _nullable(row['meal_thumbnail_url']),
-        mainImageUrl: _nullable(row['meal_main_image_url']),
-        url: _nullable(row['meal_url']),
-        mealQuantity: _nullable(row['meal_quantity']),
-        mealUnit: _nullable(row['meal_unit']),
-        servingQuantity:
-            CsvRowParser.parseDoubleOrNull(row['meal_serving_quantity']),
-        servingUnit: _nullable(row['meal_serving_unit']),
-        servingSize: _nullable(row['meal_serving_size']),
-        nutritionBasisQuantity: CsvRowParser.parseDoubleOrNull(
-          row['meal_nutrition_basis_quantity'],
-        ),
-        originalSource: _nullable(row['meal_original_source']),
-        originalCode: _nullable(row['meal_original_code']),
-        source: _parseMealSource(row['meal_source']),
-        nutriments: nutriments,
-        dataVersion: CsvRowParser.parseDoubleOrNull(
-          row['meal_data_version'],
-        )?.toInt(),
-      );
+      final meal = _mealFromRow(row);
       out.add(
         IntakeDBO(
           id: row['id'] ?? '',
@@ -327,8 +239,9 @@ class CsvDataExporter {
           pa,
           userKcal: CsvRowParser.parseDoubleOrNull(row['user_kcal']),
           externalId: _nullable(row['external_id']),
-          sourceReportedKcal:
-              CsvRowParser.parseDoubleOrNull(row['source_reported_kcal']),
+          sourceReportedKcal: CsvRowParser.parseDoubleOrNull(
+            row['source_reported_kcal'],
+          ),
         ),
       );
     }
@@ -354,26 +267,199 @@ class CsvDataExporter {
           fatGoal: CsvRowParser.parseDoubleOrNull(row['fat_goal']),
           fatTracked: CsvRowParser.parseDoubleOrNull(row['fat_tracked']),
           proteinGoal: CsvRowParser.parseDoubleOrNull(row['protein_goal']),
-          proteinTracked: CsvRowParser.parseDoubleOrNull(row['protein_tracked']),
+          proteinTracked: CsvRowParser.parseDoubleOrNull(
+            row['protein_tracked'],
+          ),
         ),
       );
     }
     return out;
   }
 
+  static String mealsToCsv(List<MealDBO> meals) {
+    final buf = StringBuffer()..writeln(intakeColumns.skip(5).join(','));
+    for (final meal in meals) {
+      buf.writeln(_mealCells(meal).join(','));
+    }
+    return buf.toString();
+  }
+
+  static List<MealDBO> parseMealsFromCsv(String csv) {
+    final rows = _parseRows(csv);
+    if (rows.isEmpty) return [];
+    return [
+      for (final row in rows.skip(1)) _mealFromRow(_zip(rows.first, row)),
+    ];
+  }
+
+  static List<String> _mealCells(MealDBO meal) {
+    final n = meal.nutriments;
+    return [
+      _cell(meal.code),
+      _cell(meal.name),
+      _cell(meal.brands),
+      _cell(meal.source.name),
+      _cell(meal.mealQuantity),
+      _cell(meal.mealUnit),
+      _num(meal.servingQuantity),
+      _cell(meal.servingUnit),
+      _cell(meal.servingSize),
+      _cell(meal.thumbnailImageUrl),
+      _cell(meal.mainImageUrl),
+      _cell(meal.url),
+      _num(n.energyKcal100),
+      _num(n.carbohydrates100),
+      _num(n.fat100),
+      _num(n.proteins100),
+      _num(n.sugars100),
+      _num(n.saturatedFat100),
+      _num(n.fiber100),
+      _num(n.monounsaturatedFat100),
+      _num(n.polyunsaturatedFat100),
+      _num(n.transFat100),
+      _num(n.cholesterol100),
+      _num(n.sodium100),
+      _num(n.potassium100),
+      _num(n.magnesium100),
+      _num(n.calcium100),
+      _num(n.iron100),
+      _num(n.zinc100),
+      _num(n.phosphorus100),
+      _num(n.vitaminA100),
+      _num(n.vitaminC100),
+      _num(n.vitaminD100),
+      _num(n.vitaminB6100),
+      _num(n.vitaminB12100),
+      _num(n.niacin100),
+      _num(meal.dataVersion?.toDouble()),
+      _num(meal.nutritionBasisQuantity),
+      _cell(meal.originalSource),
+      _cell(meal.originalCode),
+      _cell(meal.isFavorite?.toString()),
+      _cell(meal.reviewSource),
+      _cell(meal.reviewNote),
+      _cell(meal.reviewedAt?.toIso8601String()),
+      _cell(meal.backendSource),
+      _cell(meal.localImagePath),
+      _cell(meal.detailed?.toString()),
+      _cell(meal.machineTranslatedName?.toString()),
+    ];
+  }
+
+  static MealDBO _mealFromRow(Map<String, String> row) {
+    final nutriments = MealNutrimentsDBO(
+      energyKcal100: CsvRowParser.parseDoubleOrNull(row['kcal_per_100g']),
+      carbohydrates100: CsvRowParser.parseDoubleOrNull(row['carbs_per_100g']),
+      fat100: CsvRowParser.parseDoubleOrNull(row['fat_per_100g']),
+      proteins100: CsvRowParser.parseDoubleOrNull(row['protein_per_100g']),
+      sugars100: CsvRowParser.parseDoubleOrNull(row['sugars_per_100g']),
+      saturatedFat100: CsvRowParser.parseDoubleOrNull(
+        row['saturated_fat_per_100g'],
+      ),
+      fiber100: CsvRowParser.parseDoubleOrNull(row['fiber_per_100g']),
+      monounsaturatedFat100: CsvRowParser.parseDoubleOrNull(
+        row['monounsaturated_fat_per_100g'],
+      ),
+      polyunsaturatedFat100: CsvRowParser.parseDoubleOrNull(
+        row['polyunsaturated_fat_per_100g'],
+      ),
+      transFat100: CsvRowParser.parseDoubleOrNull(row['trans_fat_per_100g']),
+      cholesterol100: CsvRowParser.parseDoubleOrNull(
+        row['cholesterol_per_100g'],
+      ),
+      sodium100: CsvRowParser.parseDoubleOrNull(row['sodium_per_100g']),
+      potassium100: CsvRowParser.parseDoubleOrNull(row['potassium_per_100g']),
+      magnesium100: CsvRowParser.parseDoubleOrNull(row['magnesium_per_100g']),
+      calcium100: CsvRowParser.parseDoubleOrNull(row['calcium_per_100g']),
+      iron100: CsvRowParser.parseDoubleOrNull(row['iron_per_100g']),
+      zinc100: CsvRowParser.parseDoubleOrNull(row['zinc_per_100g']),
+      phosphorus100: CsvRowParser.parseDoubleOrNull(row['phosphorus_per_100g']),
+      vitaminA100: CsvRowParser.parseDoubleOrNull(row['vitamin_a_per_100g']),
+      vitaminC100: CsvRowParser.parseDoubleOrNull(row['vitamin_c_per_100g']),
+      vitaminD100: CsvRowParser.parseDoubleOrNull(row['vitamin_d_per_100g']),
+      vitaminB6100: CsvRowParser.parseDoubleOrNull(row['vitamin_b6_per_100g']),
+      vitaminB12100: CsvRowParser.parseDoubleOrNull(
+        row['vitamin_b12_per_100g'],
+      ),
+      niacin100: CsvRowParser.parseDoubleOrNull(row['niacin_per_100g']),
+    );
+    return MealDBO(
+      code: _nullable(row['meal_code']),
+      name: _nullable(row['meal_name']),
+      brands: _nullable(row['meal_brands']),
+      thumbnailImageUrl: _nullable(row['meal_thumbnail_url']),
+      mainImageUrl: _nullable(row['meal_main_image_url']),
+      url: _nullable(row['meal_url']),
+      mealQuantity: _nullable(row['meal_quantity']),
+      mealUnit: _nullable(row['meal_unit']),
+      servingQuantity: CsvRowParser.parseDoubleOrNull(
+        row['meal_serving_quantity'],
+      ),
+      servingUnit: _nullable(row['meal_serving_unit']),
+      servingSize: _nullable(row['meal_serving_size']),
+      nutritionBasisQuantity: CsvRowParser.parseDoubleOrNull(
+        row['meal_nutrition_basis_quantity'],
+      ),
+      originalSource: _nullable(row['meal_original_source']),
+      originalCode: _nullable(row['meal_original_code']),
+      isFavorite: _parseBool(row['meal_is_favorite']),
+      reviewSource: _nullable(row['meal_review_source']),
+      reviewNote: _nullable(row['meal_review_note']),
+      reviewedAt: DateTime.tryParse(row['meal_reviewed_at'] ?? ''),
+      backendSource: _nullable(row['meal_backend_source']),
+      localImagePath: _nullable(row['meal_local_image_path']),
+      detailed: _parseBool(row['meal_detailed']),
+      machineTranslatedName: _parseBool(row['meal_machine_translated_name']),
+      source: _parseMealSource(row['meal_source']),
+      nutriments: nutriments,
+      dataVersion: CsvRowParser.parseDoubleOrNull(
+        row['meal_data_version'],
+      )?.toInt(),
+    );
+  }
+
   // --- Internals -----------------------------------------------------------
 
   static List<List<String>> _parseRows(String csv) {
-    final lines = csv.split(RegExp(r'\r?\n')).where((l) => l.trim().isNotEmpty);
-    return lines
-        .map((l) => CsvRowParser.splitRow(l).map((c) => c.trim()).toList())
-        .toList();
+    final rows = <List<String>>[];
+    final line = StringBuffer();
+    var quoted = false;
+    for (var i = 0; i < csv.length; i++) {
+      final ch = csv[i];
+      if (ch == '"') {
+        line.write(ch);
+        if (quoted && i + 1 < csv.length && csv[i + 1] == '"') {
+          line.write(csv[++i]);
+        } else {
+          quoted = !quoted;
+        }
+      } else if ((ch == '\n' || ch == '\r') && !quoted) {
+        if (line.toString().trim().isNotEmpty) {
+          rows.add(CsvRowParser.splitRow(line.toString()));
+        }
+        line.clear();
+        if (ch == '\r' && i + 1 < csv.length && csv[i + 1] == '\n') i++;
+      } else {
+        line.write(ch);
+      }
+    }
+    if (quoted) throw const FormatException('Unclosed quoted CSV field');
+    if (line.toString().trim().isNotEmpty) {
+      rows.add(CsvRowParser.splitRow(line.toString()));
+    }
+    return rows;
   }
+
+  static bool? _parseBool(String? value) => switch (value) {
+    'true' => true,
+    'false' => false,
+    _ => null,
+  };
 
   static Map<String, String> _zip(List<String> header, List<String> row) {
     final map = <String, String>{};
     for (var i = 0; i < header.length && i < row.length; i++) {
-      map[header[i].toLowerCase()] = row[i];
+      map[header[i].trim().toLowerCase()] = row[i];
     }
     return map;
   }

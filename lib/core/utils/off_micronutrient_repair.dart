@@ -78,6 +78,11 @@ class OffMicronutrientRepair {
       nutritionBasisQuantity: meal.nutritionBasisQuantity,
       originalSource: meal.originalSource,
       originalCode: meal.originalCode,
+      isFavorite: meal.isFavorite,
+      // Nutrient repair changes the values that the old evidence described.
+      reviewSource: null,
+      reviewNote: null,
+      reviewedAt: null,
       source: meal.source,
       nutriments: MealNutrimentsDBO(
         energyKcal100: n.energyKcal100,
@@ -225,10 +230,10 @@ class OffMicronutrientRepair {
 }
 
 /// Runs the repair over every store that holds a [MealDBO] the active
-/// profile can read: its own intake log, and the three shared boxes — the
-/// remote-search cache, the saved custom meals and the recipe library.
+/// profile can read: its own intake log, and the shared boxes — the
+/// remote-search cache, the saved custom meals, personal foods and the recipe library.
 ///
-/// Those four are the only places a `MealDBO` is persisted. `IntakeDBO.meal`
+/// Those are the only places a `MealDBO` is persisted. `IntakeDBO.meal`
 /// and `RecipeIngredientDBO.snapshotMeal` are the two nested shapes, both
 /// covered here; `TrackedDayDBO` keeps totals, not meals. The pasted-JSON,
 /// sample-CSV and share-payload importers build every meal with source
@@ -251,11 +256,14 @@ Future<void> ensureOffMicronutrientsRepaired(HiveDBProvider db) async {
   );
   final custom = await OffMicronutrientRepair.repairMealBox(db.customMealBox);
   final recipes = await OffMicronutrientRepair.repairRecipeBox(db.recipeBox);
-  if (intakes + cached + custom + recipes > 0) {
+  final personal = await OffMicronutrientRepair.repairMealBox(
+    db.personalFoodBox,
+  );
+  if (intakes + cached + custom + recipes + personal > 0) {
     _log.info(
       'Converted Open Food Facts micronutrients into app units on '
       '$intakes intakes, $cached cached products, $custom saved meals and '
-      '$recipes recipes (#1152)',
+      '$recipes recipes and $personal personal foods (#1152)',
     );
   }
 }

@@ -60,7 +60,10 @@ double scoreMealRelevance(MealEntity meal, String query) {
 /// sources (e.g. a not-yet-deduplicated OFF/Supabase pair) can compare equal
 /// and would otherwise collide onto the same map key.
 List<MealEntity> rankMealsByRelevance(List<MealEntity> meals, String query) {
-  final decorated = [for (final meal in meals) (meal: meal, score: scoreMealRelevance(meal, query))];
+  final decorated = [
+    for (final meal in meals)
+      (meal: meal, score: scoreMealRelevance(meal, query)),
+  ];
   mergeSort(decorated, compare: (a, b) => b.score.compareTo(a.score));
   return [for (final entry in decorated) entry.meal];
 }
@@ -87,15 +90,31 @@ List<MealEntity> rankMealsByRelevance(List<MealEntity> meals, String query) {
 /// away, even if a remote result happens to share a name, and backend
 /// (FDC/BLS/...) records are never merged with anything — see the note on
 /// [_nearDuplicateKey] for why (#1164).
-List<MealEntity> mergeAndRankMeals(List<MealEntity> a, List<MealEntity> b, String query) {
-  final own = <MealEntity>[];
-  final rest = <MealEntity>[];
-  for (final meal in _deduplicateAcrossSources([...a, ...b])) {
-    final isOwn = meal.source == MealSourceEntity.custom || meal.source == MealSourceEntity.recipe;
-    (isOwn ? own : rest).add(meal);
+List<MealEntity> mergeAndRankMeals(
+  List<MealEntity> a,
+  List<MealEntity> b,
+  String query,
+) {
+  final unique = _deduplicateAcrossSources([...a, ...b]);
+  final tiers = <List<MealEntity>>[[], [], [], []];
+  for (final meal in unique) {
+    final tier = meal.isPersonallyReviewed
+        ? 0
+        : meal.source == MealSourceEntity.custom ||
+              meal.source == MealSourceEntity.recipe
+        ? 1
+        : meal.isFavorite
+        ? 2
+        : 3;
+    tiers[tier].add(meal);
   }
-  final collapsedRest = _collapseNearDuplicates(rest, query);
-  return [...rankMealsByRelevance(own, query), ...rankMealsByRelevance(collapsedRest, query)];
+  return [
+    for (var i = 0; i < tiers.length; i++)
+      ...rankMealsByRelevance(
+        i == 3 ? _collapseNearDuplicates(tiers[i], query) : tiers[i],
+        query,
+      ),
+  ];
 }
 
 /// Same dedup key as `SearchProductsUseCase._deduplicateMeals` (source +
@@ -117,8 +136,8 @@ List<MealEntity> _deduplicateAcrossSources(List<MealEntity> meals) {
   final uniqueMeals = <MealEntity>[];
   for (final meal in meals) {
     final key = meal.source == MealSourceEntity.fdc
-        ? '${meal.source.name}:${meal.code ?? identityHashCode(meal)}'
-        : '${meal.source.name}:${meal.code ?? meal.name ?? ''}';
+        ? '${meal.source.name}:${meal.backendSource}:${meal.code ?? identityHashCode(meal)}'
+        : meal.personalKey;
     if (seenKeys.add(key)) uniqueMeals.add(meal);
   }
   return uniqueMeals;
@@ -179,7 +198,9 @@ String _nearDuplicateKey(MealEntity meal) {
   // would otherwise collapse every unrelated nameless meal into one.
   // meal.code is nullable: fall back to identityHashCode so two distinct
   // nameless meals without codes don't share the same key.
-  if (name.isEmpty) return 'noname:${meal.source.name}:${meal.code ?? identityHashCode(meal)}';
+  if (name.isEmpty) {
+    return 'noname:${meal.source.name}:${meal.code ?? identityHashCode(meal)}';
+  }
   final brand = _normalize(meal.brands);
   final n = meal.nutriments;
   // A shared name is insufficient when composition or package sizes differ.
@@ -235,11 +256,7 @@ MealEntity _highestScoring(List<MealEntity> group, String query) {
 /// never the contains/prefix bonuses, which read the title as before — so
 /// an unnamed qualifier costs nothing and a named one counts for the
 /// record that carries it.
-double _textScore(
-  String? text,
-  String normalizedQuery, {
-  String? qualifiers,
-}) {
+double _textScore(String? text, String normalizedQuery, {String? qualifiers}) {
   final normalizedText = _normalize(text);
   if (normalizedText.isEmpty) return 0.0;
   if (normalizedText == normalizedQuery) return 1.0;
