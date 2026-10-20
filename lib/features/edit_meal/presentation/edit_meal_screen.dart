@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:opennutritracker/features/scanner/presentation/widgets/scanner_camera_error.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:image_picker/image_picker.dart';
@@ -1021,6 +1022,7 @@ class _EditMealScreenState extends State<EditMealScreen> {
   Future<void> _scanBarcodeIntoField() async {
     log.fine('Opening edit-meal barcode scanner');
     final navigator = Navigator.of(context);
+    FocusManager.instance.primaryFocus?.unfocus();
     final result = await navigator.push<String?>(
       MaterialPageRoute(builder: (_) => const _EditMealBarcodeScanPage()),
     );
@@ -1121,10 +1123,8 @@ class EditMealScreenArguments {
 }
 
 /// "Save for next time" toggle shown on the create-and-log path (#249).
-/// Defaults to off: the intake is logged today, and the user opts in here
-/// to also keep the meal as a reusable template in the custom-meal list.
-/// Leaving it off is the right call for one-off entries like a friend's
-/// homemade dish or a restaurant meal that won't come back round.
+/// Defaults to on so a newly created food stays searchable next time.
+/// The user can opt out for a one-off entry.
 class _SaveForLaterField extends StatelessWidget {
   final bool value;
   final ValueChanged<bool> onChanged;
@@ -1261,7 +1261,9 @@ class _EditMealBarcodeScanPageState extends State<_EditMealBarcodeScanPage>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text(S.of(context).customMealBarcodeScanButton)),
-      body: MobileScanner(controller: _controller, onDetect: _onDetect),
+      body: MobileScanner(controller: _controller, onDetect: _onDetect,
+        errorBuilder: (context, error) => ScannerCameraError(
+          error: error, onRetry: _controller.start)),
     );
   }
 }

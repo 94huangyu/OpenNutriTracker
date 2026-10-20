@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:opennutritracker/features/scanner/presentation/widgets/scanner_camera_error.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -202,6 +203,8 @@ class _ScannerScreenState extends State<ScannerScreen>
           Expanded(
             child: MobileScanner(
               controller: _cameraController,
+              errorBuilder: (context, error) => ScannerCameraError(
+                error: error, onRetry: _cameraController.start),
               onDetect: (capture) {
                 if (_scannedBarcode != null) return;
                 final List<Barcode> barcodes = capture.barcodes;

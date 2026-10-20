@@ -1453,5 +1453,7 @@
     }
   },
   "searchLocalOnly": "Searching local foods. Enter at least two characters for online results.",
-  "noLocalSearchResults": "No matching local foods"
+  "noLocalSearchResults": "No matching local foods",
+  "scannerPermissionHelp": "Camera permission is missing. Retry to request access; if no prompt appears, allow the camera in system settings. You can also go back and enter the barcode manually.",
+  "scannerCameraUnavailable": "The camera is unavailable. Retry, or go back and enter the barcode manually."
 }
