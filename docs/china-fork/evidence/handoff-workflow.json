@@ -1,0 +1,75 @@
+{
+  "date": "2026-10-20",
+  "scope": "sequential chat continuation only",
+  "repositoryBaseline": "1aca9e005e3ecdedf54d77a5ac142cf73105b4c2",
+  "developmentBranch": "feature/m2-core-diary",
+  "currentStateEntry": "docs/china-fork/CURRENT_STATE.md",
+  "entryDocuments": [
+    "AGENTS.md",
+    "README.md",
+    "GettingStarted.md"
+  ],
+  "checks": {
+    "entryPathsPresent": true,
+    "liveCheckpointAndStartCheckpointFinishRulesPresent": true,
+    "manualReadThroughFromRoot": "passed; current task, authorization, branch, limits and next action resolved from files",
+    "independentNewChatTrial": false,
+    "toolRegression": {
+      "passed": 8,
+      "failed": 0,
+      "command": "python3 tools/adb/test_safety.py -v",
+      "externalTools": "fake adb/git/fvm/flutter/cp/rm; no invocation observed",
+      "log": ".tools/logs/handoff-tools-tests.log"
+    },
+    "bashSyntax": {
+      "passed": true,
+      "scripts": [
+        "tools/adb/adb-driver.sh",
+        "tools/adb/walk-onboarding.sh",
+        "tools/adb/run-branch-tests.sh"
+      ]
+    },
+    "existingAgentsSizeGate": {
+      "passed": true,
+      "worstChainBytes": 30512,
+      "limitBytes": 31000,
+      "reviewHeadingByteOffset": 1924,
+      "log": ".tools/logs/handoff-agents-size.log"
+    },
+    "appSourcesAndDependenciesUnchanged": true,
+    "frozenApkHashUnchanged": true
+  },
+  "verifiedToolFiles": [
+    {
+      "path": "tools/adb/adb-driver.sh",
+      "sha256": "f1ea52c2e41ed48fb7a55330e594b722ed0fd60db450dc8aed4016bd55c541ca"
+    },
+    {
+      "path": "tools/adb/walk-onboarding.sh",
+      "sha256": "bc15239286cc92ad34537c41d91f745dd57e5a8ad744843ee130b3a257bd2862"
+    },
+    {
+      "path": "tools/adb/run-branch-tests.sh",
+      "sha256": "bc15239286cc92ad34537c41d91f745dd57e5a8ad744843ee130b3a257bd2862"
+    },
+    {
+      "path": "tools/adb/test_safety.py",
+      "sha256": "5dd72ad75ac0ce68c702c6f39102da7a5be506b6593a1c0cd958d53a61138b82"
+    }
+  ],
+  "limits": [
+    "No hardware connection, app build or app suite rerun",
+    "No actual new-chat takeover trial; file-based read-through only",
+    "Sudden interruption may precede a checkpoint update; incoming chat must inspect real Git/logs",
+    "Historical app/device acceptance remains scoped to M2 evidence"
+  ],
+  "legacyTools": {
+    "retired": [
+      "tools/adb/walk-onboarding.sh",
+      "tools/adb/run-branch-tests.sh"
+    ],
+    "directAndSourcedExitCode": 2,
+    "overrideSwitch": false,
+    "driverRequiresExplicitDevice": true
+  }
+}

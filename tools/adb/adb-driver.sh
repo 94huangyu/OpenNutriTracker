@@ -12,19 +12,15 @@
 #   tap_id 'nav-profile'
 #   enter_text_at 'onboarding-height-field' '170'
 #
-# Required env (set by sourcing script, or uses default):
-#   DEVICE — adb device serial (default: first connected device)
-#
+# Required env:
+#   DEVICE — explicitly verified device serial; never auto-select a device.
 # Dependencies: adb, python3 (stdlib only)
 # ---------------------------------------------------------------------------
 
-# Split on the tab that `adb devices` puts between serial and state, not on
-# whitespace: serials from wireless debugging contain spaces (e.g.
-# "adb-18101FDF60010M-c9jbnv (2)._adb-tls-connect._tcp") and splitting on
-# whitespace truncates them into a "device not found". Match the state
-# exactly so an offline/unauthorized entry, or the blank trailing line, is
-# never picked.
-DEVICE="${DEVICE:-$(adb devices | awk -F'\t' '$2 == "device" {print $1; exit}')}"
+if [[ -z "${DEVICE:-}" ]]; then
+  printf '%s\n' '必须显式设置已核对的DEVICE；本Fork不会自动选择设备。请先读 tools/adb/README.md。' >&2
+  return 2 2>/dev/null || exit 2
+fi
 DUMP_PATH="/sdcard/window_dump.xml"
 LOCAL_DUMP="/tmp/ont-window-dump.xml"
 

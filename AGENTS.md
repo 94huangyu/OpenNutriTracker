@@ -8,17 +8,15 @@ OpenNutriTracker is a Flutter mobile app (iOS/Android) for nutritional tracking.
 
 Flutter version: **3.44.6** (managed via FVM; see `.fvmrc`)
 
-## China fork: self-acceptance before user confirmation
+## China fork: sequential-chat handoff and self-acceptance
 
-The user's 2026-10-19 instruction overrides earlier blanket requests for visual approval:
+Before any task, read [CURRENT_STATE.md](docs/china-fork/CURRENT_STATE.md), including its live checkpoint and fixed handoff protocol. Do not assume earlier chat history was transferred. This fork uses sequential chats.
 
-- Before reporting a batch ready, compare the latest user requirements, confirmed M1 prototype and M2 plan against the actual implementation, current screenshots and interaction evidence.
-- Record each applicable goal as passed, partially met, unmet, or unverified, with evidence and the remaining action. Compilation and automated-test counts alone do not establish product acceptance.
-- Fix clear defects and deviations from already agreed requirements without asking the user to find them or reconfirm the design. Ordinary technical uncertainty must be investigated independently first.
-- Do not make “waiting for user acceptance” the next step while known, authorized work remains. Deliver a concrete self-review conclusion and continue that work within the current phase.
-- Ask only about a material product ambiguity or an action lacking authorization. State the exact unresolved choice, evidence, recommendation, impact and applicable resource budget; never ask a generic “please review everything”.
-- Match screenshots and test artifacts to their source revision. Regenerate stale captures before judging the current UI. Distinguish component evidence from hardware evidence and identify untested paths.
-- Retain phased delivery. Do not mark M2 complete or advance to M3–M5 while its required goals remain unmet. Body/weight goals and exercise tracking were removed from the product scope and must not be added back from obsolete plans.
+- Follow its start/checkpoint/finish steps; verify actual branch, HEAD and dirty files before edits. Update the checkpoint during work, before long operations and before yielding or switching chats.
+- Latest user instructions override the live checkpoint, then dated reports and upstream guidance. Keep existing authorizations and resource limits; ask only about material ambiguity or missing authorization, with the resource budget.
+- Self-check each agreed goal against actual behavior and revision-matched evidence. Tests/builds alone are not product acceptance. Mark passed/partial/unmet/unverified; fix known authorized gaps instead of asking the user to find them.
+- Keep phased delivery. Body/weight goals and exercise tracking are out of scope. Do not advance phases with unmet required goals or infer approval of later phases.
+- Read [device-tool safety](tools/adb/README.md) before device work. Never clear user data or run legacy onboarding/branch probes as a continuation step.
 
 ## Code Review Rules
 

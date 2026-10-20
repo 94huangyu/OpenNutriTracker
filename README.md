@@ -1,3 +1,6 @@
+<!-- china-fork-continuation -->
+> **中国版开发续作入口**：新聊天先读 [AGENTS.md](AGENTS.md) 和 [当前状态与续作检查点](docs/china-fork/CURRENT_STATE.md)，按其中的开工、检查点与收尾规则继续。下文保留上游说明，不能用它覆盖本Fork已确认的需求、授权或本机环境；不要默认重装SDK、重走身体资料设置或清空手机数据。
+
 <p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="assets/icon/ont_banner_top_light.png">
