@@ -107,5 +107,42 @@
     "R1 origin display lacked the public reference when URL was absent; r2 fixes it, with separate screenshots",
     "A private-food match still appears above a generic remote no-results message; known M2 search-status gap",
     "Undo screenshot has low status-bar contrast; persistence and cause require follow-up, not claimed resolved"
-  ]
+  ],
+  "publishedSourceCommit": "5ad90932ba30fde5ac17359ef2767f0b17122efc",
+  "publication": {
+    "method": "GitHub connector; tree hashes checked for every independent commit",
+    "localHistoryBackupBranch": "archive/m2-three-fixes-local-20261020",
+    "equivalentCommits": [
+      {
+        "local": "f58ddc5375be0c5694a21f9c12697ad250424614",
+        "remote": "f4d1671e4288c883ee99f2aaeae73d3bcca0c4e9",
+        "tree": "3c5bc39e373f1d5aa609cbd09e1086f165d121ac"
+      },
+      {
+        "local": "6271f42a949f9c1eafaf569c4f16f8c955721f9a",
+        "remote": "89bfbe6480906c77bee39b72dc0cb51172cd2d90",
+        "tree": "51446ead89a586b02f06318e2f9d3c72db42b2a6"
+      },
+      {
+        "local": "da86463fb274fba7864679477317d6b29c60f4ad",
+        "remote": "9a29bd5c9847711145159f7113b3395b93c07f20",
+        "tree": "b6b7bc505384ddbe939f2ec77b172b4232a1ee7e"
+      },
+      {
+        "local": "c89ffed01fd8800024d3f98967b37e63f22b4d3d",
+        "remote": "79d9d4188842d31c6767044eba2763d8a6adec48",
+        "tree": "657250f1666bfeb38a3796dcb6e490157387f8f6"
+      },
+      {
+        "local": "e551eba4b7a64b490ce6ca046fefdd0ab40b707a",
+        "remote": "5ad90932ba30fde5ac17359ef2767f0b17122efc",
+        "tree": "83d322c2708cf2934f9444a4c8c1045c8ccca23b"
+      },
+      {
+        "local": "c1076bf5b544613150c8cd1ed4349907b95e6dc0",
+        "remote": "335d943821e8aa33fa2a94732a4cc76195399280",
+        "tree": "8083b83d5131e7cd19b045a8940c350970b00545"
+      }
+    ]
+  }
 }
