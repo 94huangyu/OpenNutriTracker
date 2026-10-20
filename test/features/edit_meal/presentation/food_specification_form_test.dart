@@ -14,6 +14,7 @@ import 'package:opennutritracker/core/styles/app_theme.dart';
 import 'package:opennutritracker/core/utils/energy_unit_provider.dart';
 import 'package:opennutritracker/core/utils/navigation_options.dart';
 import 'package:opennutritracker/features/add_meal/domain/entity/meal_entity.dart';
+import 'package:opennutritracker/features/add_meal/domain/entity/meal_nutriments_entity.dart';
 import 'package:opennutritracker/features/edit_meal/presentation/bloc/edit_meal_bloc.dart';
 import 'package:opennutritracker/features/edit_meal/presentation/edit_meal_screen.dart';
 import 'package:opennutritracker/generated/l10n.dart';
@@ -39,6 +40,7 @@ class _Preferences extends Fake implements ConfigRepository {
 
 class _Meals extends Fake implements CustomMealDataSource {
   final saved = <MealDBO>[];
+  final originals = <String?>[];
   @override
   Future<void> saveCustomMeal(MealDBO meal) async {
     saved.add(meal);
@@ -51,6 +53,7 @@ class _Meals extends Fake implements CustomMealDataSource {
     String? originalName,
   }) async {
     saved.add(meal);
+    originals.add(originalCode);
     return true;
   }
 }
@@ -164,6 +167,60 @@ void main() {
 
   Future<void> capture(WidgetTester tester, String name) =>
       captureWidget(tester, captureKey, name);
+
+  testWidgets(
+    'public correction saves personal template without claiming ownership of an old custom row',
+    (tester) async {
+      final public = MealEntity(
+        code: '12345678',
+        name: '公共薯片',
+        url: 'https://world.openfoodfacts.org/product/12345678',
+        mealQuantity: '60',
+        mealUnit: 'g',
+        servingQuantity: 15,
+        servingUnit: 'g',
+        servingSize: '',
+        source: MealSourceEntity.off,
+        nutriments: MealNutrimentsEntity.empty(),
+      );
+      await pumpEditor(tester, meal: public);
+      await enter(tester, 'nutrition-basis', '15');
+      await enter(tester, 'energy', '80');
+      await save(tester);
+      expect(meals.saved.single.source, MealSourceDBO.custom);
+      expect(meals.saved.single.code, '12345678');
+      expect(meals.saved.single.url, public.url);
+      expect(
+        meals.saved.single.nutriments.energyKcal100,
+        closeTo(80 / 15 * 100, 1e-9),
+      );
+      expect(meals.originals.single, isNull);
+      expect(public.source, MealSourceEntity.off);
+      expect(public.nutriments.energyKcal100, isNull);
+    },
+  );
+
+  testWidgets('bottom save stays above keyboard and validation messages', (
+    tester,
+  ) async {
+    await pumpEditor(tester);
+    await save(tester);
+    expect(find.byType(SnackBar), findsOneWidget);
+    var button = tester.getRect(identified('edit-meal-save'));
+    expect(
+      tester.getRect(find.byType(SnackBar)).bottom,
+      lessThanOrEqualTo(button.top),
+    );
+    await tester.enterText(input('name'), '键盘验证');
+    tester.view.viewInsets = const FakeViewPadding(bottom: 300);
+    await tester.pumpAndSettle();
+    button = tester.getRect(identified('edit-meal-save'));
+    expect(button.bottom, lessThanOrEqualTo(600));
+    await capture(tester, 'food-editor-keyboard-save');
+    await tester.tap(identified('edit-meal-save'));
+    await tester.pumpAndSettle();
+    expect(meals.saved, hasLength(1));
+  });
 
   for (final specs in [('60', '15', '15', '80'), ('200', '50', '100', '500')]) {
     testWidgets('save/reopen preserves independent specifications $specs', (

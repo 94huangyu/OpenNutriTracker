@@ -126,6 +126,7 @@ class EditMealBloc extends Bloc<EditMealEvent, EditMealState> {
     String? barcodeOverride,
     String? localImagePathOverride,
     bool clearLocalImagePath = false,
+    bool asPersonalCopy = false,
   }) {
     final double factorTo100g = factorTo100gFromBase(baseQuantity);
     final parsedBasis = double.tryParse(baseQuantity);
@@ -236,13 +237,13 @@ class EditMealBloc extends Bloc<EditMealEvent, EditMealState> {
       servingUnit: unitText,
       servingSize: oldMealEntity.servingSize,
       nutriments: newMealNutriments,
-      source: oldMealEntity.source,
+      source: asPersonalCopy ? MealSourceEntity.custom : oldMealEntity.source,
       backendSource: oldMealEntity.backendSource,
       machineTranslatedName: oldMealEntity.machineTranslatedName,
       servingSizeIsLocalized: oldMealEntity.servingSizeIsLocalized,
       portions: oldMealEntity.portions,
       portionsUnavailable: oldMealEntity.portionsUnavailable,
-      detailed: oldMealEntity.detailed,
+      detailed: asPersonalCopy || oldMealEntity.detailed,
       // #64 follow-up: a freshly-picked local photo wins over what was
       // on the old entity; a clear flag means the user removed the
       // photo and the slug should be wiped from the saved meal.
@@ -260,8 +261,12 @@ class EditMealBloc extends Bloc<EditMealEvent, EditMealState> {
     final dbo = MealDBO.fromMealEntity(mealEntity);
     return _customMealDataSource.updateCustomMeal(
       dbo,
-      originalCode: original?.code,
-      originalName: original?.name,
+      originalCode: original?.source == MealSourceEntity.custom
+          ? original?.code
+          : null,
+      originalName: original?.source == MealSourceEntity.custom
+          ? original?.name
+          : null,
     );
   }
 }

@@ -94,6 +94,10 @@ class _EditMealScreenState extends State<EditMealScreen> {
   // meal is saved to their custom list unless they actively untick the box.
   // #249 adds the *option* to skip the save; it does not change the default.
   bool _saveForLater = true;
+  bool _saving = false;
+  bool get _isPublicFood =>
+      _mealEntity.source == MealSourceEntity.off ||
+      _mealEntity.source == MealSourceEntity.fdc;
 
   late List<ButtonSegment<String>> _mealUnitButtonSegment;
 
@@ -277,38 +281,44 @@ class _EditMealScreenState extends State<EditMealScreen> {
             minFontSize: 16,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w800),
+            style: Theme.of(
+              context,
+            ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w800),
           ),
-          actions: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(Dimens.spacing16, 0, Dimens.spacing16, 0),
-              child: Semantics(
-                identifier: 'edit-meal-save',
-                child: FilledButton(
-                  onPressed: () => _onSavePressed(_usesImperialUnits),
-                  style: FilledButton.styleFrom(
-                    shape: const RoundedRectangleBorder(borderRadius: Dimens.borderRadiusM),
-                  ),
-                  child: Text(S.of(context).buttonSaveLabel),
-                ),
-              ),
-            ),
-          ],
         ),
-        body: BlocBuilder<EditMealBloc, EditMealState>(
-          bloc: _editMealBloc,
-          builder: (BuildContext context, EditMealState state) {
-            if (state is EditMealLoadingState) {
-              return _getLoadingContent();
-            } else if (state is EditMealLoadedState) {
-              if (!_formModeHydrated) {
-                _formMode = state.formMode;
-                _formModeHydrated = true;
+        body: AbsorbPointer(
+          absorbing: _saving,
+          child: BlocBuilder<EditMealBloc, EditMealState>(
+            bloc: _editMealBloc,
+            builder: (BuildContext context, EditMealState state) {
+              if (state is EditMealLoadingState) return _getLoadingContent();
+              if (state is EditMealLoadedState) {
+                if (!_formModeHydrated) {
+                  _formMode = state.formMode;
+                  _formModeHydrated = true;
+                }
+                return _getLoadedContent(usesKj);
               }
-              return _getLoadedContent(usesKj);
-            }
-            return const SizedBox.shrink();
-          },
+              return const SizedBox.shrink();
+            },
+          ),
+        ),
+        bottomNavigationBar: Padding(
+          padding: EdgeInsets.fromLTRB(
+            16,
+            12,
+            16,
+            16 + MediaQuery.viewInsetsOf(context).bottom,
+          ),
+          child: Semantics(
+            identifier: 'edit-meal-save',
+            child: FilledButton(
+              onPressed: _saving
+                  ? null
+                  : () => _onSavePressed(_usesImperialUnits),
+              child: Text(S.of(context).buttonSaveLabel),
+            ),
+          ),
         ),
       ),
     );
@@ -720,7 +730,11 @@ class _EditMealScreenState extends State<EditMealScreen> {
             const SizedBox(height: 16),
           ],
         ],
-        if (!_editOnly) ...[
+        if (_isPublicFood) ...[
+          const SizedBox(height: 16),
+          Text(S.of(context).customMealCopyHint),
+        ],
+        if (!_editOnly && !_isPublicFood) ...[
           const SizedBox(height: 24),
           _SaveForLaterField(
             value: _saveForLater,
@@ -817,6 +831,8 @@ class _EditMealScreenState extends State<EditMealScreen> {
           : controller.text;
 
   Future<void> _onSavePressed(bool usesImperialUnits) async {
+    if (_saving) return;
+    setState(() => _saving = true);
     try {
       // Validate meal name: non-empty and contains at least one letter (#211, #214)
       if (!FoodNameValidator.isValid(_nameTextController.text)) {
@@ -945,17 +961,20 @@ class _EditMealScreenState extends State<EditMealScreen> {
             : rawBarcode,
         localImagePathOverride: _localImagePath,
         clearLocalImagePath: _localImageCleared && _localImagePath == null,
+        asPersonalCopy: _isPublicFood,
       );
 
       // Persist custom meal template (#267). Skipped for one-off entries
       // (#249) when the user has turned off "Save for next time" — the
       // intake itself is still logged below, but no template is kept.
-      final shouldPersistTemplate = _editOnly || _saveForLater;
+      final shouldPersistTemplate = _isPublicFood || _editOnly || _saveForLater;
       if (newMealEntity.source == MealSourceEntity.custom &&
           shouldPersistTemplate) {
         final saved = await _editMealBloc.saveCustomMeal(
           newMealEntity,
-          original: _mealEntity,
+          original: _mealEntity.source == MealSourceEntity.custom
+              ? _mealEntity
+              : null,
         );
         if (!saved) {
           if (!mounted) return;
@@ -989,6 +1008,8 @@ class _EditMealScreenState extends State<EditMealScreen> {
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text(S.of(context).errorMealSave)));
+    } finally {
+      if (mounted) setState(() => _saving = false);
     }
   }
 
@@ -1013,6 +1034,9 @@ class _EditMealScreenState extends State<EditMealScreen> {
   }
 
   Widget _buildRemoteMealImage() {
+    if (_mealEntity.mainImageUrl?.isNotEmpty != true) {
+      return const DefaultMealImage();
+    }
     return ClipOval(
       child: CachedNetworkImage(
         cacheManager: locator<CacheManager>(),

@@ -26,16 +26,33 @@ class MealInfoButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final accent = Theme.of(context).colorScheme.primary;
-    return TextButton.icon(
-      onPressed: () => _launchUrl(_getInfoUrl()),
-      icon: Icon(Icons.open_in_new_rounded, size: 20, color: accent),
-      label: Text(
-        _getInfoLabelText(context),
-        style: Theme.of(context).textTheme.titleMedium?.copyWith(
-              color: accent,
-              fontWeight: FontWeight.w700,
-            ),
-        textAlign: TextAlign.center,
+    final infoUrl = _getInfoUrl();
+    final uri = Uri.tryParse(infoUrl);
+    final canOpen = uri != null && uri.host.isNotEmpty &&
+        (uri.scheme == 'https' || uri.scheme == 'http');
+    final reference = source == MealSourceEntity.custom
+        ? (SPConst.foodSourceDisplayNames[backendSource] ??
+              (Uri.tryParse(url ?? '')?.host.isNotEmpty == true
+                  ? Uri.tryParse(url!)!.host : null))
+        : null;
+    if (source == MealSourceEntity.custom && reference == null) {
+      return Text(S.of(context).myFoodLabel);
+    }
+    return Semantics(
+      identifier: 'meal-info-source',
+      child: TextButton.icon(
+        onPressed: canOpen ? () => _launchUrl(infoUrl) : null,
+        icon: Icon(Icons.open_in_new_rounded, size: 20, color: accent),
+        label: Text(
+          reference == null
+              ? _getInfoLabelText(context)
+              : '${S.of(context).myFoodLabel} · ${S.of(context).customMealReference(reference)}',
+          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+            color: accent,
+            fontWeight: FontWeight.w700,
+          ),
+          textAlign: TextAlign.center,
+        ),
       ),
     );
   }
@@ -47,7 +64,7 @@ class MealInfoButton extends StatelessWidget {
         siteUrl = "";
         break;
       case MealSourceEntity.custom:
-        siteUrl = "";
+        siteUrl = url ?? SPConst.foodSourceWebsites[backendSource] ?? "";
         break;
       case MealSourceEntity.off:
         siteUrl = url ?? OFFConst.offWebsiteUrl;

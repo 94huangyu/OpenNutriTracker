@@ -235,9 +235,6 @@ class _MealDetailBottomSheetState extends State<MealDetailBottomSheet> {
                               padding: const EdgeInsets.symmetric(
                                 vertical: Dimens.spacing16,
                               ),
-                              shape: const RoundedRectangleBorder(
-                                borderRadius: Dimens.borderRadiusM,
-                              ),
                             ),
                             icon: const Icon(Icons.add_rounded),
                             label: Text(S.of(context).addLabel),
