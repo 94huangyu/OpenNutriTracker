@@ -226,7 +226,7 @@
       }
     }
   },
-  "customMealsDeleteConfirmContent": "所有使用此餐食的日记条目也将被删除。",
+  "customMealsDeleteConfirmContent": "仅从食品库删除这个食品，已经记录的摄入和营养合计会保留。",
   "customMealsDeleteConfirmTitle": "删除自定义餐食？",
   "customMealsEmptyLabel": "尚未保存自定义餐食。",
   "dailyKcalAdjustmentLabel": "每日卡路里调整：",

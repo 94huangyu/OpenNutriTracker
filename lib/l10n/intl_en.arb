@@ -326,7 +326,7 @@
       }
     }
   },
-  "customMealsDeleteConfirmContent": "All diary entries using this meal will also be removed.",
+  "customMealsDeleteConfirmContent": "Remove this food from your saved library? Existing diary entries and their nutrition totals will be kept.",
   "customMealsDeleteConfirmTitle": "Delete custom meal?",
   "customMealsEmptyLabel": "No custom meals saved yet.",
   "dailyKcalAdjustmentLabel": "Daily Kcal adjustment:",
