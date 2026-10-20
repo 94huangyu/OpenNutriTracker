@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get_it/get_it.dart';
+import 'package:opennutritracker/core/utils/navigation_options.dart';
+import 'package:opennutritracker/features/edit_meal/presentation/edit_meal_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:opennutritracker/core/domain/entity/app_theme_entity.dart';
 import 'package:opennutritracker/core/domain/entity/config_entity.dart';
@@ -154,15 +156,28 @@ void main() {
                   ).copyWith(textScaler: TextScaler.linear(variant.$2)),
                   child: child!,
                 ),
-                onGenerateRoute: (_) => MaterialPageRoute(
-                  settings: RouteSettings(
-                    arguments: AddMealScreenArguments(
-                      AddMealType.lunchType,
-                      DateTime(2026, 10, 20),
+                onGenerateRoute: (settings) {
+                  if (settings.name == NavigationOptions.editMealRoute) {
+                    final args = settings.arguments as EditMealScreenArguments;
+                    expect(args.day, DateTime(2026, 10, 20));
+                    expect(args.mealEntity.name, isNull);
+                    return MaterialPageRoute(
+                      settings: settings,
+                      builder: (_) => Scaffold(
+                        appBar: AppBar(title: const Text('food-editor-opened')),
+                      ),
+                    );
+                  }
+                  return MaterialPageRoute(
+                    settings: RouteSettings(
+                      arguments: AddMealScreenArguments(
+                        AddMealType.lunchType,
+                        DateTime(2026, 10, 20),
+                      ),
                     ),
-                  ),
-                  builder: (_) => const AddMealScreen(),
-                ),
+                    builder: (_) => const AddMealScreen(),
+                  );
+                },
               ),
             ),
           ),
@@ -215,6 +230,12 @@ void main() {
         await tester.enterText(field, '');
         await tester.pumpAndSettle();
         expect(find.textContaining('我的米饭', findRichText: true), findsNothing);
+        await tester.tap(find.byTooltip('创建食品'));
+        await tester.pumpAndSettle();
+        expect(find.byType(AlertDialog), findsNothing);
+        expect(find.text('food-editor-opened'), findsOneWidget);
+        await tester.tap(find.byTooltip('返回'));
+        await tester.pumpAndSettle();
         await tester.pumpWidget(const SizedBox());
         await tester.pumpAndSettle();
       },
