@@ -1,4 +1,5 @@
 import 'package:logging/logging.dart';
+import 'package:opennutritracker/features/add_meal/data/dto/sp/sp_const.dart';
 import 'package:opennutritracker/core/data/data_source/remote_search_cache_data_source.dart';
 import 'package:opennutritracker/core/data/data_source/custom_meal_data_source.dart';
 import 'package:opennutritracker/core/data/data_source/recipe_data_source.dart';
@@ -9,20 +10,31 @@ import 'package:opennutritracker/core/domain/usecase/get_intake_usecase.dart';
 import 'package:opennutritracker/features/add_meal/data/repository/products_repository.dart';
 import 'package:opennutritracker/features/add_meal/domain/entity/meal_entity.dart';
 
-/// Output of a product/food search. [meals] is the deduplicated list shown
-/// to the user (custom-meal matches first, then remote results).
-/// [remoteSourceEmpty] is true when the remote source returned zero rows
-/// or failed (rate limit, timeout, network error). The UI uses this to
-/// decide whether to render a "no remote results" hint below the custom-meal
-/// matches.
+/// A source being unavailable is different from a successful empty response.
+enum SearchRemoteStatus {
+  notRequested,
+  loading,
+  results,
+  empty,
+  failed,
+  unconfigured,
+  disabled,
+}
+
 class SearchProductsResult {
   final List<MealEntity> meals;
-  final bool remoteSourceEmpty;
+  final SearchRemoteStatus remoteStatus;
+  bool get remoteSourceEmpty => remoteStatus == SearchRemoteStatus.empty;
 
   const SearchProductsResult({
     required this.meals,
-    required this.remoteSourceEmpty,
-  });
+    bool remoteSourceEmpty = false,
+    SearchRemoteStatus? remoteStatus,
+  }) : remoteStatus =
+           remoteStatus ??
+           (remoteSourceEmpty
+               ? SearchRemoteStatus.empty
+               : SearchRemoteStatus.results);
 }
 
 class SearchProductsUseCase {
@@ -64,8 +76,9 @@ class SearchProductsUseCase {
     // unbounded. Items the user actually selects (logs an intake of)
     // get their timestamp refreshed and stay until 90 days after the
     // last selection.
-    await _cacheRemoteResults(remote);
-    return _buildResult(searchString, remote,
+    await _cacheRemoteResults(remote ?? const []);
+    return _buildResult(searchString, remote ?? const [],
+        remoteFailed: remote == null,
         cacheSource: MealSourceEntity.off);
   }
 
@@ -87,8 +100,32 @@ class SearchProductsUseCase {
     bool forResolution = false,
   }) async {
     if (skipRemote) {
-      return _buildResult(searchString, const [],
-          remoteSkipped: true, cacheSource: MealSourceEntity.fdc);
+      return _buildResult(
+        searchString,
+        const [],
+        remoteSkipped: true,
+        cacheSource: MealSourceEntity.fdc,
+      );
+    }
+    if (!_productsRepository.isReferenceBackendConfigured) {
+      return _buildResult(
+        searchString,
+        const [],
+        remoteStatus: SearchRemoteStatus.unconfigured,
+        cacheSource: MealSourceEntity.fdc,
+      );
+    }
+    final config = await _getConfigUsecase.getConfig();
+    if (config.foodSourceToggles.isNotEmpty &&
+        SPConst.settingsSelectableFoodSources.every(
+          (source) => !config.isFoodSourceEnabled(source),
+        )) {
+      return _buildResult(
+        searchString,
+        const [],
+        remoteStatus: SearchRemoteStatus.disabled,
+        cacheSource: MealSourceEntity.fdc,
+      );
     }
     final remote = await _safeRemoteCall(
       'FDC',
@@ -97,9 +134,13 @@ class SearchProductsUseCase {
         forResolution: forResolution,
       ),
     );
-    await _cacheRemoteResults(remote);
-    return _buildResult(searchString, remote,
-        cacheSource: MealSourceEntity.fdc);
+    await _cacheRemoteResults(remote ?? const []);
+    return _buildResult(
+      searchString,
+      remote ?? const [],
+      remoteFailed: remote == null,
+      cacheSource: MealSourceEntity.fdc,
+    );
   }
 
   Future<void> _cacheRemoteResults(List<MealEntity> remote) async {
@@ -109,15 +150,19 @@ class SearchProductsUseCase {
     // earlier (its timestamp got bumped via the intent path) keeps that
     // newer timestamp even when a subsequent search re-includes it,
     // letting it remain at the top of the cache-sorted list.
-    await _cachedOffMealDataSource
-        .cacheFromSearch(remote.map(MealDBO.fromMealEntity));
+    try {
+      await _cachedOffMealDataSource
+          .cacheFromSearch(remote.map(MealDBO.fromMealEntity));
+    } catch (error, stack) {
+      _log.warning('Could not cache search results', error, stack);
+    }
   }
 
-  /// Run a remote search and fall back to an empty list when the source
-  /// throws (rate limit, timeout, network failure, etc). The caller still
+  /// A null response means failure, distinct from a successful empty list.
+  /// The caller still
   /// receives matching custom meals from local intake history even when the
   /// remote API is unavailable.
-  Future<List<MealEntity>> _safeRemoteCall(
+  Future<List<MealEntity>?> _safeRemoteCall(
     String sourceLabel,
     Future<List<MealEntity>> Function() call,
   ) async {
@@ -129,7 +174,7 @@ class SearchProductsUseCase {
         exception,
         stack,
       );
-      return const [];
+      return null;
     }
   }
 
@@ -137,18 +182,26 @@ class SearchProductsUseCase {
     String searchString,
     List<MealEntity> remoteResults, {
     bool remoteSkipped = false,
+    bool remoteFailed = false,
+    SearchRemoteStatus? remoteStatus,
     required MealSourceEntity cacheSource,
   }) async {
     // When the remote source was deliberately skipped (short query), don't
     // claim it returned nothing — that would show a misleading "no results"
     // hint while the user is still typing.
-    final remoteSourceEmpty = !remoteSkipped && remoteResults.isEmpty;
+    final status = remoteStatus ?? (remoteSkipped
+        ? SearchRemoteStatus.notRequested
+        : remoteFailed
+            ? SearchRemoteStatus.failed
+            : remoteResults.isEmpty
+                ? SearchRemoteStatus.empty
+                : SearchRemoteStatus.results);
 
     final normalizedSearchString = searchString.trim().toLowerCase();
     if (normalizedSearchString.isEmpty) {
       return SearchProductsResult(
         meals: remoteResults,
-        remoteSourceEmpty: remoteSourceEmpty,
+        remoteStatus: status,
       );
     }
 
@@ -243,7 +296,7 @@ class SearchProductsUseCase {
         ...fromCache,
         ...remoteResults,
       ]),
-      remoteSourceEmpty: remoteSourceEmpty,
+      remoteStatus: status,
     );
   }
 

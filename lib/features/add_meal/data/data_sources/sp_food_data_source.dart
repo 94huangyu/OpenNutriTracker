@@ -22,6 +22,8 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 class SpFoodDataSource {
   final log = Logger('SpFoodDataSource');
 
+  bool get isConfigured => locator.isRegistered<SupabaseClient>();
+
   /// Rows fetched from Postgres before ranking and truncating down to
   /// [SPConst.maxNumberOfItems]. Postgres has no `ORDER BY` available here
   /// (see [rankAndTruncateFoodsByName]), so a plain `.limit(20)` would hand

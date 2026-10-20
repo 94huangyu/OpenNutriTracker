@@ -152,7 +152,7 @@ void main() {
       expect(candidates.first.backendSource, 'fdc_survey');
     });
 
-    test('an OFF pair sharing a name still collapses', () {
+    test('same-name OFF entries with unknown nutrition remain separate', () {
       final candidates = resolve(
         'egg',
         off: [
@@ -162,8 +162,8 @@ void main() {
         backend: BackendSiblingFixtures.egg,
       );
 
-      expect(names(candidates).where((n) => n == 'Eggs'), hasLength(1));
-      expect(candidates, hasLength(5));
+      expect(names(candidates).where((n) => n == 'Eggs'), hasLength(2));
+      expect(candidates, hasLength(6));
     });
   });
 

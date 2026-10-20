@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:collection/collection.dart';
 import 'package:opennutritracker/features/add_meal/domain/entity/meal_entity.dart';
 
@@ -180,7 +181,40 @@ String _nearDuplicateKey(MealEntity meal) {
   // nameless meals without codes don't share the same key.
   if (name.isEmpty) return 'noname:${meal.source.name}:${meal.code ?? identityHashCode(meal)}';
   final brand = _normalize(meal.brands);
-  return brand.isEmpty ? name : '$name|$brand';
+  final n = meal.nutriments;
+  // A shared name is insufficient when composition or package sizes differ.
+  if (n.energyKcal100 == null || n.carbohydrates100 == null ||
+      n.fat100 == null || n.proteins100 == null) {
+    return 'single:off:${meal.code ?? identityHashCode(meal)}';
+  }
+  return jsonEncode([
+    name, brand, meal.mealQuantity, meal.mealUnit,
+    meal.servingQuantity, meal.servingUnit, meal.servingSize,
+    n.energyKcal100,
+    n.carbohydrates100,
+    n.fat100,
+    n.proteins100,
+    n.sugars100,
+    n.saturatedFat100,
+    n.fiber100,
+    n.monounsaturatedFat100,
+    n.polyunsaturatedFat100,
+    n.transFat100,
+    n.cholesterol100,
+    n.sodium100,
+    n.potassium100,
+    n.magnesium100,
+    n.calcium100,
+    n.iron100,
+    n.zinc100,
+    n.phosphorus100,
+    n.vitaminA100,
+    n.vitaminC100,
+    n.vitaminD100,
+    n.vitaminB6100,
+    n.vitaminB12100,
+    n.niacin100,
+  ]);
 }
 
 MealEntity _highestScoring(List<MealEntity> group, String query) {

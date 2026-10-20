@@ -18,6 +18,9 @@ import 'package:opennutritracker/features/add_meal/domain/entity/meal_portion_en
 import 'package:opennutritracker/features/add_meal/domain/usecase/search_products_usecase.dart';
 
 class _FakeProductsRepository implements ProductsRepository {
+  @override
+  bool isReferenceBackendConfigured = true;
+
   final Map<String, List<MealEntity>> offResults = {};
   final Map<String, List<MealEntity>> fdcResults = {};
 
@@ -355,7 +358,7 @@ void main() {
     });
 
     test(
-      'returns custom meals + remoteSourceEmpty=true when OFF rate-limits',
+      'returns custom meals + failed status when OFF rate-limits',
       () async {
         final customMatch = _meal(
             code: 'custom-tofu',
@@ -368,12 +371,13 @@ void main() {
         final result = await useCase.searchOFFProductsByString('tofu');
 
         expect(result.meals, [customMatch]);
-        expect(result.remoteSourceEmpty, isTrue);
+        expect(result.remoteSourceEmpty, isFalse);
+        expect(result.remoteStatus, SearchRemoteStatus.failed);
       },
     );
 
     test(
-      'returns custom meals + remoteSourceEmpty=true when FDC rate-limits',
+      'returns custom meals + failed status when FDC rate-limits',
       () async {
         final customMatch = _meal(
             code: 'custom-apple',
@@ -386,12 +390,13 @@ void main() {
         final result = await useCase.searchFDCFoodByString('apple');
 
         expect(result.meals, [customMatch]);
-        expect(result.remoteSourceEmpty, isTrue);
+        expect(result.remoteSourceEmpty, isFalse);
+        expect(result.remoteStatus, SearchRemoteStatus.failed);
       },
     );
 
     test(
-      'returns empty meals + remoteSourceEmpty=true when remote fails and no '
+      'returns empty meals + failed status when remote fails and no '
       'custom meals match',
       () async {
         productsRepository.offThrowOn.add('xyzzy');
@@ -400,7 +405,8 @@ void main() {
         final result = await useCase.searchOFFProductsByString('xyzzy');
 
         expect(result.meals, isEmpty);
-        expect(result.remoteSourceEmpty, isTrue);
+        expect(result.remoteSourceEmpty, isFalse);
+        expect(result.remoteStatus, SearchRemoteStatus.failed);
       },
     );
 
@@ -443,7 +449,8 @@ void main() {
         expect(result.meals, hasLength(1));
         expect(result.meals.single.name, 'Banana');
         expect(result.meals.single.source, MealSourceEntity.custom);
-        expect(result.remoteSourceEmpty, isTrue);
+        expect(result.remoteStatus, SearchRemoteStatus.failed);
+        expect(result.remoteSourceEmpty, isFalse);
       },
     );
 
@@ -467,6 +474,15 @@ void main() {
         expect(result.meals.single.code, 'shared-1');
       },
     );
+
+    test('unconfigured reference source returns local matches with explicit status', () async {
+      productsRepository.isReferenceBackendConfigured = false;
+      customMealDataSource.meals.add(_customMealDbo(code: 'rice', name: '米饭'));
+      final result = await useCase.searchFDCFoodByString('米');
+      expect(result.meals.single.name, '米饭');
+      expect(result.remoteStatus, SearchRemoteStatus.unconfigured);
+      expect(productsRepository.lastForResolution, isNull);
+    });
 
     // Cache: read-side
     test(
@@ -500,7 +516,8 @@ void main() {
         final result = await useCase.searchOFFProductsByString('banana');
 
         expect(result.meals.map((m) => m.name), contains('Cached Banana'));
-        expect(result.remoteSourceEmpty, isTrue);
+        expect(result.remoteStatus, SearchRemoteStatus.failed);
+        expect(result.remoteSourceEmpty, isFalse);
       },
     );
 

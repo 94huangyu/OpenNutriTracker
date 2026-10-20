@@ -1364,5 +1364,48 @@
   "recordingRepeated": "已添加记录",
   "recordingUndoFailed": "恢复失败，请点撤销重试",
   "customMealCopyHint": "修改后保存为我的食品，已有记录保留原来的营养数据。",
-  "customMealReference": "原始参考：{source}"
+  "customMealReference": "原始参考：{source}",
+  "referenceFoodSourceLabel": "参考食品库",
+  "searchSourceLoading": "{source}：正在联网搜索…",
+  "@searchSourceLoading": {
+    "placeholders": {
+      "source": {
+        "type": "String"
+      }
+    }
+  },
+  "searchSourceEmpty": "{source}：没有更多在线结果",
+  "@searchSourceEmpty": {
+    "placeholders": {
+      "source": {
+        "type": "String"
+      }
+    }
+  },
+  "searchSourceFailed": "{source}：暂时无法连接，本地结果仍可使用",
+  "@searchSourceFailed": {
+    "placeholders": {
+      "source": {
+        "type": "String"
+      }
+    }
+  },
+  "searchSourceUnconfigured": "{source}：此版本未接入，本地食品仍可使用",
+  "@searchSourceUnconfigured": {
+    "placeholders": {
+      "source": {
+        "type": "String"
+      }
+    }
+  },
+  "searchSourceDisabled": "{source}：已在设置中关闭，本地食品仍可使用",
+  "@searchSourceDisabled": {
+    "placeholders": {
+      "source": {
+        "type": "String"
+      }
+    }
+  },
+  "searchLocalOnly": "正在查找本地食品；输入至少两个字后补充在线结果",
+  "noLocalSearchResults": "本地没有匹配食品"
 }

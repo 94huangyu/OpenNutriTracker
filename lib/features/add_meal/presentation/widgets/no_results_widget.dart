@@ -4,11 +4,13 @@ import 'package:opennutritracker/core/styles/dimens.dart';
 import 'package:opennutritracker/generated/l10n.dart';
 
 class NoResultsWidget extends StatelessWidget {
+  final String? title;
   final VoidCallback? onScanBarcode;
   final VoidCallback? onCreateCustomFood;
 
   const NoResultsWidget({
     super.key,
+    this.title,
     this.onScanBarcode,
     this.onCreateCustomFood,
   });
@@ -22,7 +24,7 @@ class NoResultsWidget extends StatelessWidget {
         children: [
           EmptyHint(
             icon: Icons.search_off_rounded,
-            title: S.of(context).noResultsFound,
+            title: title ?? S.of(context).noResultsFound,
             subtitle: showActions ? S.of(context).noResultsSubtitle : null,
           ),
           if (showActions)

@@ -8,6 +8,9 @@ MealEntity _meal({
   String? code,
   String? brands,
   MealSourceEntity source = MealSourceEntity.off,
+  String? package,
+  double kcal = 100,
+  double? sodium,
   bool detailed = false,
   bool machineTranslatedName = false,
 }) {
@@ -16,12 +19,12 @@ MealEntity _meal({
     name: name,
     brands: brands,
     url: null,
-    mealQuantity: null,
+    mealQuantity: package,
     mealUnit: 'g',
     servingQuantity: null,
     servingUnit: 'g',
     servingSize: null,
-    nutriments: MealNutrimentsEntity.empty(),
+    nutriments: MealNutrimentsEntity(energyKcal100:kcal, carbohydrates100:10, fat100:2, proteins100:5, sugars100:null, saturatedFat100:null, fiber100:null, sodium100:sodium),
     source: source,
     detailed: detailed,
     machineTranslatedName: machineTranslatedName,
@@ -282,6 +285,16 @@ void main() {
       final merged = mergeAndRankMeals([firstBarcode, secondBarcode], [], 'milk');
 
       expect(merged, hasLength(1));
+    });
+
+    test('same-name OFF variants with different package, energy or sodium remain separate', () {
+      final meals = [
+        _meal(name:'薯片', brands:'测试', code:'a', package:'60'),
+        _meal(name:'薯片', brands:'测试', code:'b', package:'200'),
+        _meal(name:'薯片', brands:'测试', code:'c', package:'60', kcal:110),
+        _meal(name:'薯片', brands:'测试', code:'d', package:'60', sodium:0),
+      ];
+      expect(mergeAndRankMeals(meals, [], '薯片'), hasLength(4));
     });
 
     test('keeps the higher-scoring copy when collapsing an OFF near-duplicate', () {

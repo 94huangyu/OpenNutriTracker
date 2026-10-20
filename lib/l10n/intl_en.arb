@@ -1410,5 +1410,48 @@
   "customMealCopyHint": "Changes will be saved to My foods. Existing records keep their original values.",
   "customMealReference": "Original reference: {source}",
   "@customMealNutritionBasis": {"placeholders": {"quantity": {"type": "String"}, "unit": {"type": "String"}}},
-  "@customMealReference": {"placeholders": {"source": {"type": "String"}}}
+  "@customMealReference": {"placeholders": {"source": {"type": "String"}}},
+  "referenceFoodSourceLabel": "Reference foods",
+  "searchSourceLoading": "{source}: searching online…",
+  "@searchSourceLoading": {
+    "placeholders": {
+      "source": {
+        "type": "String"
+      }
+    }
+  },
+  "searchSourceEmpty": "{source}: no additional online results",
+  "@searchSourceEmpty": {
+    "placeholders": {
+      "source": {
+        "type": "String"
+      }
+    }
+  },
+  "searchSourceFailed": "{source}: unable to connect. Local results remain available.",
+  "@searchSourceFailed": {
+    "placeholders": {
+      "source": {
+        "type": "String"
+      }
+    }
+  },
+  "searchSourceUnconfigured": "{source}: not connected in this build. Local foods remain available.",
+  "@searchSourceUnconfigured": {
+    "placeholders": {
+      "source": {
+        "type": "String"
+      }
+    }
+  },
+  "searchSourceDisabled": "{source}: disabled in settings. Local foods remain available.",
+  "@searchSourceDisabled": {
+    "placeholders": {
+      "source": {
+        "type": "String"
+      }
+    }
+  },
+  "searchLocalOnly": "Searching local foods. Enter at least two characters for online results.",
+  "noLocalSearchResults": "No matching local foods"
 }

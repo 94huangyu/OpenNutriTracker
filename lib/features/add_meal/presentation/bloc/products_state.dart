@@ -18,10 +18,7 @@ class ProductsLoadedState extends ProductsState {
   final List<MealEntity> products;
   final bool usesImperialUnits;
 
-  /// True when the remote OFF source returned zero results (or failed
-  /// silently — e.g. rate limit). The UI uses this to show a "no results"
-  /// hint below any custom-meal matches.
-  final bool remoteSourceEmpty;
+  final SearchRemoteStatus remoteStatus;
 
   /// The raw search input these results answer. The UI compares it with
   /// the current text-field value to tell "no results for what you typed"
@@ -32,12 +29,12 @@ class ProductsLoadedState extends ProductsState {
   const ProductsLoadedState({
     required this.products,
     this.usesImperialUnits = false,
-    this.remoteSourceEmpty = false,
+    this.remoteStatus = SearchRemoteStatus.results,
     this.query = '',
   });
 
   @override
-  List<Object?> get props => [products, remoteSourceEmpty, query];
+  List<Object?> get props => [products, usesImperialUnits, remoteStatus, query];
 }
 
 class ProductsFailedState extends ProductsState {

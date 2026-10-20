@@ -12,7 +12,8 @@ import 'package:opennutritracker/features/add_meal/domain/entity/meal_entity.dar
 import 'package:opennutritracker/features/add_meal/presentation/bloc/food_bloc.dart';
 import 'package:opennutritracker/features/add_meal/presentation/bloc/products_bloc.dart';
 import 'package:opennutritracker/features/add_meal/presentation/bloc/recent_meal_bloc.dart';
-import 'package:opennutritracker/features/add_meal/presentation/bloc/search_debounce.dart';
+import 'package:opennutritracker/features/add_meal/domain/usecase/search_products_usecase.dart';
+import 'package:opennutritracker/features/add_meal/presentation/widgets/search_source_notice.dart';
 import 'package:opennutritracker/features/add_meal/presentation/widgets/default_results_widget.dart';
 import 'package:opennutritracker/features/add_meal/presentation/widgets/meal_search_bar.dart';
 import 'package:opennutritracker/features/add_meal/presentation/widgets/no_results_widget.dart';
@@ -63,6 +64,10 @@ class _FoodSearchTabViewState extends State<FoodSearchTabView>
   @override
   void dispose() {
     _tabController.dispose();
+    _searchStringListener.dispose();
+    _productsBloc.close();
+    _foodBloc.close();
+    _recentMealBloc.close();
     super.dispose();
   }
 
@@ -124,43 +129,48 @@ class _FoodSearchTabViewState extends State<FoodSearchTabView>
       builder: (context, query, _) => BlocBuilder<ProductsBloc, ProductsState>(
         bloc: _productsBloc,
         builder: (context, state) {
-        if (state is ProductsInitial) {
-          return query.trim().length >= minQueryLength
-              ? _pendingSpinner
-              : const DefaultsResultsWidget();
-        }
-        if (state is ProductsLoadingState) {
-          return _pendingSpinner;
-        }
-        if (state is ProductsLoadedState) {
-          if (state.products.isEmpty) {
-            return query.trim().length >= minQueryLength &&
-                    state.query != query
+          if (state is ProductsInitial) {
+            return query.trim().isNotEmpty
                 ? _pendingSpinner
-                : const NoResultsWidget();
+                : const DefaultsResultsWidget();
           }
-          return ListView.builder(
-            itemCount:
-                state.products.length + (state.remoteSourceEmpty ? 1 : 0),
-            itemBuilder: (context, index) {
-              if (index == state.products.length) {
-                return const NoResultsWidget();
-              }
-              return _PickableMealCard(
-                meal: state.products[index],
-                onTap: widget.onMealSelected,
-              );
-            },
-          );
-        }
-        if (state is ProductsFailedState) {
-          return ErrorDialog(
-            errorText: S.of(context).errorFetchingProductData,
-            onRefreshPressed: () =>
-                _productsBloc.add(const RefreshProductsEvent()),
-          );
-        }
-        return const SizedBox.shrink();
+          if (state is ProductsLoadingState) {
+            return _pendingSpinner;
+          }
+          if (state is ProductsLoadedState) {
+            if (state.query != query) return _pendingSpinner;
+            return ListView(
+              children: [
+                for (final meal in state.products)
+                  _PickableMealCard(meal: meal, onTap: widget.onMealSelected),
+                SearchSourceNotice(
+                  sourceId: 'off',
+                  source: 'Open Food Facts',
+                  status: state.remoteStatus,
+                  onRetry: () =>
+                      _productsBloc.add(const RefreshProductsEvent()),
+                ),
+                if (state.products.isEmpty &&
+                    state.remoteStatus != SearchRemoteStatus.loading)
+                  NoResultsWidget(
+                    title:
+                        state.remoteStatus == SearchRemoteStatus.empty ||
+                            state.remoteStatus ==
+                                SearchRemoteStatus.notRequested
+                        ? null
+                        : S.of(context).noLocalSearchResults,
+                  ),
+              ],
+            );
+          }
+          if (state is ProductsFailedState) {
+            return ErrorDialog(
+              errorText: S.of(context).errorFetchingProductData,
+              onRefreshPressed: () =>
+                  _productsBloc.add(const RefreshProductsEvent()),
+            );
+          }
+          return const SizedBox.shrink();
         },
       ),
     );
@@ -172,39 +182,46 @@ class _FoodSearchTabViewState extends State<FoodSearchTabView>
       builder: (context, query, _) => BlocBuilder<FoodBloc, FoodState>(
         bloc: _foodBloc,
         builder: (context, state) {
-        if (state is FoodInitial) {
-          return query.trim().length >= minQueryLength
-              ? _pendingSpinner
-              : const DefaultsResultsWidget();
-        }
-        if (state is FoodLoadingState) {
-          return _pendingSpinner;
-        }
-        if (state is FoodLoadedState) {
-          if (state.food.isEmpty) {
-            return query.trim().length >= minQueryLength &&
-                    state.query != query
+          if (state is FoodInitial) {
+            return query.trim().isNotEmpty
                 ? _pendingSpinner
-                : const NoResultsWidget();
+                : const DefaultsResultsWidget();
           }
-          return ListView.builder(
-            itemCount: state.food.length + (state.remoteSourceEmpty ? 1 : 0),
-            itemBuilder: (context, index) {
-              if (index == state.food.length) return const NoResultsWidget();
-              return _PickableMealCard(
-                meal: state.food[index],
-                onTap: widget.onMealSelected,
-              );
-            },
-          );
-        }
-        if (state is FoodFailedState) {
-          return ErrorDialog(
-            errorText: S.of(context).errorFetchingProductData,
-            onRefreshPressed: () => _foodBloc.add(const RefreshFoodEvent()),
-          );
-        }
-        return const SizedBox.shrink();
+          if (state is FoodLoadingState) {
+            return _pendingSpinner;
+          }
+          if (state is FoodLoadedState) {
+            if (state.query != query) return _pendingSpinner;
+            return ListView(
+              children: [
+                for (final meal in state.food)
+                  _PickableMealCard(meal: meal, onTap: widget.onMealSelected),
+                SearchSourceNotice(
+                  sourceId: 'reference',
+                  source: S.of(context).referenceFoodSourceLabel,
+                  status: state.remoteStatus,
+                  onRetry: () => _foodBloc.add(const RefreshFoodEvent()),
+                ),
+                if (state.food.isEmpty &&
+                    state.remoteStatus != SearchRemoteStatus.loading)
+                  NoResultsWidget(
+                    title:
+                        state.remoteStatus == SearchRemoteStatus.empty ||
+                            state.remoteStatus ==
+                                SearchRemoteStatus.notRequested
+                        ? null
+                        : S.of(context).noLocalSearchResults,
+                  ),
+              ],
+            );
+          }
+          if (state is FoodFailedState) {
+            return ErrorDialog(
+              errorText: S.of(context).errorFetchingProductData,
+              onRefreshPressed: () => _foodBloc.add(const RefreshFoodEvent()),
+            );
+          }
+          return const SizedBox.shrink();
         },
       ),
     );

@@ -7,6 +7,7 @@ import 'package:opennutritracker/core/utils/off_const.dart';
 import 'package:opennutritracker/features/add_meal/data/dto/sp/sp_const.dart';
 import 'package:opennutritracker/generated/l10n.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:opennutritracker/features/add_meal/data/data_sources/sp_food_data_source.dart';
 
 /// Settings → Food databases: lets the user pick which food databases the
 /// search screens draw from. State is persisted on
@@ -59,6 +60,7 @@ class _FoodSourcesScreenState extends State<FoodSourcesScreen> {
   @override
   Widget build(BuildContext context) {
     final s = S.of(context);
+    final configured = locator<SpFoodDataSource>().isConfigured;
     return Scaffold(
       appBar: AppBar(title: Text(s.settingsFoodSourcesLabel)),
       body: _loading
@@ -80,6 +82,9 @@ class _FoodSourcesScreenState extends State<FoodSourcesScreen> {
                   value: true,
                   onChanged: null,
                 ),
+                if (!configured)
+                  Padding(padding: const EdgeInsets.all(16),
+                    child: Text(s.searchSourceUnconfigured(s.referenceFoodSourceLabel))),
                 for (final sourceCode in SPConst.settingsSelectableFoodSources)
                   SwitchListTile(
                     secondary: _infoButton(
@@ -88,8 +93,8 @@ class _FoodSourcesScreenState extends State<FoodSourcesScreen> {
                     title: Text(
                       SPConst.foodSourceDisplayNames[sourceCode] ?? sourceCode,
                     ),
-                    value: _toggles[sourceCode] ?? true,
-                    onChanged: (value) => _toggle(sourceCode, value),
+                    value: configured && (_toggles[sourceCode] ?? true),
+                    onChanged: configured ? (value) => _toggle(sourceCode, value) : null,
                   ),
               ],
             ),

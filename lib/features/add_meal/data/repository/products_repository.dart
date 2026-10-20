@@ -33,6 +33,8 @@ class ProductsRepository {
 
   ProductsRepository(this._offDataSource, this._spBackendDataSource);
 
+  bool get isReferenceBackendConfigured => _spBackendDataSource.isConfigured;
+
   Future<List<MealEntity>> getOFFProductsByString(String searchString) async {
     final offWordResponse = await _offDataSource.fetchSearchWordResults(
       searchString,
