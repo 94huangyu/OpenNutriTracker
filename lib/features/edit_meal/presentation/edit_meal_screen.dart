@@ -615,11 +615,28 @@ class _EditMealScreenState extends State<EditMealScreen> {
           carbs: double.tryParse(_carbsTextController.text),
           fat: double.tryParse(_fatTextController.text),
           protein: double.tryParse(_proteinTextController.text),
+          fiber: double.tryParse(_fiberTextController.text),
         ))
           Padding(
             padding: const EdgeInsets.only(top: 12),
             child: Text(
               S.of(context).customMealNutrientDifferenceHint,
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
+          ),
+        if (labelCompositionNeedsReview(
+          carbs: double.tryParse(_carbsTextController.text),
+          fat: double.tryParse(_fatTextController.text),
+          protein: double.tryParse(_proteinTextController.text),
+          sugars: double.tryParse(_sugarsTextController.text),
+          saturatedFat: double.tryParse(_saturatedFatTextController.text),
+          basis: double.tryParse(_baseQuantityTextController.text) ?? 0,
+          isLiquid: selectedUnit == 'ml',
+        ))
+          Padding(
+            padding: const EdgeInsets.only(top: 12),
+            child: Text(
+              S.of(context).foodCompositionReviewHint,
               style: Theme.of(context).textTheme.bodySmall,
             ),
           ),
@@ -951,8 +968,12 @@ class _EditMealScreenState extends State<EditMealScreen> {
         magnesiumText: _microTextForSave(_magnesiumTextController),
         vitaminDText: _microTextForSave(_vitaminDTextController),
         vitaminB12Text: _microTextForSave(_vitaminB12TextController),
-        monounsaturatedFatText: _microTextForSave(_monounsaturatedFatTextController),
-        polyunsaturatedFatText: _microTextForSave(_polyunsaturatedFatTextController),
+        monounsaturatedFatText: _microTextForSave(
+          _monounsaturatedFatTextController,
+        ),
+        polyunsaturatedFatText: _microTextForSave(
+          _polyunsaturatedFatTextController,
+        ),
         transFatText: _microTextForSave(_transFatTextController),
         cholesterolText: _microTextForSave(_cholesterolTextController),
         zincText: _microTextForSave(_zincTextController),
@@ -1037,7 +1058,9 @@ class _EditMealScreenState extends State<EditMealScreen> {
     setState(() {
       _barcodeTextController.text = result;
     });
-    log.fine('Barcode text controller after set: ${_barcodeTextController.text}');
+    log.fine(
+      'Barcode text controller after set: ${_barcodeTextController.text}',
+    );
   }
 
   Widget _buildRemoteMealImage() {
@@ -1169,18 +1192,16 @@ class _SaveForLaterField extends StatelessWidget {
                 children: [
                   Text(
                     s.recipeSaveForLaterLabel,
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyLarge
-                        ?.copyWith(fontWeight: FontWeight.w700),
+                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
                   const SizedBox(height: Dimens.spacing4),
                   Text(
                     s.recipeSaveForLaterDescription,
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodySmall
-                        ?.copyWith(color: palette.textMuted),
+                    style: Theme.of(
+                      context,
+                    ).textTheme.bodySmall?.copyWith(color: palette.textMuted),
                   ),
                 ],
               ),
@@ -1241,9 +1262,11 @@ class _EditMealBarcodeScanPageState extends State<_EditMealBarcodeScanPage>
   }
 
   void _onDetect(BarcodeCapture capture) {
-    _log.fine('onDetect: ${capture.barcodes.length} barcodes; '
-        'types=${capture.barcodes.map((b) => b.type.name).toList()}; '
-        'rawValues=${capture.barcodes.map((b) => b.rawValue).toList()}');
+    _log.fine(
+      'onDetect: ${capture.barcodes.length} barcodes; '
+      'types=${capture.barcodes.map((b) => b.type.name).toList()}; '
+      'rawValues=${capture.barcodes.map((b) => b.rawValue).toList()}',
+    );
     if (_done) return;
     for (final b in capture.barcodes) {
       // Accept any non-null raw value. ML Kit's type classifier is reliable
@@ -1266,9 +1289,12 @@ class _EditMealBarcodeScanPageState extends State<_EditMealBarcodeScanPage>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text(S.of(context).customMealBarcodeScanButton)),
-      body: MobileScanner(controller: _controller, onDetect: _onDetect,
-        errorBuilder: (context, error) => ScannerCameraError(
-          error: error, onRetry: _controller.start)),
+      body: MobileScanner(
+        controller: _controller,
+        onDetect: _onDetect,
+        errorBuilder: (context, error) =>
+            ScannerCameraError(error: error, onRetry: _controller.start),
+      ),
     );
   }
 }

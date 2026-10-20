@@ -39,14 +39,37 @@ bool labelEnergyNeedsReview({
   required double? carbs,
   required double? fat,
   required double? protein,
+  double? fiber,
 }) {
-  if (kcal == null || carbs == null || fat == null || protein == null) {
-    return false;
-  }
-  final estimate = 4 * carbs + 9 * fat + 4 * protein;
-  final gap = (kcal - estimate).abs();
-  final largest = kcal.abs() > estimate.abs() ? kcal.abs() : estimate.abs();
-  return gap > 5 && gap > atwaterEnergyTolerance * largest;
+  final error = labelEnergyRelativeError(
+    kcal: kcal,
+    carbs: carbs,
+    fat: fat,
+    protein: protein,
+    fiber: fiber,
+  );
+  return error != null && error > atwaterEnergyTolerance;
+}
+
+/// Non-blocking composition hint in the user's original label basis.
+bool labelCompositionNeedsReview({
+  double? carbs,
+  double? fat,
+  double? protein,
+  double? sugars,
+  double? saturatedFat,
+  required double basis,
+  required bool isLiquid,
+}) {
+  if (!basis.isFinite || basis <= 0) return false;
+  final tolerance = basis * .01 > 1 ? basis * .01 : 1.0;
+  return (sugars != null && carbs != null && sugars > carbs + tolerance) ||
+      (saturatedFat != null && fat != null && saturatedFat > fat + tolerance) ||
+      (!isLiquid &&
+          carbs != null &&
+          fat != null &&
+          protein != null &&
+          carbs + fat + protein > basis + tolerance);
 }
 
 /// Custom meal form view mode (#232). Persisted on ConfigDBO so the form
@@ -69,8 +92,11 @@ class EditMealBloc extends Bloc<EditMealEvent, EditMealState> {
   final CustomMealDataSource _customMealDataSource; // #267
   final ConfigRepository _configRepository;
 
-  EditMealBloc(this._getConfigUsecase, this._customMealDataSource, this._configRepository)
-      : super(EditMealInitial()) {
+  EditMealBloc(
+    this._getConfigUsecase,
+    this._customMealDataSource,
+    this._configRepository,
+  ) : super(EditMealInitial()) {
     on<InitializeEditMealEvent>((event, emit) async {
       emit(EditMealLoadingState());
 
@@ -78,10 +104,12 @@ class EditMealBloc extends Bloc<EditMealEvent, EditMealState> {
       final mode = CustomMealFormMode.fromString(
         await _configRepository.getCustomMealFormMode(),
       );
-      emit(EditMealLoadedState(
-        usesImperialUnits: config.usesImperialFoodUnits,
-        formMode: mode,
-      ));
+      emit(
+        EditMealLoadedState(
+          usesImperialUnits: config.usesImperialFoodUnits,
+          formMode: mode,
+        ),
+      );
     });
   }
 

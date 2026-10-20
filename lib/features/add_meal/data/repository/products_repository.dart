@@ -94,8 +94,9 @@ class ProductsRepository {
 
     final ranked = [...candidates]
       ..sort((a, b) {
-        final byConsistency =
-            consistencyBucket(a).compareTo(consistencyBucket(b));
+        final byConsistency = consistencyBucket(
+          a,
+        ).compareTo(consistencyBucket(b));
         if (byConsistency != 0) return byConsistency;
         return score(b).compareTo(score(a));
       });
@@ -137,10 +138,7 @@ class ProductsRepository {
       _spBackendDataSource.fetchPortions(ids),
     ).wait;
 
-    return [
-      for (final meal in products)
-        _decorate(meal, labels, portions),
-    ];
+    return [for (final meal in products) _decorate(meal, labels, portions)];
   }
 
   /// Applies whichever of the two lookups had something for this meal.
@@ -188,7 +186,10 @@ class ProductsRepository {
   /// source-specific, and we have seen both corpora carry the occasional
   /// nonsense entry.
   bool _keepIfConsistent(MealEntity meal) {
-    final result = validateNutriments(meal.nutriments);
+    final result = validateNutriments(
+      meal.nutriments,
+      checkMassLimit: !meal.isLiquid,
+    );
     if (result.isConsistent) return true;
 
     final reason = result.failureReason ?? 'unknown';
@@ -196,17 +197,19 @@ class ProductsRepository {
       'Dropping ${meal.source.name} item code=${meal.code} '
       'name="${meal.name}" — failed rule: $reason',
     );
-    Sentry.addBreadcrumb(Breadcrumb(
-      category: 'food_import.validation',
-      level: SentryLevel.warning,
-      message: 'Dropped corrupt food entry from search results',
-      data: {
-        'source': meal.source.name,
-        'code': meal.code,
-        'name': meal.name,
-        'rule': reason,
-      },
-    ));
+    Sentry.addBreadcrumb(
+      Breadcrumb(
+        category: 'food_import.validation',
+        level: SentryLevel.warning,
+        message: 'Dropped corrupt food entry from search results',
+        data: {
+          'source': meal.source.name,
+          'code': meal.code,
+          'name': meal.name,
+          'rule': reason,
+        },
+      ),
+    );
     return false;
   }
 }
