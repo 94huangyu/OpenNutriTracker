@@ -262,9 +262,9 @@ void main() {
   }
 
   for (final layout in [
-    (320.0, 1.0, false),
+    (320.0, 1.6, false),
     (390.0, 1.3, false),
-    (390.0, 1.0, true),
+    (390.0, 2.0, true),
   ]) {
     testWidgets('three quantity fields align at layout $layout', (
       tester,
@@ -280,6 +280,9 @@ void main() {
         180,
         scrollable: find.byType(Scrollable).first,
       );
+      final position = tester.state<ScrollableState>(find.byType(Scrollable).first).position;
+      position.jumpTo((position.pixels - 72 * layout.$2).clamp(0, position.maxScrollExtent));
+      await tester.pumpAndSettle();
       final rects = [
         'package-quantity',
         'serving-quantity',
@@ -387,6 +390,7 @@ void main() {
     ];
     for (var i = 0; i < ids.length; i++) {
       await enter(tester, ids[i], '${i + 1}');
+      if ([3, 9, 19].contains(i)) await capture(tester, 'advanced-editor-section-$i');
     }
     FocusManager.instance.primaryFocus?.unfocus();
     tester

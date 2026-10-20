@@ -95,6 +95,7 @@ void main() {
     MealEntity meal, {
     Size size = const Size(390, 844),
     double scale = 1,
+    bool dark = false,
   }) async {
     tester.view.physicalSize = size;
     tester.view.devicePixelRatio = 1.0;
@@ -115,7 +116,7 @@ void main() {
           create: (_) => EnergyUnitProvider(),
           child: MaterialApp(
             debugShowCheckedModeBanner: false,
-            theme: buildAppTheme(AppPalette.light),
+            theme: buildAppTheme(dark ? AppPalette.dark : AppPalette.light),
             locale: const Locale('zh'),
             builder: (context, child) => MediaQuery(
               data: MediaQuery.of(
@@ -182,6 +183,13 @@ void main() {
     expect(bloc!.state.selectedUnit, 'g');
     expect(bloc!.state.totalQuantityConverted, '47.5');
     await captureWidget(tester, captureKey, 'intake-47.5-grams');
+    expect(tester.takeException(), isNull);
+  });
+  testWidgets('dark detail with large text keeps full content scrollable', (tester) async {
+    await pumpMealDetail(tester, _solidThirtyGramServing(), scale: 2, dark: true);
+    await tester.drag(find.byType(Scrollable).first, const Offset(0,-650));
+    await tester.pumpAndSettle();
+    await captureWidget(tester, captureKey, 'detail-dark-large-text');
     expect(tester.takeException(), isNull);
   });
   testWidgets(

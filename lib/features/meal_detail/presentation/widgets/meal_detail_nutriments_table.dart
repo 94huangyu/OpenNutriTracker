@@ -67,38 +67,38 @@ class MealDetailNutrimentsTable extends StatelessWidget {
             _getNutrimentsTableRow("", headerText, textStyleBold),
             _getNutrimentsTableRow(
               S.of(context).energyLabel,
-              EnergyDisplay.formatWithUnit(context,
-                  _adjustValueForServing(n.energyKcal100?.toDouble() ?? 0)),
+              n.energyKcal100 == null ? '—' : EnergyDisplay.formatWithUnit(
+                  context, _adjustValueForServing(n.energyKcal100!)),
               textStyleNormal,
             ),
             _getNutrimentsTableRow(
               S.of(context).fatLabel,
-              "${_adjustValueForServing(n.fat100 ?? 0).roundToPrecision(2)}g",
+              _formatMicroValue(n.fat100, 'g'),
               textStyleNormal,
             ),
             _getNutrimentsTableRow(
               '   ${S.of(context).saturatedFatLabel}',
-              "${_adjustValueForServing(n.saturatedFat100 ?? 0).roundToPrecision(2)}g",
+              _formatMicroValue(n.saturatedFat100, 'g'),
               textStyleNormal,
             ),
             _getNutrimentsTableRow(
               S.of(context).carbohydrateLabel,
-              "${_adjustValueForServing(n.carbohydrates100 ?? 0).roundToPrecision(2)}g",
+              _formatMicroValue(n.carbohydrates100, 'g'),
               textStyleNormal,
             ),
             _getNutrimentsTableRow(
               '    ${S.of(context).sugarLabel}',
-              "${_adjustValueForServing(n.sugars100 ?? 0).roundToPrecision(2)}g",
+              _formatMicroValue(n.sugars100, 'g'),
               textStyleNormal,
             ),
             _getNutrimentsTableRow(
               S.of(context).fiberLabel,
-              "${_adjustValueForServing(n.fiber100 ?? 0).roundToPrecision(2)}g",
+              _formatMicroValue(n.fiber100, 'g'),
               textStyleNormal,
             ),
             _getNutrimentsTableRow(
               S.of(context).proteinLabel,
-              "${_adjustValueForServing(n.proteins100 ?? 0).roundToPrecision(2)}g",
+              _formatMicroValue(n.proteins100, 'g'),
               textStyleNormal,
             ),
             ],
@@ -257,7 +257,7 @@ class MealDetailNutrimentsTable extends StatelessWidget {
   }
 
   String _formatMicroValue(double? valuePer100, String unit) {
-    if (valuePer100 == null) return '—';
+    if (valuePer100 == null || !valuePer100.isFinite) return '—';
     final adjusted = _adjustValueForServing(valuePer100);
     return '${adjusted.roundToPrecision(2)}$unit';
   }
