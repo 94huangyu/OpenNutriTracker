@@ -52,7 +52,8 @@ class MainActivity : FlutterFragmentActivity() {
             .setMethodCallHandler { call, result ->
                 if (call.method != "prepareStatusBarRefresh") {
                     result.notImplemented()
-                } else if (isFinishing || isDestroyed) {
+                } else if (isFinishing || isDestroyed || Build.VERSION.SDK_INT != 36 ||
+                    !Build.MANUFACTURER.equals("vivo", ignoreCase = true)) {
                     result.success(false)
                 } else {
                     val controller = WindowInsetsControllerCompat(window, window.decorView)

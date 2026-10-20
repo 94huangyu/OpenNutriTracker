@@ -180,7 +180,13 @@ class _OpenNutriTrackerAppState extends State<OpenNutriTrackerApp>
     with WidgetsBindingObserver {
   Timer? _systemUiRestoreTimer;
   bool _keyboardVisible = false;
+  bool _keyboardUsed = false;
   static const _systemUiChannel = MethodChannel('com.opennutritracker/system_ui');
+  late final _systemUiReturnObserver = _SystemUiReturnObserver(() {
+    if (_keyboardUsed && !_keyboardVisible) {
+      _scheduleSystemUiRestore(returnedHome: true);
+    }
+  });
 
   @override
   void initState() {
@@ -202,13 +208,20 @@ class _OpenNutriTrackerAppState extends State<OpenNutriTrackerApp>
     if (visible == _keyboardVisible) return;
     _keyboardVisible = visible;
     _systemUiRestoreTimer?.cancel();
-    if (!visible) {
-      _systemUiRestoreTimer = Timer(const Duration(milliseconds: 1100), () {
-        if (mounted && !_keyboardVisible) {
-          unawaited(_refreshStatusIcons());
-        }
-      });
+    if (visible) {
+      _keyboardUsed = true;
+    } else {
+      _scheduleSystemUiRestore();
     }
+  }
+
+  void _scheduleSystemUiRestore({bool returnedHome = false}) {
+    _systemUiRestoreTimer?.cancel();
+    _systemUiRestoreTimer = Timer(const Duration(milliseconds: 1100), () {
+      if (!mounted || _keyboardVisible) return;
+      if (returnedHome) _keyboardUsed = false;
+      unawaited(_refreshStatusIcons());
+    });
   }
 
   Future<void> _refreshStatusIcons() async {
@@ -263,6 +276,7 @@ class _OpenNutriTrackerAppState extends State<OpenNutriTrackerApp>
     AppPalette darkPalette,
   ) {
     return MaterialApp(
+      navigatorObservers: [_systemUiReturnObserver],
       builder: (context, child) => AnnotatedRegion<SystemUiOverlayStyle>(
         value: Theme.of(context).brightness == Brightness.dark
             ? SystemUiOverlayStyle.light
@@ -322,5 +336,16 @@ class _OpenNutriTrackerAppState extends State<OpenNutriTrackerApp>
             const ManageProfilesScreen(),
       },
     );
+  }
+}
+
+/// Returning from an IME-owning route can overwrite an earlier tint refresh.
+class _SystemUiReturnObserver extends NavigatorObserver {
+  final VoidCallback onReturnHome;
+  _SystemUiReturnObserver(this.onReturnHome);
+
+  @override
+  void didPop(Route<dynamic> route, Route<dynamic>? previousRoute) {
+    if (previousRoute?.isFirst == true) onReturnHome();
   }
 }

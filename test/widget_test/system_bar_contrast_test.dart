@@ -128,6 +128,31 @@ void main() {
       );
       theme.updateTheme(AppThemeEntity.light);
       await tester.pumpAndSettle();
+      calls.clear();
+      navigator.push(
+        MaterialPageRoute<void>(
+          builder: (_) => Scaffold(appBar: AppBar(title: const Text('食品'))),
+        ),
+      );
+      await tester.pumpAndSettle();
+      navigator.pop();
+      await tester.pumpAndSettle();
+      await tester.pump(const Duration(milliseconds: 1100));
+      expect(prepares(), 1);
+      await tester.pump(const Duration(milliseconds: 200));
+      expect(restores(), 1);
+      // A later return without another keyboard session does not pulse again.
+      calls.clear();
+      navigator.push(
+        MaterialPageRoute<void>(
+          builder: (_) => const Scaffold(body: Text('无键盘页面')),
+        ),
+      );
+      await tester.pumpAndSettle();
+      navigator.pop();
+      await tester.pumpAndSettle();
+      await tester.pump(const Duration(milliseconds: 1400));
+      expect(prepares(), 0);
       // A dark route does not need the native refresh.
       tester.view.viewInsets = const FakeViewPadding(bottom: 300);
       await tester.pump();
