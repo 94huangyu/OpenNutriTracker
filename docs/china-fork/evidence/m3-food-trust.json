@@ -1,7 +1,7 @@
 {
   "date": "2026-10-20",
   "scope": "M3 personal food favorites, evidence, search and nutrition hints",
-  "acceptance": "Local scoped self-acceptance passed; GitHub upload awaits explicit approval",
+  "acceptance": "Local scoped self-acceptance passed; explicitly authorized GitHub synchronization verified",
   "baseline": "dd8611b20ab3733283eaa8d11c8fed6481636d57",
   "finalBusiness": {
     "sourceCommit": "e4387928fa6b1c998bfa6afac15fb641a7f9e8a5",
@@ -610,5 +610,79 @@
     "full physical camera denial/retry chain",
     "full TalkBack flow",
     "all Android manufacturers"
-  ]
+  ],
+  "githubSynchronization": {
+    "date": "2026-10-20",
+    "authorization": "User explicitly confirmed the exact repository, development branch and 46-path upload review with 可以上传",
+    "repository": "94huangyu/OpenNutriTracker",
+    "branch": "feature/m3-food-trust",
+    "approvedLocalCommit": "4b20ead5038a7fc3c8b38c7fb0675390c65b7160",
+    "approvedRemoteCommit": "d1c88ac10f01cee101ab184db5d0183888459912",
+    "approvedTree": "bee387fbf74407fceecac64d6e30734102b70b0c",
+    "verifiedCommits": 11,
+    "verifiedChangedPaths": 46,
+    "allCommitTreesEqual": true,
+    "originalLocalHistoryRetained": true,
+    "forcePush": false,
+    "mergedToMain": false,
+    "rawDeviceDataOrApkUploaded": false,
+    "localToRemoteCommits": [
+      {
+        "local": "dc39d573b43376b80d67bce6c9fac9a019c8f0ef",
+        "remote": "9514a74ea0ec8b12a8312c2afd0af3e8a6526532",
+        "tree": "3f218ca0a7fc2fb5db4d75893d72a4f1fe92f529"
+      },
+      {
+        "local": "bb21d1a90f1fe25fb37deb2db0ecf411500831f3",
+        "remote": "b8ede2765d5e0eeebfe2879f132f8ec2cb6ff084",
+        "tree": "7ddba68ad8876d179470f922cbb82a8de157e24d"
+      },
+      {
+        "local": "317296ddf45022790bdc84992924b4f1eba741f2",
+        "remote": "9d7d8a1501a229d32e1a10709d183b7856aa4a45",
+        "tree": "877287abdd856b6efed7dfbce6449b6df31a0141"
+      },
+      {
+        "local": "70fd53043be05b9f3caecd3f75ed0ba055e60db8",
+        "remote": "2734eb5732c9747e4fd1c7f6eb7bf8346951add2",
+        "tree": "94c3c5e919bfe1508b1138dab83161d99aad4cd6"
+      },
+      {
+        "local": "12d8d0231bcd0177760eccbe2769eeb09f959607",
+        "remote": "208f93340dcef2143e4cbc66486ba0ca32b3517b",
+        "tree": "905d9f08dde98021f91fe26c78424557d802ab86"
+      },
+      {
+        "local": "005dd860bc80e149d1ec99dbd9d04ad230cdf68e",
+        "remote": "0bfd9d5319a7d22b249d71c6f2d2d76a09bc8fb5",
+        "tree": "36d0aaa3cb7a10d8fa73355c9169ed220a835d6e"
+      },
+      {
+        "local": "5423e63b02434dccc23a66d33ad0b0b227829d07",
+        "remote": "52d1ea16d08fd3d8632088482a7529f9db7b0714",
+        "tree": "917dc7dd1785c271b98dafaca1cdc3f5f7cfddd5"
+      },
+      {
+        "local": "f21caaa3f7015fa34133785f741945ac5d2177ca",
+        "remote": "0f3598239f40602d6568de4f7fe5c9171c430602",
+        "tree": "a9e225f9670337e443a8d5a560d876906ddad382"
+      },
+      {
+        "local": "04464397764ff5eda4d95dd8ea4301fd49381438",
+        "remote": "e30d2ad0cf949f58c5596954864ba17a1ade9a1f",
+        "tree": "5728a6f10cf8d06d69640c44e33caecf8aa7ca2e"
+      },
+      {
+        "local": "e4387928fa6b1c998bfa6afac15fb641a7f9e8a5",
+        "remote": "dfc39a506ca3ce06a93042ce57d0bf984ded795c",
+        "tree": "4b146e8a39ec0a3bc5abfb224f5c5081e22139c0"
+      },
+      {
+        "local": "4b20ead5038a7fc3c8b38c7fb0675390c65b7160",
+        "remote": "d1c88ac10f01cee101ab184db5d0183888459912",
+        "tree": "bee387fbf74407fceecac64d6e30734102b70b0c"
+      }
+    ],
+    "receiptFollowup": "Only CURRENT_STATE.md, M3_SELF_ACCEPTANCE.md and this evidence summary updated in docs: record verified M3 GitHub synchronization; original upload review remains a historical frozen manifest"
+  }
 }
