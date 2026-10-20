@@ -8,6 +8,18 @@ OpenNutriTracker is a Flutter mobile app (iOS/Android) for nutritional tracking.
 
 Flutter version: **3.44.6** (managed via FVM; see `.fvmrc`)
 
+## China fork: self-acceptance before user confirmation
+
+The user's 2026-10-19 instruction overrides earlier blanket requests for visual approval:
+
+- Before reporting a batch ready, compare the latest user requirements, confirmed M1 prototype and M2 plan against the actual implementation, current screenshots and interaction evidence.
+- Record each applicable goal as passed, partially met, unmet, or unverified, with evidence and the remaining action. Compilation and automated-test counts alone do not establish product acceptance.
+- Fix clear defects and deviations from already agreed requirements without asking the user to find them or reconfirm the design. Ordinary technical uncertainty must be investigated independently first.
+- Do not make “waiting for user acceptance” the next step while known, authorized work remains. Deliver a concrete self-review conclusion and continue that work within the current phase.
+- Ask only about a material product ambiguity or an action lacking authorization. State the exact unresolved choice, evidence, recommendation, impact and applicable resource budget; never ask a generic “please review everything”.
+- Match screenshots and test artifacts to their source revision. Regenerate stale captures before judging the current UI. Distinguish component evidence from hardware evidence and identify untested paths.
+- Retain phased delivery. Do not mark M2 complete or advance to M3–M5 while its required goals remain unmet. Body/weight goals and exercise tracking were removed from the product scope and must not be added back from obsolete plans.
+
 ## Code Review Rules
 
 Reviews are advisory and cannot block a merge. Most PRs come from outside contributors, often their first — write for that person. Cite `file:line`, phrase findings as observations, and raise at most five. Silence is a valid review.
