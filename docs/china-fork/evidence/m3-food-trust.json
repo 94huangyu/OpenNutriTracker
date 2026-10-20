@@ -1,0 +1,614 @@
+{
+  "date": "2026-10-20",
+  "scope": "M3 personal food favorites, evidence, search and nutrition hints",
+  "acceptance": "Local scoped self-acceptance passed; GitHub upload awaits explicit approval",
+  "baseline": "dd8611b20ab3733283eaa8d11c8fed6481636d57",
+  "finalBusiness": {
+    "sourceCommit": "e4387928fa6b1c998bfa6afac15fb641a7f9e8a5",
+    "sourceTree": "4b146e8a39ec0a3bc5abfb224f5c5081e22139c0",
+    "libTree": "76b0481def2308b193ec712845c65769687049d9",
+    "apk": "output/flutter/m3/m3-food-trust-r7-v2.4.0-66-develop-arm64-debug.apk",
+    "bytes": 137591756,
+    "sha256": "2f6480fbd492cba01acf71ec1ccca1f016658a59c77ddb38131a2ed42e8589e9",
+    "certificateSha256": "8b5adf8691201ac71c7fc4037f5121e639b0e8f84269902cb52d5bb1eb4e61e0",
+    "badging": [
+      "package: name='com.opennutritracker.ont.opennutritracker.develop' versionCode='66' versionName='2.4.0-develop' platformBuildVersionName='16' platformBuildVersionCode='36' compileSdkVersion='36' compileSdkVersionCodename='16'",
+      "targetSdkVersion:'36'",
+      "application-label:'ONT Develop'",
+      "native-code: 'arm64-v8a' 'armeabi-v7a' 'x86_64'"
+    ]
+  },
+  "productionAndroidTree": "ef197143560c47bcbe645e75a8aa33f419edb485",
+  "validation": {
+    "fullTestRun": {
+      "counts": {
+        "success": 2675,
+        "failure": 0,
+        "skipped": 0
+      },
+      "done": {
+        "success": true,
+        "type": "done",
+        "time": 65527
+      },
+      "sourceCommit": "e4387928fa6b1c998bfa6afac15fb641a7f9e8a5",
+      "libTree": "76b0481def2308b193ec712845c65769687049d9"
+    },
+    "analysisDiagnostics": 0,
+    "uiSubsetTests": 18,
+    "componentImages": 21,
+    "componentsByteIdenticalToReviewedR2": true,
+    "buildSeconds": 43.0,
+    "logHashes": [
+      {
+        "path": ".tools/logs/m3-r7-full-tests.jsonl",
+        "sha256": "ca8aa55b9db06fe577e5d3999608bf98084c8c5cc0db2dbc506fdc1b7d2fecad"
+      },
+      {
+        "path": ".tools/logs/m3-r7-analyze.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": ".tools/logs/m3-r7-ui-captures.log",
+        "sha256": "7b4b2fd1056ff6fd195a98ac18a3d29e713c7d47780e0d823da2c55d13082df0"
+      },
+      {
+        "path": ".tools/logs/m3-build-r7.log",
+        "sha256": "7237024936d10bc6224b5c2c2a26c54b6a929b352d32d1b178d69094b1134dc8"
+      }
+    ]
+  },
+  "deviceSafety": {
+    "deviceIdentityVerified": true,
+    "installedR7Sha256": "2f6480fbd492cba01acf71ec1ccca1f016658a59c77ddb38131a2ed42e8589e9",
+    "sameCertificateAsM2": true,
+    "protectedFilesCount": 3,
+    "protectedFilesUnchangedSinceBeforeM3": true,
+    "foodFilesCount": 4,
+    "foodFilesUnchangedDuringCancelledDraftFollowups": true,
+    "originalQAFoodABRetained": true,
+    "syntheticM3TemplateAbsent": true,
+    "syntheticM3IntakeRemoved": true,
+    "todayKcalAfterCleanupAndRestart": 0,
+    "favoritesEmptyAfterRestart": true,
+    "themeSystemAndKcalRestored": true,
+    "stayAwakeOriginal0Restored": true,
+    "appStopped": true,
+    "remoteTemporaryUiFilesRemoved": true,
+    "ownVmForwardsRemoved": true,
+    "independentAdb15039Stopped": true,
+    "sharedAdbUntouched": true,
+    "usbTrustUntouched": true,
+    "permissionsIdenticalToR2": true,
+    "processLogs": [
+      {
+        "process": 1,
+        "fatalUnhandledOverflowOrRefreshErrors": 0
+      },
+      {
+        "process": 2,
+        "fatalUnhandledOverflowOrRefreshErrors": 0
+      }
+    ],
+    "lightKeyboardReturnActualDarkIntensity": 1.0,
+    "darkKeyboardReturnActualDarkIntensity": 0.0
+  },
+  "retainedApks": [
+    {
+      "sourceCommit": "70fd53043be05b9f3caecd3f75ed0ba055e60db8",
+      "sourceTree": "94c3c5e919bfe1508b1138dab83161d99aad4cd6",
+      "libTree": "3071a1bcf3755f565b5c699cffd33e7353f7cc63",
+      "apk": "output/flutter/m3/m3-food-trust-r1-v2.4.0-66-develop-arm64-debug.apk",
+      "bytes": 137591756,
+      "sha256": "05d8c910c1dc90bca1f239ccd83f853e5305558b0c55d15ecd62cd67bf8498f9",
+      "certificateSha256": "8b5adf8691201ac71c7fc4037f5121e639b0e8f84269902cb52d5bb1eb4e61e0",
+      "badging": [
+        "package: name='com.opennutritracker.ont.opennutritracker.develop' versionCode='66' versionName='2.4.0-develop' platformBuildVersionName='16' platformBuildVersionCode='36' compileSdkVersion='36' compileSdkVersionCodename='16'",
+        "targetSdkVersion:'36'",
+        "application-label:'ONT Develop'",
+        "native-code: 'arm64-v8a' 'armeabi-v7a' 'x86_64'"
+      ],
+      "disposition": "earlier functional device coverage"
+    },
+    {
+      "sourceCommit": "12d8d0231bcd0177760eccbe2769eeb09f959607",
+      "sourceTree": "905d9f08dde98021f91fe26c78424557d802ab86",
+      "libTree": "5a96c835910969ae9d4c92bafc1502a880f902e6",
+      "apk": "output/flutter/m3/m3-food-trust-r2-v2.4.0-66-develop-arm64-debug.apk",
+      "bytes": 137591756,
+      "sha256": "33c608b5d9ae2519c5fde4255bd4d97f6c2c9634399ecc46a0274266ca2829a3",
+      "certificateSha256": "8b5adf8691201ac71c7fc4037f5121e639b0e8f84269902cb52d5bb1eb4e61e0",
+      "badging": [
+        "package: name='com.opennutritracker.ont.opennutritracker.develop' versionCode='66' versionName='2.4.0-develop' platformBuildVersionName='16' platformBuildVersionCode='36' compileSdkVersion='36' compileSdkVersionCodename='16'",
+        "targetSdkVersion:'36'",
+        "application-label:'ONT Develop'",
+        "native-code: 'arm64-v8a' 'armeabi-v7a' 'x86_64'"
+      ],
+      "disposition": "evidence input and lifecycle coverage; status tint failed"
+    },
+    {
+      "sourceCommit": "005dd860bc80e149d1ec99dbd9d04ad230cdf68e",
+      "sourceTree": "36d0aaa3cb7a10d8fa73355c9169ed220a835d6e",
+      "libTree": "c3db7f9c482ecd5f80641bc43c97277942f4c83f",
+      "apk": "output/flutter/m3/m3-food-trust-r3-v2.4.0-66-develop-arm64-debug.apk",
+      "bytes": 137591756,
+      "sha256": "18596d695018b2a4e85bbe6c881116b2138cb61479cc7aa6ba7ec1359c78ff83",
+      "certificateSha256": "8b5adf8691201ac71c7fc4037f5121e639b0e8f84269902cb52d5bb1eb4e61e0",
+      "badging": [
+        "package: name='com.opennutritracker.ont.opennutritracker.develop' versionCode='66' versionName='2.4.0-develop' platformBuildVersionName='16' platformBuildVersionCode='36' compileSdkVersion='36' compileSdkVersionCodename='16'",
+        "targetSdkVersion:'36'",
+        "application-label:'ONT Develop'",
+        "native-code: 'arm64-v8a' 'armeabi-v7a' 'x86_64'"
+      ],
+      "disposition": "status tint failed"
+    },
+    {
+      "sourceCommit": "5423e63b02434dccc23a66d33ad0b0b227829d07",
+      "sourceTree": "917dc7dd1785c271b98dafaca1cdc3f5f7cfddd5",
+      "libTree": "fd11e60426a2e93678a19df76709f24257e0c83d",
+      "apk": "output/flutter/m3/m3-food-trust-r4-v2.4.0-66-develop-arm64-debug.apk",
+      "bytes": 137591756,
+      "sha256": "a56f19798480eecb020933919e4aaaa68dbe26c987c5526e304a677bdc16f8d4",
+      "certificateSha256": "8b5adf8691201ac71c7fc4037f5121e639b0e8f84269902cb52d5bb1eb4e61e0",
+      "badging": [
+        "package: name='com.opennutritracker.ont.opennutritracker.develop' versionCode='66' versionName='2.4.0-develop' platformBuildVersionName='16' platformBuildVersionCode='36' compileSdkVersion='36' compileSdkVersionCodename='16'",
+        "targetSdkVersion:'36'",
+        "application-label:'ONT Develop'",
+        "native-code: 'arm64-v8a' 'armeabi-v7a' 'x86_64'"
+      ],
+      "disposition": "status tint failed"
+    },
+    {
+      "sourceCommit": "f21caaa3f7015fa34133785f741945ac5d2177ca",
+      "sourceTree": "a9e225f9670337e443a8d5a560d876906ddad382",
+      "libTree": "1e4195856eab995efeb5a52f8bd8a676debc3d80",
+      "apk": "output/flutter/m3/m3-food-trust-r5-v2.4.0-66-develop-arm64-debug.apk",
+      "bytes": 137591756,
+      "sha256": "404b939342ee5f73b8f14c3c39c78338bf796b4610498d97f1ef4325ce92de79",
+      "certificateSha256": "8b5adf8691201ac71c7fc4037f5121e639b0e8f84269902cb52d5bb1eb4e61e0",
+      "badging": [
+        "package: name='com.opennutritracker.ont.opennutritracker.develop' versionCode='66' versionName='2.4.0-develop' platformBuildVersionName='16' platformBuildVersionCode='36' compileSdkVersion='36' compileSdkVersionCodename='16'",
+        "targetSdkVersion:'36'",
+        "application-label:'ONT Develop'",
+        "native-code: 'arm64-v8a' 'armeabi-v7a' 'x86_64'"
+      ],
+      "disposition": "status tint failed; testing-only API warning later removed"
+    },
+    {
+      "sourceCommit": "04464397764ff5eda4d95dd8ea4301fd49381438",
+      "sourceTree": "5728a6f10cf8d06d69640c44e33caecf8aa7ca2e",
+      "libTree": "2d879f4192759564665208a4e58120ddf3588f25",
+      "apk": "output/flutter/m3/m3-food-trust-r6-v2.4.0-66-develop-arm64-debug.apk",
+      "bytes": 137591756,
+      "sha256": "d4a708f8ba4aad5e705394c0dc0f100e367809e2719b61d4818dab96453d4bd1",
+      "certificateSha256": "8b5adf8691201ac71c7fc4037f5121e639b0e8f84269902cb52d5bb1eb4e61e0",
+      "badging": [
+        "package: name='com.opennutritracker.ont.opennutritracker.develop' versionCode='66' versionName='2.4.0-develop' platformBuildVersionName='16' platformBuildVersionCode='36' compileSdkVersion='36' compileSdkVersionCodename='16'",
+        "targetSdkVersion:'36'",
+        "application-label:'ONT Develop'",
+        "native-code: 'arm64-v8a' 'armeabi-v7a' 'x86_64'"
+      ],
+      "disposition": "native refresh control worked; automatic return timing failed"
+    },
+    {
+      "sourceCommit": "e4387928fa6b1c998bfa6afac15fb641a7f9e8a5",
+      "sourceTree": "4b146e8a39ec0a3bc5abfb224f5c5081e22139c0",
+      "libTree": "76b0481def2308b193ec712845c65769687049d9",
+      "apk": "output/flutter/m3/m3-food-trust-r7-v2.4.0-66-develop-arm64-debug.apk",
+      "bytes": 137591756,
+      "sha256": "2f6480fbd492cba01acf71ec1ccca1f016658a59c77ddb38131a2ed42e8589e9",
+      "certificateSha256": "8b5adf8691201ac71c7fc4037f5121e639b0e8f84269902cb52d5bb1eb4e61e0",
+      "badging": [
+        "package: name='com.opennutritracker.ont.opennutritracker.develop' versionCode='66' versionName='2.4.0-develop' platformBuildVersionName='16' platformBuildVersionCode='36' compileSdkVersion='36' compileSdkVersionCodename='16'",
+        "targetSdkVersion:'36'",
+        "application-label:'ONT Develop'",
+        "native-code: 'arm64-v8a' 'armeabi-v7a' 'x86_64'"
+      ],
+      "disposition": "final scoped self-acceptance passed"
+    }
+  ],
+  "deviceScreenshotsByRevision": {
+    "r1": [
+      {
+        "path": "output/flutter/m3-r1-device/01-upgraded-home-zero.png",
+        "sha256": "e652f193cbe0815ccae1b25b6c3f97b2438db385f0ef891b1f17fe2281e363d5"
+      },
+      {
+        "path": "output/flutter/m3-r1-device/02-create-specification.png",
+        "sha256": "25957e70fb0348af90e568d01268e050b3ec3fd5a5caad773575139d10063da8"
+      },
+      {
+        "path": "output/flutter/m3-r1-device/03-new-food-unreviewed.png",
+        "sha256": "8813def2dfa3aadc7ab6ff263a2da1d4f2ff437bdfae7c15fae5e8dcbe80741b"
+      },
+      {
+        "path": "output/flutter/m3-r1-device/04-review-requires-evidence.png",
+        "sha256": "74f84042f6f36c990619f1677f65a7482c750b7c0328355c87dbdfb7736a249a"
+      },
+      {
+        "path": "output/flutter/m3-r1-device/05-review-keyboard.png",
+        "sha256": "9a31fa9e8184992277cdd434aac0fc2168248eae7b2e04d590c25e9a35295217"
+      },
+      {
+        "path": "output/flutter/m3-r1-device/06-personal-review-saved.png",
+        "sha256": "dd9ca1f5eb1983a390e3c771c8d0dfe2505b9fa32e82c45d96582158fa25e8ab"
+      },
+      {
+        "path": "output/flutter/m3-r1-device/07-favorite-filter.png",
+        "sha256": "d7f04c0c85a33282db0072b59b4816473d106830cc0b5a03e1a8a1f00e6576ce"
+      },
+      {
+        "path": "output/flutter/m3-r1-device/08-restarted-evidence-retained.png",
+        "sha256": "cce50cabce3de4677703bf32dcad9c704868c3c803362fd69d6f2f2c3a1caf6c"
+      },
+      {
+        "path": "output/flutter/m3-r1-device/09-recorded-half-serving-125.png",
+        "sha256": "d7f7cd05deced358992eaa05e919cf056e539eb41040f2322d186d0317eae74d"
+      },
+      {
+        "path": "output/flutter/m3-r1-device/10-library-favorite.png",
+        "sha256": "e6d72b670d95538902e6c31d74ca875784d482125950e313c2d70e13eb9948f2"
+      },
+      {
+        "path": "output/flutter/m3-r1-device/11-edited-template-favorite-kept.png",
+        "sha256": "9c6ec1a1ee0ceba33db23f1d4f5e8e04b1b32898464f475d8dca3a483bb12469"
+      },
+      {
+        "path": "output/flutter/m3-r1-device/12-edited-food-requires-review.png",
+        "sha256": "0983c4cfc067aae88a1a648228ff333f03b30196a5f13b1ac633a6d3807049e0"
+      }
+    ],
+    "r2": [
+      {
+        "path": "output/flutter/m3-r2-device/01-upgraded-history-125.png",
+        "sha256": "668d39485f2b40ca40a49a6c089bf60954816cd408afc2f7eb2470e8a2a7b20e"
+      },
+      {
+        "path": "output/flutter/m3-r2-device/02-favorite-and-invalidated-review-retained.png",
+        "sha256": "5f209a6a5e57dddb3a3cd1ada3d7ee46758c82848ad387e3c300751632606837"
+      },
+      {
+        "path": "output/flutter/m3-r2-device/03-r2-valid-input-clears-error.png",
+        "sha256": "71e4f1757564642ea08fcaecc03697177e3cf4f32ee4903765ebbb4bf9bbee81"
+      },
+      {
+        "path": "output/flutter/m3-r2-device/04-r2-reviewed.png",
+        "sha256": "63d6efc650ba977e8171b012df900f93ef8974e67030be745af9649f9b122ab7"
+      },
+      {
+        "path": "output/flutter/m3-r2-device/05-r2-review-cleared.png",
+        "sha256": "3bf8b1a91dd90090676d25a2550299d99b539b19518f4855a082fb1022feb3d4"
+      },
+      {
+        "path": "output/flutter/m3-r2-device/06-r2-favorites-empty.png",
+        "sha256": "d12c1b63cf6225cc4d69ea4948257a156867b3be273512bcc47f207268807146"
+      },
+      {
+        "path": "output/flutter/m3-r2-device/07-r2-only-original-templates.png",
+        "sha256": "47fb70f29f364010630bb49062d9bc602c40c2dfeba262ca90f158c9cef2641b"
+      },
+      {
+        "path": "output/flutter/m3-r2-device/08-r2-deleted-template-history-retained.png",
+        "sha256": "9c5262c8c0ea2e0739f154370ad6a6066a836e9bd4bc5a60a2d20b9a9bd69269"
+      },
+      {
+        "path": "output/flutter/m3-r2-device/09-r2-history-quantity-unchanged.png",
+        "sha256": "28e7a403bd94a652439beb5289ac82edaeca551050a6d74f51df9dcff2e10374"
+      },
+      {
+        "path": "output/flutter/m3-r2-device/10-r2-restart-clean-home.png",
+        "sha256": "779c04b30f05b73ad5b5bb583ad8a3c9b0dadec7418c3ccbd34ac7b6699c10dc"
+      },
+      {
+        "path": "output/flutter/m3-r2-device/11-r2-restart-favorites-empty.png",
+        "sha256": "824e44c0f5f099a2fc5256350d50eb22ec148d8e0ebcbaa16ef4a2ff35d37fee"
+      },
+      {
+        "path": "output/flutter/m3-r2-device/12-r2-settings-preserved.png",
+        "sha256": "fed18a512f5f8e6170c7c23f3b3b80dd930a57cdb236525e4fecf8ac9d48f11c"
+      },
+      {
+        "path": "output/flutter/m3-r2-device/13-r2-library-return-statusbar.png",
+        "sha256": "92a240d5378b945693c7cb5d22c2aa1fe65f242f024c31376820613f841d208a"
+      },
+      {
+        "path": "output/flutter/m3-r2-device/14-r2-keyboard-cancel-return-statusbar.png",
+        "sha256": "081ab59ed806d2edb2bb046d0a1fbd00a268b96ead74c8416895218cd23705b8"
+      },
+      {
+        "path": "output/flutter/m3-r2-device/15-r2-followup-settings-preserved.png",
+        "sha256": "22049fc3a0af45552f8a255e8e0ef915ff9c732dcfc8c864a504f36d7bd6cb11"
+      }
+    ],
+    "r3": [
+      {
+        "path": "output/flutter/m3-r3-device/01-r3-upgraded-home.png",
+        "sha256": "cf2cb046ca451e01ee43d269b164983737e433579c4d3d3b26f064a8070d17fd"
+      },
+      {
+        "path": "output/flutter/m3-r3-device/02-r3-keyboard-draft.png",
+        "sha256": "48c85076b6de70be225f94425d50ae079da02d73f3f9d054b673fd39dc46e6cc"
+      },
+      {
+        "path": "output/flutter/m3-r3-device/03-r3-keyboard-cancel-home-light.png",
+        "sha256": "78828b15b9f8ef86d03f75d252ddf3617aa57ac4965e3b6a8842fdfb140a69ba"
+      }
+    ],
+    "r4": [
+      {
+        "path": "output/flutter/m3-r4-device/01-r4-upgraded-home.png",
+        "sha256": "6ab49e9fa4b96ae31bcd85920440cc72da6f2d096a0218c9e6bccd1bbe92e39a"
+      },
+      {
+        "path": "output/flutter/m3-r4-device/02-r4-keyboard-draft.png",
+        "sha256": "a66e65006fe3ade1fbf61986a6ebad599ae40a28486a1428b3d1e0805f1958b6"
+      },
+      {
+        "path": "output/flutter/m3-r4-device/03-r4-keyboard-cancel-home-light.png",
+        "sha256": "772d1df9265b2c6fc3fb8204c622a9f545695940bc686b5e0acbdf5707e70844"
+      },
+      {
+        "path": "output/flutter/m3-r4-device/04-r4-home-after-idle.png",
+        "sha256": "01f0bfdcfaa288ec8149c328b868309f65ad2b2d9de32d7e6a70fcdfe38d7505"
+      },
+      {
+        "path": "output/flutter/m3-r4-device/05-r4-control-dark-home.png",
+        "sha256": "37f3604a9df70114ce6a4ee12fed9add2072a1419527c45bd82d62f549ce7681"
+      },
+      {
+        "path": "output/flutter/m3-r4-device/06-r4-control-system-home.png",
+        "sha256": "4c46ddd41b6098d8e66370cb93fe1c61eaa693a57324c62bfaa1f06e7eea39c0"
+      },
+      {
+        "path": "output/flutter/m3-r4-device/07-r4-reproduced-before-refresh.png",
+        "sha256": "c4a6eddcce87855c56ad5008b844b333404934818f092407f427f6b418c05f9e"
+      }
+    ],
+    "r5": [
+      {
+        "path": "output/flutter/m3-r5-device/01-r5-upgraded-home.png",
+        "sha256": "0ed5b6ab5b468e44e364d7a1f40582e046ffb9259f8319441dd689a5a7757ead"
+      },
+      {
+        "path": "output/flutter/m3-r5-device/02-r5-keyboard-draft.png",
+        "sha256": "178a632d7059842146b8f75dc58159199812c43e963f095a0e59d0d6e05c58f8"
+      },
+      {
+        "path": "output/flutter/m3-r5-device/03-r5-keyboard-cancel-home-light.png",
+        "sha256": "23f5824858fc7cf8ec16bbcbab624356ad65fe7ffd8519f5ab921063225ba661"
+      },
+      {
+        "path": "output/flutter/m3-r5-device/04-r5-before-runtime-control.png",
+        "sha256": "6a248b98490bd5190a30b9ef41b7135413e995d7d08a48da6d0fc64fd83618d7"
+      },
+      {
+        "path": "output/flutter/m3-r5-device/05-r5-runtime-200ms-control.png",
+        "sha256": "30acc85ef4e9218c5fe1e96dc071609b58a5b9fbeb97c7966c7f8b19c0cae8e0"
+      }
+    ],
+    "r6": [
+      {
+        "path": "output/flutter/m3-r6-device/01-r6-upgraded-home.png",
+        "sha256": "ff198824d1060df2bd66b67fdc0e3e89d237aba4afb0c67ae3efaae4e7683d38"
+      },
+      {
+        "path": "output/flutter/m3-r6-device/02-r6-keyboard-draft.png",
+        "sha256": "77aa81b5fc5a1e46a357ceda18fa84723051e09eab205a9e5ea1fbcc8b729852"
+      },
+      {
+        "path": "output/flutter/m3-r6-device/03-r6-keyboard-cancel-home-light.png",
+        "sha256": "bc32b887239c29f41daf91df2f51b47401e57fcd575683f6881c7d5888a91a8e"
+      },
+      {
+        "path": "output/flutter/m3-r6-device/04-r6-home-direct-native-refresh.png",
+        "sha256": "c34ffce3f570647cd6f27540475fa44b3e3e7efefc269d2b7ea9123876105a86"
+      },
+      {
+        "path": "output/flutter/m3-r6-device/05-r6-home-direct-native-refresh.png",
+        "sha256": "b07eb23f548022c47a705a5cdc8d3001c20c8521ea5029b6252aba5b4938824d"
+      }
+    ],
+    "r7": [
+      {
+        "path": "output/flutter/m3-r7-device/01-r7-upgraded-home.png",
+        "sha256": "689f92818dfd09fca44341f0098d58cc4178a84f004df90e44893ded8fc7fe8a"
+      },
+      {
+        "path": "output/flutter/m3-r7-device/02-r7-keyboard-draft.png",
+        "sha256": "80f6cdd10d146713b81ed47b60175908a142af04a6851108c1999f0bfd847fc0"
+      },
+      {
+        "path": "output/flutter/m3-r7-device/03-r7-keyboard-cancel-home-light.png",
+        "sha256": "81d18b0d3317fa463882144e6bcb1c2752240c758f5ed9a088e2acc0784462e1"
+      },
+      {
+        "path": "output/flutter/m3-r7-device/04-r7-dark-keyboard-draft.png",
+        "sha256": "922adf51291f9a572a494741069bd8234dfcfd35b4bdabf6fe168743f9a8b1d6"
+      },
+      {
+        "path": "output/flutter/m3-r7-device/05-r7-keyboard-cancel-home-dark.png",
+        "sha256": "a51f65a6ef5eae6438a913c607edae3d7410e2b1a3560f111d0aa67297d64998"
+      },
+      {
+        "path": "output/flutter/m3-r7-device/06-r7-settings-restored.png",
+        "sha256": "5da9b1ac49573178d63de287c112bef2036dc6f19b9c1c43c13080647d9c5809"
+      },
+      {
+        "path": "output/flutter/m3-r7-device/07-r7-system-home-restored.png",
+        "sha256": "2f85b7b5633683cbe95b834b8d8cb0f57d93f042ff7a5f66263d396ea04d01f8"
+      },
+      {
+        "path": "output/flutter/m3-r7-device/08-r7-final-restart-home.png",
+        "sha256": "7ca464734282d3a8a3d52e221138404d4ab680f49e7c1249f5c3dd7f25a5f216"
+      },
+      {
+        "path": "output/flutter/m3-r7-device/09-r7-original-templates-retained.png",
+        "sha256": "49ee9740fa3a8b00aef63d75f00d563fcd6f2d924e6cc021b5edd21ead29f400"
+      },
+      {
+        "path": "output/flutter/m3-r7-device/10-r7-favorites-empty.png",
+        "sha256": "8464c95fd1eff6a5b76812cd0b8772f109820a8274b3165b237bab6c9b937cd2"
+      },
+      {
+        "path": "output/flutter/m3-r7-device/11-r7-final-settings.png",
+        "sha256": "0f15081beb3dff870138852a9f79862e035342b2e08fe9ff647927e36cd87f1e"
+      }
+    ]
+  },
+  "finalComponentScreenshots": [
+    {
+      "path": "output/flutter/m3-r7-self-review/advanced-editor-section-19.png",
+      "sha256": "4904797735dfe01487dcfd633efeec681148a0d445332b21ac94c050d74a0bd8"
+    },
+    {
+      "path": "output/flutter/m3-r7-self-review/advanced-editor-section-3.png",
+      "sha256": "d16c5c29bbcb86d849c5fc205be30f88e0ac5f5ee689f57737eac827d7cf2699"
+    },
+    {
+      "path": "output/flutter/m3-r7-self-review/advanced-editor-section-9.png",
+      "sha256": "8ffec660f3974344c6cba1081bca19360083fb7196c2e5f6c1250117536b02bb"
+    },
+    {
+      "path": "output/flutter/m3-r7-self-review/create-200-50-100.png",
+      "sha256": "0927db2838814d6a58514ecf53191fac451713969a2205e2163afd790986a701"
+    },
+    {
+      "path": "output/flutter/m3-r7-self-review/create-60-15-15.png",
+      "sha256": "d389fccc37d0448cda3553bfcdd0a2dbe4082ca8ab3a35a6a96a0a5868510353"
+    },
+    {
+      "path": "output/flutter/m3-r7-self-review/create-layout-320.0-1.6-false.png",
+      "sha256": "c82cd120d85ca67fee2d55f632e9fc8a4e838edb903e8544dff6ff3d6fdaa9b4"
+    },
+    {
+      "path": "output/flutter/m3-r7-self-review/create-layout-390.0-1.3-false.png",
+      "sha256": "12f4a79e915a031e75af80ea0660cc2ad0f26950d1ec81d6593a2460ce030218"
+    },
+    {
+      "path": "output/flutter/m3-r7-self-review/create-layout-390.0-2.0-true.png",
+      "sha256": "522eb162b03dcf5229269e0cde312b77d85cb793a7a8793eabc5cdd2374f4988"
+    },
+    {
+      "path": "output/flutter/m3-r7-self-review/food-editor-keyboard-save.png",
+      "sha256": "cadf830e1c9d9244494a0a3f00f276292e80c99c2fa36e779e6d87f16c09e537"
+    },
+    {
+      "path": "output/flutter/m3-r7-self-review/personal-review-form-320.0-1.6-false.png",
+      "sha256": "78c16e4c97c1e6d4a1fbb17d1be273142511e62bde8521d669c741b03471a4e8"
+    },
+    {
+      "path": "output/flutter/m3-r7-self-review/personal-review-form-390.0-1.0-false.png",
+      "sha256": "427a640cee5c2b6d1aee0669af34c977f23daceb027ca31f45787826937b8e21"
+    },
+    {
+      "path": "output/flutter/m3-r7-self-review/personal-review-form-390.0-2.0-true.png",
+      "sha256": "30f0f2faa329bce39f3cfd94028cbe0ea91848ff8721e6be2b2e83f266d93714"
+    },
+    {
+      "path": "output/flutter/m3-r7-self-review/personal-review-keyboard-320.0-1.6-false.png",
+      "sha256": "32cbda61205cb2ddeb6a9df61695e78fd4f771dfb50c1468a65a39f1b805fcab"
+    },
+    {
+      "path": "output/flutter/m3-r7-self-review/personal-review-keyboard-390.0-1.0-false.png",
+      "sha256": "ee061dc389204e1a783762cd053d78d570d7d358b6e63bcad6ab0b1b45bea2ff"
+    },
+    {
+      "path": "output/flutter/m3-r7-self-review/personal-review-keyboard-390.0-2.0-true.png",
+      "sha256": "d1ba8bd4ec27c0abcdb0a6efff7b6a174fb811df4bd23059f001647c5b8d5a3f"
+    },
+    {
+      "path": "output/flutter/m3-r7-self-review/personal-review-saved-320.0-1.6-false.png",
+      "sha256": "95aad536c25447dc0872d14c98239a8825b4b01a2701bf2bc162be776075b3dd"
+    },
+    {
+      "path": "output/flutter/m3-r7-self-review/personal-review-saved-390.0-1.0-false.png",
+      "sha256": "b6bbfadb884a65e21990e953d04d88c0f415f09eb290561986190fef8ceece29"
+    },
+    {
+      "path": "output/flutter/m3-r7-self-review/personal-review-saved-390.0-2.0-true.png",
+      "sha256": "3d8cc8e2a3344460c1c1aef1f9449d1ffa8494940d47ed2f2fcb3b1949c8099c"
+    },
+    {
+      "path": "output/flutter/m3-r7-self-review/search-full-320.0-1.6-false.png",
+      "sha256": "280483768b2572c24ae45a9e97aa753eb994cc878af6bb5220f9c8772b65dc3d"
+    },
+    {
+      "path": "output/flutter/m3-r7-self-review/search-full-390.0-1.0-false.png",
+      "sha256": "bf23f1bdaf452d429811b44e7e2b2e5e983be31afa12c907a61cbcbfe4fc5242"
+    },
+    {
+      "path": "output/flutter/m3-r7-self-review/search-full-390.0-2.0-true.png",
+      "sha256": "70f6ebbc818533517b77dfbc9d08a6b6767d9dc4157063cca8048d60a9a60f65"
+    }
+  ],
+  "sourceChangesSinceR2": [
+    "android/app/src/main/kotlin/com/opennutritracker/ont/opennutritracker/MainActivity.kt",
+    "lib/main.dart",
+    "test/widget_test/system_bar_contrast_test.dart"
+  ],
+  "backupBoundary": "Early files/shared_prefs snapshots excluded Hive; complete app_flutter/files/shared_prefs private snapshots added before R3 first launch and subsequent UI upgrades. No phone restore test claimed.",
+  "remote": {
+    "repository": "94huangyu/OpenNutriTracker",
+    "branch": "feature/m3-food-trust",
+    "observedHead": "dd8611b20ab3733283eaa8d11c8fed6481636d57",
+    "observedCompare": "identical",
+    "status": "awaiting explicit reviewed-payload approval; no source files uploaded"
+  },
+  "uploadPaths": [
+    "android/app/src/main/kotlin/com/opennutritracker/ont/opennutritracker/MainActivity.kt",
+    "docs/china-fork/CURRENT_STATE.md",
+    "docs/china-fork/M3_PLAN.md",
+    "docs/china-fork/M3_SELF_ACCEPTANCE.md",
+    "docs/china-fork/M3_UPLOAD_REVIEW.md",
+    "docs/china-fork/evidence/m3-food-trust.json",
+    "docs/export-format.md",
+    "lib/core/data/data_source/custom_meal_data_source.dart",
+    "lib/core/data/data_source/intake_data_source.dart",
+    "lib/core/data/data_source/personal_food_data_source.dart",
+    "lib/core/data/data_source/recipe_data_source.dart",
+    "lib/core/data/dbo/meal_dbo.dart",
+    "lib/core/data/dbo/meal_dbo.g.dart",
+    "lib/core/utils/csv_data_exporter.dart",
+    "lib/core/utils/hive_db_provider.dart",
+    "lib/core/utils/locator.dart",
+    "lib/core/utils/off_micronutrient_repair.dart",
+    "lib/features/add_meal/data/repository/products_repository.dart",
+    "lib/features/add_meal/domain/entity/meal_entity.dart",
+    "lib/features/add_meal/domain/entity/meal_nutriments_entity.dart",
+    "lib/features/add_meal/domain/usecase/search_products_usecase.dart",
+    "lib/features/add_meal/presentation/add_meal_screen.dart",
+    "lib/features/add_meal/presentation/widgets/meal_item_card.dart",
+    "lib/features/add_meal/presentation/widgets/personal_food_list.dart",
+    "lib/features/add_meal/util/meal_relevance_ranker.dart",
+    "lib/features/edit_meal/presentation/bloc/edit_meal_bloc.dart",
+    "lib/features/edit_meal/presentation/edit_meal_screen.dart",
+    "lib/features/meal_detail/meal_detail_screen.dart",
+    "lib/features/meal_detail/presentation/widgets/personal_food_actions.dart",
+    "lib/features/recipes/presentation/screens/recipes_page.dart",
+    "lib/features/scanner/domain/usecase/search_product_by_barcode_usecase.dart",
+    "lib/features/settings/domain/usecase/export_data_usecase.dart",
+    "lib/features/settings/domain/usecase/import_data_usecase.dart",
+    "lib/l10n/intl_en.arb",
+    "lib/l10n/intl_zh.arb",
+    "lib/main.dart",
+    "test/features/meal_detail/personal_food_actions_test.dart",
+    "test/helpers/fake_hive_db_provider.dart",
+    "test/helpers/personal_food_fixture.dart",
+    "test/unit_test/food_nutrition_basis_test.dart",
+    "test/unit_test/m3_nutrition_tolerance_test.dart",
+    "test/unit_test/off_micronutrient_repair_test.dart",
+    "test/unit_test/personal_food_backup_test.dart",
+    "test/unit_test/personal_food_lifecycle_test.dart",
+    "test/unit_test/personal_food_persistence_test.dart",
+    "test/widget_test/system_bar_contrast_test.dart"
+  ],
+  "notCovered": [
+    "M4 complete backup and atomic/idempotent restore",
+    "M5 release",
+    "iOS",
+    "configured Supabase account queries",
+    "full physical camera denial/retry chain",
+    "full TalkBack flow",
+    "all Android manufacturers"
+  ]
+}
