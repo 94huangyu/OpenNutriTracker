@@ -115,6 +115,8 @@ void main() {
         final note = find.byType(TextFormField);
         await tester.ensureVisible(note);
         await tester.enterText(note, '包装2026年10月；核对名称、规格和全部已填营养。');
+        await tester.pumpAndSettle();
+        expect(find.text('请填写依据和核对说明'), findsNothing);
         tester.view.viewInsets = const FakeViewPadding(bottom: 260);
         await tester.pumpAndSettle();
         expect(tester.takeException(), isNull);

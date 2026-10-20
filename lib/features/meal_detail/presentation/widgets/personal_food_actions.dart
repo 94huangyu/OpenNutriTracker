@@ -195,6 +195,7 @@ class _ReviewDialogState extends State<_ReviewDialog> {
                 identifier: 'food-review-note',
                 child: TextFormField(
                   controller: _note,
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
                   minLines: 2,
                   maxLines: 5,
                   decoration: InputDecoration(
