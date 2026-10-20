@@ -9,8 +9,22 @@ import 'package:opennutritracker/core/utils/theme_mode_provider.dart';
 
 void main() {
   testWidgets(
-    'app fallback restores readable system bars after routes and theme changes',
+    'app restores current system bars after routes, theme changes and keyboard',
     (tester) async {
+      final calls = <MethodCall>[];
+      tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+        SystemChannels.platform,
+        (call) async {
+          calls.add(call);
+          return null;
+        },
+      );
+      addTearDown(() {
+        tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+          SystemChannels.platform,
+          null,
+        );
+      });
       tester.view.physicalSize = const Size(390, 844);
       tester.view.devicePixelRatio = 1;
       tester.view.padding = const FakeViewPadding(top: 24, bottom: 20);
@@ -71,7 +85,37 @@ void main() {
         SystemChrome.latestStyle?.statusBarIconBrightness,
         Brightness.dark,
       );
+      int restores() => calls
+          .where(
+            (call) => call.method == 'SystemChrome.restoreSystemUIOverlays',
+          )
+          .length;
+      tester.view.viewInsets = const FakeViewPadding(bottom: 300);
+      await tester.pump();
+      tester.view.viewInsets = FakeViewPadding.zero;
+      await tester.pump(const Duration(milliseconds: 900));
+      expect(restores(), 0);
+      // Reopening cancels restoration; the platform must keep its IME chrome.
+      tester.view.viewInsets = const FakeViewPadding(bottom: 300);
+      await tester.pump(const Duration(milliseconds: 400));
+      expect(restores(), 0);
+      tester.view.viewInsets = FakeViewPadding.zero;
+      theme.updateTheme(AppThemeEntity.dark);
+      await tester.pumpAndSettle();
+      await tester.pump(const Duration(milliseconds: 1100));
+      expect(restores(), 1);
+      expect(
+        SystemChrome.latestStyle?.statusBarIconBrightness,
+        Brightness.light,
+      );
+      // Disposal cancels the pending platform operation as well.
+      tester.view.viewInsets = const FakeViewPadding(bottom: 300);
+      await tester.pump();
+      tester.view.viewInsets = FakeViewPadding.zero;
+      await tester.pump();
       await tester.pumpWidget(const SizedBox());
+      await tester.pump(const Duration(milliseconds: 1200));
+      expect(restores(), 1);
       await tester.pumpAndSettle();
       theme.dispose();
       expect(tester.takeException(), isNull);

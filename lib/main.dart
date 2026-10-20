@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -177,6 +178,9 @@ class OpenNutriTrackerApp extends StatefulWidget {
 
 class _OpenNutriTrackerAppState extends State<OpenNutriTrackerApp>
     with WidgetsBindingObserver {
+  Timer? _systemUiRestoreTimer;
+  bool _keyboardVisible = false;
+
   @override
   void initState() {
     super.initState();
@@ -185,8 +189,27 @@ class _OpenNutriTrackerAppState extends State<OpenNutriTrackerApp>
 
   @override
   void dispose() {
+    _systemUiRestoreTimer?.cancel();
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
+  }
+
+  @override
+  void didChangeMetrics() {
+    if (kIsWeb || defaultTargetPlatform != TargetPlatform.android) return;
+    final visible = View.of(context).viewInsets.bottom > 0;
+    if (visible == _keyboardVisible) return;
+    _keyboardVisible = visible;
+    _systemUiRestoreTimer?.cancel();
+    if (!visible) {
+      // Android's IME can override icon appearance without changing Flutter's
+      // cached style. Restore the current route's style after Android's 1s lock.
+      _systemUiRestoreTimer = Timer(const Duration(milliseconds: 1100), () {
+        if (mounted && !_keyboardVisible) {
+          unawaited(SystemChrome.restoreSystemUIOverlays());
+        }
+      });
+    }
   }
 
   /// Android delivers this when someone changes the app's language from
