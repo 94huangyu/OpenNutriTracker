@@ -268,26 +268,28 @@ class _EditMealScreenState extends State<EditMealScreen> {
     _maybeReinterpretKcalField(usesKj);
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final palette = isDark ? AppPalette.dark : AppPalette.light;
-    return SafeArea(
-      child: Scaffold(
+    return Scaffold(
+      backgroundColor: palette.canvas,
+      appBar: AppBar(
         backgroundColor: palette.canvas,
-        appBar: AppBar(
-          backgroundColor: palette.canvas,
-          surfaceTintColor: Colors.transparent,
-          toolbarHeight: MediaQuery.textScalerOf(context).scale(kToolbarHeight),
-          title: AutoSizeText(
-            _mealEntity.name == null
-                ? S.of(context).noResultsCreateCustomFood
-                : S.of(context).editMealLabel,
-            minFontSize: 16,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: Theme.of(
-              context,
-            ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w800),
-          ),
+        surfaceTintColor: Colors.transparent,
+        toolbarHeight: MediaQuery.textScalerOf(context).scale(kToolbarHeight),
+        title: AutoSizeText(
+          _mealEntity.name == null
+              ? S.of(context).noResultsCreateCustomFood
+              : S.of(context).editMealLabel,
+          minFontSize: 16,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: Theme.of(
+            context,
+          ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w800),
         ),
-        body: AbsorbPointer(
+      ),
+      body: SafeArea(
+        top: false,
+        bottom: false,
+        child: AbsorbPointer(
           absorbing: _saving,
           child: BlocBuilder<EditMealBloc, EditMealState>(
             bloc: _editMealBloc,
@@ -304,7 +306,10 @@ class _EditMealScreenState extends State<EditMealScreen> {
             },
           ),
         ),
-        bottomNavigationBar: Padding(
+      ),
+      bottomNavigationBar: SafeArea(
+        top: false,
+        child: Padding(
           padding: EdgeInsets.fromLTRB(
             16,
             12,

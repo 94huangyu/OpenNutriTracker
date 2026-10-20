@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:logging/logging.dart';
 import 'package:opennutritracker/core/data/data_source/remote_search_cache_data_source.dart';
@@ -223,6 +224,12 @@ class _OpenNutriTrackerAppState extends State<OpenNutriTrackerApp>
     AppPalette darkPalette,
   ) {
     return MaterialApp(
+      builder: (context, child) => AnnotatedRegion<SystemUiOverlayStyle>(
+        value: Theme.of(context).brightness == Brightness.dark
+            ? SystemUiOverlayStyle.light
+            : SystemUiOverlayStyle.dark,
+        child: child ?? const SizedBox.shrink(),
+      ),
       onGenerateTitle: (context) => S.of(context).appTitle,
       debugShowCheckedModeBanner: false,
       theme: buildAppTheme(lightPalette),
