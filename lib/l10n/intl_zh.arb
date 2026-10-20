@@ -1354,5 +1354,15 @@
   "recordingThemeSystem": "跟随系统",
   "recordingThemeLight": "浅色",
   "recordingThemeDark": "深色",
-  "recordingFoodSources": "食品数据来源"
+  "recordingFoodSources": "食品数据来源",
+  "myFoodLabel": "我的食品",
+  "customMealNutritionBasis": "每 {quantity} {unit}",
+  "recordingUndo": "撤销",
+  "recordingDeleted": "已删除记录",
+  "recordingRepeat": "再记一份",
+  "recordingRestored": "已恢复记录",
+  "recordingRepeated": "已添加记录",
+  "recordingUndoFailed": "恢复失败，请点撤销重试",
+  "customMealCopyHint": "修改后保存为我的食品，已有记录保留原来的营养数据。",
+  "customMealReference": "原始参考：{source}"
 }

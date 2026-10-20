@@ -103,7 +103,9 @@ class _MealSearchBarState extends State<MealSearchBar> {
               foregroundColor: Theme.of(context).colorScheme.onPrimary,
               backgroundColor: accent,
               padding: const EdgeInsets.all(Dimens.spacing12),
-              shape: const RoundedRectangleBorder(borderRadius: Dimens.borderRadiusM),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
             ),
           ),
         ),

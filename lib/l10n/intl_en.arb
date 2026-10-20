@@ -1398,5 +1398,17 @@
   "recordingThemeSystem": "Follow system",
   "recordingThemeLight": "Light",
   "recordingThemeDark": "Dark",
-  "recordingFoodSources": "Food data sources"
+  "recordingFoodSources": "Food data sources",
+  "myFoodLabel": "My food",
+  "customMealNutritionBasis": "Per {quantity} {unit}",
+  "recordingUndo": "Undo",
+  "recordingDeleted": "Record deleted",
+  "recordingRepeat": "Log again",
+  "recordingRestored": "Record restored",
+  "recordingRepeated": "Record added",
+  "recordingUndoFailed": "Could not restore. Tap Undo to retry.",
+  "customMealCopyHint": "Changes will be saved to My foods. Existing records keep their original values.",
+  "customMealReference": "Original reference: {source}",
+  "@customMealNutritionBasis": {"placeholders": {"quantity": {"type": "String"}, "unit": {"type": "String"}}},
+  "@customMealReference": {"placeholders": {"source": {"type": "String"}}}
 }

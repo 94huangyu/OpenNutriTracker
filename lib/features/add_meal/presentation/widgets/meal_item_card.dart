@@ -3,7 +3,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:opennutritracker/core/presentation/widgets/app_card.dart';
-import 'package:opennutritracker/core/presentation/widgets/meal_value_unit_text.dart';
+import 'package:opennutritracker/core/presentation/widgets/intake_card.dart';
+import 'package:opennutritracker/core/utils/energy_display.dart';
 import 'package:opennutritracker/core/styles/app_palette.dart';
 import 'package:opennutritracker/core/styles/dimens.dart';
 import 'package:opennutritracker/core/utils/locator.dart';
@@ -36,6 +37,7 @@ class MealItemCard extends StatelessWidget {
     final palette = isDark ? AppPalette.dark : AppPalette.light;
     final accent = Theme.of(context).colorScheme.primary;
     final isRecipe = mealEntity.source == MealSourceEntity.recipe;
+    final stacked = MediaQuery.textScalerOf(context).scale(16) > 22;
     // Colored emoji is reserved for FDC base-food items where the head
     // noun reliably identifies the food ("Milk, fluid, nonfat..." → milk).
     // OFF products are branded, so a head-noun match would often be
@@ -48,57 +50,84 @@ class MealItemCard extends StatelessWidget {
       child: AppCard(
         onTap: () => _onItemPressed(context),
         padding: const EdgeInsets.all(Dimens.spacing12),
-        child: Row(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
           children: [
-            _buildThumbnail(context, palette, accent, isRecipe, emoji),
-            const SizedBox(width: Dimens.spacing16),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  AutoSizeText.rich(
-                    TextSpan(
-                      text: mealEntity.name ?? "?",
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                            fontWeight: FontWeight.w700,
-                            color: palette.textStrong,
-                          ),
-                      children: [
-                        TextSpan(
-                          text: ' ${mealEntity.brands ?? ""}',
-                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                color: palette.textMuted,
-                              ),
+            Row(
+              children: [
+                _buildThumbnail(context, palette, accent, isRecipe, emoji),
+                const SizedBox(width: Dimens.spacing16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      _buildTitle(context, palette),
+                      if (!stacked) ...[
+                        const SizedBox(height: Dimens.spacing4),
+                        Text(
+                          _nutritionSummary(context),
+                          style: Theme.of(context).textTheme.bodyMedium,
                         ),
+                        const SizedBox(height: Dimens.spacing4),
+                        _buildSubtitle(context, palette, accent, isRecipe),
                       ],
-                    ),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
+                    ],
                   ),
-                  const SizedBox(height: Dimens.spacing4),
-                  _buildSubtitle(context, palette, accent, isRecipe),
-                ],
-              ),
-            ),
-            const SizedBox(width: Dimens.spacing8),
-            Semantics(
-              identifier: 'meal-item-add',
-              child: IconButton(
-                style: IconButton.styleFrom(
-                  foregroundColor: Theme.of(context).colorScheme.onPrimary,
-                  backgroundColor: accent,
-                  shape: const RoundedRectangleBorder(borderRadius: Dimens.borderRadiusM),
                 ),
-                icon: const Icon(Icons.add_rounded, size: 24),
-                onPressed: () => _onItemPressed(context),
-              ),
+                const SizedBox(width: Dimens.spacing8),
+                Semantics(
+                  identifier: 'meal-item-add',
+                  child: IconButton(
+                    style: IconButton.styleFrom(
+                      foregroundColor: Theme.of(context).colorScheme.onPrimary,
+                      backgroundColor: accent,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    icon: const Icon(Icons.add_rounded, size: 24),
+                    onPressed: () => _onItemPressed(context),
+                  ),
+                ),
+              ],
             ),
+            if (stacked) ...[
+              const SizedBox(height: 8),
+              Text(
+                _nutritionSummary(context),
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+              const SizedBox(height: 4),
+              _buildSubtitle(context, palette, accent, isRecipe),
+            ],
           ],
         ),
       ),
     );
   }
+
+  Widget _buildTitle(BuildContext context, AppPalette palette) =>
+      AutoSizeText.rich(
+        TextSpan(
+          text: mealEntity.name ?? "?",
+          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+            fontWeight: FontWeight.w700,
+            color: palette.textStrong,
+          ),
+          children: [
+            TextSpan(
+              text: ' ${mealEntity.brands ?? ""}',
+              style: Theme.of(
+                context,
+              ).textTheme.bodyMedium?.copyWith(color: palette.textMuted),
+            ),
+          ],
+        ),
+        maxLines: 2,
+        overflow: TextOverflow.ellipsis,
+      );
 
   Widget _buildThumbnail(
     BuildContext context,
@@ -107,6 +136,9 @@ class MealItemCard extends StatelessWidget {
     bool isRecipe,
     String? emoji,
   ) {
+    if (mealEntity.localImagePath != null) {
+      return MealThumbnail(meal: mealEntity, size: Dimens.mealThumb);
+    }
     final radius = BorderRadius.circular(Dimens.radiusM);
     if (mealEntity.thumbnailImageUrl != null) {
       return ClipRRect(
@@ -154,7 +186,7 @@ class MealItemCard extends StatelessWidget {
     // (Open Food Facts, BLS, FDC SR Legacy...) so users can tell sources
     // apart. OFF products may additionally have a package quantity — keep
     // it visible next to the chip.
-    final sourceLabel = _sourceLabel();
+    final sourceLabel = _sourceLabel(context);
     final chip = sourceLabel != null
         ? _labelChip(
             context,
@@ -163,31 +195,39 @@ class MealItemCard extends StatelessWidget {
             foreground: palette.textMuted,
           )
         : null;
-    final quantity = mealEntity.mealQuantity != null
-        ? MealValueUnitText(
-            value: double.parse(mealEntity.mealQuantity ?? "0"),
-            meal: mealEntity,
-            usesImperialUnits: usesImperialUnits,
-          )
-        : null;
-
-    if (chip != null && quantity != null) {
-      return Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          chip,
-          const SizedBox(width: Dimens.spacing8),
-          Flexible(child: quantity),
-        ],
-      );
-    }
-    return chip ?? quantity ?? const SizedBox();
+    final package = double.tryParse(mealEntity.mealQuantity ?? '');
+    return Wrap(
+      spacing: Dimens.spacing8,
+      runSpacing: Dimens.spacing4,
+      crossAxisAlignment: WrapCrossAlignment.center,
+      children: [
+        ?chip,
+        if (package != null && package.isFinite && package > 0)
+          Text(
+            '${S.of(context).mealSizeLabel} ${_number(package)} '
+            '${mealEntity.mealUnit ?? "g/ml"}',
+          ),
+      ],
+    );
   }
 
-  /// Database-of-origin label: the Supabase backend source (BLS, FDC SR
-  /// Legacy...) when known, Open Food Facts for OFF products, null for the
-  /// user's own custom meals.
-  String? _sourceLabel() {
+  String _number(double value) =>
+      value.toStringAsFixed(2).replaceFirst(RegExp(r'\.?0+$'), '');
+
+  String _nutritionSummary(BuildContext context) {
+    final basis = mealEntity.effectiveNutritionBasis;
+    final kcal100 = mealEntity.nutriments.energyKcal100;
+    final energy = kcal100 != null && kcal100.isFinite && kcal100 >= 0
+        ? EnergyDisplay.formatRoundedWithUnit(context, kcal100 * basis / 100)
+        : '— ${EnergyDisplay.unitLabel(context)}';
+    return '${S.of(context).customMealNutritionBasis(basis.toString().replaceFirst(RegExp(r"\.0$"), ""), mealEntity.mealUnit ?? "g/ml")} · $energy';
+  }
+
+  /// Personal foods take precedence over their retained public reference.
+  String? _sourceLabel(BuildContext context) {
+    if (mealEntity.source == MealSourceEntity.custom) {
+      return S.of(context).myFoodLabel;
+    }
     final backendLabel = SPConst.foodSourceShortNames[mealEntity.backendSource];
     if (backendLabel != null) return backendLabel;
     if (mealEntity.source == MealSourceEntity.off) {
