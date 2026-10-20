@@ -229,6 +229,14 @@ class EditMealBloc extends Bloc<EditMealEvent, EditMealState> {
       mealUnit: unitText,
       servingQuantity: servingQuantityText.toDoubleOrNull(),
       nutritionBasisQuantity: savedBasis,
+      originalSource:
+          oldMealEntity.originalSource ??
+          (asPersonalCopy
+              ? oldMealEntity.backendSource ?? oldMealEntity.source.name
+              : null),
+      originalCode:
+          oldMealEntity.originalCode ??
+          (asPersonalCopy ? oldMealEntity.code : null),
       // The custom-meal form has a single unit selector shared by the meal
       // size and the serving size, so the serving unit is that selected unit
       // — not the serving *quantity* text, which used to land here and made

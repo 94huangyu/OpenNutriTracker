@@ -87,6 +87,11 @@ class MealDBO extends HiveObject {
   @HiveField(18)
   final double? nutritionBasisQuantity;
 
+  @HiveField(19)
+  final String? originalSource;
+  @HiveField(20)
+  final String? originalCode;
+
   /// Rows at this version or above carry every micronutrient in the app's
   /// units: milligrams for the minerals, cholesterol and vitamins C, B6 and
   /// niacin, micrograms for vitamins A, D and B12. Below it (null included)
@@ -120,33 +125,37 @@ class MealDBO extends HiveObject {
     this.machineTranslatedName,
     this.dataVersion,
     this.nutritionBasisQuantity,
+    this.originalSource,
+    this.originalCode,
   });
 
   /// Entities always carry app units — every remote mapping converts on
   /// the way in — so a row built from one is stamped current.
   factory MealDBO.fromMealEntity(MealEntity mealEntity) => MealDBO(
-        code: mealEntity.code,
-        name: mealEntity.name,
-        brands: mealEntity.brands,
-        thumbnailImageUrl: mealEntity.thumbnailImageUrl,
-        mainImageUrl: mealEntity.mainImageUrl,
-        url: mealEntity.url,
-        mealQuantity: mealEntity.mealQuantity,
-        mealUnit: mealEntity.mealUnit,
-        servingQuantity: mealEntity.servingQuantity,
-        servingUnit: mealEntity.servingUnit,
-        servingSize: mealEntity.servingSize,
-        nutritionBasisQuantity: mealEntity.nutritionBasisQuantity,
-        nutriments: MealNutrimentsDBO.fromProductNutrimentsEntity(
-          mealEntity.nutriments,
-        ),
-        source: MealSourceDBO.fromMealSourceEntity(mealEntity.source),
-        localImagePath: mealEntity.localImagePath,
-        detailed: mealEntity.detailed,
-        backendSource: mealEntity.backendSource,
-        machineTranslatedName: mealEntity.machineTranslatedName,
-        dataVersion: currentDataVersion,
-      );
+    code: mealEntity.code,
+    name: mealEntity.name,
+    brands: mealEntity.brands,
+    thumbnailImageUrl: mealEntity.thumbnailImageUrl,
+    mainImageUrl: mealEntity.mainImageUrl,
+    url: mealEntity.url,
+    mealQuantity: mealEntity.mealQuantity,
+    mealUnit: mealEntity.mealUnit,
+    servingQuantity: mealEntity.servingQuantity,
+    servingUnit: mealEntity.servingUnit,
+    servingSize: mealEntity.servingSize,
+    nutritionBasisQuantity: mealEntity.nutritionBasisQuantity,
+    originalSource: mealEntity.originalSource,
+    originalCode: mealEntity.originalCode,
+    nutriments: MealNutrimentsDBO.fromProductNutrimentsEntity(
+      mealEntity.nutriments,
+    ),
+    source: MealSourceDBO.fromMealSourceEntity(mealEntity.source),
+    localImagePath: mealEntity.localImagePath,
+    detailed: mealEntity.detailed,
+    backendSource: mealEntity.backendSource,
+    machineTranslatedName: mealEntity.machineTranslatedName,
+    dataVersion: currentDataVersion,
+  );
 
   factory MealDBO.fromJson(Map<String, dynamic> json) =>
       _$MealDBOFromJson(json);

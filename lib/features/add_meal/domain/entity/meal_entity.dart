@@ -44,6 +44,10 @@ class MealEntity extends Equatable {
   /// All nutriments remain canonical per-100 values.
   final double? nutritionBasisQuantity;
 
+  /// Public source and item identity retained by a personal correction.
+  final String? originalSource;
+  final String? originalCode;
+
   double get effectiveNutritionBasis {
     final basis = nutritionBasisQuantity;
     return basis != null && basis.isFinite && basis > 0 ? basis : 100;
@@ -246,6 +250,8 @@ class MealEntity extends Equatable {
     this.portionsUnavailable = false,
     this.localImagePath,
     this.nutritionBasisQuantity,
+    this.originalSource,
+    this.originalCode,
     this.detailed = false,
   });
 
@@ -278,6 +284,8 @@ class MealEntity extends Equatable {
     portionsUnavailable: portionsUnavailable,
     localImagePath: localImagePath,
     nutritionBasisQuantity: nutritionBasisQuantity,
+    originalSource: originalSource,
+    originalCode: originalCode,
     detailed: detailed,
   );
 
@@ -307,6 +315,8 @@ class MealEntity extends Equatable {
     portionsUnavailable: portionsUnavailable,
     localImagePath: localImagePath,
     nutritionBasisQuantity: nutritionBasisQuantity,
+    originalSource: originalSource,
+    originalCode: originalCode,
     detailed: detailed,
   );
 
@@ -336,6 +346,8 @@ class MealEntity extends Equatable {
     portionsUnavailable: true,
     localImagePath: localImagePath,
     nutritionBasisQuantity: nutritionBasisQuantity,
+    originalSource: originalSource,
+    originalCode: originalCode,
     detailed: detailed,
   );
 
@@ -365,6 +377,8 @@ class MealEntity extends Equatable {
     servingUnit: mealDBO.servingUnit,
     servingSize: mealDBO.servingSize,
     nutritionBasisQuantity: mealDBO.nutritionBasisQuantity,
+    originalSource: mealDBO.originalSource,
+    originalCode: mealDBO.originalCode,
     nutriments: MealNutrimentsEntity.fromMealNutrimentsDBO(mealDBO.nutriments),
     source: MealSourceEntity.fromMealSourceDBO(mealDBO.source),
     backendSource: mealDBO.backendSource,

@@ -6,6 +6,34 @@ import 'package:opennutritracker/features/meal_detail/presentation/widgets/meal_
 import 'package:opennutritracker/generated/l10n.dart';
 
 void main() {
+  testWidgets('OFF correction without URL shows source and original item id', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        locale: const Locale('zh'),
+        supportedLocales: S.supportedLocales,
+        localizationsDelegates: const [
+          S.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        home: Scaffold(
+          body: MealInfoButton(
+            url: null,
+            source: MealSourceEntity.custom,
+            originalSource: 'off',
+            originalCode: '00012345',
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    expect(find.textContaining('Open Food Facts · 00012345'), findsOneWidget);
+    expect(find.textContaining('我的食品'), findsOneWidget);
+    expect(find.textContaining('已核验'), findsNothing);
+  });
   for (final entry in [
     (null, null, '我的食品', false),
     (

@@ -454,6 +454,8 @@ class _MealDetailScreenState extends State<MealDetailScreen> {
                     url: meal.url,
                     source: meal.source,
                     backendSource: meal.backendSource,
+                    originalSource: meal.originalSource,
+                    originalCode: meal.originalCode,
                   ),
                   meal.source == MealSourceEntity.off
                       ? const Column(

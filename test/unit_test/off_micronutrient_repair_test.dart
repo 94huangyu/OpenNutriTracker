@@ -646,12 +646,19 @@ void main() {
 
     test('a user_intake.csv without the version column is scaled', () {
       final legacyColumns = CsvDataExporter.intakeColumns
-          .where((c) => c != 'meal_data_version' && c != 'meal_nutrition_basis_quantity')
+          .where(
+            (c) => !{
+              'meal_data_version',
+              'meal_nutrition_basis_quantity',
+              'meal_original_source',
+              'meal_original_code',
+            }.contains(c),
+          )
           .toList();
       final csv = CsvDataExporter.intakesToCsv([
         _intake('old', _meal(source: MealSourceDBO.off)),
       ]);
-      // This synthetic row has no quoted commas; remove both newer trailing columns.
+      // This synthetic row has no quoted commas; remove the newer trailing metadata columns.
       final legacyCsv = csv
           .split('\n')
           .map(
@@ -673,7 +680,12 @@ void main() {
       final csv = CsvDataExporter.intakesToCsv([
         _intake('new', _mealWrittenAfter775()),
       ]);
-      expect(csv.split('\n').first, endsWith(',meal_data_version,meal_nutrition_basis_quantity'));
+      expect(
+        csv.split('\n').first,
+        endsWith(
+          ',meal_data_version,meal_nutrition_basis_quantity,meal_original_source,meal_original_code',
+        ),
+      );
 
       final parsed = CsvDataExporter.parseIntakesFromCsv(csv).single;
 

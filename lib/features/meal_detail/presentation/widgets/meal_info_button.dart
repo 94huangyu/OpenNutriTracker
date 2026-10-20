@@ -15,12 +15,16 @@ class MealInfoButton extends StatelessWidget {
   /// generic FoodData Central label. Null for OFF/custom meals and
   /// legacy cached entries.
   final String? backendSource;
+  final String? originalSource;
+  final String? originalCode;
 
   const MealInfoButton({
     super.key,
     required this.url,
     required this.source,
     this.backendSource,
+    this.originalSource,
+    this.originalCode,
   });
 
   @override
@@ -28,12 +32,21 @@ class MealInfoButton extends StatelessWidget {
     final accent = Theme.of(context).colorScheme.primary;
     final infoUrl = _getInfoUrl();
     final uri = Uri.tryParse(infoUrl);
-    final canOpen = uri != null && uri.host.isNotEmpty &&
+    final canOpen =
+        uri != null &&
+        uri.host.isNotEmpty &&
         (uri.scheme == 'https' || uri.scheme == 'http');
-    final reference = source == MealSourceEntity.custom
-        ? (SPConst.foodSourceDisplayNames[backendSource] ??
+    final referenceName = originalSource == 'off'
+        ? OFFConst.offSourceName
+        : SPConst.foodSourceDisplayNames[originalSource ?? backendSource] ??
+              (originalSource == 'fdc'
+                  ? S.of(context).additionalInfoLabelFDC
+                  : originalSource) ??
               (Uri.tryParse(url ?? '')?.host.isNotEmpty == true
-                  ? Uri.tryParse(url!)!.host : null))
+                  ? Uri.tryParse(url!)!.host
+                  : null);
+    final reference = source == MealSourceEntity.custom && referenceName != null
+        ? '$referenceName${originalCode == null ? "" : " · $originalCode"}'
         : null;
     if (source == MealSourceEntity.custom && reference == null) {
       return Text(S.of(context).myFoodLabel);
@@ -64,7 +77,10 @@ class MealInfoButton extends StatelessWidget {
         siteUrl = "";
         break;
       case MealSourceEntity.custom:
-        siteUrl = url ?? SPConst.foodSourceWebsites[backendSource] ?? "";
+        siteUrl =
+            url ??
+            SPConst.foodSourceWebsites[originalSource ?? backendSource] ??
+            (originalSource == 'off' ? OFFConst.offWebsiteUrl : "");
         break;
       case MealSourceEntity.off:
         siteUrl = url ?? OFFConst.offWebsiteUrl;

@@ -8,6 +8,8 @@ import 'package:opennutritracker/core/data/data_source/recipe_data_source.dart';
 import 'package:opennutritracker/core/data/data_source/intake_data_source.dart';
 import 'package:opennutritracker/core/data/dbo/meal_dbo.dart';
 import 'package:opennutritracker/core/data/dbo/intake_dbo.dart';
+import 'package:opennutritracker/core/utils/csv_data_exporter.dart';
+import 'package:opennutritracker/core/data/dbo/intake_type_dbo.dart';
 import 'package:opennutritracker/core/data/dbo/recipe_dbo.dart';
 import 'package:opennutritracker/core/data/repository/config_repository.dart';
 import 'package:opennutritracker/core/data/repository/intake_repository.dart';
@@ -68,11 +70,9 @@ void main() {
       });
       for (final type in [MealSourceEntity.off, MealSourceEntity.fdc]) {
         final public = MealEntity(
-          code: type == MealSourceEntity.off ? '12345678' : 'bls-item',
+          code: type == MealSourceEntity.off ? '12345678' : 'bls,item',
           name: '原始薯片${type.name}',
-          url: type == MealSourceEntity.off
-              ? 'https://world.openfoodfacts.org/product/12345678'
-              : null,
+          url: null,
           backendSource: type == MealSourceEntity.fdc ? 'bls' : null,
           mealQuantity: '60',
           mealUnit: 'g',
@@ -114,6 +114,11 @@ void main() {
           '3',
           asPersonalCopy: true,
         );
+        expect(
+          personal.originalSource,
+          type == MealSourceEntity.off ? 'off' : 'bls',
+        );
+        expect(personal.originalCode, public.code);
         expect(await bloc.saveCustomMeal(personal, original: public), true);
         expect(
           await bloc.saveCustomMeal(personal, original: public),
@@ -164,6 +169,48 @@ void main() {
           MealDBO.fromJson(jsonDecode(jsonEncode(meal.toJson()))).source,
           MealSourceDBO.custom,
         );
+        expect(meal.originalSource, isNotNull);
+        expect(meal.originalCode, meal.code);
+        final encoded =
+            jsonDecode(jsonEncode(meal.toJson())) as Map<String, dynamic>;
+        final restored = MealDBO.fromJson(encoded);
+        expect(restored.originalCode, meal.code);
+        expect(restored.originalSource, meal.originalSource);
+        final record = IntakeDBO(
+          id: 'reference',
+          unit: 'g',
+          amount: 15,
+          type: IntakeTypeDBO.lunch,
+          meal: meal,
+          dateTime: DateTime(2026, 10, 20),
+        );
+        final imported = CsvDataExporter.parseIntakesFromCsv(
+          CsvDataExporter.intakesToCsv([record]),
+        ).single.meal;
+        expect(imported.originalCode, meal.code);
+        expect(imported.originalSource, meal.originalSource);
+        encoded.remove('originalSource');
+        encoded.remove('originalCode');
+        expect(MealDBO.fromJson(encoded).originalSource, isNull);
+        expect(MealDBO.fromJson(encoded).originalCode, isNull);
+        final originalEntity = MealEntity.fromMealDBO(meal);
+        final edited = bloc.createNewMealEntity(
+          originalEntity,
+          '再次编辑',
+          '',
+          '60',
+          '15',
+          '15',
+          'g',
+          '80',
+          '8',
+          '4',
+          '3',
+          barcodeOverride: '87654321',
+        );
+        expect(edited.code, '87654321');
+        expect(edited.originalCode, meal.code);
+        expect(edited.originalSource, meal.originalSource);
         expect(meal.nutritionBasisQuantity, 15);
         expect(meal.nutriments.energyKcal100, closeTo(80 / 15 * 100, 1e-9));
       }

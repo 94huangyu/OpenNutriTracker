@@ -72,6 +72,8 @@ class CsvDataExporter {
     // grams, which the importer scales into app units (#1152).
     'meal_data_version',
     'meal_nutrition_basis_quantity',
+    'meal_original_source',
+    'meal_original_code',
   ];
 
   static const userActivityColumns = <String>[
@@ -157,6 +159,8 @@ class CsvDataExporter {
         _num(n.niacin100),
         _num(meal.dataVersion?.toDouble()),
         _num(meal.nutritionBasisQuantity),
+        _cell(meal.originalSource),
+        _cell(meal.originalCode),
       ];
       buf.writeln(cells.join(','));
     }
@@ -269,8 +273,11 @@ class CsvDataExporter {
             CsvRowParser.parseDoubleOrNull(row['meal_serving_quantity']),
         servingUnit: _nullable(row['meal_serving_unit']),
         servingSize: _nullable(row['meal_serving_size']),
-        nutritionBasisQuantity:
-            CsvRowParser.parseDoubleOrNull(row['meal_nutrition_basis_quantity']),
+        nutritionBasisQuantity: CsvRowParser.parseDoubleOrNull(
+          row['meal_nutrition_basis_quantity'],
+        ),
+        originalSource: _nullable(row['meal_original_source']),
+        originalCode: _nullable(row['meal_original_code']),
         source: _parseMealSource(row['meal_source']),
         nutriments: nutriments,
         dataVersion: CsvRowParser.parseDoubleOrNull(

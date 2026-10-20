@@ -128,7 +128,10 @@ void main() {
       final oldCsv = csv
           .trimRight()
           .split('\n')
-          .map((line) => line.substring(0, line.lastIndexOf(',')))
+          .map((line) {
+            final cells = line.split(',');
+            return cells.take(cells.length - 3).join(',');
+          })
           .join('\n');
       final legacy = CsvDataExporter.parseIntakesFromCsv(oldCsv).single;
       expect(legacy.meal.nutritionBasisQuantity, isNull);
@@ -152,6 +155,8 @@ void main() {
       final box = await Hive.openBox<MealDBO>('legacy_custom_meals');
       final meal = box.get('chips')!;
       expect(meal.nutritionBasisQuantity, isNull);
+      expect(meal.originalSource, isNull);
+      expect(meal.originalCode, isNull);
       expect(meal.mealQuantity, '60');
       expect(meal.servingQuantity, 15);
       expect(meal.nutriments.zinc100, 2);
