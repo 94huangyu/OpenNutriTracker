@@ -1,3 +1,5 @@
+import 'package:opennutritracker/core/data/data_source/personal_food_data_source.dart';
+import 'package:opennutritracker/features/meal_detail/presentation/widgets/personal_food_actions.dart';
 import 'package:flutter/material.dart';
 import 'package:opennutritracker/core/presentation/widgets/intake_card.dart';
 import 'package:opennutritracker/core/presentation/widgets/image_full_screen.dart';
@@ -39,6 +41,10 @@ class _MealDetailScreenState extends State<MealDetailScreen> {
   late MealDetailBloc _mealDetailBloc;
 
   late MealEntity meal;
+  PersonalFoodDataSource? get _personalFoods =>
+      locator.isRegistered<PersonalFoodDataSource>()
+      ? locator<PersonalFoodDataSource>()
+      : null;
   late DateTime _day;
   late IntakeTypeEntity intakeTypeEntity;
 
@@ -118,7 +124,7 @@ class _MealDetailScreenState extends State<MealDetailScreen> {
       final args =
           ModalRoute.of(context)?.settings.arguments
               as MealDetailScreenArguments;
-      meal = args.mealEntity;
+      meal = _personalFoods?.apply(args.mealEntity) ?? args.mealEntity;
       _day = args.day;
       intakeTypeEntity = args.intakeTypeEntity;
       _usesImperialUnits = args.usesImperialUnits;
@@ -212,7 +218,7 @@ class _MealDetailScreenState extends State<MealDetailScreen> {
   /// default now that serving data exists); otherwise just recompute totals
   /// against the fuller nutriments while keeping the user's selection.
   void _onMealHydrated(MealEntity full) {
-    setState(() => meal = full);
+    setState(() => meal = _personalFoods?.apply(full) ?? full);
     if (_userChangedSelection) {
       _mealDetailBloc.add(
         UpdateKcalEvent(
@@ -355,19 +361,25 @@ class _MealDetailScreenState extends State<MealDetailScreen> {
         SliverList(
           delegate: SliverChildListDelegate([
             const SizedBox(height: 16),
-            Center(child: Semantics(
-              identifier: 'meal-detail-photo',
-              child: InkWell(
-                onTap: meal.mainImageUrl?.isNotEmpty == true
-                    ? () => Navigator.of(context).pushNamed(
-                        NavigationOptions.imageFullScreenRoute,
-                        arguments: ImageFullScreenArguments(meal.mainImageUrl!),
-                      )
-                    : null,
-                child: Hero(tag: ImageFullScreen.fullScreenHeroTag,
-                  child: MealThumbnail(meal: meal, size: 88)),
+            Center(
+              child: Semantics(
+                identifier: 'meal-detail-photo',
+                child: InkWell(
+                  onTap: meal.mainImageUrl?.isNotEmpty == true
+                      ? () => Navigator.of(context).pushNamed(
+                          NavigationOptions.imageFullScreenRoute,
+                          arguments: ImageFullScreenArguments(
+                            meal.mainImageUrl!,
+                          ),
+                        )
+                      : null,
+                  child: Hero(
+                    tag: ImageFullScreen.fullScreenHeroTag,
+                    child: MealThumbnail(meal: meal, size: 88),
+                  ),
+                ),
               ),
-            )),
+            ),
             UnsplashCreditLine(imageUrl: meal.mainImageUrl),
             Padding(
               padding: const EdgeInsets.all(16.0),
@@ -434,6 +446,12 @@ class _MealDetailScreenState extends State<MealDetailScreen> {
                       ),
                     ],
                   ),
+                  if (_personalFoods != null)
+                    PersonalFoodActions(
+                      meal: meal,
+                      store: _personalFoods!,
+                      onChanged: (_) => setState(() => meal = _personalFoods!.apply(meal)),
+                    ),
                   const SizedBox(height: Dimens.spacing24),
                   Divider(color: palette.border, height: Dimens.hairline),
                   const SizedBox(height: Dimens.spacing24),
@@ -449,7 +467,13 @@ class _MealDetailScreenState extends State<MealDetailScreen> {
                     servingUnit: meal.servingUnit,
                     showMicronutrients: _showMicronutrients,
                   ),
-                  const SizedBox(height: 32.0),
+                  const SizedBox(height: 16),
+                  const SizedBox(height: 16),
+                  Text(
+                    S.of(context).foodNutritionScopeHint,
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                  const SizedBox(height: 16),
                   MealInfoButton(
                     url: meal.url,
                     source: meal.source,
@@ -507,4 +531,3 @@ class MealDetailScreenArguments {
     this.usesImperialUnits,
   );
 }
-

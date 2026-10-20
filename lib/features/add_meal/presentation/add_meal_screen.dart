@@ -1,3 +1,5 @@
+import 'package:opennutritracker/core/data/data_source/personal_food_data_source.dart';
+import 'package:opennutritracker/features/add_meal/presentation/widgets/personal_food_list.dart';
 import 'package:flutter/material.dart';
 import 'package:opennutritracker/core/presentation/widgets/empty_hint.dart';
 import 'package:opennutritracker/core/presentation/widgets/error_dialog.dart';
@@ -36,6 +38,11 @@ class AddMealScreen extends StatefulWidget {
 class _AddMealScreenState extends State<AddMealScreen> {
   final ValueNotifier<String> _searchStringListener = ValueNotifier('');
 
+  PersonalFoodDataSource? _personalFoods;
+  void _personalChanged() {
+    if (mounted) setState(() {});
+  }
+
   late AddMealType _mealType;
   late DateTime _day;
 
@@ -51,6 +58,10 @@ class _AddMealScreenState extends State<AddMealScreen> {
 
   @override
   void initState() {
+    if (locator.isRegistered<PersonalFoodDataSource>()) {
+      _personalFoods = locator<PersonalFoodDataSource>()
+        ..addListener(_personalChanged);
+    }
     _addMealBloc = locator<AddMealBloc>()..add(InitializeAddMealEvent());
     _productsBloc = locator<ProductsBloc>();
     _foodBloc = locator<FoodBloc>();
@@ -70,6 +81,7 @@ class _AddMealScreenState extends State<AddMealScreen> {
 
   @override
   void dispose() {
+    _personalFoods?.removeListener(_personalChanged);
     _searchStringListener.dispose();
     _addMealBloc.close();
     _productsBloc.close();
@@ -180,6 +192,9 @@ class _AddMealScreenState extends State<AddMealScreen> {
   /// to Recent; a non-empty query searches Products by default, unless the user
   /// has explicitly chosen Food. Keeps the chip selection and the results in sync.
   _SearchSource _resolveSource(String trimmed) {
+    if (_source == _SearchSource.mine || _source == _SearchSource.favorites) {
+      return _source;
+    }
     if (trimmed.isEmpty) return _SearchSource.recent;
     // Typing searches every source at once (All); an explicit Products / Food
     // choice narrows that merged list.
@@ -257,11 +272,14 @@ class _AddMealScreenState extends State<AddMealScreen> {
   Widget _buildSourceChips(BuildContext context, AppPalette palette) {
     Widget chip(_SearchSource source, String label) => Padding(
       padding: const EdgeInsets.only(right: Dimens.spacing8),
-      child: ChoiceChip(
-        label: Text(label),
-        selected: _source == source,
-        showCheckmark: false,
-        onSelected: (_) => _selectSource(source),
+      child: Semantics(
+        identifier: 'search-source-${source.name}',
+        child: ChoiceChip(
+          label: Text(label),
+          selected: _source == source,
+          showCheckmark: false,
+          onSelected: (_) => _selectSource(source),
+        ),
       ),
     );
     return Align(
@@ -271,6 +289,8 @@ class _AddMealScreenState extends State<AddMealScreen> {
         child: Row(
           children: [
             chip(_SearchSource.recent, S.of(context).recentlyAddedLabel),
+            chip(_SearchSource.mine, S.of(context).myFoodLabel),
+            chip(_SearchSource.favorites, S.of(context).foodFavorites),
             chip(_SearchSource.all, S.of(context).allItemsLabel),
             chip(_SearchSource.products, S.of(context).searchProductsPage),
             chip(_SearchSource.food, S.of(context).searchFoodPage),
@@ -307,8 +327,14 @@ class _AddMealScreenState extends State<AddMealScreen> {
         ? foodState
         : null;
     final merged = mergeAndRankMeals(
-      products?.products ?? [],
-      food?.food ?? [],
+      [
+        for (final meal in products?.products ?? <MealEntity>[])
+          _personalFoods?.apply(meal) ?? meal,
+      ],
+      [
+        for (final meal in food?.food ?? <MealEntity>[])
+          _personalFoods?.apply(meal) ?? meal,
+      ],
       query,
     );
     final imperial =
@@ -378,6 +404,14 @@ class _AddMealScreenState extends State<AddMealScreen> {
 
   Widget _buildResults(BuildContext context, AppPalette palette, String query) {
     switch (_source) {
+      case _SearchSource.mine:
+      case _SearchSource.favorites:
+        return PersonalFoodList(
+          day: _day,
+          addMealType: _mealType,
+          query: query,
+          favoritesOnly: _source == _SearchSource.favorites,
+        );
       case _SearchSource.all:
       case _SearchSource.products:
       case _SearchSource.food:
@@ -416,7 +450,9 @@ class _AddMealScreenState extends State<AddMealScreen> {
                   itemBuilder: (context, index) {
                     return MealItemCard(
                       day: _day,
-                      mealEntity: state.recentMeals[index],
+                      mealEntity:
+                          _personalFoods?.apply(state.recentMeals[index]) ??
+                          state.recentMeals[index],
                       addMealType: _mealType,
                       usesImperialUnits: state.usesImperialUnits,
                     );
@@ -496,4 +532,4 @@ class AddMealScreenArguments {
   AddMealScreenArguments(this.mealType, this.day);
 }
 
-enum _SearchSource { recent, all, products, food }
+enum _SearchSource { recent, mine, favorites, all, products, food }

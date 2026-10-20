@@ -1,3 +1,5 @@
+import 'package:opennutritracker/features/add_meal/presentation/widgets/personal_food_list.dart';
+import 'package:opennutritracker/features/add_meal/presentation/add_meal_type.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:opennutritracker/core/domain/usecase/delete_recipe_usecase.dart';
@@ -42,7 +44,7 @@ class _RecipesPageState extends State<RecipesPage>
     WidgetsBinding.instance.addObserver(this);
     _bloc = locator<RecipesBloc>();
     _customMealsBloc = locator<CustomMealsBloc>()..add(LoadCustomMealsEvent());
-    _tabController = TabController(length: 2, vsync: this);
+    _tabController = TabController(length: 3, vsync: this);
     _searchController = TextEditingController();
     _bloc.add(const LoadRecipesEvent());
     _loadConfig();
@@ -125,9 +127,15 @@ class _RecipesPageState extends State<RecipesPage>
           children: [
             TabBar(
               controller: _tabController,
+              isScrollable: true,
+              tabAlignment: TabAlignment.start,
               tabs: [
                 Tab(text: S.of(context).recipesLabel),
                 Tab(text: S.of(context).settingsCustomMealsLabel),
+                Semantics(
+                  identifier: 'library-favorites',
+                  child: Tab(text: S.of(context).foodFavorites),
+                ),
               ],
             ),
             Expanded(
@@ -136,6 +144,11 @@ class _RecipesPageState extends State<RecipesPage>
                 children: [
                   _buildRecipesTab(),
                   CustomMealsTab(usesImperialUnits: _usesImperialUnits),
+                  PersonalFoodList(
+                    day: DateTime.now(),
+                    addMealType: AddMealType.breakfastType,
+                    favoritesOnly: true,
+                  ),
                 ],
               ),
             ),
@@ -151,7 +164,9 @@ class _RecipesPageState extends State<RecipesPage>
   ) async {
     switch (action) {
       case _RecipesAction.newRecipe:
-        await Navigator.of(context).pushNamed(NavigationOptions.recipeBuilderRoute);
+        await Navigator.of(
+          context,
+        ).pushNamed(NavigationOptions.recipeBuilderRoute);
         _bloc.add(const LoadRecipesEvent());
       case _RecipesAction.newCustomMeal:
         await Navigator.of(context).pushNamed(
@@ -166,8 +181,9 @@ class _RecipesPageState extends State<RecipesPage>
         );
         _customMealsBloc.add(LoadCustomMealsEvent());
       case _RecipesAction.importRecipe:
-        await Navigator.of(context)
-            .pushNamed(NavigationOptions.importRecipeScannerRoute);
+        await Navigator.of(
+          context,
+        ).pushNamed(NavigationOptions.importRecipeScannerRoute);
         _bloc.add(const LoadRecipesEvent());
     }
   }
@@ -219,7 +235,11 @@ class _RecipesPageState extends State<RecipesPage>
             children: [
               Padding(
                 padding: const EdgeInsets.fromLTRB(
-                    Dimens.spacing16, Dimens.spacing12, Dimens.spacing16, Dimens.spacing4),
+                  Dimens.spacing16,
+                  Dimens.spacing12,
+                  Dimens.spacing16,
+                  Dimens.spacing4,
+                ),
                 child: TextField(
                   controller: _searchController,
                   onChanged: (v) => setState(() => _searchQuery = v),
@@ -228,10 +248,16 @@ class _RecipesPageState extends State<RecipesPage>
                     filled: true,
                     fillColor: palette.surfaceMuted,
                     hintText: S.of(context).searchLabel,
-                    prefixIcon: Icon(Icons.search_rounded, color: palette.textMuted),
+                    prefixIcon: Icon(
+                      Icons.search_rounded,
+                      color: palette.textMuted,
+                    ),
                     suffixIcon: _searchQuery.isNotEmpty
                         ? IconButton(
-                            icon: Icon(Icons.clear_rounded, color: palette.textMuted),
+                            icon: Icon(
+                              Icons.clear_rounded,
+                              color: palette.textMuted,
+                            ),
                             onPressed: () {
                               _searchController.clear();
                               setState(() => _searchQuery = '');
@@ -254,10 +280,14 @@ class _RecipesPageState extends State<RecipesPage>
                   height: 44,
                   child: ListView(
                     scrollDirection: Axis.horizontal,
-                    padding: const EdgeInsets.symmetric(horizontal: Dimens.spacing12),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: Dimens.spacing12,
+                    ),
                     children: [
                       Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: Dimens.spacing4),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: Dimens.spacing4,
+                        ),
                         child: ChoiceChip(
                           label: Text(S.of(context).recipesFilterAllLabel),
                           selected: _activeTag == null,
@@ -267,7 +297,9 @@ class _RecipesPageState extends State<RecipesPage>
                       ),
                       for (final tag in allTags)
                         Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: Dimens.spacing4),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: Dimens.spacing4,
+                          ),
                           child: ChoiceChip(
                             label: Text(tag),
                             selected: _activeTag == tag,
@@ -298,13 +330,15 @@ class _RecipesPageState extends State<RecipesPage>
                           if (_selectionMode) _buildSelectionBar(context),
                           Expanded(
                             child: ListView.builder(
-                              padding:
-                                  const EdgeInsets.symmetric(vertical: Dimens.spacing8),
+                              padding: const EdgeInsets.symmetric(
+                                vertical: Dimens.spacing8,
+                              ),
                               itemCount: filtered.length,
                               itemBuilder: (context, index) {
                                 final recipe = filtered[index];
-                                final isSelected =
-                                    _selectedIds.contains(recipe.id);
+                                final isSelected = _selectedIds.contains(
+                                  recipe.id,
+                                );
                                 return RecipeListItem(
                                   recipe: recipe,
                                   isSelected: isSelected,
@@ -322,7 +356,8 @@ class _RecipesPageState extends State<RecipesPage>
                                     await Navigator.of(context).pushNamed(
                                       NavigationOptions.recipeDetailRoute,
                                       arguments: RecipeDetailArguments(
-                                          recipeId: recipe.id),
+                                        recipeId: recipe.id,
+                                      ),
                                     );
                                     if (mounted) {
                                       _bloc.add(const LoadRecipesEvent());
@@ -350,8 +385,16 @@ class _RecipesPageState extends State<RecipesPage>
     final s = S.of(context);
     final accent = Theme.of(context).colorScheme.primary;
     return Container(
-      margin: const EdgeInsets.fromLTRB(Dimens.spacing16, Dimens.spacing4, Dimens.spacing16, Dimens.spacing4),
-      padding: const EdgeInsets.symmetric(horizontal: Dimens.spacing8, vertical: Dimens.spacing4),
+      margin: const EdgeInsets.fromLTRB(
+        Dimens.spacing16,
+        Dimens.spacing4,
+        Dimens.spacing16,
+        Dimens.spacing4,
+      ),
+      padding: const EdgeInsets.symmetric(
+        horizontal: Dimens.spacing8,
+        vertical: Dimens.spacing4,
+      ),
       decoration: BoxDecoration(
         color: accent.withValues(alpha: 0.12),
         borderRadius: Dimens.borderRadiusM,
@@ -435,13 +478,17 @@ class _RecipesPageState extends State<RecipesPage>
             const SizedBox(height: Dimens.spacing24),
             Text(
               S.of(context).recipesEmptyLabel,
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
+              style: Theme.of(
+                context,
+              ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: Dimens.spacing8),
             Text(
               S.of(context).recipesEmptyHint,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: palette.textMuted),
+              style: Theme.of(
+                context,
+              ).textTheme.bodyMedium?.copyWith(color: palette.textMuted),
               textAlign: TextAlign.center,
             ),
           ],

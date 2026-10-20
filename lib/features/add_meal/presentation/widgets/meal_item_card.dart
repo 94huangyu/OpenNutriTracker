@@ -18,6 +18,7 @@ import 'package:opennutritracker/features/meal_detail/meal_detail_screen.dart';
 import 'package:opennutritracker/generated/l10n.dart';
 
 class MealItemCard extends StatelessWidget {
+  final VoidCallback? onReturn;
   final DateTime day;
   final AddMealType addMealType;
   final MealEntity mealEntity;
@@ -25,6 +26,7 @@ class MealItemCard extends StatelessWidget {
 
   const MealItemCard({
     super.key,
+    this.onReturn,
     required this.day,
     required this.mealEntity,
     required this.addMealType,
@@ -172,8 +174,15 @@ class MealItemCard extends StatelessWidget {
     );
   }
 
-  Widget _buildSubtitle(BuildContext context, AppPalette palette, Color accent, bool isRecipe) {
-    if (isRecipe) {
+  Widget _buildSubtitle(
+    BuildContext context,
+    AppPalette palette,
+    Color accent,
+    bool isRecipe,
+  ) {
+    if (isRecipe &&
+        !mealEntity.isFavorite &&
+        !mealEntity.isPersonallyReviewed) {
       return _labelChip(
         context,
         S.of(context).additionalInfoLabelRecipe,
@@ -202,6 +211,19 @@ class MealItemCard extends StatelessWidget {
       crossAxisAlignment: WrapCrossAlignment.center,
       children: [
         ?chip,
+        if (mealEntity.isFavorite)
+          Icon(
+            Icons.star_rounded,
+            size: 18,
+            semanticLabel: S.of(context).foodFavorites,
+          ),
+        if (mealEntity.isPersonallyReviewed)
+          _labelChip(
+            context,
+            S.of(context).foodPersonallyReviewed,
+            background: accent.withValues(alpha: 0.12),
+            foreground: accent,
+          ),
         if (package != null && package.isFinite && package > 0)
           Text(
             '${S.of(context).mealSizeLabel} ${_number(package)} '
@@ -228,12 +250,16 @@ class MealItemCard extends StatelessWidget {
     if (mealEntity.source == MealSourceEntity.custom) {
       return S.of(context).myFoodLabel;
     }
+    if (mealEntity.source == MealSourceEntity.recipe) {
+      return S.of(context).additionalInfoLabelRecipe;
+    }
     final backendLabel = SPConst.foodSourceShortNames[mealEntity.backendSource];
     if (backendLabel != null) return backendLabel;
     if (mealEntity.source == MealSourceEntity.off) {
       return OFFConst.offSourceName;
     }
-    return null;
+    if (mealEntity.source == MealSourceEntity.fdc) return S.of(context).additionalInfoLabelFDC;
+    return S.of(context).additionalInfoLabelUnknown;
   }
 
   Widget _labelChip(
@@ -243,7 +269,10 @@ class MealItemCard extends StatelessWidget {
     required Color foreground,
   }) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: Dimens.spacing8, vertical: Dimens.spacing4),
+      padding: const EdgeInsets.symmetric(
+        horizontal: Dimens.spacing8,
+        vertical: Dimens.spacing4,
+      ),
       decoration: BoxDecoration(
         color: background,
         borderRadius: Dimens.borderRadiusS,
@@ -259,14 +288,16 @@ class MealItemCard extends StatelessWidget {
   }
 
   void _onItemPressed(BuildContext context) {
-    Navigator.of(context).pushNamed(
-      NavigationOptions.mealDetailRoute,
-      arguments: MealDetailScreenArguments(
-        mealEntity,
-        addMealType.getIntakeType(),
-        day,
-        usesImperialUnits,
-      ),
-    );
+    Navigator.of(context)
+        .pushNamed(
+          NavigationOptions.mealDetailRoute,
+          arguments: MealDetailScreenArguments(
+            mealEntity,
+            addMealType.getIntakeType(),
+            day,
+            usesImperialUnits,
+          ),
+        )
+        .then((_) => onReturn?.call());
   }
 }
