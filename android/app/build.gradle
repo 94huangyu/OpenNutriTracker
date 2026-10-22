@@ -1,5 +1,6 @@
 import java.io.FileInputStream
 import java.util.Properties
+import groovy.json.JsonSlurper
 
 plugins {
     id "com.android.application"
@@ -20,6 +21,11 @@ def keystorePropertiesFile = rootProject.file('key.properties')
 if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 }
+
+// Signing secrets stay outside the repository and are supplied by file path.
+def shijiSigningPath = System.getenv('SHIJI_SIGNING_CONFIG')
+def shijiSigning = shijiSigningPath ? new JsonSlurper().parse(file(shijiSigningPath)) : null
+def shijiPassword = shijiSigning ? file(shijiSigning.passwordFile).getText('UTF-8').trim() : null
 
 def flutterVersionCode = localProperties.getProperty('flutter.versionCode')
 if (flutterVersionCode == null) {
@@ -84,6 +90,15 @@ android {
             storeFile keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null
             storePassword keystoreProperties['storePassword']
         }
+        shijiRelease {
+            if (shijiSigning) {
+                keyAlias shijiSigning.alias
+                keyPassword shijiPassword
+                storeFile file(shijiSigning.keystore)
+                storePassword shijiPassword
+                storeType 'PKCS12'
+            }
+        }
     }
 
     flavorDimensions "version"
@@ -93,14 +108,28 @@ android {
             dimension "version"
             applicationIdSuffix ".develop"
             versionNameSuffix "-develop"
+            signingConfig signingConfigs.release
+        }
+        // Device probes use their own UID/storage; never restore into a user's app.
+        validation {
+            dimension "version"
+            applicationIdSuffix ".validation"
+            versionNameSuffix "-validation"
+            signingConfig signingConfigs.release
+        }
+        shiji {
+            dimension "version"
+            applicationId "com.huangyu.shiji"
+            signingConfig signingConfigs.shijiRelease
         }
         full {
             dimension "version"
+            signingConfig signingConfigs.release
         }
     }
     buildTypes {
         release {
-            signingConfig signingConfigs.release
+            // Each flavor keeps its own signing identity.
         }
     }
 

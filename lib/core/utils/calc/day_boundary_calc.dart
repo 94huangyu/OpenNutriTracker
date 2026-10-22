@@ -65,7 +65,10 @@ class DayBoundaryCalc {
   ///
   /// Out-of-range values (negative, or ≥ 24 h) are treated as 0 — the
   /// same defensive behaviour as the hours-only overload.
-  static DateTime logicalDayOfMinutes(DateTime moment, int? offsetTotalMinutes) {
+  static DateTime logicalDayOfMinutes(
+    DateTime moment,
+    int? offsetTotalMinutes,
+  ) {
     return _logicalDayOfTotalMinutes(
       moment,
       _sanitiseTotalMinutes(offsetTotalMinutes),
@@ -109,12 +112,20 @@ class DayBoundaryCalc {
     // Some stored entries are themselves labels rather than clock
     // readings, and must be compared as-is: rolling them back would file
     // them a day early. See [_isDayLabel] for who writes them.
-    final momentDay = _isDayLabel(moment)
-        ? moment
-        : logicalDayOfMinutes(moment, offsetTotalMinutes);
+    final momentDay = storedMomentDayLabel(moment, offsetTotalMinutes);
     return momentDay.year == dayLabel.year &&
         momentDay.month == dayLabel.month &&
         momentDay.day == dayLabel.day;
+  }
+
+  /// Resolves stored timestamps while preserving the app's midnight day labels.
+  static DateTime storedMomentDayLabel(
+    DateTime moment,
+    int? offsetTotalMinutes,
+  ) {
+    return _isDayLabel(moment)
+        ? DateTime(moment.year, moment.month, moment.day)
+        : logicalDayOfMinutes(moment, offsetTotalMinutes);
   }
 
   /// True when [a] and [b] resolve to the same logical day under

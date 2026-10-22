@@ -88,3 +88,9 @@ output/flutter/
 
 # Kotlin project-local session cache.
 android/.kotlin/
+
+# Android private signing assets must never enter source archives.
+*.jks
+*.keystore
+*.p12
+/android/key.properties

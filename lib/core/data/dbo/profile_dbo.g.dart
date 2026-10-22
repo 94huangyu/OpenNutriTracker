@@ -51,3 +51,24 @@ class ProfileDBOAdapter extends TypeAdapter<ProfileDBO> {
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }
+
+// **************************************************************************
+// JsonSerializableGenerator
+// **************************************************************************
+
+ProfileDBO _$ProfileDBOFromJson(Map<String, dynamic> json) => ProfileDBO(
+  id: json['id'] as String,
+  name: json['name'] as String,
+  createdAt: DateTime.parse(json['createdAt'] as String),
+  boxSuffix: json['boxSuffix'] as String,
+  imagePath: json['imagePath'] as String?,
+);
+
+Map<String, dynamic> _$ProfileDBOToJson(ProfileDBO instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'name': instance.name,
+      'imagePath': instance.imagePath,
+      'createdAt': instance.createdAt.toIso8601String(),
+      'boxSuffix': instance.boxSuffix,
+    };

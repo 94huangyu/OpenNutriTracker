@@ -293,6 +293,13 @@ class ConfigDataSource {
     );
   }
 
+  Future<void> setConfigDayStartOffset(int hours, int minutes) async {
+    await _update((c) {
+      c.dayStartOffsetHours = hours;
+      c.dayStartOffsetMinutes = minutes;
+    });
+  }
+
   Future<void> setConfigDayStartOffsetHours(int hours) async {
     await _update((c) => c.dayStartOffsetHours = hours);
   }

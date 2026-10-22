@@ -2,6 +2,7 @@ import 'dart:io' show Platform;
 import 'package:package_info_plus/package_info_plus.dart';
 
 class AppConst {
+  static const appName = "食迹";
   static const userAgentAppName = "OpenNutriTracker";
   static const platformNameAndroid = "Android";
   static const platformNameIOS = "iOS";

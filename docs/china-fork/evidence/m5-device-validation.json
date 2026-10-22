@@ -1,0 +1,192 @@
+{
+  "dateBeijing": "2026-10-21",
+  "baselineCommit": "bbb3922517be761c324b6982c5c32b26baec7ade",
+  "appLibTree": "4eb1b265fc0d02b2dbefa386c046e91ac7025026",
+  "appRuntimeSourceChanged": false,
+  "apk": {
+    "path": "output/flutter/m4/m4-backup-settings-r2-v2.4.0-66-develop-arm64-debug.apk",
+    "sha256": "cd966fe177bfd882e46ea05b919c9f4f551f914191e54caa9d904a785bfd2492",
+    "version": "2.4.0-develop/66",
+    "mode": "debug",
+    "installedOnVerifiedExistingDevice": true
+  },
+  "device": {
+    "model": "vivo X300 / V2509A",
+    "android": "16",
+    "sdk": 36,
+    "scope": "single previously authorized device"
+  },
+  "deviceChecks": {
+    "installedM4R2HashVerified": true,
+    "sameSignatureAndPermissionsAsM3": true,
+    "privateProtectionBackupPreserved": true,
+    "systemExportCancel": true,
+    "systemExportReadbackAndManifestCrcValid": true,
+    "systemPickCancel": true,
+    "previewCancel": true,
+    "noRestoreCommittedOnRealData": true,
+    "protectedFilesUnchanged": 7,
+    "allExportedLogicalDataAndAttachmentsUnchanged": true,
+    "draftNotSaved": true,
+    "cameraDeniedRetryAndGrantedRetry": true,
+    "cameraActiveClientAfterGrantedRetry": true,
+    "cameraPermissionAndFlagsRestoredExactly": true,
+    "photoPickerCancelledWithoutPhotoOrDraftLoss": true,
+    "fontScaleRestored": "1.0",
+    "themeSystemAndKcalRestored": true,
+    "accessibilityServicesUnchanged": true,
+    "stayAwakeRestored": "0",
+    "ownPublicExportCopiesRemovedAfterPrivateCopyValidation": true,
+    "appStopped": true,
+    "ownAdb15040Stopped": true,
+    "sharedAdbUntouched": true,
+    "trustUntouched": true,
+    "finalProcessFatalUnhandledOverflowOrStatusErrors": [],
+    "cameraDisconnectedAfterScannerReturnInOriginalRun": true,
+    "cameraEventConnectThenDisconnectForSamePid": true,
+    "noActiveCameraClientForAppAfterRestart": true,
+    "noActiveCameraClientForAppWhileStopped": true,
+    "appStoppedAgain": true,
+    "independentAdb15040StoppedAgain": true,
+    "reasonForSystemPrivacyIndicatorNotAssumed": true
+  },
+  "logicalExportComparison": {
+    "allExportedDataAndAttachmentsUnchanged": true,
+    "manifestTimestampExcluded": true,
+    "beforeAndAfterArchiveCrcValid": true
+  },
+  "benchmarks": [
+    {
+      "intakes": 1000,
+      "syntheticAttachmentBytes": 8388608,
+      "zipBytes": 8410110,
+      "expandedBytes": 9497479,
+      "exportMs": 421,
+      "previewMs": 1169,
+      "restoreMs": 216,
+      "workerRssBeforeBytes": 376700928,
+      "workerRssAfterBytes": 439336960,
+      "workerLifetimePeakRssBytes": 473694208,
+      "restoredIntakes": 1000,
+      "repeatAdded": 0,
+      "photoBytesMatch": true,
+      "platform": "macos",
+      "scope": "Flutter test worker; not device or release performance"
+    },
+    {
+      "intakes": 5000,
+      "syntheticAttachmentBytes": 8388608,
+      "zipBytes": 8470951,
+      "expandedBytes": 13905478,
+      "exportMs": 1191,
+      "previewMs": 5296,
+      "restoreMs": 921,
+      "workerRssBeforeBytes": 363528192,
+      "workerRssAfterBytes": 564592640,
+      "workerLifetimePeakRssBytes": 595755008,
+      "restoredIntakes": 5000,
+      "repeatAdded": 0,
+      "photoBytesMatch": true,
+      "platform": "macos",
+      "scope": "Flutter test worker; not device or release performance"
+    }
+  ],
+  "benchmarkScript": {
+    "path": "tools/benchmarks/full_backup_benchmark_test.dart",
+    "sha256": "dc939624eb69a4c0a40da2fc48f85d118c3e01eb109eb77cb07ebd60549e8543"
+  },
+  "validation": {
+    "newBenchmarkCasesPassed": 2,
+    "newBenchmarkFailed": 0,
+    "newBenchmarkSkipped": 0,
+    "newBenchmarkElapsedMs": 24055,
+    "analyzeDiagnostics": 0,
+    "analyzeLog": ".tools/logs/m5-analyze-final.log",
+    "full2710SuiteRerun": false,
+    "previousM4ResultsNotCountedAsNew": true
+  },
+  "reviewedAppCaptures": [
+    {
+      "path": ".tools/device/m5/01-m4-launch.png",
+      "sha256": "5b45ae76390190ebde5b5636b171a470fcd887117675eb81b9d64c9112a454af"
+    },
+    {
+      "path": ".tools/device/m5/02-m4-my.png",
+      "sha256": "cb143a2c5b0366c40e46f0f2351d2273d216296a9a72a4b512ac7b7a0293e710"
+    },
+    {
+      "path": ".tools/device/m5/04-export-success.png",
+      "sha256": "1cd45275b2a987c16622a4d2599c27619553fc0bc25c597e0718780e6c965f03"
+    },
+    {
+      "path": ".tools/device/m5/06-preview-top.png",
+      "sha256": "ae75c2d3df536d2e9cfafece8db0e45788f415b60b0919a46e882298b5dc4422"
+    },
+    {
+      "path": ".tools/device/m5/07-preview-bottom.png",
+      "sha256": "18d029e8a2eabfb3e7abec90dc6a35c42c8018bc15d85cbeff1c3646fa75fe87"
+    },
+    {
+      "path": ".tools/device/m5/08-trends-normal.png",
+      "sha256": "891c996a5129e2ad587c78e246cea4c8a192dc40ebb30c0a0a551d2c90b4bb05"
+    },
+    {
+      "path": ".tools/device/m5/09-trends-large.png",
+      "sha256": "795cd7ac9dfde4742eaef86e5541d7c156882e3a257852923eaa05f3ee844e9d"
+    },
+    {
+      "path": ".tools/device/m5/10-my-large-dark.png",
+      "sha256": "2d30a12f9a2d3e3f33819435940920c403dbd9fadf0c96e4e7a1b7c43167c1e7"
+    },
+    {
+      "path": ".tools/device/m5/11-backup-large-dark.png",
+      "sha256": "8acf0eead76aef43113f7d0d8e88a0773b21f2099ed5f0fbcd29dc1b2ee0f561"
+    },
+    {
+      "path": ".tools/device/m5/12-diary-large-dark.png",
+      "sha256": "7107ebf6f43825bcc819f56b44b82fe87d58b072cb062e9e1f57740652843f00"
+    },
+    {
+      "path": ".tools/device/m5/13-library-large-dark.png",
+      "sha256": "e8efc4327a89af5210518bf3b66bf2127aaa2f684fee15f7521617a9962cc968"
+    },
+    {
+      "path": ".tools/device/m5/14-camera-denied.png",
+      "sha256": "e2ff8f85c897e76d95a57715522fa7b9f8bf21aa9fd7fb46c02df6b92ae380bc"
+    },
+    {
+      "path": ".tools/device/m5/15-draft-preserved.png",
+      "sha256": "e69530863cd099513b3bc752b17a1fe82f446fd8c2e68598e46f0946c6f56376"
+    },
+    {
+      "path": ".tools/device/m5/17-final-app-home.png",
+      "sha256": "49a0c647e92f6d3916b54543acf30a186ea61202cc5c1ae7c112ed44b92b8236"
+    }
+  ],
+  "excludedCapture": "16-final-home.png was a launcher screen despite filename; excluded from product evidence",
+  "limitations": [
+    "no real diary restore or device failure injection",
+    "no physical barcode decoding matrix this round",
+    "no actual photo selection/rendering this round; picker cancel only",
+    "no full TalkBack interaction or voice assessment",
+    "no Android release startup/frame or memory measurements",
+    "synthetic benchmark only 8 MiB opaque attachment and up to 5000 intakes; not 64 MiB limit",
+    "no multi-device or iOS build/runtime validation",
+    "release key and package identity undecided; name/icon explicitly deferred",
+    "no live network egress proof or configured Supabase account query"
+  ],
+  "releasePreparation": {
+    "xcodeVersion": "27.1 (27A9275)",
+    "iosPodsPresent": false,
+    "iosPodfileLockPresent": true,
+    "androidKeyPropertiesPresent": false,
+    "androidDeclaredHealthPermissionsRetained": true,
+    "iosHealthEntitlementRetained": true,
+    "mainDartInitializesSentry": false,
+    "runtimeNetworkTrafficAuditPerformed": false,
+    "nameIconDecision": "User explicitly deferred; keep temporary name and current icon"
+  },
+  "externalUpload": false,
+  "mergeOrRelease": false,
+  "privateFilesIncludedInEvidence": false
+}

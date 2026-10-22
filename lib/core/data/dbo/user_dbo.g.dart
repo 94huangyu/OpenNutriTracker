@@ -66,3 +66,61 @@ class UserDBOAdapter extends TypeAdapter<UserDBO> {
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }
+
+// **************************************************************************
+// JsonSerializableGenerator
+// **************************************************************************
+
+UserDBO _$UserDBOFromJson(Map<String, dynamic> json) => UserDBO(
+  birthday: DateTime.parse(json['birthday'] as String),
+  heightCM: (json['heightCM'] as num).toDouble(),
+  weightKG: (json['weightKG'] as num).toDouble(),
+  gender: $enumDecode(_$UserGenderDBOEnumMap, json['gender']),
+  goal: $enumDecode(_$UserWeightGoalDBOEnumMap, json['goal']),
+  pal: $enumDecode(_$UserPALDBOEnumMap, json['pal']),
+  weeklyWeightGoalKg: (json['weeklyWeightGoalKg'] as num?)?.toDouble(),
+  caloriesProfile: $enumDecodeNullable(
+    _$CaloriesProfileDBOEnumMap,
+    json['caloriesProfile'],
+  ),
+  targetWeightKg: (json['targetWeightKg'] as num?)?.toDouble(),
+  caloriesTaperEnabled: json['caloriesTaperEnabled'] as bool? ?? false,
+);
+
+Map<String, dynamic> _$UserDBOToJson(UserDBO instance) => <String, dynamic>{
+  'birthday': instance.birthday.toIso8601String(),
+  'heightCM': instance.heightCM,
+  'weightKG': instance.weightKG,
+  'gender': _$UserGenderDBOEnumMap[instance.gender]!,
+  'goal': _$UserWeightGoalDBOEnumMap[instance.goal]!,
+  'pal': _$UserPALDBOEnumMap[instance.pal]!,
+  'weeklyWeightGoalKg': instance.weeklyWeightGoalKg,
+  'caloriesProfile': _$CaloriesProfileDBOEnumMap[instance.caloriesProfile],
+  'targetWeightKg': instance.targetWeightKg,
+  'caloriesTaperEnabled': instance.caloriesTaperEnabled,
+};
+
+const _$UserGenderDBOEnumMap = {
+  UserGenderDBO.male: 'male',
+  UserGenderDBO.female: 'female',
+  UserGenderDBO.nonBinary: 'nonBinary',
+};
+
+const _$UserWeightGoalDBOEnumMap = {
+  UserWeightGoalDBO.loseWeight: 'loseWeight',
+  UserWeightGoalDBO.maintainWeight: 'maintainWeight',
+  UserWeightGoalDBO.gainWeight: 'gainWeight',
+};
+
+const _$UserPALDBOEnumMap = {
+  UserPALDBO.sedentary: 'sedentary',
+  UserPALDBO.lowActive: 'lowActive',
+  UserPALDBO.active: 'active',
+  UserPALDBO.veryActive: 'veryActive',
+};
+
+const _$CaloriesProfileDBOEnumMap = {
+  CaloriesProfileDBO.averaged: 'averaged',
+  CaloriesProfileDBO.estrogenTypical: 'estrogenTypical',
+  CaloriesProfileDBO.testosteroneTypical: 'testosteroneTypical',
+};

@@ -1,15 +1,10 @@
 import 'dart:async';
+import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:opennutritracker/core/utils/navigation_options.dart';
 
-/// First screen shown on launch: the OpenNutriTracker logo with the spoon
-/// making a single accelerating-then-settling spin, then opening the diary.
-///
-/// The native launch screen (Android `launch_background`, iOS
-/// `LaunchScreen.storyboard`) paints the same canvas colour behind the Flutter
-/// engine while it boots, so the hand-off into this animated splash is seamless.
+/// Original C artwork with two brief record-dot pulses, then the diary.
 class SplashScreen extends StatefulWidget {
   /// Legacy call-site compatibility; a body profile no longer gates entry.
   final bool userInitialized;
@@ -22,47 +17,36 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen>
     with SingleTickerProviderStateMixin {
-  static const _logoSize = 168.0;
-  static const _startDelay = Duration(milliseconds: 350);
-  static const _spinDuration = Duration(milliseconds: 1700);
-
   late final AnimationController _controller;
-  late final Animation<double> _spin;
   Timer? _startTimer;
   bool _navigated = false;
 
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(vsync: this, duration: _spinDuration);
+    _controller =
+        AnimationController(
+          vsync: this,
+          duration: const Duration(milliseconds: 800),
+        )..addStatusListener((status) {
+          if (status == AnimationStatus.completed) _goNext();
+        });
 
-    // Accelerate in, then decelerate to a stop — mirrors the design mock's
-    // cubic-bezier easing (0.45, 0, 0.12, 1). A single full turn (turns: 0 → 1)
-    // leaves the spoon back in its original upright position.
-    _spin = Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(
-        parent: _controller, curve: const Cubic(0.45, 0.0, 0.12, 1.0)));
-
-    _controller.addStatusListener((status) {
-      if (status == AnimationStatus.completed) _goNext();
-    });
-
-    // Honour the OS "reduce motion" setting: skip the spin and move on.
-    final reduceMotion = WidgetsBinding.instance.platformDispatcher
-        .accessibilityFeatures.disableAnimations;
+    final reduceMotion = WidgetsBinding
+        .instance
+        .platformDispatcher
+        .accessibilityFeatures
+        .disableAnimations;
     if (reduceMotion) {
       _startTimer = Timer(const Duration(milliseconds: 600), _goNext);
     } else {
-      // A short beat on the upright logo before the spin begins.
-      _startTimer = Timer(_startDelay, () {
-        if (mounted) _controller.forward();
-      });
+      _controller.forward();
     }
   }
 
   void _goNext() {
     if (_navigated || !mounted) return;
     _navigated = true;
-    // The recording fork opens without collecting a body profile.
     Navigator.of(context).pushReplacementNamed(NavigationOptions.mainRoute);
   }
 
@@ -75,33 +59,69 @@ class _SplashScreenState extends State<SplashScreen>
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    // The spoon follows the theme, matching the app's own white/dark logo
-    // variants: black on the light canvas, white on the dark canvas.
-    final spoonColor = isDark ? Colors.white : Colors.black;
-
+    // Android's launch resources follow the system theme, before app preferences.
+    final isDark = MediaQuery.platformBrightnessOf(context) == Brightness.dark;
     return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      backgroundColor: isDark
+          ? const Color(0xFF131C18)
+          : const Color(0xFFFDF1DA),
       body: Center(
-        child: SizedBox(
-          width: _logoSize,
-          height: _logoSize,
-          child: Stack(
-            alignment: Alignment.center,
-            children: [
-              SvgPicture.asset('assets/icon/ont_splash_rings.svg',
-                  width: _logoSize, height: _logoSize),
-              RotationTransition(
-                turns: _spin,
-                child: SvgPicture.asset('assets/icon/ont_splash_spoon.svg',
-                    width: _logoSize,
-                    height: _logoSize,
-                    theme: SvgTheme(currentColor: spoonColor)),
-              ),
-            ],
-          ),
+        child: CustomPaint(
+          size: const Size.square(168),
+          painter: _ShijiSplashPainter(_controller),
         ),
       ),
     );
   }
+}
+
+class _ShijiSplashPainter extends CustomPainter {
+  _ShijiSplashPainter(this.animation) : super(repaint: animation);
+
+  final Animation<double> animation;
+
+  double _pulse(double start) {
+    final t = ((animation.value * 800 - start) / 300).clamp(0.0, 1.0);
+    return 1 + 0.18 * math.pow(math.sin(math.pi * t), 2);
+  }
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    canvas.save();
+    canvas.scale(size.width / 440, size.height / 440);
+    final paint = Paint()..color = const Color(0xFF336A73);
+    canvas.drawOval(
+      Rect.fromCenter(
+        center: const Offset(219.6105, 225.1673),
+        width: 340.6512,
+        height: 341.2182,
+      ),
+      paint,
+    );
+    canvas.drawOval(
+      Rect.fromCenter(
+        center: const Offset(219.9998, 225.5270),
+        width: 243.4604,
+        height: 244.4672,
+      ),
+      paint..color = const Color(0xFFFDF5E7),
+    );
+    paint.color = const Color(0xFF336A73);
+    canvas.drawRRect(
+      RRect.fromLTRBR(149, 187, 256, 215, const Radius.circular(14)),
+      paint,
+    );
+    canvas.drawRRect(
+      RRect.fromLTRBR(149, 246, 226, 273, const Radius.circular(13.5)),
+      paint,
+    );
+    paint.color = const Color(0xFFC48639);
+    canvas.drawCircle(const Offset(285, 201), 14.2 * _pulse(0), paint);
+    canvas.drawCircle(const Offset(255.5, 259), 14.2 * _pulse(350), paint);
+    canvas.restore();
+  }
+
+  @override
+  bool shouldRepaint(_ShijiSplashPainter oldDelegate) =>
+      animation != oldDelegate.animation;
 }

@@ -1,0 +1,192 @@
+{
+  "phase": "M4",
+  "date": "2026-10-21",
+  "status": "local_implementation_and_isolated_acceptance_passed",
+  "user_device_restore_verified": false,
+  "branch": "feature/m4-backup-settings",
+  "baseline": "97303dfffa8593a541ee65becc08b1281d6c3a24",
+  "business_commit": "b79df80cfe6166bf7ce038b9329afd453881ceb9",
+  "business_tree": "a83ec24a20c62fbf4c13f3cf8c69416401488b75",
+  "lib_tree": "4eb1b265fc0d02b2dbefa386c046e91ac7025026",
+  "android_tree": "ef197143560c47bcbe645e75a8aa33f419edb485",
+  "test_style_only_commit": "d4dc2501050d3f016a5fc08e24fb0520e27f81d2",
+  "full_tests": {
+    "business_source": "b79df80cfe6166bf7ce038b9329afd453881ceb9",
+    "lib_tree": "4eb1b265fc0d02b2dbefa386c046e91ac7025026",
+    "done": {
+      "success": true,
+      "type": "done",
+      "time": 75741
+    },
+    "success": 2710,
+    "failed": 0,
+    "skipped": 0
+  },
+  "ui_subset": {
+    "business_source": "b79df80cfe6166bf7ce038b9329afd453881ceb9",
+    "lib_tree": "4eb1b265fc0d02b2dbefa386c046e91ac7025026",
+    "done": {
+      "success": true,
+      "type": "done",
+      "time": 11000
+    },
+    "success": 24,
+    "failed": 0,
+    "skipped": 0
+  },
+  "analysis_diagnostics": 0,
+  "build_seconds": 34.5,
+  "apk": {
+    "path": "output/flutter/m4/m4-backup-settings-r2-v2.4.0-66-develop-arm64-debug.apk",
+    "bytes": 137591756,
+    "sha256": "cd966fe177bfd882e46ea05b919c9f4f551f914191e54caa9d904a785bfd2492",
+    "package": "com.opennutritracker.ont.opennutritracker.develop",
+    "version_name": "2.4.0-develop",
+    "version_code": 66,
+    "min_sdk": 26,
+    "target_sdk": 36,
+    "certificate_sha256": "8b5adf8691201ac71c7fc4037f5121e639b0e8f84269902cb52d5bb1eb4e61e0",
+    "kernel_sha256": "ad916ba84bcca168b604dbd9c0b0b9e8f279ca4307f4ae0de5191f43e1ac7d90",
+    "kernel_matches_build_bytes": true,
+    "permissions_equal_m3_r7": true,
+    "installed_on_device": false
+  },
+  "backup_format": {
+    "id": "ont-full-backup",
+    "version": 1,
+    "shared_datasets": 6,
+    "datasets_per_profile": 8,
+    "plaintext_export": true,
+    "privacy_consent_preserved_on_receiver": true,
+    "compressed_limit_bytes": 33554432,
+    "expanded_limit_bytes": 67108864,
+    "member_limit": 10000,
+    "os_permissions_credentials_and_public_caches_excluded": true
+  },
+  "screenshots": [
+    {
+      "path": "output/flutter/m4-r2-self-review/m4-backup-conflicts-320.0-1.6-false-en.png",
+      "sha256": "9431b5c953a269482ffd53badc14738356533a225ea2521eed9d5b60b819c2a8"
+    },
+    {
+      "path": "output/flutter/m4-r2-self-review/m4-backup-conflicts-320.0-1.6-false-zh.png",
+      "sha256": "ab3e0838658b633c68ad2d35d82d873794f6938610571aadf9de205fadcda459"
+    },
+    {
+      "path": "output/flutter/m4-r2-self-review/m4-backup-conflicts-390.0-2.0-true-zh.png",
+      "sha256": "b723417574f990fc3bfc3b092c0f26ffc8cc9eefeb17c7cc36f966d56bf1614d"
+    },
+    {
+      "path": "output/flutter/m4-r2-self-review/m4-backup-invalid.png",
+      "sha256": "67b56c4781f8cdd3ffbd105d66ca2462b4cbc5a0a453f631d19688392d52bafa"
+    },
+    {
+      "path": "output/flutter/m4-r2-self-review/m4-backup-legacy-preview.png",
+      "sha256": "bd925365e5cb5a60495019154b4c80392a35f15d768f445b2f7db74aea4a8398"
+    },
+    {
+      "path": "output/flutter/m4-r2-self-review/m4-backup-restored.png",
+      "sha256": "b1172d52eb7c1fc863778449a0dd04bef136d2598e2c529b5598e48e30902538"
+    },
+    {
+      "path": "output/flutter/m4-r2-self-review/m4-backup-top-320.0-1.6-false-en.png",
+      "sha256": "029fc6c0c4cbeb9a44635a0b920c769226e80b02429c93ce8df8fec3a77b7ee9"
+    },
+    {
+      "path": "output/flutter/m4-r2-self-review/m4-backup-top-320.0-1.6-false-zh.png",
+      "sha256": "04663cac0d16e82015f38570c9b676a9a82259ae7e10f465ccf93f20b4b0cdbd"
+    },
+    {
+      "path": "output/flutter/m4-r2-self-review/m4-backup-top-390.0-2.0-true-zh.png",
+      "sha256": "0607a52c497d5ff4013f34907ddaa385b18e97036f6e6867cbbf01ca59c2493d"
+    },
+    {
+      "path": "output/flutter/m4-r2-self-review/m4-settings-bottom-320.0-1.6-false-en.png",
+      "sha256": "de4280b403fb8f8da901e91e31d2ffc27bf01ac064e4c019752ed84cb57ecf92"
+    },
+    {
+      "path": "output/flutter/m4-r2-self-review/m4-settings-bottom-320.0-1.6-false-zh.png",
+      "sha256": "0b1e06f155bbf9a7609a880ae4f27b6a27b5fcc497e6f9d10c948934a7c604b3"
+    },
+    {
+      "path": "output/flutter/m4-r2-self-review/m4-settings-bottom-390.0-2.0-true-zh.png",
+      "sha256": "8a43403fe748ce1a6dcbd5ce0e9a7de57525eabd2d36fa8c8b1e548bc01db251"
+    },
+    {
+      "path": "output/flutter/m4-r2-self-review/m4-settings-top-320.0-1.6-false-en.png",
+      "sha256": "3fc99f4e1659152a8fd047a5887992b84c942ec14eaa2bbaa4c1d88ca0f99d5b"
+    },
+    {
+      "path": "output/flutter/m4-r2-self-review/m4-settings-top-320.0-1.6-false-zh.png",
+      "sha256": "0b1e06f155bbf9a7609a880ae4f27b6a27b5fcc497e6f9d10c948934a7c604b3"
+    },
+    {
+      "path": "output/flutter/m4-r2-self-review/m4-settings-top-390.0-2.0-true-zh.png",
+      "sha256": "b7e235006d36302633d22559d0a2c80e96c516e92bf223da2cfc125ee83f17bb"
+    },
+    {
+      "path": "output/flutter/m4-r2-self-review/m4-trends-empty.png",
+      "sha256": "328ef4cd8015d29f60b9f1a8766e0b7d8254b89f16875d9f74f4663b392f5e70"
+    },
+    {
+      "path": "output/flutter/m4-r2-self-review/m4-trends-partial.png",
+      "sha256": "e7625ddb348bd1a6c835411375d6af8874121a9388e32d1c300ab7987799fe83"
+    },
+    {
+      "path": "output/flutter/m4-r2-self-review/m4-trends-sodium-320.0-1.6-false-en.png",
+      "sha256": "5d03d03ec5d96b8beb7409bf75be482f548b764eb8cdd63541a968a8ad79d76b"
+    },
+    {
+      "path": "output/flutter/m4-r2-self-review/m4-trends-sodium-320.0-1.6-false-zh.png",
+      "sha256": "a1db1aa114c43fd49630892cf0af3f52e4b27b930348b40a0aeb278d17336e15"
+    },
+    {
+      "path": "output/flutter/m4-r2-self-review/m4-trends-sodium-390.0-2.0-true-zh.png",
+      "sha256": "c6c9873bb757ed64ef788975be0ba94074949f6b6e184db3f1db88874757d31e"
+    },
+    {
+      "path": "output/flutter/m4-r2-self-review/m4-trends-top-320.0-1.6-false-en.png",
+      "sha256": "a8b640ef1b9ed88b9f8a9cd551c8e6d6546fd2637142047fec0c464d1e97de60"
+    },
+    {
+      "path": "output/flutter/m4-r2-self-review/m4-trends-top-320.0-1.6-false-zh.png",
+      "sha256": "1ec2afd200f7d056a8ba73300abdfef42e3c8e83d3f610fdc6f1af3e726660fa"
+    },
+    {
+      "path": "output/flutter/m4-r2-self-review/m4-trends-top-390.0-2.0-true-zh.png",
+      "sha256": "51e0b144f9d5297b80b405b48afcdbc8d1f33fab1bf7e3dce6a4b1f3c26f3283"
+    },
+    {
+      "path": "output/flutter/m4-r2-self-review/recording-deleted-undo.png",
+      "sha256": "d5fc1f8bf73e9103d159e683db423b3a76a357f888504c3a5a4c1e2c227ebf2e"
+    },
+    {
+      "path": "output/flutter/m4-r2-self-review/recording-edit-half-serving.png",
+      "sha256": "48b4579e31e47e1b232faf846a032435d3a687707c403865532b82a410830228"
+    },
+    {
+      "path": "output/flutter/m4-r2-self-review/recording-home-320.0-1.6-false.png",
+      "sha256": "c1df6762957eb2bd74c3c939125d8f168d63e7fcf37a06869432025b5d1423b1"
+    },
+    {
+      "path": "output/flutter/m4-r2-self-review/recording-home-390.0-1.0-false.png",
+      "sha256": "4e2af959a813cfffabb1fe9e5efd61e7cecc2dede242358c7f8de2adeeca9da2"
+    },
+    {
+      "path": "output/flutter/m4-r2-self-review/recording-home-390.0-1.0-true.png",
+      "sha256": "6c82ad4e23dddcfeed249951f3c19af125e3287fa4f039f0667e42e4cab93891"
+    },
+    {
+      "path": "output/flutter/m4-r2-self-review/recording-home-390.0-2.0-false.png",
+      "sha256": "c971ebbb1cd08c095a7b607497fe752e339faf997a11dffdaecd6256a74fb335"
+    }
+  ],
+  "scope_boundaries": [
+    "No device connection, upgrade, data clearing or restore in M4",
+    "No new payload upload, merge into main or M5 release",
+    "Real platform document providers, device process death, iOS, release and full TalkBack unverified",
+    "Full restore tested using isolated synthetic AES Hive and actual ZIP bytes",
+    "Large-library streaming and peak memory not measured"
+  ],
+  "prior_failed_runs_retained": true
+}

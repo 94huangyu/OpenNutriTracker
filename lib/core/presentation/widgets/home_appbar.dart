@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:opennutritracker/core/utils/app_const.dart';
 import 'package:opennutritracker/core/presentation/widgets/dynamic_ont_logo.dart';
-import 'package:opennutritracker/generated/l10n.dart';
 
 class HomeAppbar extends StatelessWidget implements PreferredSizeWidget {
   const HomeAppbar({super.key});
@@ -14,7 +14,7 @@ class HomeAppbar extends StatelessWidget implements PreferredSizeWidget {
           Expanded(
             child: RichText(
               text: TextSpan(
-                text: S.of(context).appTitle,
+                text: AppConst.appName,
                 style: Theme.of(context).textTheme.titleLarge?.copyWith(
                       color: Theme.of(context).colorScheme.onSurface,
                     ),

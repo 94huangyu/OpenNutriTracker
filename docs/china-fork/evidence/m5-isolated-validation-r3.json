@@ -1,0 +1,302 @@
+{
+  "date": "2026-10-22",
+  "status": "specified third-batch Android validation completed; formal release deferred",
+  "platformScope": {
+    "android": true,
+    "iosExcludedByUser": true,
+    "talkBackExcludedByUser": true,
+    "nameAndIconDeferred": true
+  },
+  "source": {
+    "baselineCommit": "f7ee0dd178122d62405ae24c6fe181cb1f41033f",
+    "businessFixCommit": "49eade7fedbabe030394f7a858ef3ea8339da1fc",
+    "libTree": "64be50fb2feb443158f7e0bfed1b07793f048c78",
+    "businessLibUnchangedThisBatch": true,
+    "validationSourceHashes": {
+      "tools/validation/m5_isolated_restore.dart": "fd384110d205034098298794726e027cf2acf4b976d9acaaaa48438fb35f03d5",
+      "tools/validation/m5_performance_fixture.dart": "78733ca072988a26a5c756947de294f2d7daa53d8a576ff99ab928874b8a27e2",
+      "test/helpers/full_backup_fixture.dart": "d3b1783a22bae500e3b3c9ad39c3d89739e1ca335a1dfcce0fe4b2cf8275dba5",
+      "android/app/build.gradle": "52ae82e5db69f148932b7fa009981a7a67c4252a9beb438e84869325e97f1ce7"
+    },
+    "validationToolsCommit": "e6e6de87b7d86d57af1dc228d2c4feca40acb6d5",
+    "androidTree": "136a5d1d04483b8aba4088e62dae3ab96a2a776d"
+  },
+  "apks": {
+    "passingDebugProbe": {
+      "apk": "output/flutter/m5-r3/m5-r3-isolated-restore-r3-v2.4.0-66-validation-arm64-debug.apk",
+      "package": "com.opennutritracker.ont.opennutritracker.validation",
+      "bytes": 146331822,
+      "sha256": "ae166fd7174b5f90126075c9cc4def1c2b1262a4ff0b3ad10ed737e7816bab17",
+      "certificateSha256": "8b5adf8691201ac71c7fc4037f5121e639b0e8f84269902cb52d5bb1eb4e61e0",
+      "sourceHashes": {
+        "tools/validation/m5_isolated_restore.dart": "fd384110d205034098298794726e027cf2acf4b976d9acaaaa48438fb35f03d5",
+        "tools/validation/m5_performance_fixture.dart": "78733ca072988a26a5c756947de294f2d7daa53d8a576ff99ab928874b8a27e2",
+        "test/helpers/full_backup_fixture.dart": "d3b1783a22bae500e3b3c9ad39c3d89739e1ca335a1dfcce0fe4b2cf8275dba5",
+        "android/app/build.gradle": "52ae82e5db69f148932b7fa009981a7a67c4252a9beb438e84869325e97f1ce7"
+      }
+    },
+    "normalProfileApp": {
+      "apk": "output/flutter/m5-r3/m5-r3-performance-v2.4.0-66-validation-arm64-profile.apk",
+      "package": "com.opennutritracker.ont.opennutritracker.validation",
+      "bytes": 67414929,
+      "sha256": "623495c7738bb5835ab0c3445f10117de8161e6cf038d5ed7a24955a2139ac60",
+      "certificateSha256": "8b5adf8691201ac71c7fc4037f5121e639b0e8f84269902cb52d5bb1eb4e61e0",
+      "aotLibAppPresent": true,
+      "debugKernelAbsent": true,
+      "providerAuthoritiesUseIsolatedIdentity": true,
+      "sharedUserIdAbsent": true,
+      "libTree": "64be50fb2feb443158f7e0bfed1b07793f048c78",
+      "scope": "Profile build of lib/main.dart; not final release signing or release measurement"
+    },
+    "allFrozenHistoricalApksRetained": true,
+    "newSigningKeyCreated": false,
+    "published": false
+  },
+  "localVerification": {
+    "fullSuite": {
+      "passed": 2728,
+      "failed": 0,
+      "skipped": 0,
+      "durationMs": 86434,
+      "hiddenLoadingAndHookEventsExcluded": true
+    },
+    "guardAndBackupPassed": 22,
+    "analysisDiagnostics": 0
+  },
+  "vivo": {
+    "model": "V2509A",
+    "android": "16",
+    "restoreResults": {
+      "roundtrip": {
+        "mode": "roundtrip",
+        "passed": true,
+        "datasets": 14,
+        "decodedImages": 3,
+        "repeatAdded": 0,
+        "previewMs": 19,
+        "restoreMs": 50,
+        "fixtureRemoved": true
+      },
+      "write_failure": {
+        "mode": "write_failure",
+        "passed": true,
+        "allDataAndImagesRolledBack": true,
+        "syntheticError": "ENOSPC; device storage was not filled",
+        "fixtureRemoved": true
+      },
+      "interrupt": {
+        "mode": "interrupt",
+        "phase": "waiting_for_host_force_stop",
+        "journalFlushed": true,
+        "partiallyWrittenDataset": "WaterIntakeBox",
+        "realProcessForceStopped": true
+      },
+      "recover": {
+        "mode": "recover",
+        "passed": true,
+        "journalCleared": true,
+        "allDataAndImagesRolledBack": true,
+        "fixtureRemoved": true
+      },
+      "seed_performance": {
+        "mode": "seed_performance",
+        "passed": true,
+        "intakes": 1000,
+        "todayIntakes": 200,
+        "days": 90,
+        "customFoods": 20,
+        "bodyProfiles": 0,
+        "todayKcal": 4000.0
+      }
+    },
+    "existingDataProtection": {
+      "existingPackagesAnd7ProtectedFilesUnchanged": true,
+      "validationUidDistinctFromExistingApps": true,
+      "originalAppNeverClearedUninstalledOrRestored": true
+    },
+    "startup": {
+      "buildMode": "profile AOT; not final release",
+      "scope": "Process-cold Android am start -W TotalTime; OS page/shader caches not cleared; home contents separately verified",
+      "trials": [
+        {
+          "trial": 1,
+          "androidActivityTotalTimeMs": 644,
+          "readyHomeShowsSynthetic4000Kcal": true
+        },
+        {
+          "trial": 2,
+          "androidActivityTotalTimeMs": 776,
+          "readyHomeShowsSynthetic4000Kcal": true
+        },
+        {
+          "trial": 3,
+          "androidActivityTotalTimeMs": 523,
+          "readyHomeShowsSynthetic4000Kcal": true
+        },
+        {
+          "trial": 4,
+          "androidActivityTotalTimeMs": 508,
+          "readyHomeShowsSynthetic4000Kcal": true
+        },
+        {
+          "trial": 5,
+          "androidActivityTotalTimeMs": 516,
+          "readyHomeShowsSynthetic4000Kcal": true
+        }
+      ],
+      "medianMs": 523
+    },
+    "scroll": {
+      "scope": "20s VM timeline, warmed synthetic breakfast-list scroll gestures; framework async Frame and raster-thread CPU intervals; no direct GPU presentation/FPS claim",
+      "frames": {
+        "Frame": {
+          "samples": 349,
+          "medianMs": 0.238,
+          "p95Ms": 0.617,
+          "maxMs": 1.443,
+          "over16_67Ms": 0,
+          "over8_33Ms": 0,
+          "unmatchedBoundaryEvents": 0
+        },
+        "Animator::BeginFrame": {
+          "samples": 349,
+          "medianMs": 0.271,
+          "p95Ms": 0.712,
+          "maxMs": 1.492,
+          "over16_67Ms": 0,
+          "over8_33Ms": 0,
+          "unmatchedBoundaryEvents": 1
+        },
+        "Rasterizer::DoDraw": {
+          "samples": 349,
+          "medianMs": 1.24,
+          "p95Ms": 2.011,
+          "maxMs": 5.381,
+          "over16_67Ms": 0,
+          "over8_33Ms": 0,
+          "unmatchedBoundaryEvents": 1
+        },
+        "GPURasterizer::Draw": {
+          "samples": 349,
+          "medianMs": 1.245,
+          "p95Ms": 2.028,
+          "maxMs": 5.391,
+          "over16_67Ms": 0,
+          "over8_33Ms": 0,
+          "unmatchedBoundaryEvents": 1
+        }
+      },
+      "traceEventCount": 32523
+    },
+    "memory": {
+      "sampleCount": 9,
+      "sampledPeakPssKiB": 254600,
+      "processLifetimePeakRssKiB": 375852,
+      "scope": "Current profile process, home and warmed breakfast-list scrolling; PSS sampled, VmHWM from proc; not all-workload peak"
+    },
+    "additionalUiExportDeleteRestore": "not run; extra scope stopped, does not invalidate isolated restore checks"
+  },
+  "oneplus": {
+    "model": "PKX110",
+    "marketName": "OnePlus 13T",
+    "android": "16",
+    "originalVersion": "2.4.0/66",
+    "coexistence": {
+      "validationInstalledHashMatches": true,
+      "separateAndroidUid": true,
+      "originalApkVersionInstallTimesUnchanged": true,
+      "originalAppNotOpenedOrWritten": true,
+      "originalPrivateDataNotRead": true
+    },
+    "freshValidationInstallAndLaunch": true,
+    "normalRecordingHomeObserved": true,
+    "interaction": "passed: custom-food create/reopen, serving conversion, intake edit/restart/delete, four navigation pages, recipe photo save/reopen/remove-discard-reopen with user visual confirmation, physical camera decode",
+    "originalLogicalDataComparison": "not performed; original private data intentionally not read",
+    "interactionResults": {
+      "createAndReopenCustomFood": true,
+      "foodValues": {
+        "edit-meal-package-quantity": "200",
+        "edit-meal-serving-quantity": "50",
+        "edit-meal-nutrition-basis": "100",
+        "edit-meal-energy": "200",
+        "edit-meal-carbs": "25",
+        "edit-meal-fat": "8",
+        "edit-meal-protein": "7"
+      },
+      "twoServings100gShows200Kcal": true,
+      "editToOneAndHalfServings75gShows150Kcal": true,
+      "processRestartPreserves150Kcal": true,
+      "fourNavigationPagesOpenAndReturn": true,
+      "deleteOwnTestIntakeReturnsZeroKcal": true,
+      "syntheticDiaryLayoutVisuallyChecked": true,
+      "recipeDraftName": "QA_M5_Recipe_20261022",
+      "recipePhotoPickerOpenedForUser": true,
+      "galleryNotReadOrCaptured": true,
+      "recipeSaveAndReopenWithPhoto": true,
+      "recipeSavedImageBytesMatchUserSelectedCopy": true,
+      "recipeNutritionTotal100g200Kcal": true,
+      "recipePhotoRemoveDiscardReopenPreservesImageBytes": true,
+      "recipePhotoUserVisuallyConfirmedAfterReopenAndCancel": true,
+      "physicalBarcode": {
+        "independentExpected": "6914068023144",
+        "actualDecoded": "6914068023144",
+        "fieldInitiallyEmpty": true,
+        "cameraOnDetectLogConfirmed": true,
+        "originalFoodNamePreserved": true,
+        "noExpectedDigitsInjected": true
+      }
+    },
+    "currentState": "validation process stopped; synthetic food/recipe/intake and two explicit photo copies removed; original untouched by assistant",
+    "independentlySuppliedBarcode": "6914068023144",
+    "coexistenceFinal": {
+      "originalApksUidVersionAndInstallTimesUnchanged": true,
+      "originalRuntimePermissionsUnchanged": true,
+      "validationAndroidUidDistinct": true,
+      "validationInstalledHashMatchesFrozenProfileApk": true,
+      "originalPrivateDataNotRead": true,
+      "assistantNeverOpenedOrWroteOriginalApp": true
+    },
+    "cleanup": {
+      "ownSyntheticFoodRecipeAndIntakeDeletedThroughUi": true,
+      "diaryZeroKcal": true,
+      "selectedTestPhotoCopyRemoved": true,
+      "selectedPhotoPickerCacheRemoved": true,
+      "originalGalleryUntouched": true,
+      "validationCameraGrantRestoredFalseViaSettings": true,
+      "validationCameraUserSetFlagDiffersFromInitialUnset": true,
+      "validationProcessStopped": true,
+      "processFatalUnhandledOverflowMatches": 0,
+      "originalAppNeverClearedOrUninstalled": true
+    }
+  },
+  "resources": {
+    "officialProfileArtifactsDownloadedBytes": 46462788,
+    "downloadBudgetBytes": 60000000,
+    "artifactOfficialCrc32cVerified": true,
+    "newSdkInstalled": false,
+    "buildHardTimeoutSeconds": 300,
+    "totalDiskGrowth": "not precisely measured; do not claim measured compliance from artifact sizes alone"
+  },
+  "remaining": [
+    "formal name/icon, production package/signing and publication remain deferred by user",
+    "final release-mode performance unverified; current device baseline is AOT profile",
+    "two physical barcode samples and two Android16 devices do not establish all countries/formats/providers/versions coverage",
+    "vivo separate validation install retains 1000 synthetic records; device offline at cleanup, final phone process stop not verified"
+  ],
+  "privacy": {
+    "galleryBrowsingProhibited": true,
+    "photosChosenByUser": true,
+    "privateDeviceIdsTokensDataNotIncluded": true
+  },
+  "cleanup": {
+    "independent15042Closed": true,
+    "ownVmForwardsClosedWithServer": true,
+    "sharedAdbServicesUntouched": true,
+    "usbTrustRetained": true,
+    "vivoOnlineAtCleanup": false,
+    "vivoValidationStoppedAtCleanup": false,
+    "vivo1000SyntheticRecordsRetainedInSeparateValidationInstall": true,
+    "oneplusValidationStopped": true,
+    "validationPackagesRetainedInstalled": true
+  }
+}

@@ -1,3 +1,6 @@
+import 'package:opennutritracker/core/utils/hive_storage_integrity_exception.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:opennutritracker/features/settings/domain/backup/full_backup_service.dart';
 import 'package:opennutritracker/core/data/data_source/personal_food_data_source.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:get_it/get_it.dart';
@@ -146,6 +149,18 @@ Future<void> initLocator() async {
   await hiveDBProvider.initHiveDB(
     await secureAppStorageProvider.getHiveEncryptionKey(),
   );
+  final fullBackup = FullBackupService(
+    hiveDBProvider,
+    await getApplicationDocumentsDirectory(),
+  );
+  try {
+    await fullBackup.recoverPendingRestore();
+  } catch (error) {
+    throw HiveStorageIntegrityException('restore_recovery_failed',
+        'An interrupted restore needs recovery before the app can open.',
+        cause: error);
+  }
+  locator.registerSingleton<FullBackupService>(fullBackup);
   // Resolve the active profile and open its box-set (creating the default
   // profile on first run) before anything reads per-profile data.
   await bootstrapActiveProfile(hiveDBProvider, secureAppStorageProvider);

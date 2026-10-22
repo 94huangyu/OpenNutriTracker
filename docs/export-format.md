@@ -1,5 +1,79 @@
 # Export bundle format
 
+## China fork: full backup v1 (M4, 2026-10-21)
+
+The recording-only fork now opens **My data → Backup and restore**. Full backup
+is a versioned ZIP; CSV remains a partial exchange format. The legacy format
+below documents older upstream bundles, not the full M4 backup.
+
+The full ZIP contains `manifest.json`, `data.json`, and files beneath
+`meal_images/`, `recipe_images/`, and `profile_images/` (including photo-credit
+sidecars). Manifest `format` is `ont-full-backup`, `version` is integer `1`,
+`createdUtc` is ISO-8601, `entries` enumerates every other ZIP member with byte
+length and CRC32, and `counts` enumerates each dataset/suffix row count. CRC32
+detects corruption; it is not an authenticity signature. Unknown versions fail
+before any data is written.
+
+`data.json` holds `boxes` (each has `name`, `suffix`, and `rows` of `{key,value}`)
+and the source `activeProfileId`. DBO values use the existing JSON field names
+and units. Integer and string Hive keys remain distinguishable. The explicit
+allowlist contains six shared datasets (profiles, app settings, custom foods,
+personal food states, recipes and historical activity templates), plus all eight
+per-profile datasets (config, diary intakes, historical activities, historical
+body details, tracked days, weight history, water and fasting history). Fields
+such as original nutrition basis, all 24 nutrients, recipe ingredient snapshots,
+favorites and personal-review evidence remain intact. No body/weight/activity
+management entry point is enabled by this preservation.
+
+Public food caches, secure-storage encryption keys, API credentials and OS
+permissions are excluded. Privacy acceptances and policy-notice acknowledgements
+are retained from the receiving device even when backup conflicts win; importing
+a file cannot grant privacy consent. The exported ZIP itself is unencrypted,
+including private records and photos, as stated before export. Missing referenced
+photos, invalid or duplicate identities, incomplete scopes, wrong CRCs, duplicate
+ZIP entries, symlinks and unsafe paths are rejected rather than silently omitted.
+
+Restore first validates the whole archive and produces a read-only preview.
+It merges records by stable identity, defaulting to **keep local conflicts**;
+**use backup conflicts** overwrites matching records/photos only. Records absent
+from the backup remain. Diary UUIDs, recipe IDs and source/backend/food IDs avoid
+append duplication; storage-key collisions get a new independent row key.
+Existing profiles keep their local storage suffix; previously unknown profile
+IDs get independent suffixes. The active local profile stays selected. Imported
+profiles are accessible through the local profile picker. Daily calorie/macro
+summaries are recomputed from the resulting diary using the existing day-label
+and hour/minute boundary rules; historical goals are retained.
+
+A changed local dataset/photo after preview invalidates the preview. Before
+writes, a detached undo snapshot is persisted to AES-encrypted `RestoreJournal`
+and flushed. Dataset writes and photo writes are flushed before the journal is
+cleared. A failed operation replays the snapshot. If rollback fails, the journal
+remains and the screen blocks further operations until recovery is retried.
+On app restart, recovery runs before profile bootstrap or regular data access;
+a failed startup recovery opens the existing recovery screen and preserves the
+log. This is recoverable cross-store restoration, not a claim that Hive offers
+native multi-box transactions or that power-loss/filesystem faults were tested
+on every device.
+
+Inputs are bounded to 32 MiB compressed, 64 MiB total expanded, and 10,000 ZIP
+members; output growth is checked during inflation as well as against headers.
+The implementation keeps detached snapshots/merge plans in memory, so its peak
+memory exceeds the file size. Large-database streaming is not implemented.
+
+Old JSON and CSV ZIPs use the same validation/preview/merge/rollback path. Their
+three original datasets are required; recipes, weight, activity templates and
+personal food states are optional where the old format supports them. Old OFF
+micronutrient repairs remain idempotent. Legacy packages describe the currently
+selected profile only and show an explicit partial-backup warning; absent
+profiles/settings/independent templates/photos are not invented. The retained
+legacy `ImportDataUsecase` APIs support old tests/internal callers; the recording
+UI no longer exposes their immediate-write dialog.
+
+Platform document-provider write confirmation and actual device process-death
+recovery require device evidence. Local ZIP/Hive tests and component captures
+are recorded separately in the M4 self-acceptance report.
+
+
 This document describes the structure of the data export that **Settings →
 Export / Import App Data → Export** produces. It exists for the same reason
 issue #40 asked for it: people who want to keep their nutrition history in a

@@ -1,3 +1,4 @@
+import 'package:json_annotation/json_annotation.dart';
 import 'package:hive_ce_flutter/hive_flutter.dart';
 import 'package:opennutritracker/core/data/dbo/calories_profile_dbo.dart';
 import 'package:opennutritracker/core/data/dbo/user_gender_dbo.dart';
@@ -8,6 +9,7 @@ import 'package:opennutritracker/core/domain/entity/user_entity.dart';
 part 'user_dbo.g.dart';
 
 @HiveType(typeId: 5)
+@JsonSerializable()
 class UserDBO extends HiveObject {
   @HiveField(0)
   DateTime birthday;
@@ -64,4 +66,8 @@ class UserDBO extends HiveObject {
       caloriesTaperEnabled: entity.caloriesTaperEnabled,
     );
   }
+  factory UserDBO.fromJson(Map<String, dynamic> json) =>
+      _$UserDBOFromJson(json);
+
+  Map<String, dynamic> toJson() => _$UserDBOToJson(this);
 }

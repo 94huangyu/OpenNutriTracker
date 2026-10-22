@@ -1,4 +1,4 @@
-import 'dart:io';
+import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -11,6 +11,7 @@ import 'package:opennutritracker/core/styles/dimens.dart';
 import 'package:opennutritracker/core/utils/locator.dart';
 import 'package:opennutritracker/core/utils/navigation_options.dart';
 import 'package:opennutritracker/core/utils/user_image_storage.dart';
+import 'package:opennutritracker/core/utils/user_image_draft.dart';
 import 'package:opennutritracker/features/add_meal/domain/entity/meal_entity.dart';
 import 'package:opennutritracker/features/recipes/presentation/bloc/recipe_builder_bloc.dart';
 import 'package:opennutritracker/features/recipes/presentation/widgets/food_search_tab_view.dart';
@@ -40,6 +41,7 @@ class _RecipeBuilderScreenState extends State<RecipeBuilderScreen> {
   late TextEditingController _totalWeightController;
   late TextEditingController _tagsController;
 
+  final _draftImages = UserImageDraft(UserImageKind.recipe);
   bool _initialized = false;
 
   @override
@@ -74,6 +76,7 @@ class _RecipeBuilderScreenState extends State<RecipeBuilderScreen> {
 
   @override
   void dispose() {
+    unawaited(_draftImages.dispose());
     _nameController.dispose();
     _descriptionController.dispose();
     _servingsController.dispose();
@@ -98,6 +101,7 @@ class _RecipeBuilderScreenState extends State<RecipeBuilderScreen> {
       bloc: _bloc,
       listener: (context, state) {
         if (state.didSave) {
+          _draftImages.retain(state.imagePath);
           Navigator.of(context).pop();
           return;
         }
@@ -115,9 +119,9 @@ class _RecipeBuilderScreenState extends State<RecipeBuilderScreen> {
       },
       builder: (context, state) {
         return PopScope(
-          canPop: !_hasUnsavedChanges(state),
+          canPop: !state.isSaving && !_hasUnsavedChanges(state),
           onPopInvokedWithResult: (didPop, _) async {
-            if (didPop) return;
+            if (didPop || state.isSaving) return;
             final shouldDiscard = await _confirmDiscard(context);
             if (shouldDiscard == true && context.mounted) {
               Navigator.of(context).pop();
@@ -414,15 +418,8 @@ class _RecipeBuilderScreenState extends State<RecipeBuilderScreen> {
       // source (camera / gallery) the photo came from.
       final picked = await picker.pickImage(source: source);
       if (picked == null) return;
-      final relative = await UserImageStorage.importFrom(
-        kind: UserImageKind.recipe,
-        ownerId: recipeId,
-        sourcePath: picked.path,
-      );
-      // Bust the in-memory Image.file cache so the new picture shows up
-      // immediately instead of redrawing the previous bytes for this path.
-      FileImage(File(await UserImageStorage.absolutePath(relative)))
-          .evict();
+      final relative = await _draftImages.importFrom(picked.path);
+      if (relative == null || !mounted) return;
       _bloc.add(UpdateImagePathEvent(relative));
     } catch (_) {
       if (!context.mounted) return;
@@ -435,7 +432,6 @@ class _RecipeBuilderScreenState extends State<RecipeBuilderScreen> {
   Future<void> _onRemoveImage(BuildContext context) async {
     final current = _bloc.state.imagePath;
     if (current == null) return;
-    await UserImageStorage.delete(current);
     _bloc.add(const UpdateImagePathEvent(null));
   }
 

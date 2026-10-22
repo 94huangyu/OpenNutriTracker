@@ -1,0 +1,93 @@
+{
+  "date": "2026-10-22",
+  "scope": "Android M5 second batch: photo safety and single physical barcode; M5 remains partial",
+  "sourceCommit": "49eade7fedbabe030394f7a858ef3ea8339da1fc",
+  "libTree": "64be50fb2feb443158f7e0bfed1b07793f048c78",
+  "apk": {
+    "path": "output/flutter/m5/m5-r2-photo-safety-v2.4.0-66-develop-arm64-debug.apk",
+    "bytes": 137591756,
+    "sha256": "9d0830704d2b3889c8bd557b90dd274161e11e23cb809add9dc6658b1efd71fd",
+    "certificateSha256": "8b5adf8691201ac71c7fc4037f5121e639b0e8f84269902cb52d5bb1eb4e61e0",
+    "permissionsIdenticalToM4": true,
+    "kernelSha256": "38a7132d241ba9f20da285f291f595431fdc75a39198d2eedd11c8303c75f069",
+    "kernelMatchesCurrentBuild": true,
+    "containsUserImageDraft": true,
+    "sourceCommit": "49eade7fedbabe030394f7a858ef3ea8339da1fc",
+    "libTree": "64be50fb2feb443158f7e0bfed1b07793f048c78",
+    "version": "2.4.0-develop/66"
+  },
+  "automatedValidation": {
+    "specificPhotoTestsPassed": 11,
+    "fullTestsPassed": 2721,
+    "failed": 0,
+    "skipped": 0,
+    "fullSuiteSeconds": 78.167,
+    "fullSuiteRunDate": "2026-10-21",
+    "analyzerDiagnostics": 0,
+    "notRerunOnDocumentationOnlyFinish": true
+  },
+  "device": {
+    "model": "vivo X300 V2509A",
+    "androidVersion": 16,
+    "installedApkHashMatched": true
+  },
+  "photos": {
+    "selectionPerformedByUser": true,
+    "initialDisplayConfirmedByUser": true,
+    "saveAndReopen": true,
+    "removeThenCancelPreservesSavedPhoto": true,
+    "replaceThenCancelPreservesSavedPhoto": true,
+    "cancelledReplacementDraftRemoved": true,
+    "replaceThenSaveAndReopenConfirmedByUser": true,
+    "historicOriginalBytesPreserved": true,
+    "recipeDeviceFlow": "not tested; shared helper unit coverage only",
+    "earlierWrongSelectionExcludedFromAcceptance": true,
+    "screenshotsOfPrivateGalleryUsedForAcceptance": false
+  },
+  "physicalBarcode": {
+    "expectedIndependentlyProvided": "6975283821076",
+    "actualDecoded": "6975283821076",
+    "notPrepopulated": true,
+    "otherFormFieldsPreserved": true,
+    "sampleCount": 1,
+    "publicFoodLookupMatrixTested": false
+  },
+  "dataProtection": {
+    "finalExportCrcValid": true,
+    "all14LogicalDataCategoriesAndAttachmentsEqualToBefore": true,
+    "manifestTimestampExcluded": true,
+    "physicalProtectedFilesUnchanged": 6,
+    "physicalCustomMealFileChangedByTestJournalButLogicalDataEqual": true,
+    "temporaryFoodDeletedThroughUi": true,
+    "originalAdvancedFormModeRestored": true
+  },
+  "cleanup": {
+    "date": "2026-10-22",
+    "appStopped": true,
+    "ownAdb15041Stopped": true,
+    "sharedAdbUntouched": true,
+    "usbTrustRetained": true,
+    "originalSettingsAndCameraPermissionMatched": true,
+    "publicExportsRemovedAfterHashVerification": 2,
+    "logicalDataAndAttachmentsEqualAcross14Categories": true,
+    "protectedPhysicalFilesUnchanged": 6,
+    "customMealPhysicalJournalChangedButLogicalDataEqual": true,
+    "temporaryFoodDeleted": true,
+    "originalGalleryFilesUntouched": true,
+    "selectedImageCopiesAndPickerCachesRemoved": true,
+    "ownSyntheticSourcesAndMediaRowsRemoved": true,
+    "fatalUnhandledOrOverflowIssues": [],
+    "currentDayIntakeStillZero": true
+  },
+  "remaining": [
+    "TalkBack complete focus order and spoken output",
+    "additional Android devices and physical barcode matrix",
+    "Android release startup/frame/memory measurements",
+    "isolated device restore and fault injection",
+    "formal signing/package identity; name and icon deferred by user"
+  ],
+  "excluded": [
+    "iOS"
+  ],
+  "knownLimit": "Saved original photos are retained to protect historical references; reference-aware garbage collection is not implemented."
+}

@@ -69,9 +69,11 @@ class _StorageRecoveryScreenState extends State<_StorageRecoveryScreen> {
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 16),
-                  const Text(
-                    'Your data files have not been changed. Try again. If the problem persists, '
-                    'contact support before clearing the app data or reinstalling.',
+                  Text(
+                    widget.errorCode == 'restore_recovery_failed'
+                        ? 'An interrupted restore could not be rolled back yet. The encrypted recovery log is preserved. Free device storage if needed and retry before continuing.'
+                        : 'Your data files have not been changed. Try again. If the problem persists, '
+                              'contact support before clearing the app data or reinstalling.',
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 12),

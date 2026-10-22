@@ -119,6 +119,7 @@ class HiveDBProvider extends ChangeNotifier {
   bool _switching = false;
 
   String get activeProfileId => _activeProfileId;
+  String get activeBoxSuffix => _activeBoxSuffix;
 
   Box<ConfigDBO> get configBox => _requireBox(_configBox, configBoxName);
   Box<IntakeDBO> get intakeBox => _requireBox(_intakeBox, intakeBoxName);

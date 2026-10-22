@@ -1,9 +1,11 @@
+import 'package:json_annotation/json_annotation.dart';
 import 'package:hive_ce_flutter/hive_flutter.dart';
 import 'package:opennutritracker/core/domain/entity/profile_entity.dart';
 
 part 'profile_dbo.g.dart';
 
 @HiveType(typeId: 20)
+@JsonSerializable()
 class ProfileDBO extends HiveObject {
   @HiveField(0)
   String id;
@@ -40,4 +42,8 @@ class ProfileDBO extends HiveObject {
       imagePath: entity.imagePath,
     );
   }
+  factory ProfileDBO.fromJson(Map<String, dynamic> json) =>
+      _$ProfileDBOFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ProfileDBOToJson(this);
 }

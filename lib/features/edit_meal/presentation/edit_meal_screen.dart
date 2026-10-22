@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'dart:io';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -18,6 +17,7 @@ import 'package:opennutritracker/core/styles/app_palette.dart';
 import 'package:opennutritracker/core/styles/dimens.dart';
 import 'package:opennutritracker/core/utils/barcode_validator.dart';
 import 'package:opennutritracker/core/utils/user_image_storage.dart';
+import 'package:opennutritracker/core/utils/user_image_draft.dart';
 import 'package:opennutritracker/core/utils/calc/unit_calc.dart';
 import 'package:opennutritracker/core/utils/custom_text_input_formatter.dart';
 import 'package:opennutritracker/core/utils/energy_unit_provider.dart';
@@ -119,6 +119,7 @@ class _EditMealScreenState extends State<EditMealScreen> {
   // _mealEntity.localImagePath but is held separately so the picker
   // can update the on-screen preview before the parent entity is
   // rebuilt at save time.
+  final _draftImages = UserImageDraft(UserImageKind.meal);
   String? _localImagePath;
   bool _localImageCleared = false;
 
@@ -256,6 +257,7 @@ class _EditMealScreenState extends State<EditMealScreen> {
     ]) {
       controller.dispose();
     }
+    unawaited(_draftImages.dispose());
     _editMealBloc.close();
     super.dispose();
   }
@@ -268,61 +270,64 @@ class _EditMealScreenState extends State<EditMealScreen> {
     _maybeReinterpretKcalField(usesKj);
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final palette = isDark ? AppPalette.dark : AppPalette.light;
-    return Scaffold(
-      backgroundColor: palette.canvas,
-      appBar: AppBar(
+    return PopScope(
+      canPop: !_saving,
+      child: Scaffold(
         backgroundColor: palette.canvas,
-        surfaceTintColor: Colors.transparent,
-        toolbarHeight: MediaQuery.textScalerOf(context).scale(kToolbarHeight),
-        title: AutoSizeText(
-          _mealEntity.name == null
-              ? S.of(context).noResultsCreateCustomFood
-              : S.of(context).editMealLabel,
-          minFontSize: 16,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-          style: Theme.of(
-            context,
-          ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w800),
+        appBar: AppBar(
+          backgroundColor: palette.canvas,
+          surfaceTintColor: Colors.transparent,
+          toolbarHeight: MediaQuery.textScalerOf(context).scale(kToolbarHeight),
+          title: AutoSizeText(
+            _mealEntity.name == null
+                ? S.of(context).noResultsCreateCustomFood
+                : S.of(context).editMealLabel,
+            minFontSize: 16,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: Theme.of(
+              context,
+            ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w800),
+          ),
         ),
-      ),
-      body: SafeArea(
-        top: false,
-        bottom: false,
-        child: AbsorbPointer(
-          absorbing: _saving,
-          child: BlocBuilder<EditMealBloc, EditMealState>(
-            bloc: _editMealBloc,
-            builder: (BuildContext context, EditMealState state) {
-              if (state is EditMealLoadingState) return _getLoadingContent();
-              if (state is EditMealLoadedState) {
-                if (!_formModeHydrated) {
-                  _formMode = state.formMode;
-                  _formModeHydrated = true;
+        body: SafeArea(
+          top: false,
+          bottom: false,
+          child: AbsorbPointer(
+            absorbing: _saving,
+            child: BlocBuilder<EditMealBloc, EditMealState>(
+              bloc: _editMealBloc,
+              builder: (BuildContext context, EditMealState state) {
+                if (state is EditMealLoadingState) return _getLoadingContent();
+                if (state is EditMealLoadedState) {
+                  if (!_formModeHydrated) {
+                    _formMode = state.formMode;
+                    _formModeHydrated = true;
+                  }
+                  return _getLoadedContent(usesKj);
                 }
-                return _getLoadedContent(usesKj);
-              }
-              return const SizedBox.shrink();
-            },
+                return const SizedBox.shrink();
+              },
+            ),
           ),
         ),
-      ),
-      bottomNavigationBar: SafeArea(
-        top: false,
-        child: Padding(
-          padding: EdgeInsets.fromLTRB(
-            16,
-            12,
-            16,
-            16 + MediaQuery.viewInsetsOf(context).bottom,
-          ),
-          child: Semantics(
-            identifier: 'edit-meal-save',
-            child: FilledButton(
-              onPressed: _saving
-                  ? null
-                  : () => _onSavePressed(_usesImperialUnits),
-              child: Text(S.of(context).buttonSaveLabel),
+        bottomNavigationBar: SafeArea(
+          top: false,
+          child: Padding(
+            padding: EdgeInsets.fromLTRB(
+              16,
+              12,
+              16,
+              16 + MediaQuery.viewInsetsOf(context).bottom,
+            ),
+            child: Semantics(
+              identifier: 'edit-meal-save',
+              child: FilledButton(
+                onPressed: _saving
+                    ? null
+                    : () => _onSavePressed(_usesImperialUnits),
+                child: Text(S.of(context).buttonSaveLabel),
+              ),
             ),
           ),
         ),
@@ -1012,6 +1017,7 @@ class _EditMealScreenState extends State<EditMealScreen> {
         }
       }
 
+      _draftImages.retain(newMealEntity.localImagePath);
       if (!mounted) return;
       if (_editOnly) {
         Navigator.of(context).pop();
@@ -1082,27 +1088,12 @@ class _EditMealScreenState extends State<EditMealScreen> {
   }
 
   Future<void> _onPickMealImage(ImageSource source) async {
-    // For custom meals the entity's `code` is a stable UUID seeded at
-    // MealEntity.empty() time; we use it as the photo's filename so a
-    // re-edit of the same meal lands at the same on-disk slug. If the
-    // user has typed a real barcode into the code field, fall back to
-    // the entity's original code rather than the in-progress text — the
-    // photo identity is the meal, not the barcode.
-    final ownerId = _mealEntity.code;
-    if (ownerId == null) return;
     try {
       final picker = ImagePicker();
       final picked = await picker.pickImage(source: source);
       if (picked == null) return;
-      final relative = await UserImageStorage.importFrom(
-        kind: UserImageKind.meal,
-        ownerId: ownerId,
-        sourcePath: picked.path,
-      );
-      // Bust the in-memory Image.file cache so the new picture shows up
-      // immediately instead of redrawing previous bytes for this path.
-      FileImage(File(await UserImageStorage.absolutePath(relative))).evict();
-      if (!mounted) return;
+      final relative = await _draftImages.importFrom(picked.path);
+      if (relative == null || !mounted) return;
       setState(() {
         _localImagePath = relative;
         _localImageCleared = false;
@@ -1118,7 +1109,6 @@ class _EditMealScreenState extends State<EditMealScreen> {
   Future<void> _onRemoveMealImage() async {
     final current = _localImagePath;
     if (current == null) return;
-    await UserImageStorage.delete(current);
     if (!mounted) return;
     setState(() {
       _localImagePath = null;
