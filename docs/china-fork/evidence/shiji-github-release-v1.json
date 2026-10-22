@@ -1,0 +1,43 @@
+{
+  "date": "2026-10-22",
+  "status": "published",
+  "repository": "94huangyu/OpenNutriTracker",
+  "releaseUrl": "https://github.com/94huangyu/OpenNutriTracker/releases/tag/shiji-v2.4.0-66",
+  "releaseId": 420867560,
+  "tag": "shiji-v2.4.0-66",
+  "sourceCommit": "d62d9992ec9cb70755ac9b8f4132d98ad3a60a2f",
+  "sourceTree": "abbf9de0ce5725a956f36ff8e32e3d320c8473fc",
+  "publicSourceFilesVerified": 1206,
+  "runtimeInputHashesVerified": 641,
+  "draft": false,
+  "prerelease": false,
+  "assets": [
+    {
+      "name": "SHA256SUMS.txt",
+      "bytes": 196,
+      "sha256": "76d3d490eb645ed355fc8b267c8f54230708a45a5b0724cb1ec604f7c4346bf4",
+      "state": "uploaded",
+      "url": "https://github.com/94huangyu/OpenNutriTracker/releases/download/shiji-v2.4.0-66/SHA256SUMS.txt"
+    },
+    {
+      "name": "Shiji-release-certificate.pem",
+      "bytes": 1827,
+      "sha256": "4997cd8041c6cc764508c18c12a8803ba8489185dd0075f187913d0b126c8d86",
+      "state": "uploaded",
+      "url": "https://github.com/94huangyu/OpenNutriTracker/releases/download/shiji-v2.4.0-66/Shiji-release-certificate.pem"
+    },
+    {
+      "name": "Shiji-v2.4.0-66-android-arm64.apk",
+      "bytes": 48263057,
+      "sha256": "6aa800e6b86087fb556342370b9a1337aa410bb7eb73d9f50ba93600bc8609bf",
+      "state": "uploaded",
+      "url": "https://github.com/94huangyu/OpenNutriTracker/releases/download/shiji-v2.4.0-66/Shiji-v2.4.0-66-android-arm64.apk"
+    }
+  ],
+  "checks": {
+    "serverApkDigestMatchesAcceptedLocalApk": true,
+    "tagPointsToVerifiedSource": true,
+    "privateDataExcluded": true
+  },
+  "scope": "GitHub Release only; Android APK; no app store publication"
+}

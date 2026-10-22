@@ -1,6 +1,6 @@
 # 食迹 Android 正式安装包
 
-2026-10-22。此页记录独立正式 Android 包，不代表已上传商店。
+2026-10-22。独立正式 Android 包已发布为 [GitHub Release shiji-v2.4.0-66](https://github.com/94huangyu/OpenNutriTracker/releases/tag/shiji-v2.4.0-66)，未上传应用商店。
 
 - 显示名称：食迹；图标：用户选定的原版C杏白；启动：同款系统静态图标接Flutter金点单次脉冲。
 - 正式应用身份：`com.huangyu.shiji`，构建flavor：`shiji`；现有版本保持`2.4.0 / 66`。
@@ -10,7 +10,7 @@
 
 ## 对应源码与重建
 
-APK运行源码与`evidence/shiji-release-v1.json`内641项运行输入指纹逐项对应。GitHub发布将使用`shiji-v2.4.0-66`标签；该标签的完整源码与许可证随GitHub自动源码归档提供。历史本机交付ZIP基于`27e1ebfe4e2144cdcd4fd03faff79354f073b1af`加当时未提交修改，是另一份冻结快照，保留不覆盖。公开Git仅包含源码、测试及脱敏验收摘要，不包含任何个人迁移资料、私钥或真实环境配置。
+APK运行源码与`evidence/shiji-release-v1.json`内641项运行输入指纹逐项对应。GitHub发布使用`shiji-v2.4.0-66`标签，对应提交`d62d9992ec9cb70755ac9b8f4132d98ad3a60a2f`；该标签的完整源码与许可证随GitHub自动源码归档提供。历史本机交付ZIP基于`27e1ebfe4e2144cdcd4fd03faff79354f073b1af`加当时未提交修改，是另一份冻结快照，保留不覆盖。公开Git仅包含源码、测试及脱敏验收摘要，不包含任何个人迁移资料、私钥或真实环境配置。
 
 使用Flutter3.44.6、Java17或兼容Android构建JDK、Android SDK36。源码保留GPL许可和上游说明。`.env.example`是占位配置，复制为`.env`后按实际环境配置，再生成环境与本地化代码；不要上传真实配置。
 
