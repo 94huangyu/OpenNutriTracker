@@ -1,0 +1,41 @@
+{
+  "date": "2026-10-27",
+  "releaseUrl": "https://github.com/94huangyu/OpenNutriTracker/releases/tag/shiji-v2.4.1-67",
+  "tag": "shiji-v2.4.1-67",
+  "sourceCommit": "bd52462d44b64c85516ae2c682a19036bd939bd7",
+  "sourceTree": "77e7af4a840d18905af9d0cfc4863fceace0c774",
+  "defaultBranch": "main",
+  "publicFilesVerified": 1233,
+  "apkInputFingerprintsVerified": 903,
+  "sourceMatchesReviewedLocalTree": true,
+  "publicReleaseVisibleSignedOut": true,
+  "latestLabelVisible": true,
+  "assets": [
+    {
+      "name": "SHA256SUMS.txt",
+      "bytes": 196,
+      "sha256": "052f48ebb5037bc8f1cc3ffbfb3bf0824d7e2b63880d6eb0002ec9f745089d95",
+      "githubPageDigestMatches": true,
+      "downloadUrl": "https://github.com/94huangyu/OpenNutriTracker/releases/download/shiji-v2.4.1-67/SHA256SUMS.txt"
+    },
+    {
+      "name": "Shiji-release-certificate.pem",
+      "bytes": 1827,
+      "sha256": "4997cd8041c6cc764508c18c12a8803ba8489185dd0075f187913d0b126c8d86",
+      "githubPageDigestMatches": true,
+      "downloadUrl": "https://github.com/94huangyu/OpenNutriTracker/releases/download/shiji-v2.4.1-67/Shiji-release-certificate.pem"
+    },
+    {
+      "name": "Shiji-v2.4.1-67-android-arm64.apk",
+      "bytes": 48263537,
+      "sha256": "5567bd467323cd6b8cbef48ff6530aacf41edb0e8146b085bb804688b54f71f3",
+      "githubPageDigestMatches": true,
+      "downloadUrl": "https://github.com/94huangyu/OpenNutriTracker/releases/download/shiji-v2.4.1-67/Shiji-v2.4.1-67-android-arm64.apk"
+    }
+  ],
+  "verificationMethod": "Public GitHub release page asset digests and git fetch/ls-remote; unsigned API quota was unavailable.",
+  "oldTagUnchanged": "d62d9992ec9cb70755ac9b8f4132d98ad3a60a2f",
+  "privateDeviceInformationPublished": false,
+  "privateDataPublished": false,
+  "privateSigningPublished": false
+}

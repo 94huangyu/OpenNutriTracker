@@ -1,6 +1,6 @@
 # UI V2 发布验收摘要（2026-10-27）
 
-本轮食迹2.4.1（67）第二包r2已完成所列本地回归和实机检查，用户已明确要求同步GitHub并发布原APK。发布状态以 `CURRENT_STATE.md` 最新检查点及GitHub发布证据为准。
+本轮食迹2.4.1（67）第二包r2已完成所列本地回归和实机检查，用户已明确要求同步GitHub并发布原APK。已发布为[shiji-v2.4.1-67](https://github.com/94huangyu/OpenNutriTracker/releases/tag/shiji-v2.4.1-67)，源码与附件核验见 `evidence/shiji-github-release-v2.json`。
 
 ## 发布对象
 
