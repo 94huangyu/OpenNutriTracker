@@ -29,6 +29,7 @@ import 'package:opennutritracker/features/home/presentation/bloc/home_bloc.dart'
 import 'package:opennutritracker/features/meal_detail/meal_detail_screen.dart';
 import 'package:opennutritracker/features/meal_detail/presentation/bloc/meal_detail_bloc.dart';
 import 'package:opennutritracker/generated/l10n.dart';
+import 'package:opennutritracker/features/meal_detail/presentation/widgets/food_portion_summary.dart';
 import 'package:provider/provider.dart';
 
 import '../../helpers/widget_capture.dart';
@@ -66,6 +67,7 @@ void main() {
 
   setUp(() {
     bloc = null;
+    _FakeAddIntakeUsecase.saved = null;
     getIt.registerLazySingleton<MealDetailBloc>(
       () => bloc = MealDetailBloc(
         _FakeAddIntakeUsecase(),
@@ -96,6 +98,7 @@ void main() {
     Size size = const Size(390, 844),
     double scale = 1,
     bool dark = false,
+    bool browseOnly = false,
   }) async {
     tester.view.physicalSize = size;
     tester.view.devicePixelRatio = 1.0;
@@ -142,6 +145,7 @@ void main() {
                     IntakeTypeEntity.breakfast,
                     DateTime(2026, 9, 14),
                     false,
+                    browseOnly: browseOnly,
                   ),
                 ),
               ),
@@ -153,6 +157,28 @@ void main() {
     );
     await tester.pumpAndSettle();
   }
+
+  testWidgets('library browsing has nutrition but no intake controls', (
+    tester,
+  ) async {
+    await pumpMealDetail(tester, _solidThirtyGramServing(), browseOnly: true);
+    expect(find.byType(TextFormField), findsNothing);
+    expect(find.byType(DropdownButtonFormField<String>), findsNothing);
+    expect(
+      find.byWidgetPredicate(
+        (w) => w is Semantics && w.properties.identifier == 'meal-detail-add',
+      ),
+      findsNothing,
+    );
+    expect(find.text('薯片样例'), findsOneWidget);
+    final summary = tester.widget<FoodPortionSummary>(
+      find.byType(FoodPortionSummary),
+    );
+    expect(summary.kcal, 100);
+    expect(summary.caption, isNot(contains('本次摄入')));
+    await captureWidget(tester, captureKey, 'favorite-browse-only');
+    expect(tester.takeException(), isNull);
+  });
 
   testWidgets('arbitrary fractional servings update the real detail bloc', (
     tester,
@@ -166,7 +192,51 @@ void main() {
     await tester.enterText(find.byType(TextFormField).first, '1.25');
     await tester.pumpAndSettle();
     expect(bloc!.state.totalQuantityConverted, '37.5');
+    final summary = tester.widget<FoodPortionSummary>(
+      find.byType(FoodPortionSummary),
+    );
+    expect(summary.kcal, 37.5);
+    expect(summary.carbs, 3.75);
+    expect(summary.caption, contains('37.5 g'));
     await captureWidget(tester, captureKey, 'intake-1.25-servings');
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('unit switches preserve the default and edited base amount', (
+    tester,
+  ) async {
+    await pumpMealDetail(tester, _solidThirtyGramServing());
+    Future<void> select(String label) async {
+      await tester.tap(find.byType(DropdownButtonFormField<String>));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text(label).last);
+      await tester.pumpAndSettle();
+    }
+
+    await select('g');
+    expect(bloc!.state.totalQuantityConverted, '30.0');
+    expect(
+      tester
+          .widget<TextFormField>(find.byType(TextFormField).first)
+          .controller!
+          .text,
+      '30',
+    );
+    await tester.enterText(find.byType(TextFormField).first, '47.5');
+    await tester.pumpAndSettle();
+    for (var i = 0; i < 5; i++) {
+      await select('份');
+      expect(double.parse(bloc!.state.totalQuantityConverted), 47.5);
+      await select('oz');
+      expect(double.parse(bloc!.state.totalQuantityConverted), 47.5);
+      await select('g');
+      expect(double.parse(bloc!.state.totalQuantityConverted), 47.5);
+    }
+    expect(bloc!.state.totalKcal, 47.5);
+    await tester.tap(find.text('添加到早餐'));
+    await tester.pumpAndSettle();
+    expect(_FakeAddIntakeUsecase.saved?.amount, 47.5);
+    expect(_FakeAddIntakeUsecase.saved?.totalKcal, 47.5);
     expect(tester.takeException(), isNull);
   });
 
@@ -185,9 +255,16 @@ void main() {
     await captureWidget(tester, captureKey, 'intake-47.5-grams');
     expect(tester.takeException(), isNull);
   });
-  testWidgets('dark detail with large text keeps full content scrollable', (tester) async {
-    await pumpMealDetail(tester, _solidThirtyGramServing(), scale: 2, dark: true);
-    await tester.drag(find.byType(Scrollable).first, const Offset(0,-650));
+  testWidgets('dark detail with large text keeps full content scrollable', (
+    tester,
+  ) async {
+    await pumpMealDetail(
+      tester,
+      _solidThirtyGramServing(),
+      scale: 2,
+      dark: true,
+    );
+    await tester.drag(find.byType(Scrollable).first, const Offset(0, -650));
     await tester.pumpAndSettle();
     await captureWidget(tester, captureKey, 'detail-dark-large-text');
     expect(tester.takeException(), isNull);
@@ -231,8 +308,11 @@ class _FakeGetConfigUsecase implements GetConfigUsecase {
 }
 
 class _FakeAddIntakeUsecase implements AddIntakeUsecase {
+  static IntakeEntity? saved;
   @override
-  Future<void> addIntake(IntakeEntity intakeEntity) async {}
+  Future<void> addIntake(IntakeEntity intakeEntity) async {
+    saved = intakeEntity;
+  }
 
   @override
   dynamic noSuchMethod(Invocation invocation) =>

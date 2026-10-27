@@ -45,14 +45,25 @@ class MealDetailNutrimentsTable extends StatelessWidget {
     final showSection = showMicronutrients || hasMicroData;
 
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Text(
-          S.of(context).nutritionInfoLabel,
-          style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w800),
+        Wrap(
+          alignment: WrapAlignment.spaceBetween,
+          crossAxisAlignment: WrapCrossAlignment.center,
+          spacing: 16,
+          runSpacing: 8,
+          children: [
+            Text(
+              S.of(context).nutritionInfoLabel,
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+            Text(headerText, style: textStyleBold),
+          ],
         ),
-        const SizedBox(height: Dimens.spacing16),
+        const SizedBox(height: 12),
         AppCard(
+          shadowed: false,
+          borderRadius: 16,
           color: palette.surfaceMuted,
           padding: const EdgeInsets.symmetric(
             horizontal: Dimens.spacing16,
@@ -64,7 +75,6 @@ class MealDetailNutrimentsTable extends StatelessWidget {
               horizontalInside: BorderSide(color: palette.border, width: Dimens.hairline),
             ),
             children: <TableRow>[
-            _getNutrimentsTableRow("", headerText, textStyleBold),
             _getNutrimentsTableRow(
               S.of(context).energyLabel,
               n.energyKcal100 == null ? '—' : EnergyDisplay.formatWithUnit(
@@ -120,6 +130,8 @@ class MealDetailNutrimentsTable extends StatelessWidget {
               initiallyExpanded: hasMicroData,
               children: [
                 AppCard(
+                  shadowed: false,
+                  borderRadius: 16,
                   color: palette.surfaceMuted,
                   padding: const EdgeInsets.symmetric(
                     horizontal: Dimens.spacing16,

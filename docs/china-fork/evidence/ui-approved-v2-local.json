@@ -1,0 +1,78 @@
+{
+  "date": "2026-10-27",
+  "base_head": "eb34e744afc9f153ff77bd33335e889e64bbc79d",
+  "scope": [
+    "C1",
+    "E1",
+    "T1",
+    "S1",
+    "D1",
+    "R1"
+  ],
+  "status": "local implementation verified; no APK or device acceptance",
+  "source_sha256": {
+    "lib/features/edit_meal/presentation/edit_meal_screen.dart": "8d44ea36418e22816b4c612aa7b0a595c6f6b14aeb3b095460676dc5cbf69c31",
+    "lib/features/recording/presentation/recording_settings.dart": "b3d8d5a15330ca259bc0f07a91ae19c782fc699e6aa600d172e4b5744ca6a00e",
+    "lib/features/recording/presentation/recording_trends_page.dart": "e3a758600f762765e8aedfb47461eb2e642e00288c0ec1bc7fa8a950bdd894b5",
+    "lib/features/recording/presentation/widgets/record_intake_sheet.dart": "3230a940825bc6cca5fd46dc1cbe90a4c9cdaf022baed6952586b01dda71042c",
+    "lib/features/meal_detail/meal_detail_screen.dart": "14a205f62af44a514dfc00aa4ceafdc6168a20ff073e08dd6eee98db23225c6d",
+    "lib/features/meal_detail/presentation/widgets/meal_detail_bottom_sheet.dart": "ef0b238d2b092ae630e2f2407be4e64db18a47d626c11910876f51627cbc83bd",
+    "lib/features/meal_detail/presentation/widgets/meal_detail_nutriments_table.dart": "615b5d3b389f6624355a70ea2c23ddd70f6993d22aa12584efefe962e4bae89d",
+    "lib/features/meal_detail/presentation/widgets/personal_food_actions.dart": "e30680b002c0032efce5b3f4fc7f38a6a65e3bfd77e6746a4b5b514e2c09d684",
+    "lib/features/meal_detail/presentation/widgets/food_portion_summary.dart": "cdd8777f1fc6d28c9f5d5eba8a0b3c3e5b600fa11fcf89c192af9bf8f9345618",
+    "lib/l10n/intl_en.arb": "bed7a0e55814c18f3bfe32918bfd6584b37d5566b056d68080fe03424b2e10ef",
+    "lib/l10n/intl_zh.arb": "ea5be33ca8ea6facc1559f080d42dbb3d3e5128f6de8f59b41a8815d794b2668",
+    "test/features/edit_meal/presentation/food_specification_form_test.dart": "92766beab1776514e1d515759a57725b28cb57006158f5e5df69cf34b164ab5f",
+    "test/features/edit_meal/presentation/edit_meal_unwind_test.dart": "5e9b76d1c9dac060990af5a43eff2f9faab4512828ccaa027b97453f3d12c603",
+    "test/features/recording/recording_flow_test.dart": "185b33a80e190395e536b3e9bc77b9189cca2076c8c6f08c095cbc570d1c1eed",
+    "test/features/recording/m4_screens_test.dart": "82240943a1511fb68299e064e8336c5e165d9d100c843add79ccba0303b1f6d0",
+    "test/features/meal_detail/free_quantity_input_screen_test.dart": "673f29d538743aa0b61329d3f34f09afe0914cf64565c903ba56c6c7a847465c"
+  },
+  "previous_v1_unrelated_source_unchanged": true,
+  "frozen_design_sha256": {
+    "docs/china-fork/ui-approved/shiji-home-add-food-v1.fragment.html": "e23369235363490be60bc8867297e8e2ded0000dbcc9e21dfebf7beb608e4c5c",
+    "docs/china-fork/ui-approved/shiji-next-pages-v1.fragment.html": "730b251725f2181b92895900b3483c56388ad59867edb4a030225f2a2d31c1c6",
+    "docs/china-fork/ui-approved/shiji-energy-entry-v1.fragment.html": "283869bd1625352f46abb1e92cdc34866f4ca8ebe34fb913ff8cdf8d84cd96aa",
+    "docs/china-fork/ui-approved/shiji-detail-record-v1.fragment.html": "7f6db8cf01f87e7526e770000776f26c3631ada32f489980095687100eadeb86"
+  },
+  "screenshots_sha256": {
+    "docs/china-fork/ui-approved/implemented-create-food-v2.png": "9f281cdf42ad35bf234d7743187a86c5e8b27db6d59348a676eb2c8b7c01c353",
+    "docs/china-fork/ui-approved/implemented-food-detail-v2.png": "93e2e36a4aa0d864a4c667a7ffaf09b66888d2c0a6cb5c4245ba279dad1a5562",
+    "docs/china-fork/ui-approved/implemented-record-edit-v2.png": "93ad95644caae6036a52f38daf44360b27f2dcd494bc6ab6ce0066bcd14d7e8e",
+    "docs/china-fork/ui-approved/implemented-trends-v2.png": "d482886c688d6e861a9afd7c4d8ca16aaab277e70e4e91ce2540ecc5e091f85c",
+    "docs/china-fork/ui-approved/implemented-settings-v2.png": "cc60dcc059abb9bfead2ea3e958b979d742498ce1d9f039d6cd530b7a722c7f0",
+    "docs/china-fork/ui-approved/implemented-record-keyboard-v2.png": "2270ac1ae41ba5c4f550c72ee7d24c7d280442e519230b12846838c58ac25977"
+  },
+  "checks": [
+    {
+      "log": "/tmp/shiji-ui-v2-acceptance.log",
+      "passed": 236,
+      "description": "related widget and storage regressions before final display refinements"
+    },
+    {
+      "log": "/tmp/shiji-ui-v2-visual-final.log",
+      "passed": 79,
+      "description": "affected screen and boundary recheck after display refinements; overlaps prior run"
+    },
+    {
+      "log": "/tmp/shiji-ui-v2-polish-final.log",
+      "passed": 32,
+      "description": "final input-width and settings alignment recheck; overlaps prior runs"
+    },
+    {
+      "log": "/tmp/shiji-ui-v2-analysis-final.log",
+      "diagnostics": 0,
+      "exit_code": 0
+    }
+  ],
+  "not_done": [
+    "Android APK build",
+    "device installation",
+    "real camera and online food sources",
+    "real keyboard and device fonts",
+    "release or remote upload"
+  ],
+  "local_artifact_exclusion_sha256": {
+    ".gitignore": "9d1810c6e7f522cee2dee7bb93e855698c37a72391b479d23728721a51dc6b29"
+  }
+}

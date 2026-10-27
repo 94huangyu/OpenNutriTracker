@@ -1531,5 +1531,45 @@
   "m4Privacy": "Privacy",
   "m4PrivacyDescription": "Diaries, local profiles and personal food records are stored on this device. Food search contacts the enabled data sources. You choose where backup files are saved. Backups do not include service credentials, and restoring cannot grant privacy consent on this device.",
   "m4Images": "Photos and credit attachments",
-  "m4ChartNote": "Bars are scaled against the largest known daily value in this period."
+  "m4ChartNote": "Bars are scaled against the largest known daily value in this period.",
+  "recordingEdit": "Edit",
+  "recordingAddFood": "Add food",
+  "recordingScanFood": "Scan barcode",
+  "recordingNotRecorded": "Not recorded yet",
+  "recordingCopyComplete": "Records copied",
+  "recordingDeleteSelectedQuestion": "Delete the selected records?",
+  "recordingCopyDestination": "Copy records",
+  "searchSourcesIncomplete": "Some online sources unavailable · local results available",
+  "searchSourcesPending": "Local results available · searching online",
+  "foodBasicInformation": "Basic information",
+  "foodSpecifications": "Food specifications",
+  "energyInputUnit": "Input unit",
+  "energyInputHelp": "The input unit does not change the display unit.",
+  "settingsDisplayRecording": "Display and recording",
+  "settingsDataPrivacy": "Data and privacy",
+  "settingsKjOffHint": "Uses kcal when off",
+  "foodDetailTitle": "Food details",
+  "recordingEditTitle": "Edit record",
+  "recordingThisPortion": "This intake",
+  "recordingSnapshotHint": "Only this record changes, not the food details.",
+  "recordingAddToMeal": "Add to {meal}",
+  "recordingDestination": "{date} · {meal}",
+  "trendsExplanation": "Statistics explained",
+  "@recordingAddToMeal": {
+    "placeholders": {
+      "meal": {
+        "type": "String"
+      }
+    }
+  },
+  "@recordingDestination": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "meal": {
+        "type": "String"
+      }
+    }
+  }
 }

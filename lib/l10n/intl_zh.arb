@@ -1349,7 +1349,7 @@
   "recordingSave": "保存修改",
   "recordingDelete": "删除记录",
   "recordingDeleteQuestion": "删除这条摄入记录？",
-  "recordingUseKj": "使用 kJ 显示热量",
+  "recordingUseKj": "以 kJ 显示",
   "recordingTheme": "外观",
   "recordingThemeSystem": "跟随系统",
   "recordingThemeLight": "浅色",
@@ -1485,5 +1485,45 @@
   "m4Privacy": "隐私",
   "m4PrivacyDescription": "日记、本地资料和个人食品记录保存在本机。食品搜索会访问已启用的数据源。备份文件保存到你选择的位置，不包含服务凭据；恢复备份不会替本机授予隐私同意。",
   "m4Images": "照片及署名附件",
-  "m4ChartNote": "横条按本期最大的已知每日数值等比例显示。"
+  "m4ChartNote": "横条按本期最大的已知每日数值等比例显示。",
+  "recordingEdit": "编辑",
+  "recordingAddFood": "添加食品",
+  "recordingScanFood": "扫码添加",
+  "recordingNotRecorded": "尚未记录",
+  "recordingCopyComplete": "已复制记录",
+  "recordingDeleteSelectedQuestion": "删除选中的记录？",
+  "recordingCopyDestination": "复制记录",
+  "searchSourcesIncomplete": "部分在线来源不可用 · 本地结果可用",
+  "searchSourcesPending": "本地结果可用 · 在线搜索中",
+  "foodBasicInformation": "基本信息",
+  "foodSpecifications": "食品规格",
+  "energyInputUnit": "输入单位",
+  "energyInputHelp": "输入单位仅用于填写，不影响查看单位。",
+  "settingsDisplayRecording": "显示与记录",
+  "settingsDataPrivacy": "数据与隐私",
+  "settingsKjOffHint": "关闭时使用 kcal",
+  "foodDetailTitle": "食品详情",
+  "recordingEditTitle": "修改记录",
+  "recordingThisPortion": "本次摄入",
+  "recordingSnapshotHint": "仅修改这条记录，不更改食品资料。",
+  "recordingAddToMeal": "添加到{meal}",
+  "recordingDestination": "{date} · {meal}",
+  "trendsExplanation": "统计说明",
+  "@recordingAddToMeal": {
+    "placeholders": {
+      "meal": {
+        "type": "String"
+      }
+    }
+  },
+  "@recordingDestination": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "meal": {
+        "type": "String"
+      }
+    }
+  }
 }

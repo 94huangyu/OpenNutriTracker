@@ -184,6 +184,18 @@ void main() {
         );
         await tester.pumpAndSettle();
         final field = find.byType(TextField);
+        final submit = find.byWidgetPredicate(
+          (w) =>
+              w is Semantics && w.properties.identifier == 'meal-search-submit',
+        );
+        expect(
+          tester.getRect(field).height,
+          closeTo(tester.getRect(submit).height, .01),
+        );
+        expect(
+          tester.getRect(field).top,
+          closeTo(tester.getRect(submit).top, .01),
+        );
         await tester.enterText(field, '米');
         await tester.pump();
         await tester.pump(const Duration(milliseconds: 20));
@@ -217,6 +229,13 @@ void main() {
         );
         await tester.pumpAndSettle();
         expect(find.textContaining('我的米饭', findRichText: true), findsOneWidget);
+        await captureWidget(
+          tester,
+          capture,
+          'search-collapsed-${variant.$1}-${variant.$2}-${variant.$3}',
+        );
+        await tester.tap(find.byType(ExpansionTile));
+        await tester.pumpAndSettle();
         expect(find.textContaining('此版本未接入'), findsOneWidget);
         expect(find.textContaining('暂时无法连接'), findsOneWidget);
         expect(find.byType(NoResultsWidget), findsNothing);
@@ -230,7 +249,7 @@ void main() {
         await tester.enterText(field, '');
         await tester.pumpAndSettle();
         expect(find.textContaining('我的米饭', findRichText: true), findsNothing);
-        await tester.tap(find.byTooltip('创建食品'));
+        await tester.tap(find.text('创建食品').first);
         await tester.pumpAndSettle();
         expect(find.byType(AlertDialog), findsNothing);
         expect(find.text('food-editor-opened'), findsOneWidget);

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:opennutritracker/core/domain/entity/intake_entity.dart';
-import 'package:opennutritracker/core/presentation/widgets/intake_card.dart';
+import 'package:opennutritracker/core/presentation/widgets/app_card.dart';
 import 'package:opennutritracker/core/domain/usecase/get_config_usecase.dart';
 import 'package:opennutritracker/core/utils/calc/day_boundary_calc.dart';
 import 'package:opennutritracker/core/utils/energy_display.dart';
@@ -12,7 +12,8 @@ import 'package:opennutritracker/features/add_meal/presentation/add_meal_screen.
 import 'package:opennutritracker/features/add_meal/presentation/add_meal_type.dart';
 import 'package:opennutritracker/features/diary/presentation/bloc/calendar_day_bloc.dart';
 import 'package:opennutritracker/features/recording/presentation/recording_settings.dart';
-import 'package:opennutritracker/features/recording/presentation/widgets/record_intake_sheet.dart';
+import 'package:opennutritracker/features/recording/presentation/recording_meal_page.dart';
+import 'package:opennutritracker/features/recording/presentation/widgets/recording_nutrient_summary.dart';
 import 'package:opennutritracker/generated/l10n.dart';
 
 class RecordingPage extends StatefulWidget {
@@ -26,7 +27,6 @@ class _RecordingPageState extends State<RecordingPage>
     with WidgetsBindingObserver {
   late final CalendarDayBloc _bloc;
   DateTime? _day;
-  final _expanded = <AddMealType>{};
 
   @override
   void initState() {
@@ -138,14 +138,29 @@ class _RecordingPageState extends State<RecordingPage>
                           child: ListView(
                             padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
                             children: [
-                              _summary(context, all),
+                              RecordingNutrientSummary(items: all),
                               const SizedBox(height: 20),
-                              for (var i = 0; i < groups.length; i++)
-                                _meal(
-                                  context,
-                                  AddMealType.values[i],
-                                  groups[i],
+                              AppCard(
+                                shadowed: false,
+                                borderRadius: 18,
+                                child: Column(
+                                  children: [
+                                    for (var i = 0; i < groups.length; i++) ...[
+                                      if (i > 0)
+                                        const Divider(
+                                          height: 1,
+                                          indent: 16,
+                                          endIndent: 16,
+                                        ),
+                                      _meal(
+                                        context,
+                                        AddMealType.values[i],
+                                        groups[i],
+                                      ),
+                                    ],
+                                  ],
                                 ),
+                              ),
                             ],
                           ),
                         );
@@ -212,142 +227,84 @@ class _RecordingPageState extends State<RecordingPage>
     );
   }
 
-  Widget _summary(BuildContext context, List<IntakeEntity> all) {
-    final s = S.of(context);
-    double sum(double Function(IntakeEntity) get) =>
-        all.fold(0, (value, intake) => value + get(intake));
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              s.recordingConsumed,
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            const SizedBox(height: 8),
-            Text(
-              EnergyDisplay.formatRoundedWithUnit(
-                context,
-                sum((i) => i.totalKcal),
-              ),
-              style: Theme.of(context).textTheme.headlineLarge,
-            ),
-            const SizedBox(height: 16),
-            Wrap(
-              spacing: 24,
-              runSpacing: 12,
-              children: [
-                _macro(s.proteinLabel, sum((i) => i.totalProteinsGram)),
-                _macro(s.fatLabel, sum((i) => i.totalFatsGram)),
-                _macro(s.carbsLabel, sum((i) => i.totalCarbsGram)),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _macro(String name, double value) => Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Text(name),
-      Text(
-        '${value.toStringAsFixed(1)} g',
-        style: Theme.of(context).textTheme.titleMedium,
-      ),
-    ],
-  );
-
   Widget _meal(
     BuildContext context,
     AddMealType type,
     List<IntakeEntity> items,
   ) {
-    final expanded = _expanded.contains(type);
+    final s = S.of(context);
     final total = items.fold<double>(0, (v, item) => v + item.totalKcal);
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
-      child: Card(
-        child: Column(
-          children: [
-            Row(
-              children: [
-                Expanded(
-                  child: Semantics(
-                    container: true,
-                    identifier: 'recording-meal-${type.name}',
-                    child: ListTile(
-                      onTap: () => setState(
-                        () => expanded
-                            ? _expanded.remove(type)
-                            : _expanded.add(type),
-                      ),
-                      title: Text(
-                        type.getTypeName(context),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      subtitle: Text(
-                        EnergyDisplay.formatRoundedWithUnit(context, total),
-                      ),
-                      trailing: Icon(
-                        expanded ? Icons.expand_less : Icons.expand_more,
+    return Row(
+      children: [
+        Expanded(
+          child: Semantics(
+            container: true,
+            identifier: 'recording-meal-${type.name}',
+            child: InkWell(
+              onTap: () async {
+                await Navigator.of(context).push(
+                  MaterialPageRoute<void>(
+                    builder: (_) =>
+                        RecordingMealPage(day: _day!, type: type, bloc: _bloc),
+                  ),
+                );
+                if (mounted) _bloc.add(LoadCalendarDayEvent(_day!));
+              },
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(16, 18, 4, 18),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text.rich(
+                      TextSpan(
+                        text: type.getTypeName(context),
+                        style: Theme.of(context).textTheme.titleMedium
+                            ?.copyWith(fontWeight: FontWeight.w600),
+                        children: [
+                          TextSpan(
+                            text:
+                                '   ${EnergyDisplay.formatRoundedWithUnit(context, total)}',
+                            style: Theme.of(context).textTheme.bodySmall,
+                          ),
+                        ],
                       ),
                     ),
-                  ),
-                ),
-                Semantics(
-                  identifier: 'recording-add-${type.name}',
-                  child: IconButton(
-                    onPressed: () => _add(type),
-                    tooltip: S.of(context).addLabel,
-                    icon: const Icon(Icons.add_circle_outline),
-                  ),
-                ),
-                const SizedBox(width: 8),
-              ],
-            ),
-            if (expanded) ...[
-              const Divider(height: 1),
-              if (items.isEmpty)
-                Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Text(S.of(context).recordingEmptyMeal),
-                ),
-              Semantics(
-                identifier: 'recording-intakes-${type.name}',
-                child: Column(
-                  children: [
-                    for (final item in items)
-                      IntakeCard(
-                        key: ValueKey(item.id),
-                        intake: item,
-                        firstListElement: item == items.first,
-                        usesImperialUnits: false,
-                        onItemTapped: (context, intake, _) async {
-                          await showModalBottomSheet<void>(
-                            context: context,
-                            isScrollControlled: true,
-                            useSafeArea: true,
-                            builder: (_) => RecordIntakeSheet(
-                              intake: intake,
-                              day: _day!,
-                              bloc: _bloc,
-                            ),
-                          );
-                          if (mounted) _bloc.add(LoadCalendarDayEvent(_day!));
-                        },
+                    const SizedBox(height: 6),
+                    Text(
+                      items.isEmpty
+                          ? s.recordingNotRecorded
+                          : items.map((i) => i.meal.name ?? '').join('、'),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
                       ),
+                    ),
                   ],
                 ),
               ),
-            ],
-          ],
+            ),
+          ),
         ),
-      ),
+        Semantics(
+          identifier: 'recording-add-${type.name}',
+          child: IconButton(
+            onPressed: () => _add(type),
+            tooltip: s.addLabel,
+            icon: const Icon(Icons.add_rounded),
+            style: IconButton.styleFrom(
+              backgroundColor: Theme.of(
+                context,
+              ).colorScheme.primary.withValues(alpha: .12),
+              foregroundColor: Theme.of(context).colorScheme.primary,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(width: 12),
+      ],
     );
   }
 }

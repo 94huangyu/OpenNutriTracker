@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:opennutritracker/core/domain/entity/intake_entity.dart';
-import 'package:opennutritracker/core/utils/energy_display.dart';
+import 'package:opennutritracker/core/domain/entity/intake_type_entity.dart';
+import 'package:opennutritracker/features/meal_detail/presentation/widgets/food_portion_summary.dart';
 import 'package:opennutritracker/features/diary/presentation/bloc/calendar_day_bloc.dart';
 import 'package:opennutritracker/features/meal_detail/util/meal_quantity_converter.dart';
 import 'package:opennutritracker/generated/l10n.dart';
@@ -25,14 +26,21 @@ class RecordIntakeSheet extends StatefulWidget {
 class _RecordIntakeSheetState extends State<RecordIntakeSheet> {
   late final TextEditingController _quantity;
   late String _unit;
+  double? _baseAmount;
   bool _saving = false;
   String? _error;
   String get _baseUnit => widget.intake.meal.mealUnit ?? 'g/ml';
-  bool get _hasServing => (widget.intake.meal.scalableServingQuantity ?? 0) > 0;
+  bool get _hasServing {
+    final serving = widget.intake.meal.scalableServingQuantity;
+    return serving != null && serving.isFinite && serving > 0;
+  }
 
   @override
   void initState() {
     super.initState();
+    _baseAmount = widget.intake.amount.isFinite && widget.intake.amount > 0
+        ? widget.intake.amount
+        : null;
     _unit = widget.intake.unit == 'serving' && _hasServing
         ? 'serving'
         : _baseUnit;
@@ -50,10 +58,26 @@ class _RecordIntakeSheetState extends State<RecordIntakeSheet> {
     super.dispose();
   }
 
-  double? get _amount {
+  double? _readAmount() {
     final value = double.tryParse(_quantity.text.replaceAll(',', '.'));
     if (value == null || !value.isFinite || value <= 0) return null;
-    return convertQuantityToBaseUnit(value, _unit, widget.intake.meal);
+    final amount = convertQuantityToBaseUnit(value, _unit, widget.intake.meal);
+    return amount.isFinite && amount > 0 ? amount : null;
+  }
+
+  double? get _amount => _baseAmount;
+
+  void _switchUnit(String? unit) {
+    if (unit == null || _baseAmount == null) return;
+    setState(() {
+      _unit = unit;
+      final value = unit == 'serving'
+          ? _baseAmount! / widget.intake.meal.scalableServingQuantity!
+          : _baseAmount!;
+      // Display conversion never becomes the source of truth for a later save.
+      _quantity.text = value.toString().replaceFirst(RegExp(r'\.0$'), '');
+      _error = null;
+    });
   }
 
   Future<void> _save({bool delete = false, bool repeat = false}) async {
@@ -99,7 +123,9 @@ class _RecordIntakeSheetState extends State<RecordIntakeSheet> {
   @override
   Widget build(BuildContext context) {
     final s = S.of(context);
-    final height = 32 + MediaQuery.textScalerOf(context).scale(16) * 1.5;
+    double? total(double? perUnit) =>
+        _amount == null || perUnit == null ? null : _amount! * perUnit;
+    final n = widget.intake.meal.nutriments;
     return SingleChildScrollView(
       padding: EdgeInsets.fromLTRB(
         20,
@@ -111,65 +137,95 @@ class _RecordIntakeSheetState extends State<RecordIntakeSheet> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text(
-            widget.intake.meal.name ?? '',
-            style: Theme.of(context).textTheme.titleLarge,
-          ),
-          const SizedBox(height: 24),
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Expanded(
-                child: SizedBox(
-                  height: height,
-                  child: Semantics(
-                    container: true,
-                    identifier: 'recording-edit-quantity',
-                    child: TextField(
-                      controller: _quantity,
-                      enabled: !_saving,
-                      keyboardType: const TextInputType.numberWithOptions(
-                        decimal: true,
-                      ),
-                      onChanged: (_) => setState(() => _error = null),
-                      decoration: InputDecoration(labelText: s.quantityLabel),
-                    ),
-                  ),
+                child: Text(
+                  s.recordingEditTitle,
+                  style: Theme.of(context).textTheme.titleLarge,
                 ),
               ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: SizedBox(
-                  height: height,
-                  child: Semantics(
-                    container: true,
-                    identifier: 'recording-edit-unit',
-                    child: DropdownButtonFormField<String>(
-                      initialValue: _unit,
-                      isExpanded: true,
-                      decoration: InputDecoration(labelText: s.unitLabel),
-                      items: [
-                        DropdownMenuItem(
-                          value: _baseUnit,
-                          child: Text(_baseUnit),
-                        ),
-                        if (_hasServing)
-                          DropdownMenuItem(
-                            value: 'serving',
-                            child: Text(s.servingLabel),
-                          ),
-                      ],
-                      onChanged: _saving
-                          ? null
-                          : (value) => setState(() {
-                              _unit = value!;
-                              _error = null;
-                            }),
-                    ),
-                  ),
+              Semantics(
+                identifier: 'recording-cancel-intake',
+                child: TextButton(
+                  onPressed: _saving ? null : () => Navigator.of(context).pop(),
+                  child: Text(s.dialogCancelLabel),
                 ),
               ),
             ],
+          ),
+          const SizedBox(height: 12),
+          Text(
+            widget.intake.meal.name ?? '',
+            style: Theme.of(context).textTheme.titleMedium,
+          ),
+          const SizedBox(height: 4),
+          Text(
+            s.recordingDestination(
+              MaterialLocalizations.of(context).formatCompactDate(widget.day),
+              switch (widget.intake.type) {
+                IntakeTypeEntity.breakfast => s.breakfastLabel,
+                IntakeTypeEntity.lunch => s.lunchLabel,
+                IntakeTypeEntity.dinner => s.dinnerLabel,
+                IntakeTypeEntity.snack => s.snackLabel,
+              },
+            ),
+            style: Theme.of(context).textTheme.bodySmall,
+          ),
+          const SizedBox(height: 20),
+          LayoutBuilder(
+            builder: (context, constraints) {
+              final quantity = Semantics(
+                container: true,
+                identifier: 'recording-edit-quantity',
+                child: TextField(
+                  controller: _quantity,
+                  enabled: !_saving,
+                  keyboardType: const TextInputType.numberWithOptions(
+                    decimal: true,
+                  ),
+                  onChanged: (_) => setState(() {
+                    _baseAmount = _readAmount();
+                    _error = null;
+                  }),
+                  decoration: InputDecoration(labelText: s.quantityLabel),
+                ),
+              );
+              final unit = Semantics(
+                container: true,
+                identifier: 'recording-edit-unit',
+                child: DropdownButtonFormField<String>(
+                  key: ValueKey(_unit),
+                  initialValue: _unit,
+                  isExpanded: true,
+                  decoration: InputDecoration(labelText: s.unitLabel),
+                  items: [
+                    DropdownMenuItem(value: _baseUnit, child: Text(_baseUnit)),
+                    if (_hasServing)
+                      DropdownMenuItem(
+                        value: 'serving',
+                        child: Text(s.servingLabel),
+                      ),
+                  ],
+                  onChanged: _saving || _amount == null ? null : _switchUnit,
+                ),
+              );
+              if (MediaQuery.textScalerOf(context).scale(14) > 19) {
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [quantity, const SizedBox(height: 16), unit],
+                );
+              }
+              return Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(flex: 3, child: quantity),
+                  const SizedBox(width: 12),
+                  Expanded(flex: 2, child: unit),
+                ],
+              );
+            },
           ),
           if (_hasServing)
             Padding(
@@ -180,14 +236,20 @@ class _RecordIntakeSheetState extends State<RecordIntakeSheet> {
               ),
             ),
           const SizedBox(height: 16),
-          if (_amount != null)
-            Text(
-              EnergyDisplay.formatRoundedWithUnit(
-                context,
-                _amount! * (widget.intake.meal.nutriments.energyPerUnit ?? 0),
-              ),
-              style: Theme.of(context).textTheme.headlineSmall,
-            ),
+          FoodPortionSummary(
+            caption:
+                '${s.recordingThisPortion} · '
+                '${_amount == null ? '—' : _amount!.toStringAsFixed(1).replaceFirst(RegExp(r'\.0$'), '')} $_baseUnit',
+            kcal: total(n.energyPerUnit),
+            carbs: total(n.carbohydratesPerUnit),
+            protein: total(n.proteinsPerUnit),
+            fat: total(n.fatPerUnit),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            s.recordingSnapshotHint,
+            style: Theme.of(context).textTheme.bodySmall,
+          ),
           if (_error != null)
             Text(
               _error!,
@@ -201,19 +263,29 @@ class _RecordIntakeSheetState extends State<RecordIntakeSheet> {
               child: Text(s.recordingSave),
             ),
           ),
-          Semantics(
-            identifier: 'recording-repeat-intake',
-            child: OutlinedButton(
-              onPressed: _saving ? null : () => _save(repeat: true),
-              child: Text(s.recordingRepeat),
-            ),
-          ),
-          Semantics(
-            identifier: 'recording-delete-intake',
-            child: TextButton(
-              onPressed: _saving ? null : () => _save(delete: true),
-              child: Text(s.recordingDelete),
-            ),
+          const Divider(height: 28),
+          Wrap(
+            alignment: WrapAlignment.spaceBetween,
+            spacing: 24,
+            children: [
+              Semantics(
+                identifier: 'recording-repeat-intake',
+                child: TextButton(
+                  onPressed: _saving ? null : () => _save(repeat: true),
+                  child: Text(s.recordingRepeat),
+                ),
+              ),
+              Semantics(
+                identifier: 'recording-delete-intake',
+                child: TextButton(
+                  style: TextButton.styleFrom(
+                    foregroundColor: Theme.of(context).colorScheme.error,
+                  ),
+                  onPressed: _saving ? null : () => _save(delete: true),
+                  child: Text(s.recordingDelete),
+                ),
+              ),
+            ],
           ),
         ],
       ),

@@ -1,14 +1,18 @@
 # 食迹 Android 正式安装包
 
-2026-10-22。独立正式 Android 包已发布为 [GitHub Release shiji-v2.4.0-66](https://github.com/94huangyu/OpenNutriTracker/releases/tag/shiji-v2.4.0-66)，未上传应用商店。
+2026-10-27。食迹2.4.1（67）已完成构建和所列实机自验收，用户已授权发布为 `shiji-v2.4.1-67`；当前发布进度见[CURRENT_STATE.md](CURRENT_STATE.md)。旧版[shiji-v2.4.0-66](https://github.com/94huangyu/OpenNutriTracker/releases/tag/shiji-v2.4.0-66)保留，不上传应用商店。
 
 - 显示名称：食迹；图标：用户选定的原版C杏白；启动：同款系统静态图标接Flutter金点单次脉冲。
-- 正式应用身份：`com.huangyu.shiji`，构建flavor：`shiji`；现有版本保持`2.4.0 / 66`。
+- 正式应用身份：`com.huangyu.shiji`，构建flavor：`shiji`；本轮版本为`2.4.1 / 67`。
 - CPU：arm64-v8a；最低Android8.0/API26，目标API36。旧full/develop/validation应用身份保留。
 - 新正式包有独立存储，首次安装不自动迁移原版/开发版/验证版数据。禁止通过卸载旧包、清空旧数据或修改签名来处理共存问题。
 - 正式包使用独立长期PKCS12证书。后续覆盖更新要使用同一包名、同一签名；实际更新时递增versionCode。私钥与密码不随源码或APK公开。
 
 ## 对应源码与重建
+
+本轮2.4.1/67的APK、源码输入指纹和实机证据见[UI_DEVICE_ACCEPTANCE_V2.md](UI_DEVICE_ACCEPTANCE_V2.md)及 `evidence/ui-v2-device-20261027.json`。上传对象为原r2验收包，SHA256 `5567bd467323cd6b8cbef48ff6530aacf41edb0e8146b085bb804688b54f71f3`；不为发布重打包。新标签只指向对应公开源码提交，发布后另记远端验证结果。
+
+以下为首个2.4.0/66版本的历史来源说明，原资产与标签保留：
 
 APK运行源码与`evidence/shiji-release-v1.json`内641项运行输入指纹逐项对应。GitHub发布使用`shiji-v2.4.0-66`标签，对应提交`d62d9992ec9cb70755ac9b8f4132d98ad3a60a2f`；该标签的完整源码与许可证随GitHub自动源码归档提供。历史本机交付ZIP基于`27e1ebfe4e2144cdcd4fd03faff79354f073b1af`加当时未提交修改，是另一份冻结快照，保留不覆盖。公开Git仅包含源码、测试及脱敏验收摘要，不包含任何个人迁移资料、私钥或真实环境配置。
 

@@ -15,10 +15,71 @@ class ChangeRecordedIntakeUsecase {
   ChangeRecordedIntakeUsecase(this._intakes, this._days, this._config);
 
   Future<void> delete(IntakeEntity intake, DateTime day) =>
-      _queue(() => _change(intake, day, remove: true));
+      _queue(() => _changeSelected([intake], day, remove: true));
 
   Future<void> restore(IntakeEntity intake, DateTime day) =>
-      _queue(() => _change(intake, day, remove: false));
+      _queue(() => _changeSelected([intake], day, remove: false));
+
+  Future<void> deleteSelected(List<IntakeEntity> items, DateTime day) =>
+      _queue(() => _changeSelected(items, day, remove: true));
+
+  Future<void> copySelected(
+    List<IntakeEntity> items,
+    DateTime day,
+    IntakeTypeEntity type,
+  ) {
+    final targetDay = DateTime(day.year, day.month, day.day);
+    final copies = [
+      for (final item in items)
+        IntakeEntity(
+          id: IdGenerator.getUniqueID(),
+          unit: item.unit,
+          amount: item.amount,
+          type: type,
+          meal: item.meal,
+          dateTime: targetDay,
+        ),
+    ];
+    return _queue(() => _changeSelected(copies, targetDay, remove: false));
+  }
+
+  Future<void> _changeSelected(
+    List<IntakeEntity> items,
+    DateTime day, {
+    required bool remove,
+  }) async {
+    final planned = <String, IntakeEntity>{};
+    for (final item in items) {
+      final previous = await _intakes.getIntakeById(item.id);
+      if (remove ? previous == null : previous != null) continue;
+      if (!remove && (!item.amount.isFinite || item.amount <= 0)) {
+        throw ArgumentError.value(item.amount, 'amount');
+      }
+      planned[item.id] = remove ? previous! : item;
+    }
+    if (planned.isEmpty) return;
+    try {
+      for (final item in planned.values) {
+        if (remove) {
+          await _intakes.deleteIntake(item);
+        } else {
+          await _intakes.addIntake(item);
+        }
+      }
+      await _reconcile(day);
+    } catch (_) {
+      // Hive has no cross-box transaction; restore the whole plan before retry.
+      for (final item in planned.values.toList().reversed) {
+        if (remove) {
+          await _intakes.addIntake(item);
+        } else {
+          await _intakes.deleteIntake(item);
+        }
+      }
+      await _reconcile(day);
+      rethrow;
+    }
+  }
 
   Future<void> repeat(
     IntakeEntity intake,
@@ -34,43 +95,13 @@ class ChangeRecordedIntakeUsecase {
       meal: intake.meal,
       dateTime: intake.dateTime,
     );
-    return _queue(() => _change(copy, day, remove: false));
+    return _queue(() => _changeSelected([copy], day, remove: false));
   }
 
   Future<void> _queue(Future<void> Function() operation) {
     final result = _pending.then((_) => operation());
     _pending = result.then<void>((_) {}, onError: (Object _, StackTrace _) {});
     return result;
-  }
-
-  Future<void> _change(
-    IntakeEntity intake,
-    DateTime day, {
-    required bool remove,
-  }) async {
-    final previous = await _intakes.getIntakeById(intake.id);
-    // Undo is safe to retry; it cannot overwrite or add the same record twice.
-    if (remove ? previous == null : previous != null) return;
-    if (remove) {
-      await _intakes.deleteIntake(previous!);
-    } else {
-      if (!intake.amount.isFinite || intake.amount <= 0) {
-        throw ArgumentError.value(intake.amount, 'amount');
-      }
-      await _intakes.addIntake(intake);
-    }
-    try {
-      await _reconcile(day);
-    } catch (_) {
-      // Hive has no cross-box transaction: compensate before reporting failure.
-      if (previous == null) {
-        await _intakes.deleteIntake(intake);
-      } else {
-        await _intakes.addIntake(previous);
-      }
-      await _reconcile(day);
-      rethrow;
-    }
   }
 
   Future<void> _reconcile(DateTime day) async {

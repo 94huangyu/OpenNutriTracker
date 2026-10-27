@@ -1,0 +1,428 @@
+<style>
+#shiji-compare { color-scheme: light dark; }
+#shiji-compare .comparison { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:20px; padding:12px 4px 20px; max-width:736px; margin:0 auto; }
+#shiji-compare .caption { margin:0 0 10px; font-size:14px; font-weight:500; }
+#shiji-compare .device { --sj-bg:light-dark(#f5f7f6,#131c18); --sj-paper:light-dark(#ffffff,#1c2821); --sj-fill:light-dark(#edf2ef,#24352b); --sj-line:light-dark(#dfe7e2,#35473b); --sj-ink:light-dark(#1e3029,#e9f0eb); --sj-muted:light-dark(#62716a,#b0bfb5); --sj-green:light-dark(#1f7057,#91d7b0); --sj-on:light-dark(#ffffff,#103424); --sj-tint:light-dark(#e1efe8,#2b4335); --sj-shadow:light-dark(#403a2e14,#00000025); background:var(--sj-bg); color:var(--sj-ink); border:1px solid var(--sj-line); border-radius:26px; font:14px/1.5 -apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif; min-height:820px; display:flex; flex-direction:column; overflow:clip; }
+#shiji-compare .device * { box-sizing:border-box; }
+#shiji-compare .device button,#shiji-compare .device input { font:inherit; color:inherit; }
+#shiji-compare .device button { background:transparent; border:0; padding:0; }
+#shiji-compare .device button:focus-visible { outline:2px solid var(--sj-green); outline-offset:3px; }
+#shiji-compare .device svg { flex-shrink:0; width:21px; height:21px; stroke-width:1.9; }
+#shiji-compare .status { height:34px; display:flex; align-items:center; justify-content:space-between; padding:0 20px; font-size:11px; font-weight:600; }
+#shiji-compare .status span:last-child { display:flex; align-items:center; gap:5px; }
+#shiji-compare .status svg { width:13px; height:13px; }
+#shiji-compare .bar { display:flex; align-items:center; justify-content:space-between; gap:8px; padding:10px 16px 16px; min-height:62px; }
+#shiji-compare .heading { font-size:23px; line-height:1.3; font-weight:700; margin:0; }
+#shiji-compare .bar-actions { display:flex; gap:10px; align-items:center; }
+#shiji-compare .icon { display:inline-flex; align-items:center; justify-content:center; min-width:32px; min-height:36px; }
+#shiji-compare .content { padding:0 16px; flex:1; }
+#shiji-compare .date { display:flex; gap:8px; align-items:center; justify-content:space-between; min-height:48px; margin-bottom:10px; color:var(--sj-green); font-weight:700; }
+#shiji-compare .date .date-main { display:flex; align-items:center; gap:7px; }
+#shiji-compare .date svg { width:18px; height:18px; }
+#shiji-compare .old .summary { background:var(--sj-paper); border:1px solid var(--sj-line); border-radius:16px; padding:20px; margin-bottom:20px; }
+#shiji-compare .old .summary-title { font-size:16px; font-weight:700; }
+#shiji-compare .old .energy { font-size:32px; line-height:1.3; font-weight:800; margin:12px 0 18px; }
+#shiji-compare .macros { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; }
+#shiji-compare .old .macros { font-weight:500; }
+#shiji-compare .old .macros b { display:block; margin-top:3px; font-size:16px; font-weight:700; }
+#shiji-compare .old .meal { border:1px solid var(--sj-line); background:var(--sj-paper); border-radius:16px; margin-bottom:12px; padding:14px 15px; display:flex; gap:12px; align-items:center; min-height:74px; }
+#shiji-compare .old .meal-name { font-size:16px; font-weight:600; }
+#shiji-compare .meal-sub { color:var(--sj-muted); }
+#shiji-compare .old .meal > div { flex:1; }
+#shiji-compare .old .meal svg { color:var(--sj-muted); }
+#shiji-compare .old .meal .plus { width:25px; height:25px; }
+#shiji-compare .bottom { display:grid; grid-template-columns:repeat(4,1fr); gap:4px; padding:12px 6px 17px; background:var(--sj-paper); margin-top:22px; }
+#shiji-compare .bottom span { display:flex; flex-direction:column; align-items:center; gap:5px; color:var(--sj-muted); font-size:12px; font-weight:600; }
+#shiji-compare .bottom em { display:flex; align-items:center; justify-content:center; font-style:normal; height:30px; width:54px; border-radius:12px; }
+#shiji-compare .bottom .chosen { color:var(--sj-ink); }
+#shiji-compare .bottom .chosen em { background:var(--sj-tint); }
+#shiji-compare .new { --sj-radius:16px; --sj-body-weight:400; --sj-space:16px; }
+#shiji-compare .new .bar { padding-bottom:9px; }
+#shiji-compare .new .heading { font-size:21px; font-weight:600; }
+#shiji-compare .new .bar-actions { color:var(--sj-muted); }
+#shiji-compare .new .date { font-weight:500; margin-bottom:12px; }
+#shiji-compare .new .today { color:var(--sj-muted); font-size:12px; padding:6px 8px; border-radius:8px; background:var(--sj-fill); }
+#shiji-compare .new .summary { border:1px solid var(--sj-line); border-radius:var(--sj-radius); background:var(--sj-paper); padding:var(--sj-space); margin-bottom:20px; }
+#shiji-compare .new .summary-title { font-size:13px; color:var(--sj-muted); font-weight:var(--sj-body-weight); }
+#shiji-compare .new .energy { display:flex; align-items:baseline; gap:7px; font-size:36px; font-weight:650; letter-spacing:-1px; line-height:1.25; margin:5px 0 17px; font-variant-numeric:tabular-nums; }
+#shiji-compare .new .energy small { font-size:14px; font-weight:400; letter-spacing:0; color:var(--sj-muted); }
+#shiji-compare .new .macros { gap:12px; }
+#shiji-compare .new .macros > div { font-size:12px; color:var(--sj-muted); font-weight:var(--sj-body-weight); }
+#shiji-compare .new .macros b { display:block; margin-top:3px; font-size:16px; font-weight:600; color:var(--sj-ink); font-variant-numeric:tabular-nums; }
+#shiji-compare .new .macros small { font-size:11px; font-weight:400; color:var(--sj-muted); }
+#shiji-compare #sj-home-scene .summary { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:24px; align-items:start; }
+#shiji-compare #sj-home-scene .summary-title { font-size:12px; line-height:20px; }
+#shiji-compare #sj-home-scene .energy { display:flex; align-items:baseline; gap:6px; margin:12px 0 0; font-size:34px; line-height:1.2; white-space:nowrap; }
+#shiji-compare #sj-home-scene .energy small { display:inline; font-size:12px; margin:0; }
+#shiji-compare #sj-home-scene .macros { grid-template-columns:1fr; gap:8px; border:0; padding:0; }
+#shiji-compare #sj-home-scene .macros > div { display:flex; align-items:center; justify-content:space-between; gap:8px; font-size:12px; line-height:20px; }
+#shiji-compare #sj-home-scene .macros b { display:inline; margin:0; font-size:14px; line-height:20px; white-space:nowrap; }
+#shiji-compare .section-line { display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; }
+#shiji-compare .section-line strong { font-size:15px; font-weight:600; }
+#shiji-compare .section-line span { color:var(--sj-muted); font-size:12px; }
+#shiji-compare .new .meal { background:var(--sj-paper); border:1px solid var(--sj-line); border-radius:var(--sj-radius); margin-bottom:10px; }
+#shiji-compare .new .meal-head { display:flex; align-items:center; justify-content:space-between; padding:12px 13px; min-height:58px; gap:10px; }
+#shiji-compare .new .meal-title { display:flex; align-items:center; gap:8px; flex:1; text-align:left; font-weight:600; font-size:15px; }
+#shiji-compare .new .meal-title svg { width:15px; height:15px; color:var(--sj-muted); }
+#shiji-compare .new .meal-total { font-size:13px; font-weight:500; font-variant-numeric:tabular-nums; white-space:nowrap; }
+#shiji-compare .new .add { display:flex; align-items:center; justify-content:center; width:32px; height:32px; border-radius:10px; background:var(--sj-tint); color:var(--sj-green); }
+#shiji-compare .new .add svg { width:18px; height:18px; }
+#shiji-compare .new .meal-items { margin:0 13px; border-top:1px solid var(--sj-line); padding:2px 0 7px; }
+#shiji-compare .new .food-row { display:flex; align-items:center; gap:9px; padding:10px 0; }
+#shiji-compare .new .food-row + .food-row { border-top:1px solid var(--sj-fill); }
+#shiji-compare .new .food-mark { display:flex; justify-content:center; align-items:center; width:34px; height:34px; border-radius:9px; background:var(--sj-fill); color:var(--sj-muted); }
+#shiji-compare .new .food-mark svg { width:17px; height:17px; }
+#shiji-compare .new .food-info { flex:1; }
+#shiji-compare .new .food-info b { display:block; font-size:13px; font-weight:500; }
+#shiji-compare .new .food-info small { color:var(--sj-muted); font-size:11px; }
+#shiji-compare .new .food-row > span:last-child { font-size:12px; font-weight:500; white-space:nowrap; }
+#shiji-compare .new .empty-title { display:flex; flex-direction:column; gap:2px; flex:1; font-weight:500; }
+#shiji-compare .new .empty-title small { font-size:11px; color:var(--sj-muted); font-weight:var(--sj-body-weight); }
+#shiji-compare .new .bottom { padding-top:10px; border-top:1px solid var(--sj-line); }
+#shiji-compare .new .bottom span { font-weight:500; }
+#shiji-compare .search-area { display:flex; gap:12px; align-items:center; margin:4px 0 16px; }
+#shiji-compare .old .search-box { display:flex; flex:1; min-width:0; align-items:center; gap:12px; height:70px; padding:0 12px; border:1px solid var(--sj-line); border-radius:26px; background:var(--sj-fill); }
+#shiji-compare .search-box input { width:100%; min-width:0; background:transparent; border:0; outline-offset:4px; }
+#shiji-compare .old .search-box input { font-weight:500; font-size:16px; }
+#shiji-compare .old .search-submit { width:48px; height:48px; border-radius:12px; background:var(--sj-green); color:var(--sj-on); display:flex; align-items:center; justify-content:center; }
+#shiji-compare .chip-row { display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin-bottom:18px; }
+#shiji-compare .old .chip-row span { background:var(--sj-fill); color:var(--sj-muted); border-radius:50px; padding:9px 11px; font-weight:700; font-size:13px; }
+#shiji-compare .old .chip-row .active { color:var(--sj-ink); }
+#shiji-compare .old .chip-row { flex-wrap:nowrap; overflow:hidden; }
+#shiji-compare .old .chip-row span { flex-shrink:0; }
+#shiji-compare .old .result-label { font-size:16px; font-weight:700; color:var(--sj-muted); margin:22px 0 12px; }
+#shiji-compare .old .result { display:flex; gap:12px; align-items:center; background:var(--sj-paper); padding:14px 12px; border:1px solid var(--sj-line); border-radius:26px; box-shadow:0 6px 0 var(--sj-shadow); }
+#shiji-compare .old .thumb { width:50px; height:56px; background:var(--sj-fill); color:var(--sj-muted); border-radius:18px; display:flex; align-items:center; justify-content:center; }
+#shiji-compare .result-info { flex:1; min-width:0; }
+#shiji-compare .old .result-name { font-size:15px; font-weight:700; }
+#shiji-compare .brand { color:var(--sj-muted); font-size:12px; font-weight:400; }
+#shiji-compare .old .result-cal { font-size:13px; font-weight:500; margin:4px 0; }
+#shiji-compare .old .result-foot { display:flex; gap:5px; flex-wrap:wrap; align-items:center; font-size:12px; }
+#shiji-compare .old .tag { padding:3px 6px; border-radius:14px; background:var(--sj-fill); color:var(--sj-muted); font-size:11px; font-weight:700; }
+#shiji-compare .old .result-add { width:37px; height:40px; border-radius:12px; color:var(--sj-on); background:var(--sj-green); display:flex; align-items:center; justify-content:center; }
+#shiji-compare .old .notice { color:var(--sj-muted); font-size:12px; font-weight:500; padding:18px 0; }
+#shiji-compare .old .notice button { display:block; margin-left:auto; padding:5px; }
+#shiji-compare .new .context { margin:-4px 0 0; font-size:12px; color:var(--sj-muted); }
+#shiji-compare .new .bar-title { display:flex; flex-direction:column; gap:5px; }
+#shiji-compare .new .search-area { gap:8px; margin:10px 0 12px; }
+#shiji-compare .new .search-box { display:flex; align-items:center; flex:1; min-width:0; height:52px; padding:0 13px; border-radius:12px; border:1px solid var(--sj-line); background:var(--sj-paper); }
+#shiji-compare .new .search-box input { font-weight:400; font-size:16px; }
+#shiji-compare .new .search-submit { display:flex; align-items:center; justify-content:center; height:52px; width:52px; border-radius:12px; background:var(--sj-green); color:var(--sj-on); }
+#shiji-compare .new .scan-create { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:0 0 18px; }
+#shiji-compare .new .scan-create button { border:1px solid var(--sj-line); border-radius:12px; min-height:42px; display:flex; align-items:center; justify-content:center; gap:7px; background:var(--sj-paper); color:var(--sj-ink); font-weight:500; font-size:13px; }
+#shiji-compare .new .scan-create svg { width:17px; height:17px; color:var(--sj-green); }
+#shiji-compare .new .chip-row { gap:7px; margin-bottom:20px; }
+#shiji-compare .new .chip-row button { font-size:12px; padding:7px 10px; border-radius:24px; color:var(--sj-muted); background:var(--sj-fill); min-height:34px; display:flex; align-items:center; gap:4px; border:1px solid transparent; }
+#shiji-compare .new .chip-row button[aria-pressed="true"] { background:var(--sj-tint); color:var(--sj-green); border-color:var(--sj-green); font-weight:600; }
+#shiji-compare .new .chip-row svg { width:12px; height:12px; }
+#shiji-compare .new .chip-row button[aria-pressed="false"] svg { display:none; }
+#shiji-compare .new .result { display:flex; gap:12px; align-items:center; border:1px solid var(--sj-line); background:var(--sj-paper); padding:14px 12px; border-radius:var(--sj-radius); }
+#shiji-compare .new .thumb { width:50px; height:56px; flex-shrink:0; border-radius:11px; background:var(--sj-fill); display:flex; align-items:center; justify-content:center; color:var(--sj-muted); }
+#shiji-compare .new .result-name { font-size:15px; font-weight:700; }
+#shiji-compare .new .brand { display:inline; margin:0; font-size:12px; }
+#shiji-compare .new .result-cal { font-size:13px; font-weight:500; margin:4px 0; }
+#shiji-compare .new .result-foot { display:flex; gap:5px; flex-wrap:wrap; align-items:center; font-size:12px; }
+#shiji-compare .new .tag { color:var(--sj-muted); font-size:12px; font-weight:400; }
+#shiji-compare .new .result-add { display:flex; align-items:center; justify-content:center; flex-shrink:0; color:var(--sj-on); background:var(--sj-green); width:37px; height:40px; border-radius:10px; }
+#shiji-compare .new .result-add svg { width:19px; height:19px; }
+#shiji-compare .new .source-note { font-size:12px; color:var(--sj-muted); padding:13px 0; }
+#shiji-compare .new .source-note summary { min-height:32px; }
+#shiji-compare .new .source-note p { font-size:11px; padding-left:13px; margin:6px 0; }
+#shiji-compare .new .source-note button { color:var(--sj-green); text-decoration:underline; }
+#shiji-compare .comparison > div { min-width:0; }
+#shiji-compare .comparison .device { min-height:920px; }
+#shiji-compare [hidden] { display:none !important; }
+#shiji-compare .local-feedback { background:var(--sj-tint); color:var(--sj-green); border-radius:10px; padding:10px 12px; font-size:12px; margin-top:12px; }
+#shiji-compare #sj-home-device { position:relative; }
+#shiji-compare .phone-scene { display:flex; flex-direction:column; flex:1; }
+#shiji-compare .meal-group { background:var(--sj-paper); border:1px solid var(--sj-line); border-radius:var(--sj-radius); padding:0 15px; }
+#shiji-compare .group-meal { display:flex; align-items:center; gap:8px; width:100%; min-height:87px; padding:13px 0; text-align:left; }
+#shiji-compare .group-meal + .group-meal { border-top:1px solid var(--sj-line); }
+#shiji-compare .device .group-open { display:flex; align-items:center; gap:6px; flex:1; min-width:0; min-height:60px; text-align:left; }
+#shiji-compare .device .group-add { display:flex; align-items:center; justify-content:center; width:44px; height:44px; flex-shrink:0; color:var(--sj-green); }
+#shiji-compare .group-add span { width:32px; height:32px; display:flex; align-items:center; justify-content:center; border-radius:10px; background:var(--sj-tint); }
+#shiji-compare .group-add svg { width:20px; height:20px; }
+#shiji-compare .group-main { flex:1; min-width:0; }
+#shiji-compare .group-top { display:flex; align-items:baseline; justify-content:space-between; gap:12px; margin-bottom:6px; }
+#shiji-compare .group-name { font-size:16px; font-weight:600; }
+#shiji-compare .group-energy { font-size:14px; font-weight:600; font-variant-numeric:tabular-nums; white-space:nowrap; }
+#shiji-compare .group-energy small { color:var(--sj-muted); font-size:11px; font-weight:400; }
+#shiji-compare .group-foods { display:block; color:var(--sj-muted); font-size:12px; font-weight:var(--sj-body-weight); white-space:nowrap; text-overflow:ellipsis; overflow:hidden; }
+#shiji-compare .detail-bar { display:grid; grid-template-columns:42px 1fr 48px; align-items:center; padding:7px 12px 13px; min-height:62px; }
+#shiji-compare .detail-bar .heading { font-size:20px; text-align:center; }
+#shiji-compare .detail-bar .edit { color:var(--sj-green); font-size:14px; font-weight:500; min-height:40px; }
+#shiji-compare .detail-date { font-size:12px; color:var(--sj-muted); margin:0 0 14px; }
+#shiji-compare .detail-summary { background:var(--sj-paper); border:1px solid var(--sj-line); border-radius:var(--sj-radius); padding:18px 16px; margin-bottom:22px; }
+#shiji-compare .detail-summary .summary-title { display:flex; align-items:center; gap:6px; }
+#shiji-compare .detail-summary .macros { border-top:1px solid var(--sj-line); padding-top:14px; }
+#shiji-compare .record-list { border:1px solid var(--sj-line); border-radius:var(--sj-radius); background:var(--sj-paper); padding:0 13px; }
+#shiji-compare .record { display:flex; align-items:center; gap:10px; padding:15px 0; min-height:84px; }
+#shiji-compare .record + .record { border-top:1px solid var(--sj-line); }
+#shiji-compare .record label { display:flex; align-items:center; width:100%; gap:10px; }
+#shiji-compare .record input[type=checkbox],#shiji-compare .select-all input { accent-color:var(--sj-green); width:19px; height:19px; margin:0; flex-shrink:0; }
+#shiji-compare .record-body { flex:1; min-width:0; }
+#shiji-compare .record-name { font-size:14px; font-weight:500; overflow-wrap:anywhere; }
+#shiji-compare .record-quantity { color:var(--sj-muted); font-size:12px; margin:3px 0; }
+#shiji-compare .record-macros { color:var(--sj-muted); font-size:11px; line-height:1.6; }
+#shiji-compare .record-kcal { font-size:14px; font-weight:600; white-space:nowrap; }
+#shiji-compare .record-kcal small { font-size:11px; font-weight:400; color:var(--sj-muted); }
+#shiji-compare .record-mark { width:36px; height:36px; background:var(--sj-fill); border-radius:10px; display:flex; align-items:center; justify-content:center; color:var(--sj-muted); flex-shrink:0; }
+#shiji-compare .record-mark svg { width:18px; height:18px; }
+#shiji-compare .select-all { display:flex; align-items:center; gap:7px; color:var(--sj-green); font-size:12px; }
+#shiji-compare .edit-actions { display:grid; grid-template-columns:1fr 1fr; gap:12px; border-top:1px solid var(--sj-line); background:var(--sj-paper); padding:14px 16px 22px; margin-top:20px; }
+#shiji-compare .device .action { border:1px solid var(--sj-line); border-radius:12px; display:flex; align-items:center; justify-content:center; gap:7px; min-height:46px; padding:10px 14px; background:var(--sj-paper); font-size:14px; font-weight:500; }
+#shiji-compare .device .action.primary { background:var(--sj-green); color:var(--sj-on); border-color:transparent; }
+#shiji-compare .device .action.danger { color:light-dark(#b53e36,#ffb4ab); }
+#shiji-compare .device button:disabled { opacity:.4; }
+#shiji-compare .detail-add { width:100%; margin-top:16px; }
+#shiji-compare .detail-empty { text-align:center; padding:30px 0; color:var(--sj-muted); font-size:13px; }
+#shiji-compare .sheet-shade { position:absolute; inset:0; z-index:4; background:light-dark(#102b2248,#00000088); display:flex; align-items:flex-end; border-radius:26px; }
+#shiji-compare .action-sheet { width:100%; padding:19px 18px 24px; background:var(--sj-paper); border-radius:24px 24px 26px 26px; }
+#shiji-compare .sheet-title { display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:4px; }
+#shiji-compare .sheet-title strong { font-size:18px; font-weight:600; }
+#shiji-compare .sheet-note { color:var(--sj-muted); font-size:12px; margin:0 0 20px; }
+#shiji-compare .sheet-field { display:flex; flex-direction:column; gap:7px; font-size:13px; margin:15px 0; }
+#shiji-compare .sheet-field input,#shiji-compare .sheet-field select { font:inherit; font-size:16px; width:100%; min-width:0; height:48px; border:1px solid var(--sj-line); border-radius:10px; background:var(--sj-fill); color:var(--sj-ink); padding:0 11px; }
+#shiji-compare .sheet-buttons { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:20px; }
+#shiji-compare .toast-line { display:flex; flex-direction:column; gap:5px; font-size:12px; color:var(--sj-green); background:var(--sj-tint); padding:11px 12px; border-radius:10px; margin-top:14px; }
+#shiji-compare .toast-line button { text-align:left; text-decoration:underline; font-weight:500; }
+@media(max-width:620px) { #shiji-compare .comparison { grid-template-columns:1fr; gap:24px; } #shiji-compare .device { min-height:780px; } }
+@media(pointer:coarse) { #shiji-compare .device button { min-height:44px; } }
+</style>
+<div id="shiji-compare">
+  <div class="viz-carousel viz-dotted-background" aria-label="食迹界面对比" data-previous-label="上一页" data-next-label="下一页">
+    <section data-variant="日记首页" aria-label="日记首页改前改后">
+      <div class="comparison">
+        <div><p class="caption">原布局 · 示例数据</p>
+          <div class="device old" aria-label="原版日记布局">
+            <div class="status"><span>9:41</span><span><i data-lucide="signal" aria-hidden="true"></i><i data-lucide="wifi" aria-hidden="true"></i><i data-lucide="battery-full" aria-hidden="true"></i></span></div>
+            <div class="bar"><h2 class="heading">饮食记录</h2><div class="bar-actions"><span class="icon"><i data-lucide="refrigerator" aria-hidden="true"></i></span><span class="icon"><i data-lucide="sliders-horizontal" aria-hidden="true"></i></span></div></div>
+            <div class="content">
+              <div class="date"><i data-lucide="chevron-left" aria-hidden="true"></i><span class="date-main"><i data-lucide="calendar" aria-hidden="true"></i>2026年10月15日</span><i data-lucide="chevron-right" aria-hidden="true"></i><span>今天</span></div>
+              <div class="summary"><div class="summary-title">已摄入热量</div><div class="energy">495 kcal</div><div class="macros"><div>蛋白质<b>37.4 g</b></div><div>脂肪<b>10.1 g</b></div><div>碳水<b>63.0 g</b></div></div></div>
+              <div class="meal"><div><div class="meal-name">早餐</div><div class="meal-sub">120 kcal</div></div><i data-lucide="chevron-down" aria-hidden="true"></i><i class="plus" data-lucide="circle-plus" aria-hidden="true"></i></div>
+              <div class="meal"><div><div class="meal-name">午餐</div><div class="meal-sub">375 kcal</div></div><i data-lucide="chevron-down" aria-hidden="true"></i><i class="plus" data-lucide="circle-plus" aria-hidden="true"></i></div>
+              <div class="meal"><div><div class="meal-name">晚餐</div><div class="meal-sub">0 kcal</div></div><i data-lucide="chevron-down" aria-hidden="true"></i><i class="plus" data-lucide="circle-plus" aria-hidden="true"></i></div>
+              <div class="meal"><div><div class="meal-name">零食</div><div class="meal-sub">0 kcal</div></div><i data-lucide="chevron-down" aria-hidden="true"></i><i class="plus" data-lucide="circle-plus" aria-hidden="true"></i></div>
+            </div>
+            <nav class="bottom" aria-label="原版底部导航"><span class="chosen"><em><i data-lucide="calendar-days" aria-hidden="true"></i></em>日记</span><span><em><i data-lucide="refrigerator" aria-hidden="true"></i></em>食品库</span><span><em><i data-lucide="chart-no-axes-combined" aria-hidden="true"></i></em>趋势</span><span><em><i data-lucide="user-round" aria-hidden="true"></i></em>我的</span></nav>
+          </div>
+        </div>
+        <div><p class="caption">合并分组方案 · 可点击餐次</p>
+          <div class="device new" id="sj-home-device" aria-label="合并分组首页与餐次详情">
+            <div class="status"><span>9:41</span><span><i data-lucide="signal" aria-hidden="true"></i><i data-lucide="wifi" aria-hidden="true"></i><i data-lucide="battery-full" aria-hidden="true"></i></span></div>
+            <div class="phone-scene" id="sj-home-scene">
+            <div class="bar"><h2 class="heading">饮食记录</h2><div class="bar-actions"><span class="icon"><i data-lucide="refrigerator" aria-hidden="true"></i></span><span class="icon"><i data-lucide="sliders-horizontal" aria-hidden="true"></i></span></div></div>
+            <div class="content">
+              <div class="date"><button type="button" class="icon cursor-interaction" aria-label="前一天" data-shift-day="-1"><i data-lucide="chevron-left" aria-hidden="true"></i></button><span class="date-main"><i data-lucide="calendar" aria-hidden="true"></i><span id="sj-home-date">10月15日</span></span><button type="button" class="icon cursor-interaction" aria-label="后一天" data-shift-day="1"><i data-lucide="chevron-right" aria-hidden="true"></i></button><button type="button" class="today cursor-interaction" id="sj-go-today">今天</button></div>
+              <div class="summary"><div class="energy-column"><div class="summary-title">已摄入热量</div><div class="energy"><span id="sj-day-kcal">495</span><small>kcal</small></div></div><div class="macros"><div>碳水<b><span id="sj-day-carbs">63.0</span> <small>g</small></b></div><div>蛋白质<b><span id="sj-day-protein">37.4</span> <small>g</small></b></div><div>脂肪<b><span id="sj-day-fat">10.1</span> <small>g</small></b></div></div></div>
+              <div class="section-line"><strong>当日饮食</strong><span id="sj-full-date">2026年10月15日</span></div>
+              <div class="meal-group" id="sj-meal-group" aria-label="四餐记录"></div>
+              <div class="toast-line" id="sj-home-toast" role="status" hidden></div>
+            </div>
+            <nav class="bottom" aria-label="优化版底部导航"><span class="chosen"><em><i data-lucide="calendar-days" aria-hidden="true"></i></em>日记</span><span><em><i data-lucide="refrigerator" aria-hidden="true"></i></em>食品库</span><span><em><i data-lucide="chart-no-axes-combined" aria-hidden="true"></i></em>趋势</span><span><em><i data-lucide="user-round" aria-hidden="true"></i></em>我的</span></nav>
+            </div>
+            <div class="phone-scene" id="sj-detail-scene" hidden>
+              <div class="detail-bar"><button class="icon cursor-interaction" type="button" aria-label="返回首页" id="sj-detail-back"><i data-lucide="arrow-left" aria-hidden="true"></i></button><h2 class="heading" id="sj-detail-title">早餐</h2><button class="edit cursor-interaction" type="button" id="sj-edit-toggle">编辑</button></div>
+              <div class="content">
+                <p class="detail-date" id="sj-detail-date">2026年10月15日</p>
+                <div class="detail-summary"><div class="summary-title">本餐已摄入</div><div class="energy"><span id="sj-meal-kcal">120</span><small>kcal</small></div><div class="macros"><div>碳水<b><span id="sj-meal-carbs">18.6</span> <small>g</small></b></div><div>蛋白质<b><span id="sj-meal-protein">6.2</span> <small>g</small></b></div><div>脂肪<b><span id="sj-meal-fat">2.2</span> <small>g</small></b></div></div></div>
+                <div class="section-line"><strong id="sj-record-count">食品记录 · 2 项</strong><label class="select-all cursor-interaction" id="sj-select-all-label" hidden><input type="checkbox" id="sj-select-all">全选</label></div>
+                <div class="record-list" id="sj-record-list"></div>
+                <button class="action primary detail-add cursor-interaction" id="sj-detail-add" type="button"><i data-lucide="plus" aria-hidden="true"></i>添加食品</button>
+                <div class="toast-line" id="sj-detail-toast" role="status" hidden></div>
+              </div>
+              <div class="edit-actions" id="sj-edit-actions" hidden><button class="action danger cursor-interaction" id="sj-delete-open" type="button" disabled><i data-lucide="trash-2" aria-hidden="true"></i>删除</button><button class="action primary cursor-interaction" id="sj-copy-open" type="button" disabled><i data-lucide="copy" aria-hidden="true"></i>复制到…</button></div>
+            </div>
+            <div class="sheet-shade" id="sj-copy-sheet" hidden><div class="action-sheet" role="dialog" aria-modal="true" aria-labelledby="sj-copy-title"><div class="sheet-title"><strong id="sj-copy-title">复制食品记录</strong><button type="button" class="icon cursor-interaction" aria-label="关闭复制" data-close-sheet="copy"><i data-lucide="x" aria-hidden="true"></i></button></div><p class="sheet-note" id="sj-copy-note">已选择 0 项，原餐次的记录保留。</p><label class="sheet-field">目标日期<input type="date" id="sj-copy-date" value="2026-10-16" required></label><label class="sheet-field">目标餐次<select id="sj-copy-meal"><option value="breakfast">早餐</option><option value="lunch">午餐</option><option value="dinner" selected>晚餐</option><option value="snack">零食</option></select></label><div class="sheet-buttons"><button type="button" class="action cursor-interaction" data-close-sheet="copy">取消</button><button type="button" class="action primary cursor-interaction" id="sj-copy-confirm">确认复制</button></div></div></div>
+            <div class="sheet-shade" id="sj-delete-sheet" hidden><div class="action-sheet" role="dialog" aria-modal="true" aria-labelledby="sj-delete-title"><div class="sheet-title"><strong id="sj-delete-title">删除选中的记录？</strong></div><p class="sheet-note" id="sj-delete-note"></p><div class="sheet-buttons"><button type="button" class="action cursor-interaction" data-close-sheet="delete">取消</button><button type="button" class="action danger cursor-interaction" id="sj-delete-confirm">删除记录</button></div></div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section data-variant="添加食品" aria-label="添加食品改前改后" hidden>
+      <div class="comparison">
+        <div><p class="caption">原布局复刻</p>
+          <div class="device old" aria-label="原版添加食品布局">
+            <div class="status"><span>9:41</span><span><i data-lucide="signal" aria-hidden="true"></i><i data-lucide="wifi" aria-hidden="true"></i><i data-lucide="battery-full" aria-hidden="true"></i></span></div>
+            <div class="bar"><h2 class="heading">午餐</h2><div class="bar-actions"><span class="icon"><i data-lucide="notebook-pen" aria-hidden="true"></i></span><span class="icon"><i data-lucide="list-plus" aria-hidden="true"></i></span><span class="icon"><i data-lucide="circle-plus" aria-hidden="true"></i></span></div></div>
+            <div class="content">
+              <div class="search-area"><label class="search-box"><i data-lucide="search" aria-hidden="true"></i><input value="米饭" aria-label="原版搜索示意" readonly><i data-lucide="scan-line" aria-hidden="true"></i></label><span class="search-submit"><i data-lucide="search" aria-hidden="true"></i></span></div>
+              <div class="chip-row"><span>最近</span><span>我的食品</span><span>收藏</span><span class="active">全部</span><span>产品</span><span>食物</span></div>
+              <div class="result-label">搜索结果</div>
+              <div class="result"><span class="thumb"><i data-lucide="utensils" aria-hidden="true"></i></span><div class="result-info"><div class="result-name">我的米饭 <span class="brand">测试品牌</span></div><div class="result-cal">每 100 g · 123 kcal</div><div class="result-foot"><span class="tag">我的食品</span><span>包装大小 200 g</span></div></div><span class="result-add"><i data-lucide="plus" aria-hidden="true"></i></span></div>
+              <div class="notice">Open Food Facts：暂时无法连接，本地结果仍可使用<span class="icon" style="display:flex;justify-content:flex-end"><i data-lucide="rotate-cw" aria-hidden="true"></i></span></div>
+              <div class="notice">参考食品库：此版本未接入，本地食品仍可使用</div>
+            </div>
+          </div>
+        </div>
+        <div><p class="caption">优化提案</p>
+          <div class="device new" aria-label="优化添加食品布局">
+            <div class="status"><span>9:41</span><span><i data-lucide="signal" aria-hidden="true"></i><i data-lucide="wifi" aria-hidden="true"></i><i data-lucide="battery-full" aria-hidden="true"></i></span></div>
+            <div class="bar"><div class="bar-title"><h2 class="heading">添加食品</h2><p class="context">2026年10月15日 · 午餐</p></div><span class="icon"><i data-lucide="ellipsis" aria-hidden="true"></i></span></div>
+            <div class="content">
+              <div class="search-area"><label class="search-box"><input value="米饭" aria-label="搜索食品" id="sj-search-input"></label><button class="search-submit cursor-interaction" type="button" aria-label="搜索食品" id="sj-search-button"><i data-lucide="search" aria-hidden="true"></i></button></div>
+              <div class="scan-create"><button type="button" class="cursor-interaction" data-feedback="扫码"><i data-lucide="scan-barcode" aria-hidden="true"></i>扫码添加</button><button type="button" class="cursor-interaction" data-feedback="创建食品"><i data-lucide="plus" aria-hidden="true"></i>创建食品</button></div>
+              <div class="chip-row" aria-label="食品筛选"><button class="cursor-interaction" type="button" aria-pressed="true" data-filter="搜索"><i data-lucide="check" aria-hidden="true"></i>搜索</button><button class="cursor-interaction" type="button" aria-pressed="false" data-filter="最近"><i data-lucide="check" aria-hidden="true"></i>最近</button><button class="cursor-interaction" type="button" aria-pressed="false" data-filter="收藏"><i data-lucide="check" aria-hidden="true"></i>收藏</button></div>
+              <div class="section-line"><strong id="sj-results-label">搜索结果</strong><span id="sj-results-count">1 项</span></div>
+              <div class="result" id="sj-result"><span class="thumb"><i data-lucide="utensils" aria-hidden="true"></i></span><div class="result-info"><div class="result-name">我的米饭 <span class="brand">测试品牌</span></div><div class="result-cal">每 100 g · 123 kcal</div><div class="result-foot"><span class="tag">我的食品</span><span>包装大小 200 g</span></div></div><button type="button" class="result-add cursor-interaction" aria-label="选择我的米饭" data-feedback="选择食品"><i data-lucide="plus" aria-hidden="true"></i></button></div>
+              <details class="source-note"><summary class="cursor-interaction">显示本地结果 · 在线来源暂不可用</summary><p>Open Food Facts：暂时无法连接。<button class="cursor-interaction" type="button" data-feedback="重试">重试</button></p><p>参考食品库：此版本未接入。</p></details>
+              <div class="local-feedback" role="status" hidden></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+<script>
+(() => {
+  const root = document.getElementById('shiji-compare');
+  const state = { radius:16, spacing:16, bodyWeight:'常规', search:'米饭', filter:'搜索', day:'2026-10-15', meal:'breakfast', view:'home', editing:false };
+  const mealNames = { breakfast:'早餐', lunch:'午餐', dinner:'晚餐', snack:'零食' };
+  let selected = new Set();
+  let toast = null;
+  let sequence = 10;
+  const store = { '2026-10-15': {
+    breakfast:[
+      {id:'toast',name:'全麦吐司',quantity:'30 g',kcal:80,carbs:13.8,protein:2.8,fat:1.4},
+      {id:'milk',name:'低脂牛奶',quantity:'100 ml',kcal:40,carbs:4.8,protein:3.4,fat:0.8}
+    ],
+    lunch:[
+      {id:'rice',name:'米饭',quantity:'150 g',kcal:174,carbs:38.4,protein:3.6,fat:0.5},
+      {id:'chicken',name:'黑椒香煎鸡胸肉（去皮、少油）',quantity:'80 g',kcal:132,carbs:0,protein:24,fat:4},
+      {id:'broccoli',name:'清炒西兰花',quantity:'120 g',kcal:69,carbs:6,protein:3.6,fat:3.4}
+    ], dinner:[],snack:[]
+  } };
+  const restored = window.openai?.widgetState?.modelContent;
+  if (restored && typeof restored === 'object') {
+    if (typeof restored.search === 'string') state.search = restored.search;
+    if (['搜索','最近','收藏'].includes(restored.filter)) state.filter = restored.filter;
+  }
+  function remember() {
+    window.openai?.setWidgetState?.({ modelContent:{ homeLayout:'四餐合并分组', search:state.search, filter:state.filter, meal:state.meal, view:state.view }, privateContent:null })?.catch(() => {});
+  }
+  const escape = value => String(value).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const dateLabel = day => { const [y,m,d]=day.split('-').map(Number); return `${y}年${m}月${d}日`; };
+  function records(day=state.day,meal=state.meal) { return store[day]?.[meal] || []; }
+  function sum(items,key) { return items.reduce((total,item) => total+item[key],0); }
+  function getDay(day) { return store[day] ||= {breakfast:[],lunch:[],dinner:[],snack:[]}; }
+  function renderMeals() {
+    const dayItems=Object.keys(mealNames).flatMap(meal=>records(state.day,meal));
+    root.querySelector('#sj-home-date').textContent=dateLabel(state.day).replace(/^\d+年/,'');
+    root.querySelector('#sj-full-date').textContent=dateLabel(state.day);
+    root.querySelector('#sj-day-kcal').textContent=sum(dayItems,'kcal');
+    for(const nutrient of ['carbs','protein','fat']) root.querySelector('#sj-day-'+nutrient).textContent=sum(dayItems,nutrient).toFixed(1);
+    root.querySelector('#sj-meal-group').innerHTML=Object.entries(mealNames).map(([meal,name])=>{
+      const items=records(state.day,meal), names=items.map(item=>item.name).join('、');
+      return `<div class="group-meal"><button type="button" class="group-open cursor-interaction" data-open-meal="${meal}" aria-label="查看${name}详情" data-tooltip="${escape(names || '尚未记录')}"><span class="group-main"><span class="group-top"><span class="group-name">${name}</span><span class="group-energy">${sum(items,'kcal')} <small>kcal</small></span></span><span class="group-foods">${escape(names || '尚未记录')}</span></span></button><button type="button" class="group-add cursor-interaction" data-add-meal="${meal}" aria-label="添加${name}记录"><span><i data-lucide="plus" aria-hidden="true"></i></span></button></div>`;
+    }).join('');
+    root.querySelector('#sj-home-scene').hidden=state.view!=='home';
+    root.querySelector('#sj-detail-scene').hidden=state.view!=='detail';
+    const items=records();
+    root.querySelector('#sj-detail-title').textContent=mealNames[state.meal];
+    root.querySelector('#sj-detail-date').textContent=dateLabel(state.day);
+    root.querySelector('#sj-meal-kcal').textContent=sum(items,'kcal');
+    for(const nutrient of ['carbs','protein','fat']) root.querySelector('#sj-meal-'+nutrient).textContent=sum(items,nutrient).toFixed(1);
+    root.querySelector('#sj-edit-toggle').textContent=state.editing?'完成':'编辑';
+    root.querySelector('#sj-edit-toggle').disabled=!items.length;
+    root.querySelector('#sj-record-count').textContent=state.editing?`已选择 ${selected.size} 项`:`食品记录 · ${items.length} 项`;
+    root.querySelector('#sj-select-all-label').hidden=!state.editing;
+    root.querySelector('#sj-select-all').checked=!!items.length&&items.every(item=>selected.has(item.id));
+    root.querySelector('#sj-edit-actions').hidden=!state.editing;
+    root.querySelector('#sj-detail-add').hidden=state.editing;
+    root.querySelector('#sj-delete-open').disabled=!selected.size;
+    root.querySelector('#sj-copy-open').disabled=!selected.size;
+    root.querySelector('#sj-record-list').innerHTML=items.length?items.map(item=>`<div class="record"><label class="${state.editing?'cursor-interaction':''}">${state.editing?`<input type="checkbox" data-record="${escape(item.id)}" aria-label="选择${escape(item.name)}" ${selected.has(item.id)?'checked':''}>`:'<span class="record-mark"><i data-lucide="utensils" aria-hidden="true"></i></span>'}<span class="record-body"><span class="record-name">${escape(item.name)}</span><span class="record-quantity" style="display:block">${escape(item.quantity)}</span><span class="record-macros">碳水 ${item.carbs.toFixed(1)} · 蛋白质 ${item.protein.toFixed(1)} · 脂肪 ${item.fat.toFixed(1)} g</span></span><span class="record-kcal">${item.kcal}<small> kcal</small></span></label></div>`).join(''):'<div class="detail-empty">这一餐还没有食品记录</div>';
+    for(const id of ['sj-home-toast','sj-detail-toast']) {
+      const element=root.querySelector('#'+id);
+      element.hidden=!toast;
+      element.innerHTML=toast?`<span>${escape(toast.message)}</span>${toast.target?'<button class="cursor-interaction" type="button" data-view-target>查看目标餐次</button>':''}`:'';
+    }
+    if(globalThis.lucide) lucide.createIcons({attrs:{width:16,height:16}});
+  }
+  function render() {
+    root.querySelectorAll('.new').forEach(el => {
+      el.style.setProperty('--sj-radius',state.radius+'px');
+      el.style.setProperty('--sj-space',state.spacing+'px');
+      el.style.setProperty('--sj-body-weight',state.bodyWeight==='常规'?'400':'500');
+    });
+    renderMeals();
+    root.querySelector('#sj-search-input').value = state.search;
+    root.querySelectorAll('[data-filter]').forEach(el => el.setAttribute('aria-pressed',String(el.dataset.filter===state.filter)));
+    const found = !state.search.trim() || '我的米饭测试品牌'.includes(state.search.trim());
+    root.querySelector('#sj-result').hidden = !found;
+    root.querySelector('#sj-results-count').textContent = found ? '1 项' : '0 项';
+    root.querySelector('#sj-results-label').textContent = state.filter==='搜索'?'搜索结果':state.filter+'食品';
+  }
+  root.addEventListener('click',event=>{
+    const add=event.target.closest('[data-add-meal]');
+    if(add) {toast={message:`预览：添加到 ${dateLabel(state.day)} · ${mealNames[add.dataset.addMeal]}`};renderMeals();remember();}
+    const open=event.target.closest('[data-open-meal]');
+    if(open) {state.meal=open.dataset.openMeal;state.view='detail';state.editing=false;selected.clear();toast=null;renderMeals();remember();}
+    const shift=event.target.closest('[data-shift-day]');
+    if(shift) {const day=new Date(state.day+'T12:00:00');day.setDate(day.getDate()+Number(shift.dataset.shiftDay));state.day=`${day.getFullYear()}-${String(day.getMonth()+1).padStart(2,'0')}-${String(day.getDate()).padStart(2,'0')}`;toast=null;renderMeals();remember();}
+    const close=event.target.closest('[data-close-sheet]');
+    if(close) {root.querySelector('#sj-'+close.dataset.closeSheet+'-sheet').hidden=true;root.querySelector('#sj-'+close.dataset.closeSheet+'-open').focus();}
+    if(event.target.closest('[data-view-target]')&&toast?.target) {state.day=toast.target.day;state.meal=toast.target.meal;state.view='detail';state.editing=false;selected.clear();toast=null;renderMeals();remember();}
+  });
+  root.addEventListener('change',event=>{
+    if(event.target.matches('[data-record]')) {event.target.checked?selected.add(event.target.dataset.record):selected.delete(event.target.dataset.record);renderMeals();}
+    if(event.target.id==='sj-select-all') {selected=event.target.checked?new Set(records().map(item=>item.id)):new Set();renderMeals();}
+  });
+  root.querySelector('#sj-detail-back').addEventListener('click',()=>{state.view='home';state.editing=false;selected.clear();renderMeals();remember();});
+  root.querySelector('#sj-go-today').addEventListener('click',()=>{state.day='2026-10-15';toast=null;renderMeals();remember();});
+  root.querySelector('#sj-edit-toggle').addEventListener('click',()=>{state.editing=!state.editing;selected.clear();toast=null;renderMeals();remember();});
+  root.querySelector('#sj-copy-open').addEventListener('click',()=>{
+    root.querySelector('#sj-copy-note').textContent=`已选择 ${selected.size} 项，原餐次的记录保留。`;
+    root.querySelector('#sj-copy-sheet').hidden=false;
+    root.querySelector('#sj-copy-date').focus();
+  });
+  root.querySelector('#sj-copy-date').addEventListener('input',event=>{root.querySelector('#sj-copy-confirm').disabled=!event.target.value;});
+  root.querySelector('#sj-copy-confirm').addEventListener('click',()=>{
+    const day=root.querySelector('#sj-copy-date').value,meal=root.querySelector('#sj-copy-meal').value;
+    if(!/^\d{4}-\d{2}-\d{2}$/.test(day)||!mealNames[meal]||!selected.size)return;
+    const chosen=records().filter(item=>selected.has(item.id));
+    getDay(day)[meal].push(...chosen.map(item=>({...item,id:'copied-'+sequence++})));
+    toast={message:`已复制 ${chosen.length} 项到 ${dateLabel(day)} · ${mealNames[meal]}`,target:{day,meal}};
+    root.querySelector('#sj-copy-sheet').hidden=true;
+    selected.clear();state.editing=false;renderMeals();remember();
+  });
+  root.querySelector('#sj-delete-open').addEventListener('click',()=>{
+    root.querySelector('#sj-delete-note').textContent=`将删除${dateLabel(state.day)}${mealNames[state.meal]}的 ${selected.size} 项记录。`;
+    root.querySelector('#sj-delete-sheet').hidden=false;
+    root.querySelector('#sj-delete-sheet [data-close-sheet]').focus();
+  });
+  root.querySelector('#sj-delete-confirm').addEventListener('click',()=>{
+    const count=selected.size;
+    getDay(state.day)[state.meal]=records().filter(item=>!selected.has(item.id));
+    selected.clear();state.editing=false;toast={message:`已删除 ${count} 项示例记录`};
+    root.querySelector('#sj-delete-sheet').hidden=true;
+    renderMeals();remember();
+  });
+  root.querySelector('#sj-detail-add').addEventListener('click',()=>{toast={message:`预览：添加到 ${dateLabel(state.day)} · ${mealNames[state.meal]}`};renderMeals();});
+  function search() { state.search=root.querySelector('#sj-search-input').value; render(); remember(); }
+  root.querySelector('#sj-search-button').addEventListener('click',search);
+  root.querySelector('#sj-search-input').addEventListener('keydown',e => { if(e.key==='Enter') search(); });
+  root.querySelectorAll('[data-filter]').forEach(button => button.addEventListener('click',() => { state.filter=button.dataset.filter; render(); remember(); }));
+  root.querySelectorAll('[data-feedback]').forEach(button => button.addEventListener('click',() => {
+    const panel = button.closest('.device').querySelector('.local-feedback');
+    const labels = { '早餐':'预览：添加到10月15日 · 早餐', '午餐':'预览：添加到10月15日 · 午餐', '晚餐':'预览：添加到10月15日 · 晚餐', '零食':'预览：添加到10月15日 · 零食', '扫码':'预览：扫码添加入口', '创建食品':'预览：创建食品入口', '选择食品':'预览：我的米饭 · 添加到10月15日午餐', '重试':'预览：重试在线来源' };
+    panel.textContent=labels[button.dataset.feedback]; panel.hidden=false;
+  }));
+  window.addEventListener('openai:set_globals',event => {
+    const next=event.detail?.globals?.widgetState?.modelContent;
+    if(!next || typeof next!=='object')return;
+    if(typeof next.search==='string')state.search=next.search;
+    if(['搜索','最近','收藏'].includes(next.filter))state.filter=next.filter;
+    render();
+  });
+  render();
+  if(globalThis.Tweak) {
+    const tweak=new Tweak({container:root,onChange:render});
+    tweak.addSlider(state,'radius',{label:'提案卡片圆角',min:8,max:26,unit:'px'});
+    tweak.addSlider(state,'spacing',{label:'提案汇总卡内边距',min:12,max:24,unit:'px'});
+    tweak.addSelect(state,'bodyWeight',{label:'提案辅助文字字重',options:['常规','中等']});
+  }
+})();
+</script>

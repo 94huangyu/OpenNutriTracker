@@ -50,6 +50,16 @@ class _Days extends AddTrackedDayUsecase {
   }
 }
 
+class _FailingIntakes extends IntakeRepository {
+  int writes = 0;
+  _FailingIntakes(super.source);
+  @override
+  Future<void> addIntake(IntakeEntity item) async {
+    await super.addIntake(item);
+    if (++writes == 2) throw StateError('simulated partial batch write');
+  }
+}
+
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
   late Directory dir;
@@ -192,4 +202,122 @@ void main() {
     expect(box.values.single.amount, 30);
     expect(box.values.single.unit, 'g');
   });
+  test(
+    'batch copy uses explicit destination day and meal under a 6am boundary',
+    () async {
+      final target = DateTime(2026, 10, 20);
+      await changes.copySelected(
+        [intake, intake],
+        target,
+        IntakeTypeEntity.lunch,
+      );
+      final copies = await repo.getIntakeByDateAndType(
+        IntakeTypeEntity.lunch,
+        target,
+        dayStartOffsetHours: 6,
+      );
+      expect(copies, hasLength(2));
+      expect(copies.map((i) => i.id).toSet(), hasLength(2));
+      for (final copy in copies) {
+        expect(copy.dateTime, target);
+        expect(copy.amount, intake.amount);
+        expect(copy.unit, intake.unit);
+        expect(copy.meal.nutriments.vitaminB12100, 2.5);
+      }
+      expect(
+        (await dayRepo.getTrackedDay(day))!.caloriesTracked,
+        closeTo(40, 1e-9),
+      );
+      expect(
+        (await dayRepo.getTrackedDay(target))!.caloriesTracked,
+        closeTo(80, 1e-9),
+      );
+      await repo.updateIntake(copies.first.id, {'amount': 30.0, 'unit': 'g'});
+      expect((await repo.getIntakeById(intake.id))!.amount, 7.5);
+      expect((await repo.getIntakeById(intake.id))!.unit, 'serving');
+      await changes.deleteSelected(copies, target);
+      expect((await dayRepo.getTrackedDay(target))!.caloriesTracked, 0);
+      expect(box.values.single.id, intake.id);
+      expect(
+        (await dayRepo.getTrackedDay(day))!.caloriesTracked,
+        closeTo(40, 1e-9),
+      );
+    },
+  );
+
+  test(
+    'batch failure restores all records and totals and can be retried',
+    () async {
+      days.failOnce = true;
+      final target = DateTime(2026, 10, 21);
+      await expectLater(
+        changes.copySelected([intake, intake], target, IntakeTypeEntity.snack),
+        throwsStateError,
+      );
+      expect(box.values.single.id, intake.id);
+      expect((await dayRepo.getTrackedDay(target))!.caloriesTracked, 0);
+      await changes.copySelected([intake], target, IntakeTypeEntity.snack);
+      final copies = await repo.getIntakeByDateAndType(
+        IntakeTypeEntity.snack,
+        target,
+        dayStartOffsetHours: 6,
+      );
+      days.failOnce = true;
+      await expectLater(
+        changes.deleteSelected(copies, target),
+        throwsStateError,
+      );
+      expect(box.length, 2);
+      expect(
+        (await dayRepo.getTrackedDay(target))!.caloriesTracked,
+        closeTo(40, 1e-9),
+      );
+      await changes.deleteSelected(copies, target);
+      expect(box.values.single.id, intake.id);
+    },
+  );
+
+  test('same-day cross-meal copy leaves source intact', () async {
+    await changes.copySelected([intake], day, IntakeTypeEntity.breakfast);
+    expect(
+      (await repo.getIntakeByDateAndType(
+        IntakeTypeEntity.breakfast,
+        day,
+        dayStartOffsetHours: 6,
+      )).length,
+      1,
+    );
+    expect(
+      (await repo.getIntakeById(intake.id))!.type,
+      IntakeTypeEntity.dinner,
+    );
+    expect(
+      (await dayRepo.getTrackedDay(day))!.caloriesTracked,
+      closeTo(80, 1e-9),
+    );
+  });
+  test(
+    'an intake failure after writing the second copy removes the whole batch',
+    () async {
+      final db = FakeHiveDBProvider(
+        intakeBox: box,
+        trackedDayBox: Hive.box<TrackedDayDBO>('days'),
+      );
+      final failing = _FailingIntakes(IntakeDataSource(db));
+      final changes = ChangeRecordedIntakeUsecase(failing, days, _Config());
+      final target = DateTime(2026, 10, 22);
+      await expectLater(
+        changes.copySelected([intake, intake], target, IntakeTypeEntity.snack),
+        throwsStateError,
+      );
+      expect(box.values.single.id, intake.id);
+      expect(
+        (await dayRepo.getTrackedDay(day))!.caloriesTracked,
+        closeTo(40, 1e-9),
+      );
+      expect((await dayRepo.getTrackedDay(target))!.caloriesTracked, 0);
+      await changes.copySelected([intake], target, IntakeTypeEntity.snack);
+      expect(box.length, 2);
+    },
+  );
 }

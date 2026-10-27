@@ -1,0 +1,183 @@
+<style>
+#sj-energy-final{--se-bg:light-dark(#f5f7f6,#131c18);--se-paper:light-dark(#ffffff,#1c2821);--se-fill:light-dark(#edf2ef,#24352b);--se-line:light-dark(#dfe7e2,#35473b);--se-ink:light-dark(#1e3029,#e9f0eb);--se-muted:light-dark(#62716a,#b0bfb5);--se-green:light-dark(#1f7057,#91d7b0);--se-on:light-dark(#ffffff,#103424);--se-tint:light-dark(#e1efe8,#2b4335);--se-error:light-dark(#a9362c,#ffb4ab);--se-scale:1;--se-width:360px;color:var(--se-ink)}
+#sj-energy-final [hidden]{display:none!important}
+#sj-energy-final .comparison{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px;align-items:start;padding:10px 0 22px}
+#sj-energy-final .column{min-width:0;display:flex;flex-direction:column;align-items:center}
+#sj-energy-final .caption{align-self:stretch;margin:0 0 12px;color:var(--se-muted);font:500 14px/1.5 -apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif}
+#sj-energy-final .phone{width:100%;max-width:var(--se-width);min-height:880px;border:1px solid var(--se-line);border-radius:26px;background:var(--se-bg);color:var(--se-ink);font:400 calc(14px * var(--se-scale))/1.5 -apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;display:flex;flex-direction:column;box-sizing:border-box;overflow:clip}
+#sj-energy-final .phone *{box-sizing:border-box;min-width:0}
+#sj-energy-final .phone button,#sj-energy-final .phone input,#sj-energy-final .phone select{font:inherit;color:inherit}
+#sj-energy-final .phone button{background:transparent;border:0;padding:0}
+#sj-energy-final .phone svg{width:20px;height:20px;flex-shrink:0;stroke-width:1.8}
+#sj-energy-final .phone input,#sj-energy-final .phone select{width:100%;max-width:100%;background:var(--se-paper);border:1px solid var(--se-line);border-radius:10px;padding:12px;font-size:max(16px,1em)}
+#sj-energy-final .phone input:focus,#sj-energy-final .phone select:focus{outline-color:var(--se-green)}
+#sj-energy-final .status{height:34px;padding:8px 18px;display:flex;align-items:center;justify-content:space-between;font-size:.8em}
+#sj-energy-final .signals{display:flex;gap:5px;align-items:center}
+#sj-energy-final .signals svg{width:13px;height:13px}
+#sj-energy-final .appbar{display:flex;align-items:center;gap:12px;min-height:60px;padding:10px 16px 16px}
+#sj-energy-final .appbar h2{font-size:1.5em;font-weight:500;line-height:1.3;margin:0;flex:1}
+#sj-energy-final .back{width:30px;min-height:36px;display:flex;align-items:center;justify-content:center}
+#sj-energy-final .body{padding:0 16px 18px;flex:1}
+#sj-energy-final .minor{color:var(--se-muted);font-size:.86em}
+#sj-energy-final .context{font-size:.86em;color:var(--se-muted);margin:0 0 16px}
+#sj-energy-final h3{font-size:1em;font-weight:500;margin:18px 0 10px}
+#sj-energy-final .panel{background:var(--se-paper);border:1px solid var(--se-line);border-radius:16px;padding:15px}
+#sj-energy-final .basis{display:grid;grid-template-columns:minmax(0,1fr) minmax(100px,.85fr);gap:12px;align-items:center;padding-bottom:15px;margin-bottom:16px;border-bottom:1px solid var(--se-line)}
+#sj-energy-final .basis strong{font-weight:500;display:block}
+#sj-energy-final .basis small{display:block;color:var(--se-muted);font-size:.85em;margin-top:4px}
+#sj-energy-final .with-unit{position:relative;display:block}
+#sj-energy-final .with-unit input{padding-right:38px}
+#sj-energy-final .suffix{position:absolute;right:12px;top:50%;transform:translateY(-50%);color:var(--se-muted);font-size:.9em;pointer-events:none}
+#sj-energy-final .field{display:block;margin:0 0 14px}
+#sj-energy-final .label{font-size:.9em;font-weight:500;display:block;margin-bottom:7px}
+#sj-energy-final .energy-control{display:grid;grid-template-columns:minmax(0,1fr) 88px;gap:8px;align-items:stretch}
+#sj-energy-final .energy-control select{padding:10px;background:var(--se-fill);color:var(--se-green);font-weight:500}
+#sj-energy-final .energy-caption{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:7px}
+#sj-energy-final .energy-caption .label{margin:0}
+#sj-energy-final .conversion{color:var(--se-green);font-size:.9em;min-height:25px;margin:9px 0 3px;font-variant-numeric:tabular-nums}
+#sj-energy-final .helper{font-size:.85em;color:var(--se-muted);margin:7px 0 16px}
+#sj-energy-final .nutrients{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 12px;margin-top:16px}
+#sj-energy-final .save-area{padding:12px 16px 20px;margin-top:auto}
+#sj-energy-final .primary{width:100%;min-height:48px;padding:12px!important;border-radius:12px!important;background:var(--se-green)!important;color:var(--se-on)!important;font-weight:500!important}
+#sj-energy-final .feedback{color:var(--se-error);font-size:.86em;margin:10px 0 0}
+#sj-energy-final .detail-name{font-size:1.35em;font-weight:500;margin:4px 0 6px;overflow-wrap:anywhere}
+#sj-energy-final .detail-energy{font-size:2.3em;line-height:1.25;font-weight:500;font-variant-numeric:tabular-nums;margin:18px 0 8px;overflow-wrap:anywhere}
+#sj-energy-final .detail-energy small{font-size:.42em;color:var(--se-muted);font-weight:400;margin-left:5px}
+#sj-energy-final .detail-macros{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:20px}
+#sj-energy-final .detail-macros strong{display:block;font-weight:500;font-size:1.1em;font-variant-numeric:tabular-nums}
+#sj-energy-final .detail-macros small{color:var(--se-muted);font-size:.85em}
+#sj-energy-final .info-row{display:flex;justify-content:space-between;gap:12px;padding:12px 0;font-size:.9em}
+#sj-energy-final .info-row+.info-row{border-top:1px solid var(--se-line)}
+#sj-energy-final .info-row span:last-child{font-variant-numeric:tabular-nums;text-align:right}
+#sj-energy-final .section-caption{font-size:.86em;color:var(--se-muted);margin:20px 3px 9px}
+#sj-energy-final .settings-group{padding:0 14px;background:var(--se-paper);border:1px solid var(--se-line);border-radius:16px}
+#sj-energy-final .setting-row{display:flex;align-items:center;gap:10px;min-height:64px;padding:12px 0}
+#sj-energy-final .setting-row+.setting-row{border-top:1px solid var(--se-line)}
+#sj-energy-final .setting-row svg{width:18px;height:18px;color:var(--se-muted)}
+#sj-energy-final .setting-row label{flex:1;font-size:.95em}
+#sj-energy-final .setting-row small{display:block;color:var(--se-muted);font-size:.85em;margin-top:3px}
+#sj-energy-final .setting-row select{width:auto;max-width:126px;min-height:38px;border:0;background:transparent;color:var(--se-muted);padding:6px 0;font-size:.9em}
+#sj-energy-final .setting-row .value{color:var(--se-muted);font-size:.9em}
+#sj-energy-final .phone input[role=switch]{appearance:none;width:44px;height:26px;border-radius:20px;padding:0;position:relative;border:1px solid var(--se-line);background:var(--se-fill);flex-shrink:0}
+#sj-energy-final .phone input[role=switch]::before{content:"";position:absolute;width:18px;height:18px;border-radius:50%;background:var(--se-muted);left:3px;top:3px}
+#sj-energy-final .phone input[role=switch]:checked{background:var(--se-green);border-color:transparent}
+#sj-energy-final .phone input[role=switch]:checked::before{background:var(--se-on);left:21px}
+#sj-energy-final .sample-view{margin-top:22px}
+#sj-energy-final .sample-view .info-row{flex-wrap:wrap}
+#sj-energy-final .sample-view .value{font-weight:500;color:var(--se-ink)}
+#sj-energy-final[data-large=true] .nutrients{grid-template-columns:1fr}
+#sj-energy-final[data-large=true] .basis{grid-template-columns:1fr}
+#sj-energy-final[data-large=true] .setting-row{flex-wrap:wrap}
+#sj-energy-final[data-large=true] .setting-row select{width:100%;max-width:none;margin-left:28px}
+#sj-energy-final[data-large=true] .detail-macros{grid-template-columns:1fr}
+#sj-energy-final[data-large=true] .info-row{flex-wrap:wrap}
+@media(max-width:620px){#sj-energy-final .comparison{grid-template-columns:1fr;gap:24px}}
+@media(pointer:coarse){#sj-energy-final .phone button{min-height:44px}#sj-energy-final .phone select{min-height:44px}}
+</style>
+<div id="sj-energy-final" aria-label="食迹能量输入单位对比">
+<div class="viz-carousel viz-dotted-background" aria-label="kJ录入方案对比" data-previous-label="上一页" data-next-label="下一页">
+<section data-variant="创建食品·营养区域" aria-label="创建食品能量输入前后对比">
+<div class="comparison">
+<div class="column"><p class="caption">改前 · 需自行折算为 kcal</p><div class="phone" data-phone="before" aria-label="改前创建食品营养区域"></div></div>
+<div class="column"><p class="caption">改后 · 直接输入包装上的 kJ</p><div class="phone" data-phone="after" aria-label="加入单位转换的创建食品营养区域"></div></div>
+</div>
+</section>
+<section data-variant="显示单位设置" aria-label="热量显示单位设置对比" hidden>
+<div class="comparison">
+<div class="column"><p class="caption">改前 · 输入与查看跟随同一设置</p><div class="phone" data-settings="before" aria-label="改前热量单位设置"></div></div>
+<div class="column"><p class="caption">改后 · 仅决定查看单位</p><div class="phone" data-settings="after" aria-label="独立的热量显示单位设置"></div></div>
+</div>
+</section>
+</div>
+</div>
+<script>
+(()=>{
+const root=document.getElementById('sj-energy-final');
+const factor=4.184;
+const state={displayUnit:'kcal',inputUnit:'kJ',basis:'100',massUnit:'g',fontScale:1,narrow:false,rawBefore:'239',rawAfter:'1000',kcalBefore:239,kcalAfter:1000/factor,beforeView:'form',afterView:'form',macros:{carbs:'40',fat:'7',protein:'4'}};
+const escape=v=>String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const parse=v=>{if(!String(v).trim())return null;const n=Number(String(v).replace(',','.'));return Number.isFinite(n)&&n>=0?n:null;};
+const format=n=>n===null?'':(n!==0&&Math.abs(n)<.000001?n.toString():Number(n.toFixed(6)).toString());
+const show=n=>n===null?'—':n.toLocaleString('en-US',{minimumFractionDigits:1,maximumFractionDigits:1});
+const icon=name=>`<i data-lucide="${name}" aria-hidden="true"></i>`;
+const saved=window.openai?.widgetState?.modelContent;
+if(saved&&typeof saved==='object'){
+ if(['kcal','kJ'].includes(saved.displayUnit))state.displayUnit=saved.displayUnit;
+ if(['kcal','kJ'].includes(saved.inputUnit))state.inputUnit=saved.inputUnit;
+ if(typeof saved.energyKcal==='number'&&Number.isFinite(saved.energyKcal)&&saved.energyKcal>=0)state.kcalAfter=saved.energyKcal;
+ if(typeof saved.basis==='string'&&parse(saved.basis)>0)state.basis=saved.basis;
+ if(typeof saved.fontScale==='number')state.fontScale=Math.min(1.6,Math.max(1,saved.fontScale));
+ if(typeof saved.narrow==='boolean')state.narrow=saved.narrow;
+ state.rawBefore=format(state.displayUnit==='kJ'?state.kcalBefore*factor:state.kcalBefore);
+ state.rawAfter=format(state.inputUnit==='kJ'?state.kcalAfter*factor:state.kcalAfter);
+}
+function remember(){window.openai?.setWidgetState?.({modelContent:{inputUnit:state.inputUnit,displayUnit:state.displayUnit,energyKcal:state.kcalAfter,basis:state.basis,fontScale:state.fontScale,narrow:state.narrow},privateContent:null})?.catch(()=>{});}
+function chrome(title,back=false){return `<div class="status"><span>9:41</span><span class="signals">${icon('signal')}${icon('wifi')}${icon('battery-full')}</span></div><div class="appbar">${back?`<button class="back cursor-interaction" type="button" data-action="back" aria-label="返回创建食品">${icon('arrow-left')}</button>`:`<span class="back" aria-hidden="true">${icon('arrow-left')}</span>`}<h2>${title}</h2></div>`;}
+const unitSelect=(name,value)=>`<select class="cursor-interaction" data-select="${name}" aria-label="${name==='input'?'能量输入单位':'热量显示单位'}"><option value="kJ" ${value==='kJ'?'selected':''}>kJ</option><option value="kcal" ${value==='kcal'?'selected':''}>kcal</option></select>`;
+function displayValue(kcal){return state.displayUnit==='kJ'&&kcal!==null?kcal*factor:kcal;}
+function renderPhone(side){
+ const phone=root.querySelector(`[data-phone="${side}"]`);const after=side==='after';const kcal=after?state.kcalAfter:state.kcalBefore;const view=after?state.afterView:state.beforeView;
+ if(view==='detail'){
+  phone.innerHTML=chrome('食品详情',true)+`<div class="body"><p class="context">我的食品</p><h3 class="detail-name">包装食品样例</h3><p class="minor">每 ${escape(state.basis)} ${state.massUnit}</p><div class="detail-energy">${show(displayValue(kcal))}<small>${state.displayUnit}</small></div><div class="detail-macros">${[['carbs','碳水'],['protein','蛋白质'],['fat','脂肪']].map(([key,label])=>`<div><strong>${state.macros[key]?escape(state.macros[key]):'—'} g</strong><small>${label}</small></div>`).join('')}</div><h3>营养信息</h3><div class="panel">${[['能量',`${show(displayValue(kcal))} ${state.displayUnit}`],['碳水化合物',`${state.macros.carbs||'—'} g`],['脂肪',`${state.macros.fat||'—'} g`],['蛋白质',`${state.macros.protein||'—'} g`]].map(([name,value])=>`<div class="info-row"><span>${name}</span><span>${escape(value)}</span></div>`).join('')}</div></div><div class="save-area"><button class="primary cursor-interaction" type="button" data-action="back">返回修改</button></div>`;
+  return;
+ }
+ const unit=after?state.inputUnit:state.displayUnit;
+ const energy=after?state.rawAfter:state.rawBefore;
+ const basis=escape(state.basis||'—');
+ phone.innerHTML=chrome('创建食品')+`<div class="body"><p class="context">包装食品样例 · 营养信息区域</p><h3>营养信息</h3><div class="panel"><div class="basis"><div><strong>营养基准</strong><small>以下数值均按此量填写</small></div><label class="with-unit"><input class="cursor-interaction" data-basis inputmode="decimal" type="text" aria-label="营养基准" value="${escape(state.basis)}"><span class="suffix">${state.massUnit}</span></label></div><div class="energy-caption"><label class="label" for="se-energy-${side}">能量</label><span class="minor" data-per-basis>每 ${basis} ${state.massUnit}</span></div>${after?`<div class="energy-control"><input class="cursor-interaction" id="se-energy-${side}" data-energy="${side}" inputmode="decimal" type="text" value="${escape(energy)}" aria-label="包装能量">${unitSelect('input',unit)}</div><div class="conversion" data-conversion aria-live="polite">${conversionText()}</div><p class="helper">输入单位仅用于填写，不影响查看单位。</p>`:`<label class="with-unit"><input class="cursor-interaction" id="se-energy-${side}" data-energy="${side}" inputmode="decimal" type="text" value="${escape(energy)}" aria-label="改前能量"><span class="suffix">${unit}</span></label>`}<div class="nutrients">${[['carbs','碳水化合物'],['fat','脂肪'],['protein','蛋白质']].map(([key,label])=>`<label class="field"><span class="label">${label}</span><span class="with-unit"><input class="cursor-interaction" type="text" inputmode="decimal" data-macro="${key}" aria-label="${label}" value="${escape(state.macros[key])}"><span class="suffix">g</span></span></label>`).join('')}</div><p class="helper" data-basis-help>每 ${basis} ${state.massUnit} · 更改基准后请核对营养数值</p></div><p class="helper">未填写的营养值保留为未知，不当作 0。</p></div><div class="save-area"><button type="button" class="primary cursor-interaction" data-action="save">保存</button><p class="feedback" role="alert" hidden></p></div>`;
+}
+function conversionText(){if(!state.rawAfter.trim())return '—';if(state.kcalAfter===null)return '请输入有效的非负能量';const alternate=state.inputUnit==='kJ'?state.kcalAfter:state.kcalAfter*factor;return `≈ ${show(alternate)} ${state.inputUnit==='kJ'?'kcal':'kJ'}（每 ${state.basis||'—'} ${state.massUnit}）`;}
+function settingRow(label,value,ico){return `<div class="setting-row">${icon(ico)}<label>${label}</label>${value}</div>`;}
+function renderSettings(){root.querySelectorAll('[data-settings]').forEach(phone=>{
+ const after=phone.dataset.settings==='after';
+ const unit=`<input class="cursor-interaction" type="checkbox" role="switch" data-display-switch aria-label="${after?'以 kJ 显示':'使用 kJ 显示热量'}" ${state.displayUnit==='kJ'?'checked':''}>`;
+ const label=after?'以 kJ 显示<small>关闭时使用 kcal</small>':'使用 kJ 显示热量<small>kcal ↔ kJ</small>';
+ phone.innerHTML=chrome('我的')+`<div class="body"><p class="section-caption">显示与记录</p><div class="settings-group">${settingRow('语言','<span class="value">中文</span>','languages')}${settingRow('外观','<span class="value">跟随系统</span>','sun-moon')}${settingRow(label,unit,'flame')}${settingRow('一天开始于','<span class="value">00:00</span>','clock-3')}</div><p class="section-caption">包装食品样例 · 当前示例</p><div class="panel sample-view"><div class="info-row"><span>创建页输入</span><span class="value">${after?escape(state.rawAfter||'—'):escape(state.rawBefore||'—')} ${after?state.inputUnit:state.displayUnit}</span></div><div class="info-row"><span>食品详情查看</span><span class="value">${show(displayValue(after?state.kcalAfter:state.kcalBefore))} ${state.displayUnit}</span></div></div>${after?'<p class="helper">此处切换查看单位，创建页的输入单位保持不变。</p>':''}</div>`;
+ });}
+function applyDesign(){root.style.setProperty('--se-scale',state.fontScale);root.style.setProperty('--se-width',state.narrow?'320px':'360px');root.dataset.large=state.fontScale>1.25?'true':'false';}
+function icons(){if(globalThis.lucide)lucide.createIcons();}
+function render(){renderPhone('before');renderPhone('after');renderSettings();applyDesign();icons();}
+render();
+root.addEventListener('input',event=>{
+ const el=event.target;
+ if(el.matches('[data-energy]')){
+  const side=el.dataset.energy;const value=parse(el.value);const unit=side==='after'?state.inputUnit:state.displayUnit;
+  if(side==='after'){state.rawAfter=el.value;state.kcalAfter=value===null?null:unit==='kJ'?value/factor:value;root.querySelector('[data-conversion]').textContent=conversionText();}
+  else{state.rawBefore=el.value;state.kcalBefore=value===null?null:unit==='kJ'?value/factor:value;}
+  renderSettings();icons();
+ }
+ if(el.matches('[data-basis]')){
+  state.basis=el.value;root.querySelectorAll('[data-basis]').forEach(other=>{if(other!==el)other.value=el.value;});
+  root.querySelectorAll('[data-per-basis]').forEach(n=>n.textContent=`每 ${state.basis||'—'} ${state.massUnit}`);
+  root.querySelectorAll('[data-basis-help]').forEach(n=>n.textContent=`每 ${state.basis||'—'} ${state.massUnit} · 更改基准后请核对营养数值`);
+  const hint=root.querySelector('[data-conversion]');if(hint)hint.textContent=conversionText();if(state.beforeView==='detail')renderPhone('before');if(state.afterView==='detail')renderPhone('after');icons();
+ }
+ if(el.matches('[data-macro]')){state.macros[el.dataset.macro]=el.value;root.querySelectorAll(`[data-macro="${el.dataset.macro}"]`).forEach(other=>{if(other!==el)other.value=el.value;});if(state.beforeView==='detail')renderPhone('before');if(state.afterView==='detail')renderPhone('after');icons();}
+});
+root.addEventListener('change',event=>{
+ const el=event.target;
+ if(el.matches('[data-select=input]')){
+  if(state.kcalAfter===null&&state.rawAfter.trim()){
+   el.value=state.inputUnit;const hint=root.querySelector('[data-conversion]');hint.textContent='请先输入有效能量，再切换单位';return;
+  }
+  state.inputUnit=el.value;state.rawAfter=state.kcalAfter===null?'':format(state.inputUnit==='kJ'?state.kcalAfter*factor:state.kcalAfter);renderPhone('after');renderSettings();icons();remember();
+ }
+ if(el.matches('[data-display-switch]')){
+  const next=el.checked?'kJ':'kcal';
+  if(state.kcalBefore===null&&state.rawBefore.trim()){renderSettings();icons();return;}
+  state.displayUnit=next;state.rawBefore=state.kcalBefore===null?'':format(next==='kJ'?state.kcalBefore*factor:state.kcalBefore);render();remember();
+ }
+ if(el.matches('[data-energy],[data-basis],[data-macro]'))remember();
+});
+root.addEventListener('click',event=>{
+ const button=event.target.closest('button[data-action]');if(!button)return;const phone=button.closest('[data-phone]');if(!phone)return;const side=phone.dataset.phone;
+ if(button.dataset.action==='back'){if(side==='after')state.afterView='form';else state.beforeView='form';renderPhone(side);icons();return;}
+ const energy=side==='after'?state.rawAfter:state.rawBefore;
+ const bad=!(parse(state.basis)>0)||(energy.trim()&&parse(energy)===null)||Object.values(state.macros).some(v=>v.trim()&&parse(v)===null);
+ if(bad){const feedback=phone.querySelector('.feedback');feedback.hidden=false;feedback.textContent='请填写有效营养基准及非负营养数值。';return;}
+ if(side==='after')state.afterView='detail';else state.beforeView='detail';renderPhone(side);icons();remember();
+});
+window.addEventListener('openai:set_globals',event=>{const data=event.detail?.globals?.widgetState?.modelContent;if(!data||typeof data!=='object')return;if(typeof data.fontScale==='number')state.fontScale=Math.min(1.6,Math.max(1,data.fontScale));if(typeof data.narrow==='boolean')state.narrow=data.narrow;applyDesign();});
+if(globalThis.Tweak){const tweak=new Tweak({container:root,onChange:()=>{applyDesign();remember();}});tweak.addSlider(state,'fontScale',{label:'文字大小',min:1,max:1.6,step:.1});tweak.addToggle(state,'narrow',{label:'窄屏（320）'});}
+})();
+</script>

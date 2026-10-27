@@ -12,6 +12,7 @@ import 'package:opennutritracker/generated/l10n.dart';
 class PersonalFoodList extends StatefulWidget {
   final String query;
   final bool favoritesOnly;
+  final bool browseOnly;
   final DateTime day;
   final AddMealType addMealType;
   const PersonalFoodList({
@@ -20,6 +21,7 @@ class PersonalFoodList extends StatefulWidget {
     required this.addMealType,
     this.query = '',
     this.favoritesOnly = false,
+    this.browseOnly = false,
   });
   @override
   State<PersonalFoodList> createState() => _PersonalFoodListState();
@@ -90,6 +92,7 @@ class _PersonalFoodListState extends State<PersonalFoodList> {
             addMealType: widget.addMealType,
             mealEntity: result.$1[i],
             usesImperialUnits: result.$2,
+            browseOnly: widget.browseOnly,
             onReturn: _reload,
           ),
         ),

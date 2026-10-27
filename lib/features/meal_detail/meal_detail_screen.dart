@@ -9,17 +9,16 @@ import 'package:logging/logging.dart';
 import 'package:opennutritracker/core/domain/entity/intake_type_entity.dart';
 import 'package:opennutritracker/core/presentation/widgets/meal_value_unit_text.dart';
 import 'package:opennutritracker/core/styles/app_palette.dart';
-import 'package:opennutritracker/core/styles/dimens.dart';
 import 'package:opennutritracker/core/domain/usecase/get_config_usecase.dart';
-import 'package:opennutritracker/core/utils/energy_display.dart';
 import 'package:opennutritracker/core/utils/locator.dart';
 import 'package:opennutritracker/core/utils/navigation_options.dart';
 import 'package:opennutritracker/features/add_meal/domain/entity/meal_entity.dart';
 import 'package:opennutritracker/features/edit_meal/presentation/edit_meal_screen.dart';
 import 'package:opennutritracker/features/meal_detail/presentation/bloc/meal_detail_bloc.dart';
+import 'package:opennutritracker/features/meal_detail/util/meal_quantity_converter.dart';
 import 'package:opennutritracker/features/meal_detail/presentation/widgets/daily_kcal_overview.dart';
 import 'package:opennutritracker/features/meal_detail/presentation/widgets/meal_detail_bottom_sheet.dart';
-import 'package:opennutritracker/features/meal_detail/presentation/widgets/meal_detail_macro_nutrients.dart';
+import 'package:opennutritracker/features/meal_detail/presentation/widgets/food_portion_summary.dart';
 import 'package:opennutritracker/features/meal_detail/presentation/widgets/meal_detail_nutriments_table.dart';
 import 'package:opennutritracker/features/meal_detail/presentation/widgets/meal_info_button.dart';
 import 'package:opennutritracker/features/meal_detail/presentation/widgets/off_disclaimer.dart';
@@ -50,6 +49,7 @@ class _MealDetailScreenState extends State<MealDetailScreen> {
 
   final quantityTextController = TextEditingController();
   late bool _usesImperialUnits;
+  bool _browseOnly = false;
   bool _showMicronutrients = false;
   // #1126: preloaded from `ConfigEntity.defaultToRawFoodUnits`. False keeps
   // the pre-existing "serving wins whenever one exists" default; true
@@ -63,6 +63,8 @@ class _MealDetailScreenState extends State<MealDetailScreen> {
   // reads the route arguments and requests hydration (see there).
   bool _argumentsRead = false;
   bool _userChangedSelection = false;
+  double? _baseQuantity;
+  bool _switchingUnit = false;
 
   /// True while `_applyInitialSelection` is running. The bottom sheet's
   /// text-change listener echoes every write to `quantityTextController`
@@ -128,6 +130,7 @@ class _MealDetailScreenState extends State<MealDetailScreen> {
       _day = args.day;
       intakeTypeEntity = args.intakeTypeEntity;
       _usesImperialUnits = args.usesImperialUnits;
+      _browseOnly = args.browseOnly;
       _argumentsRead = true;
 
       // Thin OFF search results get hydrated to the full product record
@@ -136,7 +139,7 @@ class _MealDetailScreenState extends State<MealDetailScreen> {
       _mealDetailBloc.add(HydrateMealEvent(meal));
     }
 
-    _mealDetailBloc.add(LoadDailyTotalsEvent(_day));
+    if (!_browseOnly) _mealDetailBloc.add(LoadDailyTotalsEvent(_day));
 
     _applyInitialSelection();
 
@@ -208,6 +211,12 @@ class _MealDetailScreenState extends State<MealDetailScreen> {
           ),
         );
       }
+      if (!_userChangedSelection) {
+        final quantity = double.tryParse(quantityTextController.text);
+        _baseQuantity = quantity == null
+            ? null
+            : convertQuantityToBaseUnit(quantity, _initialUnit, meal);
+      }
     } finally {
       _applyingInitialSelection = false;
     }
@@ -220,6 +229,16 @@ class _MealDetailScreenState extends State<MealDetailScreen> {
   void _onMealHydrated(MealEntity full) {
     setState(() => meal = _personalFoods?.apply(full) ?? full);
     if (_userChangedSelection) {
+      final quantity = double.tryParse(
+        quantityTextController.text.replaceAll(',', '.'),
+      );
+      _baseQuantity = quantity == null
+          ? null
+          : convertQuantityToBaseUnit(
+              quantity,
+              _mealDetailBloc.state.selectedUnit,
+              meal,
+            );
       _mealDetailBloc.add(
         UpdateKcalEvent(
           meal: meal,
@@ -273,29 +292,31 @@ class _MealDetailScreenState extends State<MealDetailScreen> {
                     },
                   ),
                 ),
-                ConstrainedBox(
-                  constraints: BoxConstraints(
-                    maxHeight: constraints.maxHeight * .6,
+                if (!_browseOnly)
+                  ConstrainedBox(
+                    constraints: BoxConstraints(
+                      maxHeight: constraints.maxHeight * .6,
+                    ),
+                    child: SingleChildScrollView(
+                      child:
+                          BlocSelector<MealDetailBloc, MealDetailState, String>(
+                            bloc: _mealDetailBloc,
+                            selector: (state) => state.selectedUnit,
+                            builder: (context, selectedUnit) {
+                              return MealDetailBottomSheet(
+                                product: meal,
+                                day: _day,
+                                intakeTypeEntity: intakeTypeEntity,
+                                selectedUnit: selectedUnit,
+                                mealDetailBloc: _mealDetailBloc,
+                                quantityTextController: quantityTextController,
+                                onQuantityOrUnitChanged:
+                                    onQuantityOrUnitChanged,
+                              );
+                            },
+                          ),
+                    ),
                   ),
-                  child: SingleChildScrollView(
-                    child:
-                        BlocSelector<MealDetailBloc, MealDetailState, String>(
-                          bloc: _mealDetailBloc,
-                          selector: (state) => state.selectedUnit,
-                          builder: (context, selectedUnit) {
-                            return MealDetailBottomSheet(
-                              product: meal,
-                              day: _day,
-                              intakeTypeEntity: intakeTypeEntity,
-                              selectedUnit: selectedUnit,
-                              mealDetailBloc: _mealDetailBloc,
-                              quantityTextController: quantityTextController,
-                              onQuantityOrUnitChanged: onQuantityOrUnitChanged,
-                            );
-                          },
-                        ),
-                  ),
-                ),
               ],
             ),
           ),
@@ -322,22 +343,25 @@ class _MealDetailScreenState extends State<MealDetailScreen> {
       slivers: [
         SliverAppBar(
           pinned: true,
+          toolbarHeight: MediaQuery.textScalerOf(context).scale(kToolbarHeight),
           backgroundColor: palette.surface,
           surfaceTintColor: Colors.transparent,
           title: Text(
-            meal.name ?? '',
+            S.of(context).foodDetailTitle,
             style: Theme.of(context).textTheme.titleLarge,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),
-          bottom: PreferredSize(
-            preferredSize: Size.fromHeight(dayKcalGoal > 0 ? 68 : 0),
-            child: DailyKcalOverview(
-              dayKcalConsumed: dayKcalConsumed,
-              dayKcalGoal: dayKcalGoal,
-              currentSelectionKcal: totalKcal,
-            ),
-          ),
+          bottom: _browseOnly
+              ? null
+              : PreferredSize(
+                  preferredSize: Size.fromHeight(dayKcalGoal > 0 ? 68 : 0),
+                  child: DailyKcalOverview(
+                    dayKcalConsumed: dayKcalConsumed,
+                    dayKcalGoal: dayKcalGoal,
+                    currentSelectionKcal: totalKcal,
+                  ),
+                ),
           actions: [
             Semantics(
               identifier: 'meal-detail-edit',
@@ -350,6 +374,7 @@ class _MealDetailScreenState extends State<MealDetailScreen> {
                       meal,
                       intakeTypeEntity,
                       _usesImperialUnits,
+                      editOnly: _browseOnly,
                     ),
                   );
                 },
@@ -361,100 +386,108 @@ class _MealDetailScreenState extends State<MealDetailScreen> {
         SliverList(
           delegate: SliverChildListDelegate([
             const SizedBox(height: 16),
-            Center(
-              child: Semantics(
-                identifier: 'meal-detail-photo',
-                child: InkWell(
-                  onTap: meal.mainImageUrl?.isNotEmpty == true
-                      ? () => Navigator.of(context).pushNamed(
-                          NavigationOptions.imageFullScreenRoute,
-                          arguments: ImageFullScreenArguments(
-                            meal.mainImageUrl!,
-                          ),
-                        )
-                      : null,
-                  child: Hero(
-                    tag: ImageFullScreen.fullScreenHeroTag,
-                    child: MealThumbnail(meal: meal, size: 88),
-                  ),
-                ),
-              ),
-            ),
-            UnsplashCreditLine(imageUrl: meal.mainImageUrl),
             Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: const EdgeInsets.all(16),
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Text(
-                    meal.name ?? '',
-                    style: Theme.of(context).textTheme.titleLarge,
-                  ),
-                  if (meal.brands?.trim().isNotEmpty ?? false)
-                    Text(
-                      meal.brands!,
-                      style: Theme.of(context).textTheme.bodyMedium,
-                    ),
-                  if ((double.tryParse(meal.mealQuantity ?? '') ?? 0) > 0)
-                    MealValueUnitText(
-                      value: double.tryParse(meal.mealQuantity ?? '') ?? 0,
-                      meal: meal,
-                      usesImperialUnits: _usesImperialUnits,
-                      textStyle: Theme.of(context).textTheme.bodySmall,
-                    ),
-                  const SizedBox(height: 16),
-                  Wrap(
-                    spacing: 8,
-                    crossAxisAlignment: WrapCrossAlignment.center,
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        EnergyDisplay.formatRoundedWithUnit(context, totalKcal),
-                        style: Theme.of(context).textTheme.headlineSmall
-                            ?.copyWith(fontWeight: FontWeight.w800),
+                      Semantics(
+                        identifier: 'meal-detail-photo',
+                        child: InkWell(
+                          onTap: meal.mainImageUrl?.isNotEmpty == true
+                              ? () => Navigator.of(context).pushNamed(
+                                  NavigationOptions.imageFullScreenRoute,
+                                  arguments: ImageFullScreenArguments(
+                                    meal.mainImageUrl!,
+                                  ),
+                                )
+                              : null,
+                          child: Hero(
+                            tag: ImageFullScreen.fullScreenHeroTag,
+                            child: MealThumbnail(meal: meal, size: 56),
+                          ),
+                        ),
                       ),
-                      MealValueUnitText(
-                        value: double.parse(totalQuantity),
-                        meal: meal,
-                        displayUnit:
-                            selectedUnit == UnitDropdownItem.serving.toString()
-                                ? meal.servingUnit
-                                : selectedUnit,
-                        usesImperialUnits: _usesImperialUnits,
-                        textStyle: Theme.of(context).textTheme.bodyMedium,
-                        prefix: ' / ',
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              meal.name ?? '',
+                              style: Theme.of(context).textTheme.titleMedium,
+                            ),
+                            if (meal.brands?.trim().isNotEmpty ?? false)
+                              Text(
+                                meal.brands!,
+                                style: Theme.of(context).textTheme.bodySmall,
+                              ),
+                            if ((double.tryParse(meal.mealQuantity ?? '') ??
+                                    0) >
+                                0)
+                              MealValueUnitText(
+                                value:
+                                    double.tryParse(meal.mealQuantity ?? '') ??
+                                    0,
+                                meal: meal,
+                                usesImperialUnits: _usesImperialUnits,
+                                textStyle: Theme.of(
+                                  context,
+                                ).textTheme.bodySmall,
+                              ),
+                          ],
+                        ),
                       ),
                     ],
                   ),
-                  const SizedBox(height: Dimens.spacing16),
-                  Wrap(
-                    spacing: 24,
-                    runSpacing: 16,
-                    children: [
-                      MealDetailMacroNutrients(
-                        typeString: S.of(context).carbsLabel,
-                        value: totalCarbs,
-                        color: palette.carbs,
-                      ),
-                      MealDetailMacroNutrients(
-                        typeString: S.of(context).fatLabel,
-                        value: totalFat,
-                        color: palette.fat,
-                      ),
-                      MealDetailMacroNutrients(
-                        typeString: S.of(context).proteinLabel,
-                        value: totalProtein,
-                        color: palette.protein,
-                      ),
-                    ],
+                  UnsplashCreditLine(imageUrl: meal.mainImageUrl),
+                  const SizedBox(height: 20),
+                  FoodPortionSummary(
+                    caption: _browseOnly
+                        ? S
+                              .of(context)
+                              .mealNutrientsPerQtyLabel(
+                                meal.effectiveNutritionBasis
+                                    .toString()
+                                    .replaceFirst(RegExp(r'\.0$'), ''),
+                                meal.mealUnit ?? 'g/ml',
+                              )
+                        : '${S.of(context).recordingThisPortion} · '
+                              '${(double.tryParse(totalQuantity) ?? 0).toStringAsFixed(1).replaceFirst(RegExp(r'\.0$'), '')} '
+                              '${meal.mealUnit ?? 'g/ml'}',
+                    kcal: meal.nutriments.energyKcal100 == null
+                        ? null
+                        : _browseOnly
+                        ? meal.nutriments.energyKcal100! *
+                              meal.effectiveNutritionBasis /
+                              100
+                        : totalKcal,
+                    carbs: meal.nutriments.carbohydrates100 == null
+                        ? null
+                        : _browseOnly
+                        ? meal.nutriments.carbohydrates100! *
+                              meal.effectiveNutritionBasis /
+                              100
+                        : totalCarbs,
+                    protein: meal.nutriments.proteins100 == null
+                        ? null
+                        : _browseOnly
+                        ? meal.nutriments.proteins100! *
+                              meal.effectiveNutritionBasis /
+                              100
+                        : totalProtein,
+                    fat: meal.nutriments.fat100 == null
+                        ? null
+                        : _browseOnly
+                        ? meal.nutriments.fat100! *
+                              meal.effectiveNutritionBasis /
+                              100
+                        : totalFat,
                   ),
-                  if (_personalFoods != null)
-                    PersonalFoodActions(
-                      meal: meal,
-                      store: _personalFoods!,
-                      onChanged: (_) => setState(() => meal = _personalFoods!.apply(meal)),
-                    ),
-                  const SizedBox(height: Dimens.spacing24),
-                  Divider(color: palette.border, height: Dimens.hairline),
-                  const SizedBox(height: Dimens.spacing24),
+                  const SizedBox(height: 24),
                   if (isHydrating)
                     const Padding(
                       padding: EdgeInsets.only(bottom: 16.0),
@@ -467,7 +500,14 @@ class _MealDetailScreenState extends State<MealDetailScreen> {
                     servingUnit: meal.servingUnit,
                     showMicronutrients: _showMicronutrients,
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 20),
+                  if (_personalFoods != null)
+                    PersonalFoodActions(
+                      meal: meal,
+                      store: _personalFoods!,
+                      onChanged: (_) =>
+                          setState(() => meal = _personalFoods!.apply(meal)),
+                    ),
                   const SizedBox(height: 16),
                   Text(
                     S.of(context).foodNutritionScopeHint,
@@ -500,7 +540,7 @@ class _MealDetailScreenState extends State<MealDetailScreen> {
     if (quantityString == null || unit == null) {
       return;
     }
-    if (_applyingInitialSelection) {
+    if (_applyingInitialSelection || _switchingUnit) {
       // Echo from `_applyInitialSelection`'s own controller.text write;
       // that method dispatches an authoritative UpdateKcalEvent itself.
       // Treating this as a user edit would collapse the app bar on open
@@ -508,11 +548,31 @@ class _MealDetailScreenState extends State<MealDetailScreen> {
       return;
     }
     _userChangedSelection = true;
+    if (unit != _mealDetailBloc.state.selectedUnit && _baseQuantity != null) {
+      final factor = convertQuantityToBaseUnit(1, unit, meal);
+      if (!factor.isFinite || factor <= 0) return;
+      quantityString = (_baseQuantity! / factor).toString().replaceFirst(
+        RegExp(r'\.0$'),
+        '',
+      );
+      _switchingUnit = true;
+      try {
+        quantityTextController.text = quantityString;
+      } finally {
+        _switchingUnit = false;
+      }
+    } else {
+      final quantity = double.tryParse(quantityString.replaceAll(',', '.'));
+      _baseQuantity = quantity != null && quantity.isFinite && quantity > 0
+          ? convertQuantityToBaseUnit(quantity, unit, meal)
+          : null;
+    }
     _mealDetailBloc.add(
       UpdateKcalEvent(
         meal: meal,
         totalQuantity: quantityString,
         selectedUnit: unit,
+        baseQuantity: _baseQuantity,
       ),
     );
   }
@@ -523,11 +583,13 @@ class MealDetailScreenArguments {
   final IntakeTypeEntity intakeTypeEntity;
   final DateTime day;
   final bool usesImperialUnits;
+  final bool browseOnly;
 
   MealDetailScreenArguments(
     this.mealEntity,
     this.intakeTypeEntity,
     this.day,
-    this.usesImperialUnits,
-  );
+    this.usesImperialUnits, {
+    this.browseOnly = false,
+  });
 }

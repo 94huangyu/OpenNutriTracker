@@ -194,7 +194,12 @@ void main() {
         reason: 'main must survive the Edit Meal unwind',
       );
 
-      await tester.tap(find.widgetWithText(FilledButton, l10nEn.addLabel));
+      await tester.tap(
+        find.widgetWithText(
+          FilledButton,
+          l10nEn.recordingAddToMeal(l10nEn.dinnerLabel),
+        ),
+      );
       await tester.pumpAndSettle();
 
       // The intake is written whatever the navigator does — that is why the

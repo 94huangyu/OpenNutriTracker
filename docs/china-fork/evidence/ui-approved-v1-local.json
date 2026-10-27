@@ -1,0 +1,61 @@
+{
+  "date": "2026-10-23",
+  "baseline_head": "eb34e744afc9f153ff77bd33335e889e64bbc79d",
+  "state": "uncommitted local implementation; no APK build or device installation",
+  "source_sha256": {
+    "lib/core/domain/usecase/change_recorded_intake_usecase.dart": "fc413d6d67f98c6adce78cf6b4a1b1cd6fcb50a0d9be725d544e41babb382590",
+    "lib/core/presentation/widgets/app_card.dart": "f7de86c03f5dd5c04fcd08fb7b53ae64e75f01bdb019c96ce80bfdd3fd899733",
+    "lib/features/add_meal/presentation/add_meal_screen.dart": "8fbf7edd33862e031b937a59c2c746454bfd1ae12512122ebb1f34b7d6b6c94d",
+    "lib/features/add_meal/presentation/widgets/meal_item_card.dart": "6367dfe541bf14948d0677486e45ef202287e7a2f592507cec4c7883a41372fc",
+    "lib/features/add_meal/presentation/widgets/meal_search_bar.dart": "0b3e0b55ccd0f137aaf5f4b03515bba28c5f727fe93bc98cd1c2962b2047a84b",
+    "lib/features/add_meal/presentation/widgets/personal_food_list.dart": "87c88a77b661580b66dc845c4d98868f46fa4c77728f07dbfbc4627227795443",
+    "lib/features/diary/presentation/bloc/calendar_day_bloc.dart": "466b6d81d9d9792b04a1d2a420b76e16b3adf8e3d45d99ed4bcd27dcf81e0738",
+    "lib/features/meal_detail/meal_detail_screen.dart": "413a88c34b8c713863c6ad7f969690408dc7613a0fb028a854630b142f768d4e",
+    "lib/features/recipes/presentation/screens/recipes_page.dart": "496157c2f97e4c4cf634b10a8b4af17362b5a9e83ba4ceaa7d6300862f476203",
+    "lib/features/recording/presentation/recording_meal_page.dart": "c770e89d543cc647184d38f73e649c2492dfd8321d3923073d6e1ea86bd4c615",
+    "lib/features/recording/presentation/recording_page.dart": "0bf5c3d2578c4609b33bbf535abcd98d97be3e001f3684f28eb8c5897a8d8c47",
+    "lib/features/recording/presentation/widgets/record_intake_sheet.dart": "bdb544a116f8bf8494674f339628ac99fc03c52fac8211097aca67e683eb686c",
+    "lib/features/recording/presentation/widgets/recording_nutrient_summary.dart": "4f3b676e24612bb8ddf24b22f9c05a42fa53fb68fa7fdc6345f9efd3042d1795",
+    "lib/l10n/intl_en.arb": "eaebfc5d738d26a591c80ecbac3b0205b1ac70ae9567198b55d1be5c5a170e23",
+    "lib/l10n/intl_zh.arb": "aa185341d96197926211142a6b310ce6bc88d5e55c316ab537abc6f7381feb55",
+    "test/features/add_meal/search_result_card_test.dart": "4852f687c60d78069df86970fddf8185732c188aa8c1697a46d926508ba25daa",
+    "test/features/add_meal/search_screen_states_test.dart": "cca4392ba79a593aac7a634f6eb6349107e3842691b9a5f97a9e81dd48ec0b21",
+    "test/features/meal_detail/free_quantity_input_screen_test.dart": "50f631b0f16851adcf6a6aeaaa46f5bab85b87a4fb99d81e2b06b3b8f21ca0af",
+    "test/features/recording/recording_flow_test.dart": "99a19a2e72ada445f4b53598d527fafbee97e2d5adeec34eca6e740e563277c6",
+    "test/unit_test/change_recorded_intake_test.dart": "8492c073c56b0fe4f3286bbcc533d186b520ed0287a5286065029d290aaa40a6"
+  },
+  "capture_sha256": {
+    "docs/china-fork/ui-approved/implemented-home-v1.png": "9300891265c3fd879d8d4b016eadc5500d8190b01adf1acb29ecdf4afd0e2c1f",
+    "docs/china-fork/ui-approved/implemented-copy-narrow-v1.png": "b0f71ede6fd8555b168e39d7cee3b9b29a7630a15a557cc05d546e32448cd2b4",
+    "docs/china-fork/ui-approved/implemented-add-food-v1.png": "91761e8d0863e5d049014cb338f62d664e015e0d22e2c032fbc4c1a1b52becf9"
+  },
+  "checks": [
+    {
+      "log": "/tmp/shiji-ui-acceptance.log",
+      "passed": 188,
+      "scope": "recording/add_meal/meal_detail/recipes plus real temporary Hive intake mutations"
+    },
+    {
+      "log": "/tmp/shiji-ui-extra-boundaries.log",
+      "passed": 31,
+      "scope": "overlapping targeted checks including two extra large-text copy variants and independent destination edit"
+    },
+    {
+      "log": "/tmp/shiji-ui-copy-layout-final.log",
+      "passed": 3,
+      "scope": "final copy dialog title and numeric date at 390/1.0, 320/1.6, 390/2.0 dark"
+    },
+    {
+      "log": "/tmp/shiji-ui-analysis-final.log",
+      "diagnostics": 0,
+      "scope": "dart analyze --format=machine"
+    }
+  ],
+  "not_verified": [
+    "Android APK compilation",
+    "physical device installation/interaction",
+    "real camera or online food APIs",
+    "screen reader"
+  ],
+  "capture_note": "Real Flutter widget rendering with synthetic fixture data; local Arial Unicode fallback fonts, not device screenshots."
+}

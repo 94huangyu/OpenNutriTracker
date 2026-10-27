@@ -11,6 +11,8 @@ class UpdateKcalEvent extends MealDetailEvent {
   final double? totalProtein;
   final String? totalQuantity;
   final String? selectedUnit;
+  // Preserve the exact base amount across display-only unit conversions.
+  final double? baseQuantity;
 
   const UpdateKcalEvent({
     required this.meal,
@@ -19,17 +21,19 @@ class UpdateKcalEvent extends MealDetailEvent {
     this.totalProtein,
     this.totalQuantity,
     this.selectedUnit,
+    this.baseQuantity,
   });
 
   @override
   List<Object?> get props => [
-        meal,
-        totalCarbs,
-        totalFat,
-        totalProtein,
-        totalQuantity,
-        selectedUnit,
-      ];
+    meal,
+    totalCarbs,
+    totalFat,
+    totalProtein,
+    totalQuantity,
+    selectedUnit,
+    baseQuantity,
+  ];
 }
 
 class LoadDailyTotalsEvent extends MealDetailEvent {

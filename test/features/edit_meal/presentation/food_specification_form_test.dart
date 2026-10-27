@@ -70,6 +70,7 @@ void main() {
   final getIt = GetIt.instance;
   late _Meals meals;
   late _Preferences preferences;
+  late EnergyUnitProvider energyPreference;
   final captureKey = GlobalKey();
   setUpAll(loadCaptureFonts);
   setUp(() {
@@ -81,6 +82,29 @@ void main() {
   });
   tearDown(() => getIt.reset());
 
+  Future<void> selectEnergyUnit(WidgetTester tester, bool kj) async {
+    final unit = find.byType(DropdownButtonFormField<bool>);
+    await tester.scrollUntilVisible(
+      unit,
+      180,
+      scrollable: find.byType(Scrollable).first,
+      maxScrolls: 60,
+    );
+    await Scrollable.ensureVisible(tester.element(unit), alignment: .25);
+    await tester.pumpAndSettle();
+    if (tester.widget<DropdownButtonFormField<bool>>(unit).initialValue == kj) {
+      return;
+    }
+    expect(
+      tester.getRect(unit).bottom,
+      lessThan(tester.getRect(identified('edit-meal-save')).top),
+    );
+    await tester.tap(unit);
+    await tester.pumpAndSettle();
+    await tester.tap(find.text(kj ? 'kJ' : 'kcal').last);
+    await tester.pumpAndSettle();
+  }
+
   Future<void> pumpEditor(
     WidgetTester tester, {
     MealEntity? meal,
@@ -88,6 +112,7 @@ void main() {
     double scale = 1,
     bool dark = false,
     bool kj = false,
+    bool useDefaultInput = false,
   }) async {
     await tester.pumpWidget(const SizedBox.shrink());
     tester.view.physicalSize = Size(width, 900);
@@ -105,7 +130,9 @@ void main() {
       RepaintBoundary(
         key: captureKey,
         child: ChangeNotifierProvider<EnergyUnitProvider>(
-          create: (_) => EnergyUnitProvider(usesKilojoules: kj),
+          lazy: false,
+          create: (_) =>
+              energyPreference = EnergyUnitProvider(usesKilojoules: kj),
           child: MaterialApp(
             debugShowCheckedModeBanner: false,
             theme: buildAppTheme(palette),
@@ -143,6 +170,12 @@ void main() {
         ),
       ),
     );
+    await tester.pumpAndSettle();
+    if (!useDefaultInput) await selectEnergyUnit(tester, kj);
+    tester
+        .state<ScrollableState>(find.byType(Scrollable).first)
+        .position
+        .jumpTo(0);
     await tester.pumpAndSettle();
   }
 
@@ -262,43 +295,57 @@ void main() {
   }
 
   for (final layout in [
+    (390.0, 1.0, false),
     (320.0, 1.6, false),
     (390.0, 1.3, false),
     (390.0, 2.0, true),
   ]) {
-    testWidgets('three quantity fields align at layout $layout', (
-      tester,
-    ) async {
-      await pumpEditor(
-        tester,
-        width: layout.$1,
-        scale: layout.$2,
-        dark: layout.$3,
-      );
-      await tester.scrollUntilVisible(
-        input('nutrition-basis'),
-        180,
-        scrollable: find.byType(Scrollable).first,
-      );
-      final position = tester.state<ScrollableState>(find.byType(Scrollable).first).position;
-      position.jumpTo((position.pixels - 72 * layout.$2).clamp(0, position.maxScrollExtent));
-      await tester.pumpAndSettle();
-      final rects = [
-        'package-quantity',
-        'serving-quantity',
-        'nutrition-basis',
-      ].map((id) => tester.getRect(input(id))).toList();
-      for (final rect in rects.skip(1)) {
-        expect(rect.top, rects.first.top);
-        expect(rect.height, rects.first.height);
-      }
-      expect(identified('edit-meal-barcode-scan'), findsOneWidget);
-      await capture(
-        tester,
-        'create-layout-${layout.$1}-${layout.$2}-${layout.$3}',
-      );
-      expect(tester.takeException(), isNull);
-    });
+    testWidgets(
+      'specifications reflow and nutrition basis is separate at $layout',
+      (tester) async {
+        await pumpEditor(
+          tester,
+          width: layout.$1,
+          scale: layout.$2,
+          dark: layout.$3,
+        );
+        await tester.scrollUntilVisible(
+          identified('edit-meal-barcode-scan'),
+          180,
+          scrollable: find.byType(Scrollable).first,
+        );
+        expect(identified('edit-meal-barcode-scan'), findsOneWidget);
+        await tester.scrollUntilVisible(
+          input('nutrition-basis'),
+          180,
+          scrollable: find.byType(Scrollable).first,
+        );
+        final position = tester
+            .state<ScrollableState>(find.byType(Scrollable).first)
+            .position;
+        position.jumpTo(
+          (position.pixels - 72 * layout.$2).clamp(0, position.maxScrollExtent),
+        );
+        await tester.pumpAndSettle();
+        final rects = [
+          'package-quantity',
+          'serving-quantity',
+          'nutrition-basis',
+        ].map((id) => tester.getRect(input(id))).toList();
+        if (layout.$1 >= 344 && layout.$2 * 14 <= 18) {
+          expect(rects[1].top, rects[0].top);
+          expect(rects[1].width, rects[0].width);
+        } else {
+          expect(rects[1].top, greaterThan(rects[0].bottom));
+        }
+        expect(rects[2].top, greaterThan(rects[1].bottom));
+        await capture(
+          tester,
+          'create-layout-${layout.$1}-${layout.$2}-${layout.$3}',
+        );
+        expect(tester.takeException(), isNull);
+      },
+    );
   }
 
   testWidgets('invalid basis blocks save; unknown nutrients remain null', (
@@ -390,7 +437,9 @@ void main() {
     ];
     for (var i = 0; i < ids.length; i++) {
       await enter(tester, ids[i], '${i + 1}');
-      if ([3, 9, 19].contains(i)) await capture(tester, 'advanced-editor-section-$i');
+      if ([3, 9, 19].contains(i)) {
+        await capture(tester, 'advanced-editor-section-$i');
+      }
     }
     FocusManager.instance.primaryFocus?.unfocus();
     tester
@@ -449,5 +498,100 @@ void main() {
       meals.saved.single.nutriments.energyKcal100,
       closeTo(80 * 100 / 15, 1e-8),
     );
+  });
+  testWidgets(
+    'new kJ input ignores global display changes and saves kcal once',
+    (tester) async {
+      await pumpEditor(tester, useDefaultInput: true);
+      await enter(tester, 'name', '独立千焦输入');
+      await enter(tester, 'energy', '2000');
+      expect(
+        tester
+            .widget<DropdownButtonFormField<bool>>(
+              find.byType(DropdownButtonFormField<bool>),
+            )
+            .initialValue,
+        isTrue,
+      );
+      energyPreference.updateUsesKilojoules(true);
+      await tester.pumpAndSettle();
+      energyPreference.updateUsesKilojoules(false);
+      await tester.pumpAndSettle();
+      expect(text(tester, 'energy'), '2000');
+      expect(find.textContaining('478.0'), findsOneWidget);
+      await capture(tester, 'create-independent-kj-2000');
+      await save(tester);
+      expect(
+        meals.saved.single.nutriments.energyKcal100,
+        closeTo(2000 / 4.184, 1e-10),
+      );
+      await pumpEditor(
+        tester,
+        meal: MealEntity.fromMealDBO(meals.saved.single),
+        kj: true,
+        useDefaultInput: true,
+      );
+      await tester.scrollUntilVisible(
+        input('energy'),
+        180,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await tester.pumpAndSettle();
+      expect(
+        tester
+            .widget<DropdownButtonFormField<bool>>(
+              find.byType(DropdownButtonFormField<bool>),
+            )
+            .initialValue,
+        isFalse,
+      );
+      expect(double.parse(text(tester, 'energy')), closeTo(2000 / 4.184, 1e-9));
+      expect(tester.takeException(), isNull);
+    },
+  );
+
+  testWidgets('local unit round trips preserve untouched stored precision', (
+    tester,
+  ) async {
+    final creator = EditMealBloc(_Config(), meals, preferences);
+    const kcal = 123.456789012345;
+    final original = creator.createNewMealEntity(
+      MealEntity.empty(),
+      '原始精度',
+      '',
+      '200',
+      '30',
+      '100',
+      'g',
+      '$kcal',
+      '0',
+      '0',
+      '0',
+    );
+    addTearDown(creator.close);
+    await pumpEditor(tester, meal: original, useDefaultInput: true);
+    for (var i = 0; i < 5; i++) {
+      await selectEnergyUnit(tester, true);
+      await selectEnergyUnit(tester, false);
+    }
+    await save(tester);
+    expect(meals.saved.single.nutriments.energyKcal100, kcal);
+  });
+
+  testWidgets('empty and zero energy survive local unit changes separately', (
+    tester,
+  ) async {
+    await pumpEditor(tester, useDefaultInput: true);
+    await enter(tester, 'name', '未知能量');
+    await selectEnergyUnit(tester, false);
+    await save(tester);
+    expect(meals.saved.single.nutriments.energyKcal100, isNull);
+    await pumpEditor(tester, useDefaultInput: true);
+    await enter(tester, 'name', '零能量');
+    await enter(tester, 'energy', '0');
+    await selectEnergyUnit(tester, false);
+    await selectEnergyUnit(tester, true);
+    await save(tester);
+    expect(meals.saved.last.nutriments.energyKcal100, 0);
   });
 }

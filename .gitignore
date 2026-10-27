@@ -85,6 +85,8 @@ output/playwright/
 # Project-local SDKs, dependency caches and build logs.
 .tools/
 output/flutter/
+# Local source rollback snapshot for the approved UI changes.
+output/ui-v2-before-20261027/
 
 # Kotlin project-local session cache.
 android/.kotlin/

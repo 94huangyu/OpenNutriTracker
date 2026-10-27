@@ -47,13 +47,13 @@ class _PersonalFoodActionsState extends State<PersonalFoodActions> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Wrap(
-          spacing: 8,
-          runSpacing: 4,
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Semantics(
               identifier: 'food-favorite',
               child: TextButton.icon(
+                style: TextButton.styleFrom(alignment: Alignment.centerLeft),
                 onPressed: _saving
                     ? null
                     : () => _save(
@@ -69,9 +69,11 @@ class _PersonalFoodActionsState extends State<PersonalFoodActions> {
                 ),
               ),
             ),
+            const Divider(height: 1),
             Semantics(
               identifier: 'food-personal-review',
               child: TextButton.icon(
+                style: TextButton.styleFrom(alignment: Alignment.centerLeft),
                 onPressed: _saving
                     ? null
                     : () async {

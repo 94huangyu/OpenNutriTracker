@@ -69,11 +69,9 @@ class MealDetailBloc extends Bloc<MealDetailEvent, MealDetailState> {
         );
 
         // Shared with the bulk-add screen so the two paths cannot drift.
-        final convertedQuantity = convertQuantityToBaseUnit(
-          quantity,
-          selectedUnit,
-          event.meal,
-        );
+        final convertedQuantity =
+            event.baseQuantity ??
+            convertQuantityToBaseUnit(quantity, selectedUnit, event.meal);
 
         emit(
           state.copyWith(
@@ -103,12 +101,7 @@ class MealDetailBloc extends Bloc<MealDetailEvent, MealDetailState> {
           );
         } else {
           final goal = await _getKcalGoalUsecase.getKcalGoal();
-          emit(
-            state.copyWith(
-              dayKcalConsumed: 0,
-              dayKcalGoal: goal,
-            ),
-          );
+          emit(state.copyWith(dayKcalConsumed: 0, dayKcalGoal: goal));
         }
       } catch (e) {
         log.severe('Error loading daily totals: $e');

@@ -148,6 +148,7 @@ class _RecipesPageState extends State<RecipesPage>
                     day: DateTime.now(),
                     addMealType: AddMealType.breakfastType,
                     favoritesOnly: true,
+                    browseOnly: true,
                   ),
                 ],
               ),

@@ -17,6 +17,7 @@ class AppCard extends StatelessWidget {
   final double? height;
   final VoidCallback? onTap;
   final bool bordered;
+  final bool shadowed;
 
   const AppCard({
     super.key,
@@ -28,6 +29,7 @@ class AppCard extends StatelessWidget {
     this.height,
     this.onTap,
     this.bordered = true,
+    this.shadowed = true,
   });
 
   @override
@@ -41,10 +43,18 @@ class AppCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: color ?? palette.surface,
         borderRadius: radius,
-        border: bordered ? Border.all(color: palette.border, width: Dimens.hairline) : null,
-        boxShadow: [
-          BoxShadow(color: palette.shadow, blurRadius: 18, offset: const Offset(0, 6)),
-        ],
+        border: bordered
+            ? Border.all(color: palette.border, width: Dimens.hairline)
+            : null,
+        boxShadow: shadowed
+            ? [
+                BoxShadow(
+                  color: palette.shadow,
+                  blurRadius: 18,
+                  offset: const Offset(0, 6),
+                ),
+              ]
+            : null,
       ),
       // A transparent Material directly below the colored decoration so any
       // descendant ListTile/InkWell paints on this ancestor rather than

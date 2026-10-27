@@ -188,7 +188,10 @@ void main() {
 
   Future<void> reveal(WidgetTester tester, String identifier) async {
     if (id(identifier).evaluate().isEmpty) {
-      tester.state<ScrollableState>(find.byType(Scrollable).first).position.jumpTo(0);
+      tester
+          .state<ScrollableState>(find.byType(Scrollable).first)
+          .position
+          .jumpTo(0);
       await tester.pumpAndSettle();
       await tester.scrollUntilVisible(
         id(identifier),
@@ -318,6 +321,26 @@ void main() {
       expect(tester.takeException(), isNull);
     });
   }
+
+  testScreen('normal settings values and 30 day trends remain reachable', (
+    tester,
+  ) async {
+    await pump(tester, const RecordingSettings());
+    expect(find.text('显示与记录'), findsOneWidget);
+    await captureWidget(tester, capture, 'settings-normal-overview');
+    await reveal(tester, 'recording-settings-sources');
+    await captureWidget(tester, capture, 'settings-normal-data-privacy');
+    await tester.pumpWidget(const SizedBox());
+    await pump(tester, const RecordingTrendsPage());
+    await captureWidget(tester, capture, 'trends-normal-overview');
+    await tester.tap(find.text('30 天'));
+    await tester.pumpAndSettle();
+    await reveal(tester, 'trends-daily-list');
+    expect(find.text('9月21日'), findsOneWidget);
+    expect(find.text('10月20日'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+    await captureWidget(tester, capture, 'trends-normal-thirty-days');
+  });
 
   testScreen('invalid ZIP and legacy partial warning do not write', (
     tester,

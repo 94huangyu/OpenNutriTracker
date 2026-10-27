@@ -1,6 +1,7 @@
 import 'package:opennutritracker/core/data/data_source/personal_food_data_source.dart';
 import 'package:opennutritracker/features/add_meal/presentation/widgets/personal_food_list.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:opennutritracker/core/presentation/widgets/empty_hint.dart';
 import 'package:opennutritracker/core/presentation/widgets/error_dialog.dart';
 import 'package:opennutritracker/core/styles/app_palette.dart';
@@ -94,52 +95,66 @@ class _AddMealScreenState extends State<AddMealScreen> {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final palette = isDark ? AppPalette.dark : AppPalette.light;
+    final secondaryAction = OutlinedButton.styleFrom(
+      backgroundColor: palette.surface,
+      foregroundColor: palette.textStrong,
+      side: BorderSide(color: palette.border),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      minimumSize: const Size(0, 44),
+      textStyle: Theme.of(
+        context,
+      ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500),
+    );
     return Scaffold(
       // Let the keyboard overlay the results rather than compress the body.
       // In landscape the space above the keyboard is shorter than the pinned
       // search bar + tab bar, which otherwise overflows (issue #165 testing).
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: Text(_mealType.getTypeName(context)),
+        title: Text(S.of(context).recordingAddFood),
         actions: [
-          Semantics(
-            identifier: 'add-meal-quick-add',
-            child: IconButton(
-              onPressed: _onQuickAddPressed,
-              tooltip: S.of(context).quickAddCardLabel,
-              icon: const Icon(Icons.edit_note_rounded),
-            ),
-          ),
           BlocBuilder<AddMealBloc, AddMealState>(
             bloc: _addMealBloc,
-            builder: (BuildContext context, AddMealState state) {
-              if (state is AddMealLoadedState) {
-                return Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Semantics(
-                      identifier: 'add-meal-bulk-add',
-                      child: IconButton(
-                        onPressed: () =>
-                            _onBulkAddPressed(state.usesImperialUnits),
-                        icon: const Icon(Icons.playlist_add),
-                        tooltip: S.of(context).bulkAddTitle,
-                      ),
-                    ),
-                    Semantics(
-                      identifier: 'add-meal-custom-add',
-                      child: IconButton(
-                        onPressed: () =>
-                            _onCustomAddButtonPressed(state.usesImperialUnits),
-                        icon: const Icon(Icons.add_circle_outline),
-                        tooltip: S.of(context).noResultsCreateCustomFood,
-                      ),
-                    ),
-                  ],
-                );
-              }
-              return const SizedBox();
-            },
+            builder: (context, state) => Semantics(
+              identifier: 'add-meal-more',
+              child: PopupMenuButton<String>(
+                onSelected: (value) {
+                  if (value == 'quick') _onQuickAddPressed();
+                  if (value == 'bulk' && state is AddMealLoadedState) {
+                    _onBulkAddPressed(state.usesImperialUnits);
+                  }
+                  if (value == 'mine') _selectSource(_SearchSource.mine);
+                  if (value == 'products') {
+                    _selectSource(_SearchSource.products);
+                  }
+                  if (value == 'food') _selectSource(_SearchSource.food);
+                },
+                itemBuilder: (context) => [
+                  PopupMenuItem(
+                    value: 'quick',
+                    child: Text(S.of(context).quickAddCardLabel),
+                  ),
+                  PopupMenuItem(
+                    value: 'bulk',
+                    enabled: state is AddMealLoadedState,
+                    child: Text(S.of(context).bulkAddTitle),
+                  ),
+                  const PopupMenuDivider(),
+                  PopupMenuItem(
+                    value: 'mine',
+                    child: Text(S.of(context).myFoodLabel),
+                  ),
+                  PopupMenuItem(
+                    value: 'products',
+                    child: Text(S.of(context).searchProductsPage),
+                  ),
+                  PopupMenuItem(
+                    value: 'food',
+                    child: Text(S.of(context).searchFoodPage),
+                  ),
+                ],
+              ),
+            ),
           ),
         ],
       ),
@@ -149,14 +164,59 @@ class _AddMealScreenState extends State<AddMealScreen> {
           padding: const EdgeInsets.symmetric(horizontal: Dimens.spacing16),
           child: Column(
             children: [
-              const SizedBox(height: Dimens.spacing8),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  '${DateFormat.yMMMd(Localizations.localeOf(context).toString()).format(_day)} · ${_mealType.getTypeName(context)}',
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodyMedium?.copyWith(color: palette.textMuted),
+                ),
+              ),
+              const SizedBox(height: 16),
               MealSearchBar(
                 searchStringListener: _searchStringListener,
                 onSearchSubmit: _onSearchSubmit,
                 onSearchChanged: _onSearchChanged,
-                onBarcodePressed: _onBarcodeIconPressed,
+                onBarcodePressed: null,
+                outlined: true,
               ),
               const SizedBox(height: Dimens.spacing12),
+              BlocBuilder<AddMealBloc, AddMealState>(
+                bloc: _addMealBloc,
+                builder: (context, state) => Wrap(
+                  spacing: 12,
+                  runSpacing: 4,
+                  children: [
+                    Semantics(
+                      identifier: 'add-meal-scan',
+                      child: OutlinedButton.icon(
+                        style: secondaryAction,
+                        onPressed: _onBarcodeIconPressed,
+                        icon: const Icon(
+                          Icons.qr_code_scanner_rounded,
+                          size: 18,
+                        ),
+                        label: Text(S.of(context).recordingScanFood),
+                      ),
+                    ),
+                    Semantics(
+                      identifier: 'add-meal-custom-add',
+                      child: OutlinedButton.icon(
+                        style: secondaryAction,
+                        onPressed: state is AddMealLoadedState
+                            ? () => _onCustomAddButtonPressed(
+                                state.usesImperialUnits,
+                              )
+                            : null,
+                        icon: const Icon(Icons.add_rounded, size: 18),
+                        label: Text(S.of(context).noResultsCreateCustomFood),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 12),
               _buildSourceChips(context, palette),
               const SizedBox(height: Dimens.spacing12),
               // Rebuild on every keystroke so the empty-state logic can tell
@@ -277,6 +337,20 @@ class _AddMealScreenState extends State<AddMealScreen> {
         child: ChoiceChip(
           label: Text(label),
           selected: _source == source,
+          selectedColor: Theme.of(
+            context,
+          ).colorScheme.primary.withValues(alpha: .12),
+          side: BorderSide(
+            color: _source == source
+                ? Theme.of(context).colorScheme.primary
+                : Colors.transparent,
+          ),
+          labelStyle: Theme.of(context).textTheme.bodySmall?.copyWith(
+            color: _source == source
+                ? Theme.of(context).colorScheme.primary
+                : palette.textMuted,
+            fontWeight: _source == source ? FontWeight.w600 : FontWeight.w400,
+          ),
           showCheckmark: false,
           onSelected: (_) => _selectSource(source),
         ),
@@ -288,12 +362,15 @@ class _AddMealScreenState extends State<AddMealScreen> {
         scrollDirection: Axis.horizontal,
         child: Row(
           children: [
+            chip(_SearchSource.all, S.of(context).searchLabel),
             chip(_SearchSource.recent, S.of(context).recentlyAddedLabel),
-            chip(_SearchSource.mine, S.of(context).myFoodLabel),
             chip(_SearchSource.favorites, S.of(context).foodFavorites),
-            chip(_SearchSource.all, S.of(context).allItemsLabel),
-            chip(_SearchSource.products, S.of(context).searchProductsPage),
-            chip(_SearchSource.food, S.of(context).searchFoodPage),
+            if (_source == _SearchSource.mine)
+              chip(_SearchSource.mine, S.of(context).myFoodLabel),
+            if (_source == _SearchSource.products)
+              chip(_SearchSource.products, S.of(context).searchProductsPage),
+            if (_source == _SearchSource.food)
+              chip(_SearchSource.food, S.of(context).searchFoodPage),
           ],
         ),
       ),
@@ -382,16 +459,36 @@ class _AddMealScreenState extends State<AddMealScreen> {
             addMealType: _mealType,
             usesImperialUnits: imperial,
           ),
-        for (var i = 0; i < statuses.length; i++)
-          if (i == 0 || statuses[i].$2 != SearchRemoteStatus.notRequested)
-            SearchSourceNotice(
-              sourceId: statuses[i].$1 == 'Open Food Facts'
-                  ? 'off'
-                  : 'reference',
-              source: statuses[i].$1,
-              status: statuses[i].$2,
-              onRetry: statuses[i].$3,
+        Semantics(
+          identifier: 'search-source-details',
+          child: ExpansionTile(
+            tilePadding: EdgeInsets.zero,
+            title: Text(
+              incomplete
+                  ? S.of(context).searchSourcesIncomplete
+                  : pending
+                  ? S.of(context).searchSourcesPending
+                  : S.of(context).recordingFoodSources,
+              style: Theme.of(context).textTheme.bodySmall,
             ),
+            leading: Icon(
+              incomplete ? Icons.info_outline : Icons.cloud_outlined,
+              size: 18,
+            ),
+            children: [
+              for (var i = 0; i < statuses.length; i++)
+                if (i == 0 || statuses[i].$2 != SearchRemoteStatus.notRequested)
+                  SearchSourceNotice(
+                    sourceId: statuses[i].$1 == 'Open Food Facts'
+                        ? 'off'
+                        : 'reference',
+                    source: statuses[i].$1,
+                    status: statuses[i].$2,
+                    onRetry: statuses[i].$3,
+                  ),
+            ],
+          ),
+        ),
         if (merged.isEmpty && !pending)
           NoResultsWidget(
             title: incomplete ? S.of(context).noLocalSearchResults : null,
@@ -423,7 +520,9 @@ class _AddMealScreenState extends State<AddMealScreen> {
                 bloc: _productsBloc,
                 builder: (context, ps) => BlocBuilder<FoodBloc, FoodState>(
                   bloc: _foodBloc,
-                  builder: (context, fs) => _remoteResults(context, query,
+                  builder: (context, fs) => _remoteResults(
+                    context,
+                    query,
                     productsState: _searchesProducts(_source) ? ps : null,
                     foodState: _searchesFood(_source) ? fs : null,
                   ),

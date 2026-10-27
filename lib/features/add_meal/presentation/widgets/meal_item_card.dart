@@ -23,6 +23,7 @@ class MealItemCard extends StatelessWidget {
   final AddMealType addMealType;
   final MealEntity mealEntity;
   final bool usesImperialUnits;
+  final bool browseOnly;
 
   const MealItemCard({
     super.key,
@@ -31,6 +32,7 @@ class MealItemCard extends StatelessWidget {
     required this.mealEntity,
     required this.addMealType,
     required this.usesImperialUnits,
+    this.browseOnly = false,
   });
 
   @override
@@ -44,12 +46,16 @@ class MealItemCard extends StatelessWidget {
     // noun reliably identifies the food ("Milk, fluid, nonfat..." → milk).
     // OFF products are branded, so a head-noun match would often be
     // misleading; they keep the outline icon as a placeholder.
-    final emoji = (mealEntity.thumbnailImageUrl == null && mealEntity.source == MealSourceEntity.fdc)
+    final emoji =
+        (mealEntity.thumbnailImageUrl == null &&
+            mealEntity.source == MealSourceEntity.fdc)
         ? resolveFoodEmoji(mealEntity.name)
         : null;
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: Dimens.spacing8),
       child: AppCard(
+        shadowed: false,
+        borderRadius: 16,
         onTap: () => _onItemPressed(context),
         padding: const EdgeInsets.all(Dimens.spacing12),
         child: Column(
@@ -79,20 +85,24 @@ class MealItemCard extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: Dimens.spacing8),
-                Semantics(
-                  identifier: 'meal-item-add',
-                  child: IconButton(
-                    style: IconButton.styleFrom(
-                      foregroundColor: Theme.of(context).colorScheme.onPrimary,
-                      backgroundColor: accent,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
+                if (!browseOnly)
+                  Semantics(
+                    identifier: 'meal-item-add',
+                    child: IconButton(
+                      tooltip: S.of(context).addLabel,
+                      style: IconButton.styleFrom(
+                        foregroundColor: Theme.of(
+                          context,
+                        ).colorScheme.onPrimary,
+                        backgroundColor: accent,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
                       ),
+                      icon: const Icon(Icons.add_rounded, size: 24),
+                      onPressed: () => _onItemPressed(context),
                     ),
-                    icon: const Icon(Icons.add_rounded, size: 24),
-                    onPressed: () => _onItemPressed(context),
                   ),
-                ),
               ],
             ),
             if (stacked) ...[
@@ -197,11 +207,11 @@ class MealItemCard extends StatelessWidget {
     // it visible next to the chip.
     final sourceLabel = _sourceLabel(context);
     final chip = sourceLabel != null
-        ? _labelChip(
-            context,
+        ? Text(
             sourceLabel,
-            background: palette.textMuted.withValues(alpha: 0.12),
-            foreground: palette.textMuted,
+            style: Theme.of(
+              context,
+            ).textTheme.bodySmall?.copyWith(color: palette.textMuted),
           )
         : null;
     final package = double.tryParse(mealEntity.mealQuantity ?? '');
@@ -258,7 +268,9 @@ class MealItemCard extends StatelessWidget {
     if (mealEntity.source == MealSourceEntity.off) {
       return OFFConst.offSourceName;
     }
-    if (mealEntity.source == MealSourceEntity.fdc) return S.of(context).additionalInfoLabelFDC;
+    if (mealEntity.source == MealSourceEntity.fdc) {
+      return S.of(context).additionalInfoLabelFDC;
+    }
     return S.of(context).additionalInfoLabelUnknown;
   }
 
@@ -280,9 +292,9 @@ class MealItemCard extends StatelessWidget {
       child: Text(
         label,
         style: Theme.of(context).textTheme.labelSmall?.copyWith(
-              color: foreground,
-              fontWeight: FontWeight.w700,
-            ),
+          color: foreground,
+          fontWeight: FontWeight.w700,
+        ),
       ),
     );
   }
@@ -296,6 +308,7 @@ class MealItemCard extends StatelessWidget {
             addMealType.getIntakeType(),
             day,
             usesImperialUnits,
+            browseOnly: browseOnly,
           ),
         )
         .then((_) => onReturn?.call());

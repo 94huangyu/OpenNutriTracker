@@ -9,6 +9,8 @@ import 'package:opennutritracker/features/add_meal/domain/entity/meal_entity.dar
 import 'package:opennutritracker/features/add_meal/domain/entity/meal_nutriments_entity.dart';
 import 'package:opennutritracker/features/add_meal/presentation/add_meal_type.dart';
 import 'package:opennutritracker/features/add_meal/presentation/widgets/meal_item_card.dart';
+import 'package:opennutritracker/features/meal_detail/meal_detail_screen.dart';
+import 'package:opennutritracker/core/utils/navigation_options.dart';
 import 'package:opennutritracker/generated/l10n.dart';
 import '../../helpers/widget_capture.dart';
 
@@ -129,5 +131,59 @@ void main() {
         'search-results-${variant.$1}-${variant.$2}-${variant.$3}',
       );
     });
+  }
+  for (final browse in [true, false]) {
+    testWidgets(
+      'favorite card preserves browse versus selected meal context $browse',
+      (tester) async {
+        MealDetailScreenArguments? pushed;
+        final day = DateTime(2026, 10, 12);
+        await tester.pumpWidget(
+          ChangeNotifierProvider(
+            create: (_) => EnergyUnitProvider(),
+            child: MaterialApp(
+              localizationsDelegates: const [
+                S.delegate,
+                GlobalMaterialLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate,
+                GlobalCupertinoLocalizations.delegate,
+              ],
+              supportedLocales: S.supportedLocales,
+              onGenerateRoute: (settings) {
+                expect(settings.name, NavigationOptions.mealDetailRoute);
+                pushed = settings.arguments as MealDetailScreenArguments;
+                return MaterialPageRoute(
+                  builder: (_) => const Scaffold(body: Text('detail')),
+                );
+              },
+              home: Scaffold(
+                body: MealItemCard(
+                  day: day,
+                  mealEntity: meal('收藏食品', 123),
+                  addMealType: AddMealType.dinnerType,
+                  usesImperialUnits: false,
+                  browseOnly: browse,
+                ),
+              ),
+            ),
+          ),
+        );
+        await tester.pumpAndSettle();
+        expect(
+          find.byWidgetPredicate(
+            (w) => w is Semantics && w.properties.identifier == 'meal-item-add',
+          ),
+          browse ? findsNothing : findsOneWidget,
+        );
+        await tester.tap(find.textContaining('收藏食品', findRichText: true));
+        await tester.pumpAndSettle();
+        expect(pushed!.browseOnly, browse);
+        expect(pushed!.day, day);
+        expect(
+          pushed!.intakeTypeEntity,
+          AddMealType.dinnerType.getIntakeType(),
+        );
+      },
+    );
   }
 }

@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:opennutritracker/core/domain/entity/config_entity.dart';
 import 'package:opennutritracker/core/domain/entity/intake_entity.dart';
+import 'package:opennutritracker/core/domain/entity/intake_type_entity.dart';
 import 'package:opennutritracker/core/domain/entity/tracked_day_entity.dart';
 import 'package:opennutritracker/core/domain/entity/user_activity_entity.dart';
 import 'package:opennutritracker/core/domain/usecase/add_config_usecase.dart';
@@ -199,6 +200,15 @@ class CalendarDayBloc extends Bloc<CalendarDayEvent, CalendarDayState> {
   ) async {
     await recordingChanges!.repeat(intake, day, amount, unit);
   }
+
+  Future<void> deleteSelectedIntakes(List<IntakeEntity> items, DateTime day) =>
+      recordingChanges!.deleteSelected(items, day);
+
+  Future<void> copySelectedIntakes(
+    List<IntakeEntity> items,
+    DateTime day,
+    IntakeTypeEntity type,
+  ) => recordingChanges!.copySelected(items, day, type);
 
   Future<void> updateIntakeItem(
     String intakeId,

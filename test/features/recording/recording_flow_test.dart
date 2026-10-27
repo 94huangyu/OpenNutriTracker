@@ -34,7 +34,10 @@ import 'package:opennutritracker/core/utils/theme_mode_provider.dart';
 import 'package:opennutritracker/features/add_meal/domain/entity/meal_entity.dart';
 import 'package:opennutritracker/features/add_meal/domain/entity/meal_nutriments_entity.dart';
 import 'package:opennutritracker/features/diary/presentation/bloc/calendar_day_bloc.dart';
+import 'package:opennutritracker/features/add_meal/presentation/add_meal_screen.dart';
+import 'package:opennutritracker/features/add_meal/presentation/add_meal_type.dart';
 import 'package:opennutritracker/generated/l10n.dart';
+import 'package:opennutritracker/features/meal_detail/presentation/widgets/food_portion_summary.dart';
 
 import '../../helpers/widget_capture.dart';
 
@@ -127,6 +130,30 @@ class _DayBloc extends CalendarDayBloc {
   IntakeEntity? deleted;
   IntakeEntity? restored;
   double? repeated;
+  bool failSave = false;
+  List<IntakeEntity>? copied;
+  DateTime? copiedDay;
+  IntakeTypeEntity? copiedType;
+  List<IntakeEntity>? deletedSelected;
+  @override
+  Future<void> copySelectedIntakes(
+    List<IntakeEntity> items,
+    DateTime day,
+    IntakeTypeEntity type,
+  ) async {
+    copied = items;
+    copiedDay = day;
+    copiedType = type;
+  }
+
+  @override
+  Future<void> deleteSelectedIntakes(
+    List<IntakeEntity> items,
+    DateTime day,
+  ) async {
+    deletedSelected = items;
+  }
+
   _DayBloc(_Intakes intakes, _Unused unused)
     : super(
         unused,
@@ -147,6 +174,7 @@ class _DayBloc extends CalendarDayBloc {
     Map<String, dynamic> fields,
     DateTime day,
   ) async {
+    if (failSave) throw StateError('simulated save failure');
     updated = fields;
   }
 
@@ -183,9 +211,13 @@ void main() {
   final getIt = GetIt.instance;
   final capture = GlobalKey();
   late _DayBloc bloc;
+  late _Intakes intakes;
+  AddMealScreenArguments? added;
   setUpAll(loadCaptureFonts);
   setUp(() {
-    bloc = _DayBloc(_Intakes(), _Unused());
+    added = null;
+    intakes = _Intakes();
+    bloc = _DayBloc(intakes, _Unused());
     getIt.registerSingleton<CalendarDayBloc>(bloc);
     getIt.registerSingleton<GetConfigUsecase>(_Config());
     DayBoundaryCalc.clock = () => day;
@@ -235,6 +267,15 @@ void main() {
               ).copyWith(textScaler: TextScaler.linear(scale)),
               child: child!,
             ),
+            onGenerateRoute: (settings) {
+              if (settings.name == NavigationOptions.addMealRoute) {
+                added = settings.arguments as AddMealScreenArguments;
+                return MaterialPageRoute(
+                  builder: (_) => const Scaffold(body: Text('add-food')),
+                );
+              }
+              return null;
+            },
             home: home ?? const MainScreen(),
           ),
         ),
@@ -297,8 +338,8 @@ void main() {
         scale: variant.$2,
         dark: variant.$3,
       );
-      expect(find.text('495 kcal'), findsOneWidget);
-      expect(find.text('测试食品A'), findsNothing);
+      expect(find.text('495 kcal', findRichText: true), findsOneWidget);
+      expect(find.text('测试食品A、测试食品A'), findsOneWidget);
       expect(find.text('免责声明'), findsNothing);
       expect(find.textContaining('运动'), findsNothing);
       expect(find.textContaining('体重'), findsNothing);
@@ -329,6 +370,8 @@ void main() {
     await tester.pumpAndSettle();
     expect(bloc.updated, isNull);
     expect(find.text('请输入大于 0 的摄入量'), findsOneWidget);
+    await tester.enterText(quantity, '15');
+    await tester.pump();
     await tester.tap(identified('recording-edit-unit'));
     await tester.pumpAndSettle();
     await tester.tap(find.text('份').last);
@@ -379,7 +422,312 @@ void main() {
     await tester.runAsync(() => loaded);
     await tester.pumpAndSettle();
     expect(find.text('2026年10月14日'), findsOneWidget);
-    expect(find.text('495 kcal'), findsNothing);
-    expect(find.text('0 kcal'), findsNWidgets(5));
+    expect(find.text('495 kcal', findRichText: true), findsNothing);
+    expect(find.text('0 kcal', findRichText: true), findsOneWidget);
+    expect(find.text('尚未记录'), findsNWidgets(4));
+  });
+  Future<Finder> openFirstRecord(WidgetTester tester) async {
+    await tester.tap(identified('recording-meal-breakfastType'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const ValueKey('a1')));
+    await tester.pumpAndSettle();
+    return find.descendant(
+      of: identified('recording-edit-quantity'),
+      matching: find.byType(TextField),
+    );
+  }
+
+  Future<void> unit(WidgetTester tester, String label) async {
+    await tester.pump();
+    await tester.tap(identified('recording-edit-unit'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text(label).last);
+    await tester.pumpAndSettle();
+  }
+
+  testWidgets(
+    'record summary preserves unknown energy and known zero independently',
+    (tester) async {
+      final unknown = MealEntity(
+        name: '未知热量样例',
+        code: 'nullable-record',
+        url: null,
+        mealQuantity: '200',
+        mealUnit: 'g',
+        servingQuantity: 50,
+        servingUnit: 'g',
+        servingSize: '',
+        source: MealSourceEntity.custom,
+        nutriments: const MealNutrimentsEntity(
+          energyKcal100: null,
+          carbohydrates100: 0,
+          fat100: null,
+          proteins100: 2,
+          sugars100: null,
+          saturatedFat100: null,
+          fiber100: null,
+        ),
+      );
+      intakes.items
+        ..clear()
+        ..add(intake('a1', unknown, 50, IntakeTypeEntity.breakfast));
+      await pump(tester);
+      final input = await openFirstRecord(tester);
+      var summary = tester.widget<FoodPortionSummary>(
+        find.byType(FoodPortionSummary),
+      );
+      expect(summary.kcal, isNull);
+      expect(summary.carbs, 0);
+      expect(summary.fat, isNull);
+      expect(summary.protein, 1);
+      expect(
+        find.descendant(
+          of: find.byType(FoodPortionSummary),
+          matching: find.text('— kcal', findRichText: true),
+        ),
+        findsOneWidget,
+      );
+      await tester.enterText(input, '20');
+      await tester.pumpAndSettle();
+      summary = tester.widget<FoodPortionSummary>(
+        find.byType(FoodPortionSummary),
+      );
+      expect(summary.protein, .4);
+      expect(summary.kcal, isNull);
+      await captureWidget(tester, capture, 'recording-edit-unknown-energy');
+      await tester.tap(identified('recording-save-intake'));
+      await tester.pumpAndSettle();
+      expect(bloc.updated, {'amount': 20.0, 'unit': 'g'});
+      expect(unknown.nutriments.energyKcal100, isNull);
+    },
+  );
+
+  testWidgets(
+    'record editor long name and large font keep save above keyboard; cancel does not save',
+    (tester) async {
+      intakes.items[0] = intake(
+        'a1',
+        food('很长的食品名称' * 10, 30, 500),
+        100,
+        IntakeTypeEntity.breakfast,
+      );
+      await pump(tester, width: 320, scale: 1.6);
+      final quantity = await openFirstRecord(tester);
+      await tester.ensureVisible(quantity);
+      await tester.enterText(quantity, '45');
+      tester.view.viewInsets = const FakeViewPadding(bottom: 260);
+      await tester.pumpAndSettle();
+      await tester.ensureVisible(identified('recording-save-intake'));
+      await tester.pumpAndSettle();
+      expect(
+        tester.getRect(identified('recording-save-intake')).bottom,
+        lessThanOrEqualTo(640),
+      );
+      await captureWidget(tester, capture, 'recording-edit-narrow-keyboard');
+      await tester.ensureVisible(identified('recording-cancel-intake'));
+      await tester.pumpAndSettle();
+      await tester.tap(identified('recording-cancel-intake'));
+      await tester.pumpAndSettle();
+      expect(bloc.updated, isNull);
+      expect(tester.takeException(), isNull);
+    },
+  );
+
+  for (final serving in [30.0, 50.0]) {
+    testWidgets(
+      'unit-only round trips preserve exact 100g with serving $serving',
+      (tester) async {
+        intakes.items[0] = intake(
+          'a1',
+          food('换算测试', serving, 123),
+          100,
+          IntakeTypeEntity.breakfast,
+        );
+        await pump(tester);
+        final quantity = await openFirstRecord(tester);
+        for (var i = 0; i < 5; i++) {
+          await unit(tester, '份');
+          expect(
+            double.parse(tester.widget<TextField>(quantity).controller!.text),
+            100 / serving,
+          );
+          await unit(tester, 'g');
+          expect(tester.widget<TextField>(quantity).controller!.text, '100');
+        }
+        await unit(tester, '份');
+        await tester.tap(identified('recording-save-intake'));
+        await tester.pumpAndSettle();
+        expect(bloc.updated, {'amount': 100.0, 'unit': 'serving'});
+        expect(intakes.items.first.amount, 100);
+      },
+    );
+  }
+
+  testWidgets(
+    'invalid input disables conversion; failed save and cancel keep original',
+    (tester) async {
+      await pump(tester);
+      final quantity = await openFirstRecord(tester);
+      for (final invalid in ['', '0', 'NaN', '-1']) {
+        await tester.enterText(quantity, invalid);
+        await tester.pump();
+        final dropdown = tester.widget<DropdownButtonFormField<String>>(
+          find.byType(DropdownButtonFormField<String>),
+        );
+        expect(dropdown.onChanged, isNull);
+        await tester.tap(identified('recording-save-intake'));
+        await tester.pumpAndSettle();
+        expect(bloc.updated, isNull);
+      }
+      await tester.enterText(quantity, '30');
+      await unit(tester, '份');
+      bloc.failSave = true;
+      await tester.tap(identified('recording-save-intake'));
+      await tester.pumpAndSettle();
+      expect(find.text('保存失败，请重试'), findsOneWidget);
+      expect(bloc.updated, isNull);
+      expect(intakes.items.first.amount, 15);
+      await tester.binding.handlePopRoute();
+      await tester.pumpAndSettle();
+      expect(bloc.updated, isNull);
+    },
+  );
+
+  for (final serving in [0.0, double.infinity, double.nan]) {
+    testWidgets('no convertible serving for $serving', (tester) async {
+      intakes.items[0] = intake(
+        'a1',
+        food('无份量', serving, 123),
+        100,
+        IntakeTypeEntity.breakfast,
+      );
+      await pump(tester);
+      await openFirstRecord(tester);
+      final dropdown = tester.widget<DropdownButtonFormField<String>>(
+        find.byType(DropdownButtonFormField<String>),
+      );
+      expect(dropdown.onChanged, isNotNull);
+      await tester.tap(identified('recording-edit-unit'));
+      await tester.pumpAndSettle();
+      expect(find.text('份'), findsNothing);
+      await tester.tap(find.text('g').last);
+      await tester.pumpAndSettle();
+      expect(tester.takeException(), isNull);
+    });
+  }
+
+  for (final variant in [
+    (390.0, 1.0, false),
+    (320.0, 1.6, false),
+    (390.0, 2.0, true),
+  ]) {
+    testWidgets(
+      'meal detail selects records, cancels delete and copies to chosen date and meal $variant',
+      (tester) async {
+        await pump(
+          tester,
+          width: variant.$1,
+          scale: variant.$2,
+          dark: variant.$3,
+        );
+        await tester.tap(identified('recording-meal-breakfastType'));
+        await tester.pumpAndSettle();
+        expect(find.text('测试食品A'), findsNWidgets(2));
+        await captureWidget(
+          tester,
+          capture,
+          'recording-meal-detail-${variant.$1}-${variant.$2}-${variant.$3}',
+        );
+        await tester.tap(identified('recording-meal-edit'));
+        await tester.pumpAndSettle();
+        await tester.tap(find.byKey(const ValueKey('a1')));
+        await tester.pump();
+        await tester.tap(identified('recording-delete-selected'));
+        await tester.pumpAndSettle();
+        await tester.tap(find.widgetWithText(TextButton, '取消').last);
+        await tester.pumpAndSettle();
+        expect(bloc.deletedSelected, isNull);
+        await tester.tap(identified('recording-copy-selected'));
+        await tester.pumpAndSettle();
+        await tester.tap(identified('recording-copy-date'));
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('20').last);
+        await tester.tap(find.text('确定').last);
+        await tester.pumpAndSettle();
+        await tester.tap(identified('recording-copy-meal'));
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('晚餐').last);
+        await tester.pumpAndSettle();
+        await captureWidget(
+          tester,
+          capture,
+          'recording-copy-destination-${variant.$1}-${variant.$2}-${variant.$3}',
+        );
+        await tester.tap(find.widgetWithText(FilledButton, '复制').last);
+        await tester.pumpAndSettle();
+        expect(bloc.copied!.map((i) => i.id), ['a1']);
+        expect(bloc.copiedDay, DateTime(2026, 10, 20));
+        expect(bloc.copiedType, IntakeTypeEntity.dinner);
+        expect(intakes.items.length, 3);
+        await tester.tap(identified('recording-meal-edit'));
+        await tester.pump();
+        await tester.tap(identified('recording-select-all'));
+        await tester.pump();
+        await tester.tap(identified('recording-delete-selected'));
+        await tester.pumpAndSettle();
+        await tester.tap(find.widgetWithText(TextButton, '删除').last);
+        await tester.pumpAndSettle();
+        expect(bloc.deletedSelected!.map((i) => i.id), ['a1', 'a2']);
+        expect(tester.takeException(), isNull);
+      },
+    );
+  }
+
+  testWidgets(
+    'each plus opens the chosen historical date and meal independently',
+    (tester) async {
+      await pump(tester);
+      for (final type in AddMealType.values) {
+        await tester.tap(identified('recording-add-${type.name}'));
+        await tester.pumpAndSettle();
+        expect(added!.day, day);
+        expect(added!.mealType, type);
+        expect(find.text('add-food'), findsOneWidget);
+        await tester.binding.handlePopRoute();
+        await tester.pumpAndSettle();
+      }
+      final loaded = bloc.stream.firstWhere(
+        (state) => state is CalendarDayLoaded,
+      );
+      await tester.tap(identified('recording-previous-day'));
+      await tester.runAsync(() => loaded);
+      await tester.pumpAndSettle();
+      await tester.tap(identified('recording-add-dinnerType'));
+      await tester.pumpAndSettle();
+      expect(added!.day, DateTime(2026, 10, 14));
+      expect(added!.mealType, AddMealType.dinnerType);
+    },
+  );
+
+  testWidgets('long names remain complete in narrow large-text meal detail', (
+    tester,
+  ) async {
+    final name = '一条很长的食品名称用于确认首页省略之后餐次详情仍然能够完整显示每一项记录';
+    intakes.items[0] = intake(
+      'a1',
+      food(name, 30, 123),
+      100,
+      IntakeTypeEntity.breakfast,
+    );
+    await pump(tester, width: 320, scale: 1.6);
+    final preview = tester.widget<Text>(find.text('$name、测试食品A'));
+    expect(preview.maxLines, 1);
+    expect(preview.overflow, TextOverflow.ellipsis);
+    await tester.tap(identified('recording-meal-breakfastType'));
+    await tester.pumpAndSettle();
+    final full = tester.widget<Text>(find.text(name));
+    expect(full.maxLines, isNull);
+    await captureWidget(tester, capture, 'recording-detail-narrow-long-name');
+    expect(tester.takeException(), isNull);
   });
 }

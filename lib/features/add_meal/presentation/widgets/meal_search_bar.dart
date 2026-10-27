@@ -13,6 +13,7 @@ class MealSearchBar extends StatefulWidget {
   // Nullable so callers that don't surface a barcode flow (e.g. the recipe
   // ingredient picker) can omit the suffix icon entirely.
   final Function()? onBarcodePressed;
+  final bool outlined;
 
   const MealSearchBar({
     super.key,
@@ -20,6 +21,7 @@ class MealSearchBar extends StatefulWidget {
     required this.onSearchSubmit,
     required this.onBarcodePressed,
     this.onSearchChanged,
+    this.outlined = false,
   });
 
   @override
@@ -44,14 +46,16 @@ class _MealSearchBarState extends State<MealSearchBar> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final palette = isDark ? AppPalette.dark : AppPalette.light;
     final accent = Theme.of(context).colorScheme.primary;
+    final height = 32 + MediaQuery.textScalerOf(context).scale(16) * 1.5;
     final border = OutlineInputBorder(
-      borderRadius: Dimens.borderRadiusL,
+      borderRadius: widget.outlined
+          ? BorderRadius.circular(12)
+          : Dimens.borderRadiusL,
       borderSide: BorderSide(color: palette.border, width: Dimens.hairline),
     );
     return Row(
       children: [
-        Flexible(
-          flex: 1,
+        Expanded(
           child: Semantics(
             identifier: 'meal-search-field',
             child: TextField(
@@ -64,26 +68,45 @@ class _MealSearchBarState extends State<MealSearchBar> {
               },
               onSubmitted: widget.onSearchSubmit,
               decoration: InputDecoration(
+                constraints: widget.outlined
+                    ? BoxConstraints.tightFor(height: height)
+                    : null,
                 hintText: S.of(context).searchLabel,
-                hintStyle: Theme.of(context).textTheme.bodyLarge?.copyWith(color: palette.textMuted),
-                prefixIcon: Icon(Icons.search_rounded, size: 24, color: palette.textMuted),
+                hintStyle: Theme.of(
+                  context,
+                ).textTheme.bodyLarge?.copyWith(color: palette.textMuted),
+                prefixIcon: Icon(
+                  Icons.search_rounded,
+                  size: 24,
+                  color: palette.textMuted,
+                ),
                 suffixIcon: widget.onBarcodePressed != null
                     ? Semantics(
                         identifier: 'meal-search-barcode',
                         child: IconButton(
-                          icon: Icon(CustomIcons.barcode_scan, size: 22, color: palette.textMuted),
+                          icon: Icon(
+                            CustomIcons.barcode_scan,
+                            size: 22,
+                            color: palette.textMuted,
+                          ),
                           onPressed: widget.onBarcodePressed,
                         ),
                       )
                     : null,
                 filled: true,
-                fillColor: palette.surfaceMuted,
-                contentPadding:
-                    const EdgeInsets.symmetric(vertical: Dimens.spacing16, horizontal: Dimens.spacing16),
+                fillColor: widget.outlined
+                    ? palette.surface
+                    : palette.surfaceMuted,
+                contentPadding: const EdgeInsets.symmetric(
+                  vertical: Dimens.spacing16,
+                  horizontal: Dimens.spacing16,
+                ),
                 border: border,
                 enabledBorder: border,
                 focusedBorder: OutlineInputBorder(
-                  borderRadius: Dimens.borderRadiusL,
+                  borderRadius: widget.outlined
+                      ? BorderRadius.circular(12)
+                      : Dimens.borderRadiusL,
                   borderSide: BorderSide(color: accent, width: 1.5),
                 ),
               ),
@@ -94,6 +117,7 @@ class _MealSearchBarState extends State<MealSearchBar> {
         Semantics(
           identifier: 'meal-search-submit',
           child: IconButton(
+            tooltip: S.of(context).searchLabel,
             onPressed: () {
               FocusManager.instance.primaryFocus?.unfocus(); // Hide Keyboard
               widget.onSearchSubmit(_searchTextController.text);
@@ -102,6 +126,7 @@ class _MealSearchBarState extends State<MealSearchBar> {
             style: IconButton.styleFrom(
               foregroundColor: Theme.of(context).colorScheme.onPrimary,
               backgroundColor: accent,
+              minimumSize: Size.square(widget.outlined ? height : 48),
               padding: const EdgeInsets.all(Dimens.spacing12),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),

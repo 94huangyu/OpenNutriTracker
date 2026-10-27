@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 import 'package:opennutritracker/features/recording/domain/recording_nutrient.dart';
 import 'package:flutter/material.dart';
+import 'package:opennutritracker/core/presentation/widgets/app_card.dart';
 import 'package:intl/intl.dart';
 import 'package:opennutritracker/core/data/repository/intake_repository.dart';
 import 'package:opennutritracker/core/domain/entity/intake_entity.dart';
@@ -164,8 +165,6 @@ class _RecordingTrendsPageState extends State<RecordingTrendsPage> {
                       ),
                     ),
                     const SizedBox(height: 16),
-                    Text(s.m4TrendsNote),
-                    const SizedBox(height: 16),
                     Semantics(
                       identifier: 'trends-nutrient',
                       child: DropdownButtonFormField<RecordingNutrient>(
@@ -192,7 +191,9 @@ class _RecordingTrendsPageState extends State<RecordingTrendsPage> {
                         child: Text(s.m4NoRecords),
                       )
                     else
-                      Card(
+                      AppCard(
+                        shadowed: false,
+                        borderRadius: 16,
                         child: Padding(
                           padding: const EdgeInsets.all(16),
                           child: Column(
@@ -227,69 +228,97 @@ class _RecordingTrendsPageState extends State<RecordingTrendsPage> {
                           ),
                         ),
                       ),
-                    const SizedBox(height: 16),
-                    Text(
-                      s.m4ChartNote,
-                      style: Theme.of(context).textTheme.bodySmall,
-                    ),
-                    const SizedBox(height: 8),
-                    // Text rows keep every date and value accessible at large font sizes.
+                    const SizedBox(height: 20),
                     Semantics(
                       identifier: 'trends-daily-list',
-                      child: Column(
+                      child: AppCard(
+                        shadowed: false,
+                        borderRadius: 16,
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: Column(
+                          children: [
+                            for (var i = rows.length - 1; i >= 0; i--) ...[
+                              if (i < rows.length - 1) const Divider(height: 1),
+                              _dailyRow(rows[i], maximum),
+                            ],
+                          ],
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    Semantics(
+                      identifier: 'trends-explanation',
+                      child: ExpansionTile(
+                        tilePadding: EdgeInsets.zero,
+                        childrenPadding: const EdgeInsets.only(bottom: 16),
+                        title: Text(s.trendsExplanation),
                         children: [
-                          for (final r in rows.reversed)
-                            Card(
-                              child: Padding(
-                                padding: const EdgeInsets.all(12),
-                                child: Column(
-                                  crossAxisAlignment:
-                                      CrossAxisAlignment.stretch,
-                                  children: [
-                                    Text(
-                                      DateFormat.MMMd(
-                                        Localizations.localeOf(
-                                          context,
-                                        ).toString(),
-                                      ).format(r.day),
-                                      style: Theme.of(
-                                        context,
-                                      ).textTheme.titleSmall,
-                                    ),
-                                    if (r.intakes.isEmpty)
-                                      Text(s.m4NoDayRecords)
-                                    else ...[
-                                      Text(
-                                        '${labels[_nutrient]}: ${_format(context, r.nutrient(_nutrient))}${_partial(s, r.nutrient(_nutrient))}',
-                                      ),
-                                      if (r.nutrient(_nutrient).value !=
-                                          null) ...[
-                                        const SizedBox(height: 8),
-                                        ExcludeSemantics(
-                                          child: LinearProgressIndicator(
-                                            value: maximum <= 0
-                                                ? 0
-                                                : (r
-                                                              .nutrient(
-                                                                _nutrient,
-                                                              )
-                                                              .value! /
-                                                          maximum)
-                                                      .clamp(0.0, 1.0),
-                                          ),
-                                        ),
-                                      ],
-                                    ],
-                                  ],
-                                ),
-                              ),
-                            ),
+                          Text(s.m4TrendsNote),
+                          const SizedBox(height: 8),
+                          Text(s.m4ChartNote),
                         ],
                       ),
                     ),
                   ],
                 ),
               ),
+      ),
+    );
+  }
+
+  Widget _dailyRow(RecordingDayTotals row, double maximum) {
+    final s = S.of(context);
+    final n = row.nutrient(_nutrient);
+    final date = DateFormat.MMMd(
+      Localizations.localeOf(context).toString(),
+    ).format(row.day);
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 14),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          LayoutBuilder(
+            builder: (context, constraints) {
+              final heading = Text(
+                date,
+                style: Theme.of(context).textTheme.titleSmall,
+              );
+              final value = Text(
+                row.intakes.isEmpty
+                    ? s.m4NoDayRecords
+                    : '${_format(context, n)}${_partial(s, n)}',
+              );
+              if (constraints.maxWidth < 280 ||
+                  MediaQuery.textScalerOf(context).scale(14) > 19) {
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [heading, const SizedBox(height: 4), value],
+                );
+              }
+              return Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(child: heading),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    flex: 2,
+                    child: Align(alignment: Alignment.topRight, child: value),
+                  ),
+                ],
+              );
+            },
+          ),
+          if (row.intakes.isNotEmpty && n.value != null) ...[
+            const SizedBox(height: 10),
+            ExcludeSemantics(
+              child: LinearProgressIndicator(
+                value: maximum <= 0 ? 0 : (n.value! / maximum).clamp(0.0, 1.0),
+                borderRadius: BorderRadius.circular(4),
+                minHeight: 5,
+              ),
+            ),
+          ],
+        ],
       ),
     );
   }

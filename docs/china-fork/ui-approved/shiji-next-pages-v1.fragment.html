@@ -1,0 +1,266 @@
+<style>
+#sj-next{--sn-bg:light-dark(#f5f7f6,#131c18);--sn-paper:light-dark(#ffffff,#1c2821);--sn-fill:light-dark(#edf2ef,#24352b);--sn-line:light-dark(#dfe7e2,#35473b);--sn-ink:light-dark(#1e3029,#e9f0eb);--sn-muted:light-dark(#62716a,#b0bfb5);--sn-green:light-dark(#1f7057,#91d7b0);--sn-on:light-dark(#ffffff,#103424);--sn-tint:light-dark(#e1efe8,#2b4335);--sn-error:light-dark(#a9362c,#ffb4ab);--sn-scale:1;--sn-phone:360px;color:var(--sn-ink)}
+#sj-next [hidden]{display:none!important}
+#sj-next .compare{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px;align-items:start;padding:10px 0 20px}
+#sj-next .column{min-width:0;display:flex;flex-direction:column;align-items:center}
+#sj-next .caption{align-self:stretch;margin:0 0 12px;color:var(--sn-muted);font:500 14px/1.5 -apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif}
+#sj-next .phone{box-sizing:border-box;width:100%;max-width:var(--sn-phone);min-height:1120px;display:flex;flex-direction:column;border:1px solid var(--sn-line);border-radius:26px;background:var(--sn-bg);color:var(--sn-ink);font:400 calc(14px * var(--sn-scale))/1.5 -apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;overflow:clip;position:relative}
+#sj-next .phone *{box-sizing:border-box;min-width:0}
+#sj-next .phone button,#sj-next .phone input,#sj-next .phone select{font:inherit;color:inherit}
+#sj-next .phone button{background:transparent;border:0}
+#sj-next .phone input,#sj-next .phone select{max-width:100%;background:var(--sn-paper);border:1px solid var(--sn-line);border-radius:10px;padding:12px;width:100%;font-size:max(16px,1em)}
+#sj-next .phone input[type=checkbox]{width:20px;height:20px;accent-color:var(--sn-green);flex-shrink:0;padding:0}
+#sj-next .phone svg{width:20px;height:20px;flex-shrink:0;stroke-width:1.8}
+#sj-next .status{height:34px;padding:9px 18px;display:flex;align-items:center;justify-content:space-between;font-size:.8em;font-weight:500}
+#sj-next .status .signals{display:flex;align-items:center;gap:5px}
+#sj-next .status svg{width:13px;height:13px}
+#sj-next .appbar{display:flex;align-items:center;gap:12px;min-height:62px;padding:8px 16px 16px}
+#sj-next .appbar h2{font-size:1.5em;line-height:1.3;font-weight:500;margin:0;flex:1}
+#sj-next .old .appbar h2{font-size:1.65em;font-weight:700}
+#sj-next .icon-button{min-width:32px;min-height:36px;display:inline-flex;align-items:center;justify-content:center}
+#sj-next .page-body{padding:0 16px 20px;flex:1}
+#sj-next .muted{color:var(--sn-muted)}
+#sj-next .minor{font-size:.86em;color:var(--sn-muted)}
+#sj-next .gap{height:18px}
+#sj-next .field{display:block;margin-bottom:14px}
+#sj-next .field>span:first-child{display:block;margin-bottom:7px;font-size:.9em;font-weight:500}
+#sj-next .field small{display:block;margin-top:5px;font-size:.85em;color:var(--sn-muted)}
+#sj-next .with-unit{position:relative;display:block}
+#sj-next .with-unit input{padding-right:40px}
+#sj-next .suffix{position:absolute;right:12px;top:50%;transform:translateY(-50%);color:var(--sn-muted);pointer-events:none;font-size:.9em}
+#sj-next .old .field input,#sj-next .old .field select{border-color:transparent;background:var(--sn-fill);min-height:54px}
+#sj-next .old .field>span:first-child{font-size:1em;font-weight:600}
+#sj-next .section-title{font-size:1em;font-weight:500;margin:18px 0 10px}
+#sj-next .helper{color:var(--sn-muted);font-size:.85em;margin:8px 0 14px}
+#sj-next .old .helper{font-size:1em;line-height:1.6}
+#sj-next .panel{background:var(--sn-paper);border:1px solid var(--sn-line);border-radius:16px;padding:15px}
+#sj-next .old-spec{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:20px}
+#sj-next .old-spec .field>span:first-child{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:.9em}
+#sj-next .old-spec .with-unit input{padding-left:9px;padding-right:21px}
+#sj-next .old-spec .suffix{right:7px}
+#sj-next .spec-pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+#sj-next .basis{display:grid;grid-template-columns:minmax(0,1fr) minmax(95px,.85fr);gap:12px;align-items:center;border-bottom:1px solid var(--sn-line);padding:0 0 14px;margin-bottom:14px}
+#sj-next .basis label{font-weight:500}
+#sj-next .basis small{display:block;font-size:.85em;color:var(--sn-muted);font-weight:400;margin-top:3px}
+#sj-next .basis .field{margin:0}
+#sj-next .nutrition-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 12px}
+#sj-next .new .field input:focus,#sj-next .new .field select:focus{outline-color:var(--sn-green)}
+#sj-next .segmented{display:flex;border:1px solid var(--sn-line);border-radius:12px;overflow:hidden;margin:8px 0 16px}
+#sj-next .segmented button{flex:1;min-height:42px;padding:8px;color:var(--sn-muted)}
+#sj-next .segmented button+button{border-left:1px solid var(--sn-line)}
+#sj-next .segmented button[aria-pressed=true]{background:var(--sn-tint);color:var(--sn-green);font-weight:500}
+#sj-next .old .segmented{border-radius:30px}
+#sj-next .old .segmented button{font-size:1.1em;font-weight:700}
+#sj-next .check-line{display:flex;gap:10px;align-items:center;margin:18px 0;font-size:.9em}
+#sj-next .save-area{padding:12px 16px 20px;margin-top:auto}
+#sj-next .primary-action{width:100%;border-radius:12px!important;min-height:48px;padding:12px!important;background:var(--sn-green)!important;color:var(--sn-on)!important;font-weight:500!important}
+#sj-next .old .primary-action{font-size:1.1em;font-weight:700!important}
+#sj-next .feedback{margin:12px 0 0;padding:10px 12px;background:var(--sn-tint);color:var(--sn-green);border-radius:10px;font-size:.86em}
+#sj-next .feedback.error{background:var(--sn-fill);color:var(--sn-error)}
+#sj-next .filter-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px;margin-bottom:14px}
+#sj-next .filter-row .segmented{margin:0}
+#sj-next .date-filter{width:100%;min-height:42px;padding:6px 8px!important;border:1px solid var(--sn-line)!important;border-radius:12px!important;display:flex;align-items:center;justify-content:center;gap:5px;color:var(--sn-green)!important;font-size:.86em!important}
+#sj-next .date-filter svg{width:16px;height:16px}
+#sj-next .old .date-filter{border-radius:30px!important;font-weight:600;font-size:1em!important;min-height:48px;margin-bottom:16px}
+#sj-next .nutrient-picker{display:flex;gap:12px;align-items:center;margin-bottom:16px;font-size:.9em}
+#sj-next .nutrient-picker select{flex:1;min-height:44px;padding:8px 10px}
+#sj-next .old .nutrient-picker{display:block;margin:18px 0}
+#sj-next .old .nutrient-picker select{background:var(--sn-fill);border:0;padding:16px;font-weight:600}
+#sj-next .old-note{margin:16px 0;font-size:1em;line-height:1.65}
+#sj-next .total-label{font-size:.85em;color:var(--sn-muted)}
+#sj-next .total-value{font-size:1.85em;font-weight:500;margin:5px 0 10px;font-variant-numeric:tabular-nums}
+#sj-next .total-value small{font-size:.48em;color:var(--sn-muted);font-weight:400;margin-left:5px}
+#sj-next .summary-secondary{display:flex;justify-content:space-between;gap:10px;color:var(--sn-muted);font-size:.85em;border-top:1px solid var(--sn-line);padding-top:12px}
+#sj-next .macro-line{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;margin:10px 0 0;color:var(--sn-muted);font-size:.85em}
+#sj-next .old-total{font-size:1em}
+#sj-next .old-total .total-value{font-size:1.5em;font-weight:700}
+#sj-next .old-total .macro-line{display:block;font-size:1em}
+#sj-next .old-total .macro-line span{display:block;margin-top:4px}
+#sj-next .list-title{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin:18px 0 10px;font-weight:500}
+#sj-next .list-title small{font-size:.85em;color:var(--sn-muted);font-weight:400}
+#sj-next .day-row{padding:12px 0}
+#sj-next .day-row+.day-row{border-top:1px solid var(--sn-line)}
+#sj-next .day-top{display:flex;justify-content:space-between;align-items:baseline;gap:12px;font-variant-numeric:tabular-nums}
+#sj-next .day-value{font-size:.92em;white-space:nowrap}
+#sj-next .track{height:5px;background:var(--sn-fill);border-radius:4px;margin-top:8px;overflow:hidden}
+#sj-next .bar-fill{height:100%;background:var(--sn-green);border-radius:4px}
+#sj-next .old .day-row{background:var(--sn-paper);border:1px solid var(--sn-line);border-radius:16px;padding:13px;margin:0}
+#sj-next .old .day-top{display:block}
+#sj-next .old .day-date{font-weight:600;font-size:1.08em}
+#sj-next .old .day-value{display:block;margin-top:5px;font-size:1em;white-space:normal}
+#sj-next .old .track{border-radius:0;height:4px}
+#sj-next .old .bar-fill{border-radius:0}
+#sj-next .chart-note{margin:15px 0 9px;color:var(--sn-muted);font-size:.85em}
+#sj-next .explanation{margin-top:14px;font-size:.85em;color:var(--sn-muted)}
+#sj-next .explanation summary{min-height:36px;padding:7px 0}
+#sj-next .explanation p{margin:5px 0 12px}
+#sj-next .bottom-nav{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));padding:12px 6px 16px;background:var(--sn-paper);border-top:1px solid var(--sn-line);margin-top:20px}
+#sj-next .bottom-nav>span{display:flex;flex-direction:column;align-items:center;gap:5px;color:var(--sn-muted);font-size:.85em}
+#sj-next .bottom-nav em{font-style:normal;display:flex;align-items:center;justify-content:center;width:50px;height:28px;border-radius:10px}
+#sj-next .bottom-nav .chosen{color:var(--sn-ink)}
+#sj-next .bottom-nav .chosen em{background:var(--sn-tint)}
+#sj-next .settings-heading{font-size:.85em;color:var(--sn-muted);font-weight:500;margin:20px 3px 9px}
+#sj-next .setting-group{border:1px solid var(--sn-line);border-radius:16px;background:var(--sn-paper);padding:0 14px}
+#sj-next .setting-row{display:flex;align-items:center;gap:10px;min-height:58px;padding:12px 0}
+#sj-next .setting-row+.setting-row{border-top:1px solid var(--sn-line)}
+#sj-next .setting-row>svg{width:18px;height:18px;color:var(--sn-muted)}
+#sj-next .setting-row>label,#sj-next .setting-row>.row-main{flex:1;font-size:.95em}
+#sj-next .setting-row select{max-width:138px;width:auto;min-height:38px;border:0;background:transparent;color:var(--sn-muted);padding:6px 0;font-size:.9em;text-align:right}
+#sj-next .setting-row .row-value{color:var(--sn-muted);font-size:.9em;white-space:nowrap}
+#sj-next .setting-row small{display:block;font-size:.86em;color:var(--sn-muted);margin-top:3px}
+#sj-next .setting-link{width:100%;text-align:left;display:flex;align-items:center;gap:10px;padding:0!important;min-height:34px}
+#sj-next .setting-link>span{flex:1}
+#sj-next .setting-link>svg{width:18px;height:18px;color:var(--sn-muted)}
+#sj-next .profile-caption{font-size:.85em;color:var(--sn-muted);margin:10px 3px 0}
+#sj-next .old-profile h3{font-size:1.5em;font-weight:700;margin:10px 0}
+#sj-next .old-profile p{margin:10px 0 16px}
+#sj-next .old-profile select{background:var(--sn-fill);border:0;font-weight:600;min-height:52px}
+#sj-next .rename-old{display:block;min-height:46px;margin:10px auto 18px;color:var(--sn-green)!important;font-weight:600!important}
+#sj-next .divider{border:0;border-top:1px solid var(--sn-line);margin:14px 0}
+#sj-next .old .settings-unit{display:flex;align-items:center;gap:16px;padding:12px 16px}
+#sj-next .old .settings-unit label{flex:1;font-weight:500}
+#sj-next .old .old-tile{padding:18px 16px;display:flex;gap:14px;align-items:center}
+#sj-next .old .old-tile p{margin:0}
+#sj-next .old .old-tile small{display:block;margin-top:4px;color:var(--sn-muted)}
+#sj-next .new .rename-button{color:var(--sn-green);font-size:.9em;padding:4px 0}
+#sj-next .inline-editor{padding:12px 0;border-top:1px solid var(--sn-line)}
+#sj-next .editor-actions{display:flex;justify-content:flex-end;gap:16px;margin-top:8px}
+#sj-next .editor-actions button{min-height:36px;color:var(--sn-green)}
+#sj-next .preview-result{margin-top:14px}
+#sj-next .preview-result summary{padding:9px 0}
+#sj-next[data-large=true] .spec-pair,#sj-next[data-large=true] .nutrition-grid{grid-template-columns:1fr}
+#sj-next[data-large=true] .filter-row{grid-template-columns:1fr}
+#sj-next[data-large=true] .setting-row{flex-wrap:wrap}
+#sj-next[data-large=true] .setting-row select{width:100%;max-width:none;text-align:left;margin-left:28px}
+#sj-next[data-large=true] .basis{grid-template-columns:1fr}
+@media(max-width:620px){#sj-next .compare{grid-template-columns:1fr;gap:24px}#sj-next .phone{max-width:360px}#sj-next .phone{min-height:1000px}}
+@media(pointer:coarse){#sj-next .phone button{min-height:44px}#sj-next .setting-row select{min-height:44px}}
+
+#sj-next .phone input[role=switch]{appearance:none;width:44px;height:26px;border-radius:20px;padding:0;position:relative;border:1px solid var(--sn-line);background:var(--sn-fill);flex-shrink:0}
+#sj-next .phone input[role=switch]::before{content:"";position:absolute;width:18px;height:18px;border-radius:50%;background:var(--sn-muted);left:3px;top:3px}
+#sj-next .phone input[role=switch]:checked{background:var(--sn-green);border-color:transparent}
+#sj-next .phone input[role=switch]:checked::before{background:var(--sn-on);left:21px}
+
+#sj-next .basis .field>span:first-child{display:none}
+#sj-next[data-large=true] .summary-secondary{flex-direction:column;gap:12px}
+#sj-next[data-large=true] .day-top,#sj-next[data-large=true] .list-title{flex-wrap:wrap;gap:4px 12px}
+#sj-next .day-date{white-space:nowrap}
+</style>
+<div id="sj-next" aria-label="食迹其余页面布局对比">
+<div class="viz-carousel viz-dotted-background" aria-label="食迹其余页面对比" data-previous-label="上一页" data-next-label="下一页">
+<section data-variant="创建食品" aria-label="创建食品布局对比">
+<div class="compare">
+<div class="column"><p class="caption">原布局复刻 · 示例数据</p><div class="phone old" data-screen="create" data-side="old" aria-label="创建食品原布局"></div></div>
+<div class="column"><p class="caption">优化方案 · 同一组字段</p><div class="phone new" data-screen="create" data-side="new" aria-label="创建食品优化方案"></div></div>
+</div>
+</section>
+<section data-variant="趋势" aria-label="趋势页布局对比" hidden>
+<div class="compare">
+<div class="column"><p class="caption">原布局复刻 · 示例数据</p><div class="phone old" data-screen="trends" data-side="old" aria-label="趋势页原布局"></div></div>
+<div class="column"><p class="caption">优化方案 · 同一组记录</p><div class="phone new" data-screen="trends" data-side="new" aria-label="趋势页优化方案"></div></div>
+</div>
+</section>
+<section data-variant="我的与设置" aria-label="我的与设置布局对比" hidden>
+<div class="compare">
+<div class="column"><p class="caption">原布局复刻 · 示例设置</p><div class="phone old" data-screen="settings" data-side="old" aria-label="我的与设置原布局"></div></div>
+<div class="column"><p class="caption">优化方案 · 保留现有设置</p><div class="phone new" data-screen="settings" data-side="new" aria-label="我的与设置优化方案"></div></div>
+</div>
+</section>
+</div>
+</div>
+<script>
+(()=>{
+const root=document.getElementById('sj-next');
+const esc=v=>String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const state={fontScale:1,narrow:false,days:7,nutrient:'energy',end:'2026-10-20',food:{name:'即食米饭',brand:'样例品牌',barcode:'',package:'200',serving:'50',basis:'100',energy:'123',carbs:'26',fat:'1',protein:'3',unit:'g',saveFood:true},settings:{profile:'我的记录',language:'中文',kj:false,theme:'跟随系统',boundary:'00:00'}};
+const saved=window.openai?.widgetState?.modelContent;
+if(saved && typeof saved==='object'){
+ if([7,30].includes(saved.days))state.days=saved.days;
+ if(['energy','carbs','protein','fat'].includes(saved.nutrient))state.nutrient=saved.nutrient;
+ if(typeof saved.fontScale==='number')state.fontScale=Math.min(1.6,Math.max(1,saved.fontScale));
+ if(typeof saved.narrow==='boolean')state.narrow=saved.narrow;
+}
+function remember(){window.openai?.setWidgetState?.({modelContent:{pages:['创建食品','趋势','我的与设置'],days:state.days,nutrient:state.nutrient,fontScale:state.fontScale,narrow:state.narrow},privateContent:null})?.catch(()=>{});}
+const icon=name=>`<i data-lucide="${name}" aria-hidden="true"></i>`;
+const status=`<div class="status"><span>9:41</span><span class="signals">${icon('signal')}${icon('wifi')}${icon('battery-full')}</span></div>`;
+function header(title,back=false){return status+`<div class="appbar">${back?`<span class="icon-button" aria-hidden="true">${icon('arrow-left')}</span>`:''}<h2>${title}</h2></div>`;}
+function nav(selected){return `<div class="bottom-nav">${[['日记','calendar-days'],['食品库','refrigerator'],['趋势','chart-no-axes-combined'],['我的','user-round']].map(([n,i])=>`<span class="${selected===n?'chosen':''}"><em>${icon(i)}</em>${n}</span>`).join('')}</div>`;}
+function input(side,key,label,unit='',helper=''){
+ const numeric=!['name','brand','barcode'].includes(key);
+ return `<label class="field"><span${label.length>3?` data-tooltip="${esc(label)}"`:''}>${label}</span><span class="with-unit"><input class="cursor-interaction" data-food="${key}" aria-label="${label}" value="${esc(state.food[key])}" ${numeric?'inputmode="decimal" type="number" min="0" step="any"':'type="text"'}>${unit?`<span class="suffix">${unit}</span>`:''}</span>${helper?`<small>${helper}</small>`:''}</label>`;
+}
+function units(){return `<div class="segmented" role="group" aria-label="食品计量单位">${['g','ml'].map(u=>`<button class="cursor-interaction" type="button" data-unit="${u}" aria-pressed="${state.food.unit===u}">${state.food.unit===u?'✓ ':''}${u}</button>`).join('')}</div>`;}
+function renderCreate(){root.querySelectorAll('[data-screen=create]').forEach(phone=>{
+ const side=phone.dataset.side;const old=side==='old';const unit=state.food.unit;const basis=esc(state.food.basis||'—');
+ const common=input(side,'name','食品名称')+input(side,'brand','品牌（选填）')+input(side,'barcode','条形码（选填）');
+ const help='包装大小、单份分量可留空。下方营养值均对应营养基准；更改基准后请核对数值。';
+ const spec=old?units()+`<div class="old-spec">${input(side,'package','包装大小',unit)}${input(side,'serving','单份分量',unit)}${input(side,'basis','营养基准',unit)}</div><p class="helper">${help}</p>`:
+ `<h3 class="section-title">食品规格 <span class="minor">· 选填</span></h3><div class="panel">${units()}<div class="spec-pair">${input(side,'package','包装大小',unit)}${input(side,'serving','单份分量',unit)}</div><span class="minor">包装与单份分量仅描述食品规格。</span></div>`;
+ const nutrition=[['energy','能量','kcal'],['carbs','碳水化合物','g'],['fat','脂肪','g'],['protein','蛋白质','g']].map(([key,label,u])=>input(side,key,old&&key==='energy'?'能量（kcal）':label,old?'':u,old?`每 ${basis} ${unit}`:'')).join('');
+ const nutritionBlock=old?nutrition:`<h3 class="section-title">营养信息</h3><div class="panel"><div class="basis"><label>营养基准<small>以下数值均按此量填写</small></label>${input(side,'basis','基准数量',unit)}</div><div class="nutrition-grid">${nutrition}</div><div class="helper" data-basis-note>每 ${basis} ${unit} · 更改基准后请核对营养数值</div></div>`;
+ phone.innerHTML=header('创建食品',true)+`<div class="page-body">${common}${spec}${nutritionBlock}<p class="helper">未填写的营养值保留为未知，不当作 0。</p><label class="check-line"><input class="cursor-interaction" type="checkbox" data-food="saveFood" ${state.food.saveFood?'checked':''}>保存到我的食品，便于下次使用</label></div><div class="save-area"><button class="primary-action cursor-interaction" type="button" data-action="save-food">保存</button><div class="feedback" role="status" hidden></div></div>`;
+});}
+const knownDays=[
+ {day:14,energy:1865,carbs:224,protein:86,fat:57},
+ {day:15,energy:1740,carbs:205,protein:82,fat:54},
+ {day:16,energy:null,carbs:182,protein:null,fat:48,recorded:true},
+ {day:17,recorded:false},
+ {day:18,energy:1920,carbs:231,protein:93,fat:61},
+ {day:19,energy:1785,carbs:212,protein:88,fat:54},
+ {day:20,energy:1830,carbs:219,protein:91,fat:56}
+];
+const nutrientLabels={energy:'能量',carbs:'碳水',protein:'蛋白质',fat:'脂肪',sugars:'糖',saturatedFat:'饱和脂肪',fiber:'膳食纤维',monounsaturatedFat:'单不饱和脂肪',polyunsaturatedFat:'多不饱和脂肪',transFat:'反式脂肪',cholesterol:'胆固醇',sodium:'钠',potassium:'钾',magnesium:'镁',calcium:'钙',iron:'铁',zinc:'锌',phosphorus:'磷',vitaminA:'维生素 A',vitaminC:'维生素 C',vitaminD:'维生素 D',vitaminB6:'维生素 B6',vitaminB12:'维生素 B12',niacin:'烟酸'};
+const nutrientUnit=n=>n==='energy'?'kcal':['vitaminA','vitaminD','vitaminB12'].includes(n)?'µg':['cholesterol','sodium','potassium','magnesium','calcium','iron','zinc','phosphorus','vitaminC','vitaminB6','niacin'].includes(n)?'mg':'g';
+function trendRows(){const end=new Date(state.end+'T12:00:00');return Array.from({length:state.days},(_,i)=>{const d=new Date(end);d.setDate(end.getDate()-i);const key=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;const found=key.startsWith('2026-10-')?knownDays.find(r=>r.day===d.getDate()):null;return {...(found||{recorded:false}),date:key,dateLabel:`${d.getMonth()+1}月${d.getDate()}日`,recorded:found?found.recorded!==false:false};});}
+function period(){return `<div class="segmented" role="group" aria-label="统计时段">${[7,30].map(v=>`<button class="cursor-interaction" type="button" data-days="${v}" aria-pressed="${state.days===v}">${state.days===v?'✓ ':''}${v} 天</button>`).join('')}</div>`;}
+function picker(){return `<label class="nutrient-picker"><span class="minor">营养指标</span><select class="cursor-interaction" data-nutrient aria-label="营养指标">${Object.entries(nutrientLabels).map(([v,n])=>`<option value="${v}" ${state.nutrient===v?'selected':''}>${n}</option>`).join('')}</select></label>`;}
+function renderTrends(){const rows=trendRows();const n=state.nutrient;const label=nutrientLabels[n];const unit=nutrientUnit(n);const recorded=rows.filter(r=>r.recorded);const known=recorded.filter(r=>Number.isFinite(r[n]));const total=known.reduce((s,r)=>s+r[n],0);const partial=known.length<recorded.length;const suffix=partial?' · 部分已知':'';const value=known.length?(n==='energy'?total.toLocaleString('en-US'):total.toFixed(1)):'—';const max=Math.max(1,...known.map(r=>r[n]));const note='仅统计实际摄入。未记录不代表零摄入；未知营养显示“—”，部分已知的合计标有说明。';const avg=known.length?(total/recorded.length).toLocaleString('en-US',{maximumFractionDigits:1}):'—';
+ root.querySelectorAll('[data-screen=trends]').forEach(phone=>{const old=phone.dataset.side==='old';
+ const date=`<button class="date-filter cursor-interaction" data-action="date" type="button">${icon('calendar-days')}${old?'截止日期：':''}${state.end.replaceAll('-','/')}</button>`;
+ const controls=old?period()+date+`<p class="old-note">${note}</p>`+picker():`<div class="filter-row">${period()}${date}</div>`+picker();
+ const macros=`<div class="macro-line">${[['carbs','碳水'],['protein','蛋白质'],['fat','脂肪']].map(([key,text])=>{const items=recorded.filter(r=>Number.isFinite(r[key]));return `<span>${text} ${items.length?items.reduce((s,r)=>s+r[key],0).toFixed(1):'—'} g${items.length<recorded.length?' · 部分已知':''}</span>`;}).join('')}</div>`;
+ const summary=old?`<div class="panel old-total"><div>有记录天数：${recorded.length} / ${state.days}</div><h3 class="section-title">期间合计</h3><div class="total-value">${label}：${value} ${unit}${suffix}</div><div>有记录日均值：${avg} ${unit}${suffix}</div>${macros}</div>`:
+ `<div class="panel"><div class="total-label">${state.days}天${label}合计${suffix}</div><div class="total-value">${value}<small>${unit}</small></div><div class="summary-secondary"><span>有记录日均值${partial?'（部分已知）':''}<br>${avg} ${unit}</span><span>有记录天数<br>${recorded.length} / ${state.days} 天</span></div>${macros}</div>`;
+ const daily=rows.map(r=>{const has=Number.isFinite(r[n]);const text=!r.recorded?'未记录':has?`${n==='energy'?r[n].toLocaleString('en-US'):r[n].toFixed(1)} ${unit}`:'— 未知';return `<div class="day-row"><div class="day-top"><span class="day-date">${r.dateLabel}</span><span class="day-value ${has?'':'muted'}">${old&&r.recorded?label+'：':''}${text}</span></div>${has?`<div class="track" aria-hidden="true"><div class="bar-fill" style="width:${r[n]/max*100}%"></div></div>`:''}</div>`;}).join('');
+ phone.innerHTML=header('趋势')+`<div class="page-body">${controls}${summary}${old?'<p class="chart-note">横条按本期最大的已知每日数值等比例显示。</p>':'<div class="list-title"><span>逐日'+label+'</span><small>按期内最大值缩放</small></div>'}<div class="${old?'':'panel'}">${daily}</div>${old?'':`<details class="explanation"><summary class="cursor-interaction">统计口径与缺失数据说明</summary><p>${note}</p><p>日均值按有记录天数计算；部分已知时不代表完整摄入。横条用于比较每日已知数值，不表示目标完成度。</p></details>`}<div class="preview-result" hidden data-date-editor><label class="field"><span>截止日期</span><input class="cursor-interaction" type="date" data-end value="${state.end}" aria-label="截止日期"></label></div></div>`+nav('趋势');
+ });}
+const profiles=['我的记录','另一份记录'];
+const settingSelect=(key,values)=>`<select class="cursor-interaction" data-setting="${key}" aria-label="${{profile:'本地资料',language:'语言',theme:'外观'}[key]}">${values.map(v=>`<option ${state.settings[key]===v?'selected':''}>${v}</option>`).join('')}</select>`;
+function settingRow(label,content,ico=''){return `<div class="setting-row">${ico?icon(ico):''}<label>${label}</label>${content}</div>`;}
+function settingLink(name,ico,action){return `<div class="setting-row"><button type="button" class="setting-link cursor-interaction" data-action="${action}">${icon(ico)}<span>${name}</span>${icon('chevron-right')}</button></div>`;}
+function renderSettings(){root.querySelectorAll('[data-screen=settings]').forEach(phone=>{const old=phone.dataset.side==='old';const kj=`<input class="cursor-interaction" type="checkbox" role="switch" aria-label="使用 kJ 显示热量" data-setting="kj" ${state.settings.kj?'checked':''}>`;
+ const editor=`<div class="inline-editor" data-profile-editor hidden><label class="field"><span>资料名称（选填）</span><input class="cursor-interaction" data-rename-input value="${esc(state.settings.profile)}" maxlength="80" aria-label="资料名称"></label><div class="editor-actions"><button class="cursor-interaction" data-action="cancel-rename" type="button">取消</button><button class="cursor-interaction" data-action="apply-rename" type="button">保存</button></div></div>`;
+ const oldBody=`<div class="old-profile"><h3>本地资料</h3><p>保存在本机，无需填写身体信息。</p>${settingSelect('profile',profiles)}<button type="button" class="rename-old cursor-interaction" data-action="rename">资料名称（选填）</button>${editor}</div><hr class="divider"><label class="field"><span>语言</span>${settingSelect('language',['中文','English','跟随系统'])}</label><div class="settings-unit"><label>使用 kJ 显示热量<small class="muted" style="display:block">kcal ↔ kJ</small></label>${kj}</div><label class="field"><span>外观</span>${settingSelect('theme',['跟随系统','浅色','深色'])}</label><div class="old-tile"><button type="button" class="setting-link cursor-interaction" data-action="boundary"><span>一天开始于<small>${state.settings.boundary}</small></span></button></div>${[['备份与恢复','cloud-upload','backup'],['隐私','shield-check','privacy'],['食品数据来源','database','sources']].map(([name,i,a])=>`<div class="old-tile"><button type="button" class="setting-link cursor-interaction" data-action="${a}">${icon(i)}<span>${name}</span></button></div>`).join('')}`;
+ const newBody=`<h3 class="settings-heading">本地资料</h3><div class="setting-group">${settingRow('当前资料',settingSelect('profile',profiles),'contact-round')}<div class="setting-row"><span class="row-main">资料名称<small>${esc(state.settings.profile)}</small></span><button type="button" class="rename-button cursor-interaction" data-action="rename">修改</button></div>${editor}</div><p class="profile-caption">资料保存在本机，无需填写身体信息。</p><h3 class="settings-heading">显示与记录</h3><div class="setting-group">${settingRow('语言',settingSelect('language',['中文','English','跟随系统']),'languages')}${settingRow('外观',settingSelect('theme',['跟随系统','浅色','深色']),'sun-moon')}${settingRow('以 kJ 显示<small>关闭时使用 kcal</small>',kj,'flame')}<div class="setting-row">${icon('clock-3')}<button type="button" class="setting-link cursor-interaction" data-action="boundary"><span>一天开始于</span><span class="row-value">${state.settings.boundary}</span>${icon('chevron-right')}</button></div></div><h3 class="settings-heading">数据与隐私</h3><div class="setting-group">${settingLink('备份与恢复','cloud-upload','backup')}${settingLink('隐私','shield-check','privacy')}${settingLink('食品数据来源','database','sources')}</div>`;
+ phone.innerHTML=header('我的')+`<div class="page-body">${old?oldBody:newBody}<div class="preview-result" data-setting-detail hidden></div></div>`+nav('我的');
+ });}
+function applyDesign(){root.style.colorScheme=state.settings.theme==='浅色'?'light':state.settings.theme==='深色'?'dark':'';root.style.setProperty('--sn-scale',state.fontScale);root.style.setProperty('--sn-phone',state.narrow?'320px':'360px');root.dataset.large=state.fontScale>1.25?'true':'false';}
+function icons(){if(globalThis.lucide)lucide.createIcons();}
+function renderAll(){renderCreate();renderTrends();renderSettings();applyDesign();icons();}
+renderAll();
+root.addEventListener('input',event=>{
+ const el=event.target;
+ if(el.matches('[data-food]')){const key=el.dataset.food;state.food[key]=el.type==='checkbox'?el.checked:el.value;root.querySelectorAll(`[data-food="${key}"]`).forEach(other=>{if(other!==el){if(el.type==='checkbox')other.checked=el.checked;else other.value=el.value;}});if(key==='basis'){root.querySelectorAll('[data-screen=create] .field small').forEach(s=>{if(/^每 /.test(s.textContent))s.textContent=`每 ${state.food.basis||'—'} ${state.food.unit}`;});root.querySelectorAll('[data-basis-note]').forEach(n=>n.textContent=`每 ${state.food.basis||'—'} ${state.food.unit} · 更改基准后请核对营养数值`);}}
+});
+root.addEventListener('change',event=>{const el=event.target;if(el.matches('[data-nutrient]')){state.nutrient=el.value;renderTrends();icons();remember();}if(el.matches('[data-setting]')){const key=el.dataset.setting;state.settings[key]=el.type==='checkbox'?el.checked:el.value;renderSettings();applyDesign();icons();remember();}if(el.matches('[data-end]')&&el.value){state.end=el.value;renderTrends();icons();remember();}});
+root.addEventListener('click',event=>{
+ const button=event.target.closest('button');if(!button)return;const phone=button.closest('.phone');
+ if(button.dataset.unit){state.food.unit=button.dataset.unit;renderCreate();icons();remember();}
+ if(button.dataset.days){state.days=Number(button.dataset.days);renderTrends();icons();remember();}
+ const action=button.dataset.action;
+ if(action==='save-food'){const feedback=phone.querySelector('.feedback');const numeric=['package','serving','basis','energy','carbs','fat','protein'];const invalid=numeric.some(k=>state.food[k]!==''&&(!Number.isFinite(Number(state.food[k]))||Number(state.food[k])<0));const bad=!state.food.name.trim()||!state.food.basis||Number(state.food.basis)<=0||invalid;feedback.hidden=false;feedback.classList.toggle('error',bad);feedback.textContent=bad?'请填写食品名称、有效营养基准及非负营养数值。':`预览：${state.food.name} · 每 ${state.food.basis} ${state.food.unit} · ${state.food.energy||'—'} kcal（未写入 App）`;}
+ if(action==='date'){const editor=phone.querySelector('[data-date-editor]');editor.hidden=!editor.hidden;}
+ if(action==='rename'){const editor=phone.querySelector('[data-profile-editor]');editor.hidden=false;editor.querySelector('input').focus();}
+ if(action==='cancel-rename')phone.querySelector('[data-profile-editor]').hidden=true;
+ if(action==='apply-rename'){const previous=profiles.indexOf(state.settings.profile);state.settings.profile=phone.querySelector('[data-rename-input]').value.trim()||'我的记录';profiles[Math.max(0,previous)]=state.settings.profile;renderSettings();applyDesign();icons();remember();}
+ if(['backup','privacy','sources','boundary'].includes(action)){
+ const detail=phone.querySelector('[data-setting-detail]');detail.hidden=false;
+ const contents={backup:'<h3 class="section-title">备份与恢复</h3><p class="minor">完整备份 · 从备份恢复</p>',privacy:'<h3 class="section-title">隐私</h3><p class="minor">饮食记录保存在本机。备份文件由你自行保管。</p>',sources:'<h3 class="section-title">食品数据来源</h3><p class="minor">本地食品 · Open Food Facts · 参考食品库</p>',boundary:`<label class="field"><span>一天开始于</span><input class="cursor-interaction" type="time" data-boundary value="${state.settings.boundary}" aria-label="一天开始于"></label>`};
+ detail.innerHTML=`<div class="panel">${contents[action]}<span class="minor">界面预览，不操作 App 数据</span></div>`;
+ }
+});
+root.addEventListener('change',event=>{if(event.target.matches('[data-boundary]')&&event.target.value){state.settings.boundary=event.target.value;renderSettings();applyDesign();icons();remember();}});
+window.addEventListener('openai:set_globals',event=>{const content=event.detail?.globals?.widgetState?.modelContent;if(!content||typeof content!=='object')return;if(typeof content.fontScale==='number')state.fontScale=Math.min(1.6,Math.max(1,content.fontScale));if(typeof content.narrow==='boolean')state.narrow=content.narrow;applyDesign();});
+if(globalThis.Tweak){const tweak=new Tweak({container:root,onChange:()=>{applyDesign();remember();}});tweak.addSlider(state,'fontScale',{label:'文字大小',min:1,max:1.6,step:.1});tweak.addToggle(state,'narrow',{label:'窄屏（320）'});}
+})();
+</script>

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:opennutritracker/core/presentation/widgets/app_card.dart';
 import 'package:provider/provider.dart';
 import 'package:opennutritracker/core/data/repository/config_repository.dart';
 import 'package:opennutritracker/core/data/repository/profile_repository.dart';
@@ -165,226 +166,339 @@ class _RecordingSettingsState extends State<RecordingSettings> {
                   padding: const EdgeInsets.all(16),
                   children: [
                     if (_busy) const LinearProgressIndicator(),
-                    Text(
-                      s.m4LocalProfile,
-                      style: Theme.of(context).textTheme.titleLarge,
-                    ),
-                    const SizedBox(height: 8),
-                    Text(s.m4ProfileHint),
-                    const SizedBox(height: 12),
-                    Semantics(
-                      identifier: 'recording-profile-select',
-                      child: DropdownButtonFormField<String>(
-                        key: ValueKey('$active/$_formRevision'),
-                        initialValue: active,
-                        isExpanded: true,
-                        items: [
-                          for (var i = 0; i < profiles.length; i++)
-                            DropdownMenuItem(
-                              value: profiles[i].id,
-                              child: Text(
-                                profiles[i].name.isEmpty
-                                    ? '${s.m4LocalProfile} ${i + 1}'
-                                    : profiles[i].name,
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ),
-                        ],
-                        onChanged: _busy
-                            ? null
-                            : (id) => _run(() async {
-                                final target = profiles.firstWhere(
-                                  (p) => p.id == id,
-                                );
-                                await locator<SwitchProfileUsecase>()
-                                    .switchProfile(target);
-                                if (mounted) _changed();
-                              }),
+                    _settingsGroup(s.m4LocalProfile, [
+                      Text(
+                        s.m4ProfileHint,
+                        style: Theme.of(context).textTheme.bodySmall,
                       ),
-                    ),
-                    if (profile != null)
+                      const SizedBox(height: 12),
                       Semantics(
-                        identifier: 'recording-profile-rename',
-                        child: TextButton(
-                          onPressed: _busy ? null : () => _rename(profile),
-                          child: Text(s.m4ProfileName),
-                        ),
-                      ),
-                    const Divider(height: 32),
-                    Semantics(
-                      identifier: 'recording-settings-language',
-                      child: DropdownButtonFormField<String>(
-                        key: ValueKey('locale-${locale.locale}/$_formRevision'),
-                        initialValue: locale.locale?.languageCode ?? '',
-                        isExpanded: true,
-                        decoration: InputDecoration(
-                          labelText: s.settingsLanguageLabel,
-                        ),
-                        items: [
-                          DropdownMenuItem(
-                            value: '',
-                            child: Text(s.recordingThemeSystem),
+                        identifier: 'recording-profile-select',
+                        child: DropdownButtonFormField<String>(
+                          key: ValueKey('$active/$_formRevision'),
+                          initialValue: active,
+                          isExpanded: true,
+                          decoration: const InputDecoration(
+                            filled: false,
+                            border: InputBorder.none,
+                            enabledBorder: InputBorder.none,
+                            contentPadding: EdgeInsets.zero,
                           ),
-                          for (final e in shippedLocales.entries)
-                            DropdownMenuItem(
-                              value: e.key,
-                              child: Text(e.value),
-                            ),
-                        ],
-                        onChanged: _busy
-                            ? null
-                            : (value) => _run(() async {
-                                final selected = value == '' ? null : value;
-                                await locator<ConfigRepository>()
-                                    .setSelectedLocale(selected);
-                                await AppLocaleService.setApplicationLocale(
-                                  selected,
-                                );
-                                if (context.mounted) {
-                                  context.read<LocaleProvider>().updateLocale(
-                                    selected == null ? null : Locale(selected),
+                          items: [
+                            for (var i = 0; i < profiles.length; i++)
+                              DropdownMenuItem(
+                                value: profiles[i].id,
+                                child: Text(
+                                  profiles[i].name.isEmpty
+                                      ? '${s.m4LocalProfile} ${i + 1}'
+                                      : profiles[i].name,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                          ],
+                          onChanged: _busy
+                              ? null
+                              : (id) => _run(() async {
+                                  final target = profiles.firstWhere(
+                                    (p) => p.id == id,
                                   );
-                                }
-                              }),
-                      ),
-                    ),
-                    Semantics(
-                      identifier: 'recording-settings-kj',
-                      child: SwitchListTile(
-                        title: Text(s.recordingUseKj),
-                        subtitle: const Text('kcal ↔ kJ'),
-                        value: energy.usesKilojoules,
-                        onChanged: _busy
-                            ? null
-                            : (value) => _run(() async {
-                                await locator<ConfigRepository>()
-                                    .setConfigUsesKilojoules(value);
-                                if (mounted) energy.updateUsesKilojoules(value);
-                              }),
-                      ),
-                    ),
-                    Semantics(
-                      identifier: 'recording-settings-theme',
-                      child: DropdownButtonFormField<AppThemeEntity>(
-                        key: ValueKey('${theme.appTheme}/$_formRevision'),
-                        initialValue: theme.appTheme,
-                        isExpanded: true,
-                        decoration: InputDecoration(
-                          labelText: s.recordingTheme,
-                        ),
-                        items: [
-                          DropdownMenuItem(
-                            value: AppThemeEntity.system,
-                            child: Text(s.recordingThemeSystem),
-                          ),
-                          DropdownMenuItem(
-                            value: AppThemeEntity.light,
-                            child: Text(s.recordingThemeLight),
-                          ),
-                          DropdownMenuItem(
-                            value: AppThemeEntity.dark,
-                            child: Text(s.recordingThemeDark),
-                          ),
-                        ],
-                        onChanged: _busy
-                            ? null
-                            : (value) => _run(() async {
-                                if (value == null) return;
-                                await locator<ConfigRepository>()
-                                    .setConfigAppTheme(value);
-                                if (mounted) theme.updateTheme(value);
-                              }),
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    Semantics(
-                      identifier: 'recording-settings-day-boundary',
-                      child: ListTile(
-                        title: Text(s.settingsDayStartLabel),
-                        subtitle: Text(
-                          TimeOfDay(
-                            hour: config.dayStartOffsetHours,
-                            minute: config.dayStartOffsetMinutes,
-                          ).format(context),
-                        ),
-                        onTap: _busy
-                            ? null
-                            : () async {
-                                final time = await showTimePicker(
-                                  context: context,
-                                  initialTime: TimeOfDay(
-                                    hour: config.dayStartOffsetHours,
-                                    minute: config.dayStartOffsetMinutes,
-                                  ),
-                                );
-                                if (time == null || !mounted) return;
-                                await _run(() async {
-                                  final repo = locator<ConfigRepository>();
-                                  await repo.setConfigDayStartOffset(
-                                    time.hour,
-                                    time.minute,
-                                  );
+                                  await locator<SwitchProfileUsecase>()
+                                      .switchProfile(target);
                                   if (mounted) _changed();
-                                });
-                              },
+                                }),
+                        ),
                       ),
-                    ),
-                    Semantics(
-                      identifier: 'recording-settings-backup',
-                      child: ListTile(
-                        leading: const Icon(Icons.backup_outlined),
-                        title: Text(s.m4BackupTitle),
-                        onTap: _busy
-                            ? null
-                            : () => Navigator.of(context).push(
-                                MaterialPageRoute<void>(
-                                  builder: (_) =>
-                                      FullBackupScreen(onRestored: _restored),
-                                ),
+                      if (profile != null)
+                        Semantics(
+                          identifier: 'recording-profile-rename',
+                          child: TextButton(
+                            style: TextButton.styleFrom(
+                              alignment: Alignment.centerLeft,
+                              padding: EdgeInsets.zero,
+                            ),
+                            onPressed: _busy ? null : () => _rename(profile),
+                            child: Text(s.m4ProfileName),
+                          ),
+                        ),
+                    ], separate: false),
+                    _settingsGroup(s.settingsDisplayRecording, [
+                      _preferenceRow(
+                        s.settingsLanguageLabel,
+                        Icons.language,
+                        Semantics(
+                          identifier: 'recording-settings-language',
+                          child: DropdownButtonFormField<String>(
+                            key: ValueKey(
+                              'locale-${locale.locale}/$_formRevision',
+                            ),
+                            initialValue: locale.locale?.languageCode ?? '',
+                            isExpanded: true,
+                            decoration: InputDecoration(
+                              border: InputBorder.none,
+                              enabledBorder: InputBorder.none,
+                              filled: false,
+                              contentPadding: EdgeInsets.zero,
+                              isDense: true,
+                            ),
+                            items: [
+                              DropdownMenuItem(
+                                value: '',
+                                child: Text(s.recordingThemeSystem),
                               ),
+                              for (final e in shippedLocales.entries)
+                                DropdownMenuItem(
+                                  value: e.key,
+                                  child: Text(e.value),
+                                ),
+                            ],
+                            onChanged: _busy
+                                ? null
+                                : (value) => _run(() async {
+                                    final selected = value == '' ? null : value;
+                                    await locator<ConfigRepository>()
+                                        .setSelectedLocale(selected);
+                                    await AppLocaleService.setApplicationLocale(
+                                      selected,
+                                    );
+                                    if (context.mounted) {
+                                      context
+                                          .read<LocaleProvider>()
+                                          .updateLocale(
+                                            selected == null
+                                                ? null
+                                                : Locale(selected),
+                                          );
+                                    }
+                                  }),
+                          ),
+                        ),
                       ),
-                    ),
-                    Semantics(
-                      identifier: 'recording-settings-privacy',
-                      child: ListTile(
-                        leading: const Icon(Icons.privacy_tip_outlined),
-                        title: Text(s.m4Privacy),
-                        onTap: _busy
-                            ? null
-                            : () => showDialog<void>(
-                                context: context,
-                                builder: (context) => AlertDialog(
-                                  title: Text(s.m4Privacy),
-                                  content: Text(s.m4PrivacyDescription),
-                                  actions: [
-                                    TextButton(
-                                      onPressed: () => Navigator.pop(context),
-                                      child: Text(s.dialogOKLabel),
+                      _preferenceRow(
+                        s.recordingTheme,
+                        Icons.brightness_6_outlined,
+                        Semantics(
+                          identifier: 'recording-settings-theme',
+                          child: DropdownButtonFormField<AppThemeEntity>(
+                            key: ValueKey('${theme.appTheme}/$_formRevision'),
+                            initialValue: theme.appTheme,
+                            isExpanded: true,
+                            decoration: InputDecoration(
+                              border: InputBorder.none,
+                              enabledBorder: InputBorder.none,
+                              filled: false,
+                              contentPadding: EdgeInsets.zero,
+                              isDense: true,
+                            ),
+                            items: [
+                              DropdownMenuItem(
+                                value: AppThemeEntity.system,
+                                child: Text(s.recordingThemeSystem),
+                              ),
+                              DropdownMenuItem(
+                                value: AppThemeEntity.light,
+                                child: Text(s.recordingThemeLight),
+                              ),
+                              DropdownMenuItem(
+                                value: AppThemeEntity.dark,
+                                child: Text(s.recordingThemeDark),
+                              ),
+                            ],
+                            onChanged: _busy
+                                ? null
+                                : (value) => _run(() async {
+                                    if (value == null) return;
+                                    await locator<ConfigRepository>()
+                                        .setConfigAppTheme(value);
+                                    if (mounted) theme.updateTheme(value);
+                                  }),
+                          ),
+                        ),
+                      ),
+                      Semantics(
+                        identifier: 'recording-settings-kj',
+                        child: SwitchListTile(
+                          title: Text(s.recordingUseKj),
+                          subtitle: Text(s.settingsKjOffHint),
+                          secondary: const Icon(
+                            Icons.local_fire_department_outlined,
+                          ),
+                          contentPadding: EdgeInsets.zero,
+                          value: energy.usesKilojoules,
+                          onChanged: _busy
+                              ? null
+                              : (value) => _run(() async {
+                                  await locator<ConfigRepository>()
+                                      .setConfigUsesKilojoules(value);
+                                  if (mounted) {
+                                    energy.updateUsesKilojoules(value);
+                                  }
+                                }),
+                        ),
+                      ),
+                      Semantics(
+                        identifier: 'recording-settings-day-boundary',
+                        child: ListTile(
+                          contentPadding: EdgeInsets.zero,
+                          title: _preferenceRow(
+                            s.settingsDayStartLabel,
+                            Icons.schedule,
+                            Text(
+                              TimeOfDay(
+                                hour: config.dayStartOffsetHours,
+                                minute: config.dayStartOffsetMinutes,
+                              ).format(context),
+                            ),
+                          ),
+                          onTap: _busy
+                              ? null
+                              : () async {
+                                  final time = await showTimePicker(
+                                    context: context,
+                                    initialTime: TimeOfDay(
+                                      hour: config.dayStartOffsetHours,
+                                      minute: config.dayStartOffsetMinutes,
                                     ),
-                                  ],
-                                ),
-                              ),
+                                  );
+                                  if (time == null || !mounted) return;
+                                  await _run(() async {
+                                    final repo = locator<ConfigRepository>();
+                                    await repo.setConfigDayStartOffset(
+                                      time.hour,
+                                      time.minute,
+                                    );
+                                    if (mounted) _changed();
+                                  });
+                                },
+                        ),
                       ),
-                    ),
-                    Semantics(
-                      identifier: 'recording-settings-sources',
-                      child: ListTile(
-                        leading: const Icon(Icons.storage_outlined),
-                        title: Text(s.recordingFoodSources),
-                        onTap: _busy
-                            ? null
-                            : () => Navigator.of(context).push(
-                                MaterialPageRoute<void>(
-                                  builder: (_) => const FoodSourcesScreen(),
+                    ]),
+                    _settingsGroup(s.settingsDataPrivacy, [
+                      Semantics(
+                        identifier: 'recording-settings-backup',
+                        child: ListTile(
+                          contentPadding: EdgeInsets.zero,
+                          leading: const Icon(Icons.backup_outlined),
+                          title: Text(s.m4BackupTitle),
+                          onTap: _busy
+                              ? null
+                              : () => Navigator.of(context).push(
+                                  MaterialPageRoute<void>(
+                                    builder: (_) =>
+                                        FullBackupScreen(onRestored: _restored),
+                                  ),
                                 ),
-                              ),
+                        ),
                       ),
-                    ),
+                      Semantics(
+                        identifier: 'recording-settings-privacy',
+                        child: ListTile(
+                          contentPadding: EdgeInsets.zero,
+                          leading: const Icon(Icons.privacy_tip_outlined),
+                          title: Text(s.m4Privacy),
+                          onTap: _busy
+                              ? null
+                              : () => showDialog<void>(
+                                  context: context,
+                                  builder: (context) => AlertDialog(
+                                    title: Text(s.m4Privacy),
+                                    content: Text(s.m4PrivacyDescription),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () => Navigator.pop(context),
+                                        child: Text(s.dialogOKLabel),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                        ),
+                      ),
+                      Semantics(
+                        identifier: 'recording-settings-sources',
+                        child: ListTile(
+                          contentPadding: EdgeInsets.zero,
+                          leading: const Icon(Icons.storage_outlined),
+                          title: Text(s.recordingFoodSources),
+                          onTap: _busy
+                              ? null
+                              : () => Navigator.of(context).push(
+                                  MaterialPageRoute<void>(
+                                    builder: (_) => const FoodSourcesScreen(),
+                                  ),
+                                ),
+                        ),
+                      ),
+                    ]),
                   ],
                 ),
         ),
       ),
     );
   }
+
+  Widget _settingsGroup(
+    String title,
+    List<Widget> children, {
+    bool separate = true,
+  }) => Padding(
+    padding: const EdgeInsets.only(bottom: 24),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(title, style: Theme.of(context).textTheme.titleMedium),
+        const SizedBox(height: 10),
+        AppCard(
+          shadowed: false,
+          borderRadius: 16,
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          child: ListTileTheme(
+            data: ListTileTheme.of(
+              context,
+            ).copyWith(minLeadingWidth: 20, horizontalTitleGap: 12),
+            child: IconTheme(
+              data: IconTheme.of(context).copyWith(size: 20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  for (var i = 0; i < children.length; i++) ...[
+                    if (separate && i > 0) const Divider(height: 1),
+                    children[i],
+                  ],
+                ],
+              ),
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
+
+  Widget _preferenceRow(String label, IconData icon, Widget value) => Padding(
+    padding: const EdgeInsets.symmetric(vertical: 12),
+    child: LayoutBuilder(
+      builder: (context, constraints) {
+        final title = Row(
+          children: [
+            Icon(icon, size: 20),
+            const SizedBox(width: 12),
+            Expanded(child: Text(label)),
+          ],
+        );
+        if (MediaQuery.textScalerOf(context).scale(14) > 19) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [title, const SizedBox(height: 8), value],
+          );
+        }
+        return Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Expanded(flex: 3, child: title),
+            const SizedBox(width: 12),
+            Expanded(flex: 2, child: value),
+          ],
+        );
+      },
+    ),
+  );
 }

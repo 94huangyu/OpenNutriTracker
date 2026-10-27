@@ -88,6 +88,13 @@ class _MealDetailBottomSheetState extends State<MealDetailBottomSheet> {
   @override
   Widget build(BuildContext context) {
     final productMissingRequiredInfo = _hasRequiredProductInfoMissing();
+    final s = S.of(context);
+    final mealLabel = switch (widget.intakeTypeEntity) {
+      IntakeTypeEntity.breakfast => s.breakfastLabel,
+      IntakeTypeEntity.lunch => s.lunchLabel,
+      IntakeTypeEntity.dinner => s.dinnerLabel,
+      IntakeTypeEntity.snack => s.snackLabel,
+    };
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final palette = isDark ? AppPalette.dark : AppPalette.light;
     return BottomSheet(
@@ -113,98 +120,133 @@ class _MealDetailBottomSheetState extends State<MealDetailBottomSheet> {
             child: Wrap(
               children: [
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(16.0, 32.0, 16.0, 8.0),
+                  padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 8.0),
                   child: Column(
                     children: [
-                      Row(
-                        children: [
-                          Expanded(
-                            child: SizedBox(
-                              height: inputHeight,
-                              child: Semantics(
-                                container: true,
-                                identifier: 'meal-detail-quantity',
-                                child: TextFormField(
-                                  enabled: !productMissingRequiredInfo,
-                                  controller: widget.quantityTextController,
-                                  focusNode: _quantityFocusNode,
-                                  onTap: _selectAllQuantityText,
-                                  keyboardType:
-                                      const TextInputType.numberWithOptions(
-                                        decimal: true,
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          s.recordingDestination(
+                            MaterialLocalizations.of(
+                              context,
+                            ).formatCompactDate(widget.day),
+                            mealLabel,
+                          ),
+                          style: Theme.of(context).textTheme.bodySmall,
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      LayoutBuilder(
+                        builder: (context, constraints) {
+                          final stack =
+                              MediaQuery.textScalerOf(context).scale(14) > 19;
+                          return Wrap(
+                            spacing: 12,
+                            runSpacing: 16,
+                            children: [
+                              SizedBox(
+                                width: stack
+                                    ? constraints.maxWidth
+                                    : (constraints.maxWidth - 12) * .6,
+                                child: SizedBox(
+                                  height: inputHeight,
+                                  child: Semantics(
+                                    container: true,
+                                    identifier: 'meal-detail-quantity',
+                                    child: TextFormField(
+                                      enabled: !productMissingRequiredInfo,
+                                      controller: widget.quantityTextController,
+                                      focusNode: _quantityFocusNode,
+                                      onTap: _selectAllQuantityText,
+                                      keyboardType:
+                                          const TextInputType.numberWithOptions(
+                                            decimal: true,
+                                          ),
+                                      inputFormatters: [
+                                        FilteringTextInputFormatter.allow(
+                                          RegExp(r'^\d+([.,]\d{0,2})?$'),
+                                        ),
+                                      ],
+                                      decoration: InputDecoration(
+                                        isDense: true,
+                                        contentPadding:
+                                            const EdgeInsets.symmetric(
+                                              horizontal: 12,
+                                              vertical: 16,
+                                            ),
+                                        border: const OutlineInputBorder(
+                                          borderRadius: Dimens.borderRadiusM,
+                                        ),
+                                        labelText: S.of(context).quantityLabel,
                                       ),
-                                  inputFormatters: [
-                                    FilteringTextInputFormatter.allow(
-                                      RegExp(r'^\d+([.,]\d{0,2})?$'),
                                     ),
-                                  ],
-                                  decoration: InputDecoration(
-                                    isDense: true,
-                                    contentPadding: const EdgeInsets.symmetric(
-                                      horizontal: 12,
-                                      vertical: 16,
-                                    ),
-                                    border: const OutlineInputBorder(
-                                      borderRadius: Dimens.borderRadiusM,
-                                    ),
-                                    labelText: S.of(context).quantityLabel,
                                   ),
                                 ),
                               ),
-                            ),
-                          ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: SizedBox(
-                              height: inputHeight,
-                              child: Semantics(
-                                container: true,
-                                identifier: 'meal-detail-unit',
-                                child: DropdownButtonFormField<String>(
-                                  isExpanded: true,
-                                  itemHeight: null,
-                                  initialValue: widget.selectedUnit,
-                                  key: ValueKey(widget.selectedUnit),
-                                  decoration: InputDecoration(
-                                    isDense: true,
-                                    contentPadding: const EdgeInsets.symmetric(
-                                      horizontal: 12,
-                                      vertical: 16,
+                              SizedBox(
+                                width: stack
+                                    ? constraints.maxWidth
+                                    : (constraints.maxWidth - 12) * .4,
+                                child: SizedBox(
+                                  height: inputHeight,
+                                  child: Semantics(
+                                    container: true,
+                                    identifier: 'meal-detail-unit',
+                                    child: DropdownButtonFormField<String>(
+                                      isExpanded: true,
+                                      itemHeight: null,
+                                      initialValue: widget.selectedUnit,
+                                      key: ValueKey(widget.selectedUnit),
+                                      decoration: InputDecoration(
+                                        isDense: true,
+                                        contentPadding:
+                                            const EdgeInsets.symmetric(
+                                              horizontal: 12,
+                                              vertical: 16,
+                                            ),
+                                        border: const OutlineInputBorder(
+                                          borderRadius: Dimens.borderRadiusM,
+                                        ),
+                                        labelText: S.of(context).unitLabel,
+                                      ),
+                                      items: [
+                                        if (widget
+                                                .product
+                                                .scalableServingQuantity !=
+                                            null)
+                                          _getServingDropdownItem(context),
+                                        if (!widget.product.isLiquid)
+                                          ..._getSolidUnitDropdownItems(
+                                            context,
+                                          ),
+                                        if (!widget.product.isSolid)
+                                          ..._getLiquidUnitDropdownItems(
+                                            context,
+                                          ),
+                                        if (widget.selectedUnit ==
+                                                UnitDropdownItem.gml
+                                                    .toString() ||
+                                            (!widget.product.isSolid &&
+                                                !widget.product.isLiquid))
+                                          ..._getOtherDropdownItems(context),
+                                      ],
+                                      onChanged: productMissingRequiredInfo
+                                          ? null
+                                          : (value) {
+                                              widget.onQuantityOrUnitChanged(
+                                                widget
+                                                    .quantityTextController
+                                                    .text,
+                                                value,
+                                              );
+                                            },
                                     ),
-                                    border: const OutlineInputBorder(
-                                      borderRadius: Dimens.borderRadiusM,
-                                    ),
-                                    labelText: S.of(context).unitLabel,
                                   ),
-                                  items: [
-                                    if (widget
-                                            .product
-                                            .scalableServingQuantity !=
-                                        null)
-                                      _getServingDropdownItem(context),
-                                    if (!widget.product.isLiquid)
-                                      ..._getSolidUnitDropdownItems(context),
-                                    if (!widget.product.isSolid)
-                                      ..._getLiquidUnitDropdownItems(context),
-                                    if (widget.selectedUnit ==
-                                            UnitDropdownItem.gml.toString() ||
-                                        (!widget.product.isSolid &&
-                                            !widget.product.isLiquid))
-                                      ..._getOtherDropdownItems(context),
-                                  ],
-                                  onChanged: productMissingRequiredInfo
-                                      ? null
-                                      : (value) {
-                                          widget.onQuantityOrUnitChanged(
-                                            widget.quantityTextController.text,
-                                            value,
-                                          );
-                                        },
                                 ),
                               ),
-                            ),
-                          ),
-                        ],
+                            ],
+                          );
+                        },
                       ),
                       if (widget.selectedUnit == 'serving' &&
                           widget.product.scalableServingQuantity != null)
@@ -237,7 +279,7 @@ class _MealDetailBottomSheetState extends State<MealDetailBottomSheet> {
                               ),
                             ),
                             icon: const Icon(Icons.add_rounded),
-                            label: Text(S.of(context).addLabel),
+                            label: Text(s.recordingAddToMeal(mealLabel)),
                           ),
                         ),
                       ),
