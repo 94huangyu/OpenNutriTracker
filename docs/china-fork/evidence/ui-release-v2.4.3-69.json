@@ -1,6 +1,6 @@
 {
   "date": "2026-10-29",
-  "status": "device_checks_passed_publication_ready",
+  "status": "device_checks_passed_source_published_release_pending",
   "artifact": {
     "package": "com.huangyu.shiji",
     "appName": "食迹",
@@ -42,7 +42,7 @@
   "installed_r2_tested": true,
   "r2_evidence": "docs/china-fork/UI_DEVICE_ACCEPTANCE_243.md",
   "final_r3_device_acceptance": "specified paths passed",
-  "source_published": false,
+  "source_published": true,
   "release_published": false,
   "limits": [
     "Specified phone checks and local regressions do not cover every device, language, source, or input method",
@@ -57,5 +57,10 @@
   },
   "device_settings": "unchanged from resume initial values",
   "device_service": "own service stopped",
-  "bounded_app_error_patterns": 0
+  "bounded_app_error_patterns": 0,
+  "source_commit": "0ff3422aa31a07b2fdaa9e0cf11245950e778ad9",
+  "source_tree": "cb40ab20f1776f831d60e48a1cf33b70b2188dec",
+  "public_files_matched": 1265,
+  "release_blocker": "Browser operation tool unavailable in current session; connector has no release creation or asset upload capability",
+  "intended_release_tag": "shiji-v2.4.3-69"
 }
