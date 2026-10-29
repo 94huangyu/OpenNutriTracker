@@ -29,12 +29,13 @@ Future<void> loadCaptureFonts() async {
 Future<void> captureWidget(
   WidgetTester tester,
   GlobalKey key,
-  String name,
-) async {
+  String name, {
+  bool settle = true,
+}) async {
   final directory = Platform.environment['ONT_CAPTURE_DIR'];
   if (directory == null) return;
   FocusManager.instance.primaryFocus?.unfocus();
-  await tester.pumpAndSettle();
+  if (settle) await tester.pumpAndSettle();
   await tester.runAsync(() async {
     final boundary =
         key.currentContext!.findRenderObject()! as RenderRepaintBoundary;

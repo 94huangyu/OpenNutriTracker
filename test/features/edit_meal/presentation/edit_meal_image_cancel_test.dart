@@ -58,6 +58,13 @@ class _Meals extends Fake implements CustomMealDataSource {
 
 void main() {
   final locator = GetIt.instance;
+  // The thumbnail is decoded asynchronously; fixtures must be real images.
+  final originalBytes = base64Decode(
+    'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR4nGP4z8DwHwAFAAH/iZk9HQAAAABJRU5ErkJggg==',
+  );
+  final incomingBytes = base64Decode(
+    'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR4nGNgYPj/HwADAgH/5ncLrgAAAABJRU5ErkJggg==',
+  );
   late Directory root;
   late File original;
   late File credit;
@@ -71,11 +78,11 @@ void main() {
     PathProviderPlatform.instance = _Paths(root.path);
     original = File('${root.path}/meal_images/original.webp');
     await original.parent.create();
-    await original.writeAsBytes([1, 2, 3]);
+    await original.writeAsBytes(originalBytes);
     credit = File('${original.path}.credit.json');
     await credit.writeAsString('{"name":"synthetic author"}');
     final incoming = File('${root.path}/incoming.bin');
-    await incoming.writeAsBytes([4, 5, 6]);
+    await incoming.writeAsBytes(incomingBytes);
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
         .setMockMethodCallHandler(
           const MethodChannel('plugins.flutter.io/image_picker'),
@@ -152,7 +159,7 @@ void main() {
       tester.widget<UserImagePickerTile>(find.byType(UserImagePickerTile));
   Future<void> verifyOriginal(WidgetTester tester) async {
     await tester.runAsync(() async {
-      expect(await original.readAsBytes(), [1, 2, 3]);
+      expect(await original.readAsBytes(), originalBytes);
       expect(await credit.readAsString(), '{"name":"synthetic author"}');
     });
   }

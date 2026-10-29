@@ -291,6 +291,7 @@ void main() {
     double width = 390,
     double scale = 1,
     bool dark = false,
+    bool disableAnimations = false,
     Widget? home,
   }) async {
     tester.view.physicalSize = Size(width, 900);
@@ -320,9 +321,10 @@ void main() {
               GlobalCupertinoLocalizations.delegate,
             ],
             builder: (context, child) => MediaQuery(
-              data: MediaQuery.of(
-                context,
-              ).copyWith(textScaler: TextScaler.linear(scale)),
+              data: MediaQuery.of(context).copyWith(
+                textScaler: TextScaler.linear(scale),
+                disableAnimations: disableAnimations,
+              ),
               child: child!,
             ),
             onGenerateRoute: (settings) {
@@ -350,6 +352,13 @@ void main() {
       }
     });
     await tester.pumpAndSettle();
+  }
+
+  Future<void> settlePager(WidgetTester tester) async {
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 300));
+    await tester.runAsync(() async => Future<void>.delayed(Duration.zero));
+    await settleDay(tester, bloc);
   }
 
   test(
@@ -482,6 +491,8 @@ void main() {
       (state) => state is CalendarDayLoaded,
     );
     await tester.tap(identified('recording-previous-day'));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 300));
     await tester.runAsync(() => loaded);
     await tester.pumpAndSettle();
     expect(find.text('2026年10月14日'), findsOneWidget);
@@ -757,12 +768,14 @@ void main() {
         expect(added!.mealType, type);
         expect(find.text('add-food'), findsOneWidget);
         await tester.binding.handlePopRoute();
-        await tester.pumpAndSettle();
+        await settlePager(tester);
       }
       final loaded = bloc.stream.firstWhere(
         (state) => state is CalendarDayLoaded,
       );
       await tester.tap(identified('recording-previous-day'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
       await tester.runAsync(() => loaded);
       await tester.pumpAndSettle();
       await tester.tap(identified('recording-add-dinnerType'));
@@ -874,7 +887,7 @@ void main() {
         expect(bloc.updated?['amount'], save ? 12.5 : null);
         expect(tester.getRect(find.byType(ListView).first), mealViewport);
         await tester.tap(find.byType(BackButton));
-        await tester.pumpAndSettle();
+        await settlePager(tester);
         expect(tester.getRect(find.byType(ListView).first), homeViewport);
         tester.view.viewInsets = FakeViewPadding.zero;
         await tester.pumpAndSettle();
@@ -966,6 +979,8 @@ void main() {
       Offset(startX ?? area.center.dx, area.top + 60),
       delta,
     );
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 300));
     await settleDay(tester, bloc);
   }
 
@@ -982,7 +997,7 @@ void main() {
     expect(added!.day, DateTime(2026, 10, 14));
     expect(added!.mealType, AddMealType.dinnerType);
     tester.state<NavigatorState>(find.byType(Navigator)).pop();
-    await tester.pumpAndSettle();
+    await settlePager(tester);
     await dayDrag(tester, const Offset(-160, 0));
     await tester.pumpAndSettle();
     expect(shownDay(tester), '2026年10月15日');
@@ -1019,6 +1034,259 @@ void main() {
       expect(shownDay(tester), before);
       expect(find.byType(RefreshIndicator), findsNothing);
       expect(tester.takeException(), isNull);
+    },
+  );
+
+  void addTomorrow() {
+    intakes.items.add(
+      IntakeEntity(
+        id: 'tomorrow',
+        unit: 'g',
+        amount: 100,
+        type: IntakeTypeEntity.lunch,
+        meal: b,
+        dateTime: DateUtils.addDaysToDate(day, 1),
+      ),
+    );
+  }
+
+  testWidgets('pager follows held finger and reveals actual adjacent day', (
+    tester,
+  ) async {
+    addTomorrow();
+    await pump(tester);
+    final next = DateUtils.addDaysToDate(day, 1);
+    final top = tester.getRect(identified('recording-date'));
+    final bottom = tester.getRect(find.byType(NavigationBar));
+    final area = tester.getRect(identified('recording-day-content'));
+    final gesture = await tester.startGesture(
+      Offset(area.center.dx, area.top + 60),
+    );
+    await gesture.moveBy(const Offset(-80, 0));
+    await tester.pump();
+    final before = tester.getRect(find.byKey(PageStorageKey(day))).left;
+    await gesture.moveBy(const Offset(-40, 0));
+    await tester.pump();
+    await tester.runAsync(() async => Future<void>.delayed(Duration.zero));
+    await tester.pump();
+    expect(
+      tester.getRect(find.byKey(PageStorageKey(day))).left - before,
+      closeTo(-40, .1),
+    );
+    expect(find.byKey(PageStorageKey(next)), findsOneWidget);
+    expect(find.text('495 kcal', findRichText: true), findsOneWidget);
+    expect(find.text('500 kcal', findRichText: true), findsOneWidget);
+    expect(tester.getRect(identified('recording-date')), top);
+    expect(tester.getRect(find.byType(NavigationBar)), bottom);
+    expect(shownDay(tester), '2026年10月15日');
+    final held = tester.getRect(find.byKey(PageStorageKey(day))).left;
+    await tester.pump(const Duration(milliseconds: 100));
+    expect(
+      tester.getRect(find.byKey(PageStorageKey(day))).left,
+      closeTo(held, .1),
+    );
+    await captureWidget(
+      tester,
+      capture,
+      'day-pager-held-finger',
+      settle: false,
+    );
+    await gesture.up();
+    await settlePager(tester);
+    await settleDay(tester, bloc);
+    expect(shownDay(tester), '2026年10月16日');
+    await tester.tap(identified('recording-add-lunchType'));
+    await tester.pumpAndSettle();
+    expect(added!.day, next);
+  });
+
+  testWidgets('short held drag returns to the original page', (tester) async {
+    await pump(tester);
+    final area = tester.getRect(identified('recording-day-content'));
+    final gesture = await tester.startGesture(
+      Offset(area.center.dx, area.top + 60),
+    );
+    await gesture.moveBy(const Offset(-40, 0));
+    await tester.pump();
+    expect(
+      tester.getRect(find.byKey(PageStorageKey(day))).left,
+      lessThan(area.left),
+    );
+    await gesture.up();
+    await settlePager(tester);
+    expect(shownDay(tester), '2026年10月15日');
+    expect(
+      tester.getRect(find.byKey(PageStorageKey(day))).left,
+      closeTo(area.left, .1),
+    );
+    expect(find.byType(ListView), findsOneWidget);
+  });
+
+  testWidgets('reversing a held drag keeps the final date and its records', (
+    tester,
+  ) async {
+    addTomorrow();
+    await pump(tester);
+    final area = tester.getRect(identified('recording-day-content'));
+    final gesture = await tester.startGesture(
+      Offset(area.center.dx, area.top + 60),
+    );
+    await gesture.moveBy(const Offset(-230, 0));
+    await tester.pump();
+    expect(shownDay(tester), '2026年10月16日');
+    await gesture.moveBy(const Offset(210, 0));
+    await tester.pump();
+    await gesture.up();
+    await settlePager(tester);
+    await settleDay(tester, bloc);
+    expect(shownDay(tester), '2026年10月15日');
+    expect(find.text('495 kcal', findRichText: true), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('slow adjacent page never displays another dates records', (
+    tester,
+  ) async {
+    final next = DateUtils.addDaysToDate(day, 1);
+    late Completer<void> release;
+    await tester.runAsync(() async {
+      release = Completer<void>();
+    });
+    intakes.beforeRead = (type, date) async {
+      if (date == next && type == IntakeTypeEntity.breakfast) {
+        await release.future;
+      }
+    };
+    await pump(tester);
+    try {
+      await tester.tap(identified('recording-next-day'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+      expect(shownDay(tester), '2026年10月16日');
+      expect(find.text('495 kcal', findRichText: true), findsNothing);
+      expect(find.byType(CircularProgressIndicator), findsOneWidget);
+      expect(added, isNull);
+    } finally {
+      await tester.runAsync(() async {
+        release.complete();
+        await Future<void>.delayed(Duration.zero);
+      });
+    }
+    await settleDay(tester, bloc);
+    await tester.tap(identified('recording-add-breakfastType'));
+    await tester.pumpAndSettle();
+    expect(added!.day, next);
+  });
+
+  testWidgets('rapid arrow reversal settles on the final requested date', (
+    tester,
+  ) async {
+    await pump(tester);
+    await tester.tap(identified('recording-next-day'));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 80));
+    await tester.tap(identified('recording-previous-day'));
+    await settlePager(tester);
+    expect(shownDay(tester), '2026年10月15日');
+    expect(find.byType(ListView), findsOneWidget);
+    await tester.tap(identified('recording-add-lunchType'));
+    await tester.pumpAndSettle();
+    expect(added!.day, day);
+  });
+
+  testWidgets('same-day refresh does not move the pager', (tester) async {
+    await pump(tester);
+    final area = tester.getRect(find.byKey(PageStorageKey(day)));
+    bloc.add(LoadCalendarDayEvent(day));
+    await settleDay(tester, bloc);
+    expect(tester.getRect(find.byKey(PageStorageKey(day))), area);
+    expect(shownDay(tester), '2026年10月15日');
+  });
+
+  testWidgets('disabled animations jump arrows directly to the next day', (
+    tester,
+  ) async {
+    await pump(
+      tester,
+      width: 320,
+      scale: 1.6,
+      dark: true,
+      disableAnimations: true,
+    );
+    await tester.tap(identified('recording-next-day'));
+    await tester.pump();
+    await settleDay(tester, bloc);
+    expect(shownDay(tester), '2026年10月16日');
+    expect(find.byType(ListView), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('vertical scrolling remains separate from date paging', (
+    tester,
+  ) async {
+    await pump(tester, width: 320, scale: 1.6);
+    tester.view.physicalSize = const Size(320, 600);
+    await tester.pumpAndSettle();
+    final list = find.byKey(PageStorageKey(day));
+    final scroll = tester
+        .state<ScrollableState>(
+          find.descendant(of: list, matching: find.byType(Scrollable)).first,
+        )
+        .position;
+    final area = tester.getRect(identified('recording-day-content'));
+    await tester.dragFrom(
+      Offset(area.center.dx, area.top + 120),
+      const Offset(0, -160),
+    );
+    await tester.pumpAndSettle();
+    expect(scroll.pixels, greaterThan(0));
+    expect(shownDay(tester), '2026年10月15日');
+    expect(
+      tester.widget<PageView>(find.byType(PageView)).controller!.page,
+      closeTo(
+        DateTime.utc(
+          2026,
+          10,
+          15,
+        ).difference(DateTime.utc(2000)).inDays.toDouble(),
+        .001,
+      ),
+    );
+  });
+
+  testWidgets('returning from input invalidates adjacent date previews', (
+    tester,
+  ) async {
+    await pump(tester);
+    await dayDrag(tester, const Offset(160, 0));
+    expect(shownDay(tester), '2026年10月14日');
+    await tester.tap(identified('recording-add-breakfastType'));
+    await tester.pumpAndSettle();
+    intakes.items[0] = intake('a1', a, 30, IntakeTypeEntity.breakfast);
+    tester.state<NavigatorState>(find.byType(Navigator)).pop();
+    await settlePager(tester);
+    await dayDrag(tester, const Offset(-160, 0));
+    expect(shownDay(tester), '2026年10月15日');
+    expect(find.text('575 kcal', findRichText: true), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
+  test(
+    'preview snapshot cannot change the active day or refresh target',
+    () async {
+      bloc.add(LoadCalendarDayEvent(day));
+      await bloc.stream.firstWhere((state) => state is CalendarDayLoaded);
+      final before = bloc.state;
+      final preview = await bloc.loadDaySnapshot(
+        DateUtils.addDaysToDate(day, 1),
+      );
+      expect(preview.day, DateUtils.addDaysToDate(day, 1));
+      expect(identical(bloc.state, before), isTrue);
+      final loaded = bloc.stream.firstWhere(
+        (state) => state is CalendarDayLoaded,
+      );
+      bloc.add(const RefreshCalendarDayEvent());
+      expect((await loaded as CalendarDayLoaded).day, day);
     },
   );
 

@@ -75,6 +75,13 @@ class CalendarDayBloc extends Bloc<CalendarDayEvent, CalendarDayState> {
     Emitter<CalendarDayState> emit,
     int generation,
   ) async {
+    final snapshot = await loadDaySnapshot(day);
+    if (_currentDay != day || generation != _loadGeneration) return;
+    emit(snapshot);
+  }
+
+  /// Read a page preview without changing the selected day or its request guard.
+  Future<CalendarDayLoaded> loadDaySnapshot(DateTime day) async {
     // #139: when the user has a configured day-start offset, the
     // intake/activity queries need to know about it so entries logged
     // before the boundary roll into the previous day's column. The
@@ -136,25 +143,23 @@ class CalendarDayBloc extends Bloc<CalendarDayEvent, CalendarDayState> {
         ? configData.targetKcalForMeal(ConfigEntity.mealKeySnack, dailyKcalGoal)
         : 0.0;
 
-    if (_currentDay != day || generation != _loadGeneration) return;
-    emit(
-      CalendarDayLoaded(
-        trackedDayEntity,
-        userActivities,
-        breakfastIntakeList,
-        lunchIntakeList,
-        dinnerIntakeList,
-        snackIntakeList,
-        breakfastKcalTarget,
-        lunchKcalTarget,
-        dinnerKcalTarget,
-        snackKcalTarget,
-        configData.mealKcalSharesPct[ConfigEntity.mealKeyBreakfast] ?? 0,
-        configData.mealKcalSharesPct[ConfigEntity.mealKeyLunch] ?? 0,
-        configData.mealKcalSharesPct[ConfigEntity.mealKeyDinner] ?? 0,
-        configData.mealKcalSharesPct[ConfigEntity.mealKeySnack] ?? 0,
-        diarySortPreferences: config.diarySortPreferences,
-      ),
+    return CalendarDayLoaded(
+      trackedDayEntity,
+      userActivities,
+      breakfastIntakeList,
+      lunchIntakeList,
+      dinnerIntakeList,
+      snackIntakeList,
+      breakfastKcalTarget,
+      lunchKcalTarget,
+      dinnerKcalTarget,
+      snackKcalTarget,
+      configData.mealKcalSharesPct[ConfigEntity.mealKeyBreakfast] ?? 0,
+      configData.mealKcalSharesPct[ConfigEntity.mealKeyLunch] ?? 0,
+      configData.mealKcalSharesPct[ConfigEntity.mealKeyDinner] ?? 0,
+      configData.mealKcalSharesPct[ConfigEntity.mealKeySnack] ?? 0,
+      diarySortPreferences: config.diarySortPreferences,
+      day: day,
     );
   }
 

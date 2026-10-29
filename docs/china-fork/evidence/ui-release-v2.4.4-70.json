@@ -1,0 +1,38 @@
+{
+  "date": "2026-10-29",
+  "versionName": "2.4.4",
+  "versionCode": 70,
+  "package": "com.huangyu.shiji",
+  "apk": "Shiji-v2.4.4-70-android-arm64.apk",
+  "bytes": 48328777,
+  "sha256": "0acdd31daee924fcac6243e5bb7b6659f7aad9e03347326133b2c3700c32d34c",
+  "certificateSha256": "c578db2e9af3f2c4e0fa06edc05627a17b90dcd9a2db92ff6627934ae65f3f0f",
+  "sameBytesAsPhoneAcceptedApk": true,
+  "permissionsUnchangedFrom243": true,
+  "frozenBuildInputsMatched": 955,
+  "testsPassed": 2814,
+  "testsSkipped": 1,
+  "skipReason": "Upstream fullRelease artifact absent; actual Shiji APK checked separately",
+  "analysisDiagnostics": 0,
+  "recordingTestsPassed": 48,
+  "recordingTestsIncludedInFullSuite": true,
+  "phoneUpgradeFrom": "2.4.3 (69)",
+  "phoneInstalledApkHashMatched": true,
+  "applicationUidUnchanged": true,
+  "allLogicalDataAndAttachmentsUnchanged": true,
+  "phoneChecks": [
+    "Real held touch reveals two date pages and continues following movement",
+    "Stationary finger retains content pixels; header and footer pixels remain fixed",
+    "Left/right, rebound, reversal, consecutive and month boundary transitions",
+    "Historical meal detail date and return, arrows and Today",
+    "Keyboard close and return restores original home and footer pixels"
+  ],
+  "userAcceptedPhoneSwipe": true,
+  "limits": [
+    "Specified phone paths do not cover every device or input method",
+    "No cross-device frame-rate or long-duration performance measurement",
+    "No new persistent intake written during this phone acceptance",
+    "Original occasional keyboard white block did not recur; native cause remains uncaptured",
+    "YAZIO export research does not add an export or import feature"
+  ]
+}
