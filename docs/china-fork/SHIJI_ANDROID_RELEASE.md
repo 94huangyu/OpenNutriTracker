@@ -1,6 +1,6 @@
 # 食迹 Android 正式安装包
 
-2026-10-29更新：食迹2.4.3（69）最终包已构建并通过手机保留数据验收，发布验收见 [UI_DEVICE_ACCEPTANCE_243.md](UI_DEVICE_ACCEPTANCE_243.md)。本轮实际升级使用原包名/签名及递增的versionCode69；源码已同步main，代码提交`0ff3422aa31a07b2fdaa9e0cf11245950e778ad9`、完整树`cb40ab20f1776f831d60e48a1cf33b70b2188dec`。待发布标签为`shiji-v2.4.3-69`，应指向该代码提交；当前浏览器工具不可用，Release及附件尚未发布。以下2.4.1与2.4.0说明保留为历史，不把旧APK当作当前新源码产物。
+2026-10-29更新：食迹2.4.3（69）最终包已构建并通过手机保留数据验收，发布验收见 [UI_DEVICE_ACCEPTANCE_243.md](UI_DEVICE_ACCEPTANCE_243.md)。本轮实际升级使用原包名/签名及递增的versionCode69；源码已同步main，代码提交`0ff3422aa31a07b2fdaa9e0cf11245950e778ad9`、完整树`cb40ab20f1776f831d60e48a1cf33b70b2188dec`。[GitHub Release shiji-v2.4.3-69](https://github.com/94huangyu/OpenNutriTracker/releases/tag/shiji-v2.4.3-69)已正式发布为Latest，标签指向该代码提交。三个附件服务端摘要与本地一致，旧标签保留；公开核验见`evidence/shiji-github-release-v3.json`。以下2.4.1与2.4.0说明保留为历史，不把旧APK当作当前新源码产物。
 
 2026-10-27。食迹2.4.1（67）已发布为[GitHub Release shiji-v2.4.1-67](https://github.com/94huangyu/OpenNutriTracker/releases/tag/shiji-v2.4.1-67)，源码和三个附件核验完成。旧版[shiji-v2.4.0-66](https://github.com/94huangyu/OpenNutriTracker/releases/tag/shiji-v2.4.0-66)保留，不上传应用商店。
 

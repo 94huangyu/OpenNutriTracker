@@ -1,0 +1,43 @@
+{
+  "date": "2026-10-29",
+  "status": "published_and_verified",
+  "releaseUrl": "https://github.com/94huangyu/OpenNutriTracker/releases/tag/shiji-v2.4.3-69",
+  "releaseId": 427589563,
+  "tag": "shiji-v2.4.3-69",
+  "sourceCommit": "0ff3422aa31a07b2fdaa9e0cf11245950e778ad9",
+  "sourceTree": "cb40ab20f1776f831d60e48a1cf33b70b2188dec",
+  "publicSourceFilesMatched": 1265,
+  "latest": true,
+  "draft": false,
+  "prerelease": false,
+  "publishedAt": "2026-10-29T07:58:37Z",
+  "assets": [
+    {
+      "name": "SHA256SUMS",
+      "bytes": 189,
+      "sha256": "a2254d70584f0c440c68225090ce7e37fa88e407e8c613face3627b156432277",
+      "url": "https://github.com/94huangyu/OpenNutriTracker/releases/download/shiji-v2.4.3-69/SHA256SUMS"
+    },
+    {
+      "name": "shiji-release-cert.pem",
+      "bytes": 1827,
+      "sha256": "4997cd8041c6cc764508c18c12a8803ba8489185dd0075f187913d0b126c8d86",
+      "url": "https://github.com/94huangyu/OpenNutriTracker/releases/download/shiji-v2.4.3-69/shiji-release-cert.pem"
+    },
+    {
+      "name": "Shiji-v2.4.3-69-android-arm64.apk",
+      "bytes": 48263241,
+      "sha256": "33d8970bd081ebb390c6cd7e0343068d5cba8a5ec4aec68d0096c7dd78522ad8",
+      "url": "https://github.com/94huangyu/OpenNutriTracker/releases/download/shiji-v2.4.3-69/Shiji-v2.4.3-69-android-arm64.apk"
+    }
+  ],
+  "allServerDigestsMatchLocal": true,
+  "oldReleaseTagsUnchanged": true,
+  "buildInputCount": 955,
+  "buildInputsUnchanged": true,
+  "phoneDataAndAttachmentsUnchanged": true,
+  "limits": [
+    "Specified phone checks do not cover every device or input method",
+    "Original occasional keyboard white block native cause remains uncaptured"
+  ]
+}
