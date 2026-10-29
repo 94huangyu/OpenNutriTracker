@@ -1,3 +1,4 @@
+import 'package:opennutritracker/core/utils/food_unit_label.dart';
 import 'package:flutter/material.dart';
 import 'package:opennutritracker/core/domain/entity/intake_entity.dart';
 import 'package:opennutritracker/core/domain/entity/intake_type_entity.dart';
@@ -201,7 +202,7 @@ class _RecordIntakeSheetState extends State<RecordIntakeSheet> {
                   isExpanded: true,
                   decoration: InputDecoration(labelText: s.unitLabel),
                   items: [
-                    DropdownMenuItem(value: _baseUnit, child: Text(_baseUnit)),
+                    DropdownMenuItem(value: _baseUnit, child: Text(foodUnitLabel(s, _baseUnit))),
                     if (_hasServing)
                       DropdownMenuItem(
                         value: 'serving',
@@ -232,14 +233,14 @@ class _RecordIntakeSheetState extends State<RecordIntakeSheet> {
               padding: const EdgeInsets.only(top: 12),
               child: Text(
                 '1 ${s.servingLabel} = '
-                '${widget.intake.meal.scalableServingQuantity} $_baseUnit',
+                '${widget.intake.meal.scalableServingQuantity} ${foodUnitLabel(s, _baseUnit)}',
               ),
             ),
           const SizedBox(height: 16),
           FoodPortionSummary(
             caption:
                 '${s.recordingThisPortion} · '
-                '${_amount == null ? '—' : _amount!.toStringAsFixed(1).replaceFirst(RegExp(r'\.0$'), '')} $_baseUnit',
+                '${_amount == null ? '—' : _amount!.toStringAsFixed(1).replaceFirst(RegExp(r'\.0$'), '')} ${foodUnitLabel(s, _baseUnit)}',
             kcal: total(n.energyPerUnit),
             carbs: total(n.carbohydratesPerUnit),
             protein: total(n.proteinsPerUnit),

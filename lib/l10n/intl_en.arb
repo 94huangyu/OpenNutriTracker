@@ -206,7 +206,7 @@
   "additionalInfoLabelSource": "More Information at\n{sourceName}",
   "@additionalInfoLabelSource": {"placeholders": {"sourceName": {"type": "String"}}},
   "foodSourcesAlwaysEnabledLabel": "Always enabled",
-  "foodSourcesHelpText": "Search results come from these food databases. Open Food Facts powers the product and barcode search and is always enabled.",
+  "foodSourcesHelpText": "Choose food search sources. Open Food Facts provides product and barcode searches.",
   "machineTranslatedNameHint": "Name translated automatically",
   "measureUnitBar": "{count, plural, one{bar} other{bars}}",
   "@measureUnitBar": {"placeholders": {"count": {"type": "num"}}},
@@ -309,7 +309,7 @@
   "customActivityPickFromTemplate": "Pick from saved templates",
   "customActivitySaveAsTemplate": "Save as template for next time",
   "customActivityTemplatesEmpty": "You haven't saved any templates yet. Tick \"Save as template for next time\" to remember a Custom activity for later.",
-  "customMealBarcodeHint": "Scan or type a barcode to recall this meal later",
+  "customMealBarcodeHint": "Type or scan a barcode",
   "customMealBarcodeInvalid": "Barcode must be 8 to 14 digits",
   "customMealBarcodeLabel": "Barcode",
   "customMealBarcodeScanButton": "Scan barcode",
@@ -913,10 +913,10 @@
   "recipeNutritionPer100Label": "Per 100 g",
   "recipeNutritionPreviewLabel": "Nutrition (total)",
   "recipeSaveErrorLabel": "Could not save recipe.",
-  "recipeSaveForLaterDescription": "Turn this on to keep this meal in your saved list for next time. Leave it off for a one-off you won't eat again.",
+  "recipeSaveForLaterDescription": "Also save to the food library for next time.",
   "recipeSaveForLaterLabel": "Save for next time",
   "recipeSaveLabel": "Save Recipe",
-  "recipeServingsCountHelper": "Lets you log this recipe by serving instead of grams.",
+  "recipeServingsCountHelper": "Fill this in to log by serving.",
   "recipeServingsCountLabel": "Servings (optional)",
   "recipeTagsHelper": "Comma-separated, e.g. \"breakfast, vegan\"",
   "recipeTagsLabel": "Tags",
@@ -1290,7 +1290,7 @@
   "aiAssistProbePhotoFailedLabel": "Checked — this model answered with no items for a photo, so reading a photo is not offered for this server.",
   "aiAssistLoadModelsLabel": "Load models",
   "aiAssistPickModelLabel": "Choose a model",
-  "aiAssistModelsUnreachableLabel": "Could not reach {host}. It may be asleep, on another network, or behind a VPN — type the model name instead.",
+  "aiAssistModelsUnreachableLabel": "Could not reach {host}. You can enter the model name manually.",
   "@aiAssistModelsUnreachableLabel": {"placeholders": {"host": {"type": "String"}}},
   "aiAssistModelsEmptyLabel": "{host} answered, and lists no models. Type the model name instead.",
   "@aiAssistModelsEmptyLabel": {"placeholders": {"host": {"type": "String"}}},
@@ -1372,7 +1372,7 @@
   "healthSyncUnavailableLabel": "Health data is not available on this device. Workout import needs Health Connect on Android or Apple Health on iOS.",
   "sourcesEnergyCompensationTitle": "Workout calorie credit",
   "sourcesEnergyCompensationDescription": "Imported workouts are credited with less than the energy your device reports. People compensate for exercise by burning fewer calories through the rest of the day — about 28% on average, and more at a higher body fat percentage. The suggested credit comes from that research and you can override it under Settings → Health sync. The energy itself is reported by the app or device that recorded the workout, not calculated with the app’s MET formula.",
-  "customMealBasisHelp": "Package and serving sizes are optional. All nutrients below use the nutrition basis. Check values after changing the basis.",
+  "customMealBasisHelp": "Package and serving sizes are optional. Enter nutrients for this basis; check values after changing it.",
   "customMealQuantityInvalid": "Enter a valid positive number for {field}.",
   "@customMealQuantityInvalid": {
     "placeholders": {
@@ -1383,7 +1383,7 @@
   },
   "customMealNutrientInvalid": "Enter finite, non-negative nutrient values, or leave unknown values blank.",
   "customMealUnknownNutrientsHint": "Leave unknown nutrients blank. Enter 0 only when you know there is none.",
-  "customMealNutrientDifferenceHint": "Label energy differs from the macro estimate. Fibre, labelling conventions and rounding can explain differences. Your entered energy will be kept.",
+  "customMealNutrientDifferenceHint": "Energy differs from the nutrient estimate. Check the label; your entered energy will be saved.",
   "customMealBarcodeInUse": "This barcode or name belongs to another food. Nothing was saved; change it or edit that food.",
   "recordingTitle": "Food diary",
   "recordingConsumed": "Energy consumed",
@@ -1407,12 +1407,12 @@
   "recordingRestored": "Record restored",
   "recordingRepeated": "Record added",
   "recordingUndoFailed": "Could not restore. Tap Undo to retry.",
-  "customMealCopyHint": "Changes will be saved to My foods. Existing records keep their original values.",
+  "customMealCopyHint": "Save to My foods. Existing records stay unchanged.",
   "customMealReference": "Original reference: {source}",
   "@customMealNutritionBasis": {"placeholders": {"quantity": {"type": "String"}, "unit": {"type": "String"}}},
   "@customMealReference": {"placeholders": {"source": {"type": "String"}}},
   "referenceFoodSourceLabel": "Reference foods",
-  "searchSourceLoading": "{source}: searching online…",
+  "searchSourceLoading": "{source}: searching…",
   "@searchSourceLoading": {
     "placeholders": {
       "source": {
@@ -1420,7 +1420,7 @@
       }
     }
   },
-  "searchSourceEmpty": "{source}: no additional online results",
+  "searchSourceEmpty": "{source}: no results",
   "@searchSourceEmpty": {
     "placeholders": {
       "source": {
@@ -1428,7 +1428,7 @@
       }
     }
   },
-  "searchSourceFailed": "{source}: unable to connect. Local results remain available.",
+  "searchSourceFailed": "{source}: unable to connect",
   "@searchSourceFailed": {
     "placeholders": {
       "source": {
@@ -1436,7 +1436,7 @@
       }
     }
   },
-  "searchSourceUnconfigured": "{source}: not connected in this build. Local foods remain available.",
+  "searchSourceUnconfigured": "{source}: unavailable",
   "@searchSourceUnconfigured": {
     "placeholders": {
       "source": {
@@ -1444,7 +1444,7 @@
       }
     }
   },
-  "searchSourceDisabled": "{source}: disabled in settings. Local foods remain available.",
+  "searchSourceDisabled": "{source}: disabled",
   "@searchSourceDisabled": {
     "placeholders": {
       "source": {
@@ -1462,7 +1462,7 @@
   "foodPersonalReview": "Check this food",
   "foodPersonallyReviewed": "Personally checked",
   "foodNotReviewed": "Not personally checked",
-  "foodReviewExplanation": "A personal note, not certification. Check the name, brand, quantities and entered nutrients against your reference. Unknown nutrients remain unknown.",
+  "foodReviewExplanation": "A personal check, not certification. Note your reference; unknown values stay blank.",
   "foodReviewSource": "Reference type",
   "foodReviewPackage": "Package label",
   "foodReviewManufacturer": "Manufacturer information",
@@ -1477,22 +1477,22 @@
   "foodPersonalIdentityMissing": "This record has no stable ID. Save a personal copy before adding favorites or a check.",
   "foodDataChangedReview": "Food data changed; check the current values again.",
   "foodNutritionScopeHint": "Energy is a label value. The 4/4/9 estimate is approximate; fiber, polyols, alcohol and rounding can differ. Values are never replaced automatically.",
-  "foodCompositionReviewHint": "Check the label basis, sugar versus carbohydrate, and saturated versus total fat. This hint does not change your values.",
+  "foodCompositionReviewHint": "Check the nutrition basis, sugars versus carbs, and saturated versus total fat.",
   "m4My": "My data",
   "m4Library": "Food library",
   "m4LocalProfile": "Local profile",
   "m4ProfileName": "Profile name (optional)",
   "m4ProfileHint": "Stored on this device. No body measurements are required.",
   "m4BackupTitle": "Backup and restore",
-  "m4BackupDescription": "Full ZIP includes all local profiles, diaries, food libraries, settings and local photos. Existing legacy body and activity data is preserved. Public caches, credentials and system permissions are excluded.",
+  "m4BackupDescription": "Full backups include profiles, diaries, food libraries, settings and photos, excluding service credentials and system permissions.",
   "m4BackupPrivacy": "The exported file is not encrypted and may contain private records and photos. Keep it in a safe location.",
   "m4ExportFull": "Export full backup",
   "m4ChooseRestore": "Choose ZIP to preview",
-  "m4CsvDescription": "CSV is for data exchange and analysis. It omits settings, profiles, independent templates, recipes and photos; it is not a full backup. Old JSON and CSV ZIP files can be selected above for preview.",
+  "m4CsvDescription": "CSV is for analysis and cannot fully restore your data. Use the ZIP backup above for a full backup.",
   "m4ExportCsv": "Export CSV data",
   "m4RestorePreview": "Restore preview",
-  "m4LegacyWarning": "This is a legacy partial backup. Only the datasets below will be merged into the current local profile and shared food library. Missing settings, profiles, templates or photos cannot be reconstructed.",
-  "m4RestoreRules": "Records merge by stable identity. Choose how to handle changed records and same-name photos. Local records absent from the backup stay. Daily totals are rebuilt from the merged diary. Existing profile storage and the current profile selection stay on this device. Privacy consent stays with this device.",
+  "m4LegacyWarning": "This is a legacy partial backup. Only the data previewed below will be merged.",
+  "m4RestoreRules": "Restore merges data without clearing local records. Conflicts follow the selected strategy.",
   "m4New": "New records",
   "m4Conflicts": "Changed records",
   "m4Unchanged": "Same records",
@@ -1571,5 +1571,31 @@
         "type": "String"
       }
     }
-  }
+  },
+  "libraryNew": "New",
+  "libraryRecipes": "Recipes",
+  "libraryCreateFood": "Create food",
+  "libraryCreateRecipe": "Create recipe",
+  "libraryImportRecipe": "Import recipe",
+  "libraryDeleteFoodTitle": "Delete food?",
+  "libraryMergeFood": "Merge with another food",
+  "libraryFavoritesHint": "Foods you favorite in their details will appear here.",
+  "librarySearchRecipes": "Search recipes",
+  "libraryTotalEnergy": "Total {energy}",
+  "libraryItemCount": "{count} items",
+  "@libraryTotalEnergy": {
+    "placeholders": {
+      "energy": {
+        "type": "String"
+      }
+    }
+  },
+  "@libraryItemCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "foodNutritionSourceInfo": "Nutrition and source information"
 }

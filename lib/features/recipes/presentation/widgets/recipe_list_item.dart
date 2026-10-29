@@ -1,11 +1,10 @@
 import 'dart:io';
 
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:opennutritracker/core/domain/entity/recipe_entity.dart';
-import 'package:opennutritracker/core/presentation/widgets/app_card.dart';
+import 'package:opennutritracker/core/presentation/widgets/food_library_list.dart';
 import 'package:opennutritracker/core/styles/app_palette.dart';
 import 'package:opennutritracker/core/styles/dimens.dart';
 import 'package:opennutritracker/core/utils/energy_display.dart';
@@ -19,7 +18,7 @@ class RecipeListItem extends StatelessWidget {
   final VoidCallback? onLongPress;
   final bool isSelected;
 
-  static const double _thumbSize = 52;
+  static const double _thumbSize = 44;
 
   const RecipeListItem({
     super.key,
@@ -34,10 +33,12 @@ class RecipeListItem extends StatelessWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final palette = isDark ? AppPalette.dark : AppPalette.light;
     final accent = Theme.of(context).colorScheme.primary;
-    final textTheme = Theme.of(context).textTheme;
 
     final kcalPer100 = recipe.aggregatedNutrimentsPer100.energyKcal100;
-    final totalKcal = (kcalPer100 ?? 0) * recipe.totalWeightG / 100;
+    final totalKcal = (kcalPer100 ?? double.nan) * recipe.totalWeightG / 100;
+    final energy = totalKcal.isFinite && totalKcal >= 0
+        ? EnergyDisplay.formatRoundedWithUnit(context, totalKcal)
+        : '— ${EnergyDisplay.unitLabel(context)}';
     final ingredientCount = recipe.ingredients.length;
 
     // Derive a thumbnail from the first ingredient that has one. Falls back
@@ -47,64 +48,37 @@ class RecipeListItem extends StatelessWidget {
         .map((i) => i.snapshotMeal.thumbnailImageUrl)
         .firstWhere((url) => url != null && url.isNotEmpty, orElse: () => null);
 
-    // AppCard's own onTap is left null so the inner InkWell can carry both the
-    // tap and the long-press (multi-select) gestures from a single hit target.
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: Dimens.spacing16, vertical: Dimens.spacing4),
-      child: AppCard(
-        color: isSelected ? accent.withValues(alpha: 0.12) : null,
-        padding: EdgeInsets.zero,
-        child: InkWell(
-          borderRadius: Dimens.borderRadiusL,
-          onTap: onTap,
-          onLongPress: onLongPress,
-          child: Padding(
-            padding: const EdgeInsets.all(Dimens.spacing12),
-            child: Row(
-            children: [
-              _buildLeading(context, palette, accent, thumbnailUrl),
-              const SizedBox(width: Dimens.spacing12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    AutoSizeText(
-                      recipe.name,
-                      maxLines: 1,
-                      minFontSize: 12,
-                      overflow: TextOverflow.ellipsis,
-                      style: textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
-                    ),
-                    const SizedBox(height: Dimens.spacing4),
-                    Text(
-                      '${S.of(context).recipeIngredientCountLabel(ingredientCount)} · '
-                      '${EnergyDisplay.formatWithUnit(context, totalKcal)}',
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: textTheme.bodyMedium?.copyWith(color: palette.textMuted),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(width: Dimens.spacing8),
-              isSelected
-                  ? Icon(Icons.check_circle_rounded, color: accent, size: 24)
-                  : Icon(Icons.chevron_right_rounded, color: palette.textMuted, size: 24),
-            ],
+    return FoodLibraryTile(
+      title: recipe.name,
+      detail:
+          '${S.of(context).recipeIngredientCountLabel(ingredientCount)} · '
+          '${S.of(context).libraryTotalEnergy(energy)}',
+      leading: _buildLeading(context, palette, accent, thumbnailUrl),
+      trailing: isSelected
+          ? Icon(Icons.check_circle_rounded, color: accent, size: 24)
+          : Icon(
+              Icons.chevron_right_rounded,
+              color: palette.textMuted,
+              size: 24,
             ),
-          ),
-        ),
-      ),
+      selected: isSelected,
+      onTap: onTap,
+      onLongPress: onLongPress,
     );
   }
 
-  Widget _buildLeading(BuildContext context, AppPalette palette, Color accent, String? thumbnailUrl) {
+  Widget _buildLeading(
+    BuildContext context,
+    AppPalette palette,
+    Color accent,
+    String? thumbnailUrl,
+  ) {
     if (recipe.imagePath != null) {
       return _UserImageThumbnail(relativePath: recipe.imagePath!);
     }
     if (thumbnailUrl != null) {
       return ClipRRect(
-        borderRadius: Dimens.borderRadiusS,
+        borderRadius: Dimens.borderRadiusThumbnail,
         child: CachedNetworkImage(
           cacheManager: locator<CacheManager>(),
           fit: BoxFit.cover,
@@ -124,7 +98,7 @@ class RecipeListItem extends StatelessWidget {
       height: _thumbSize,
       decoration: BoxDecoration(
         color: accent.withValues(alpha: 0.14),
-        borderRadius: Dimens.borderRadiusS,
+        borderRadius: Dimens.borderRadiusThumbnail,
       ),
       child: Icon(Icons.menu_book_rounded, color: accent, size: 24),
     );
@@ -147,7 +121,7 @@ class _UserImageThumbnail extends StatelessWidget {
         final fallback = RecipeListItem._fallbackThumb(palette, accent);
         if (!snapshot.hasData) return fallback;
         return ClipRRect(
-          borderRadius: Dimens.borderRadiusS,
+          borderRadius: Dimens.borderRadiusThumbnail,
           child: Image.file(
             File(snapshot.data!),
             fit: BoxFit.cover,

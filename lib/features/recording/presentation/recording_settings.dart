@@ -167,11 +167,6 @@ class _RecordingSettingsState extends State<RecordingSettings> {
                   children: [
                     if (_busy) const LinearProgressIndicator(),
                     _settingsGroup(s.m4LocalProfile, [
-                      Text(
-                        s.m4ProfileHint,
-                        style: Theme.of(context).textTheme.bodySmall,
-                      ),
-                      const SizedBox(height: 12),
                       Semantics(
                         identifier: 'recording-profile-select',
                         child: DropdownButtonFormField<String>(

@@ -1,8 +1,10 @@
+import 'package:opennutritracker/core/utils/food_unit_label.dart';
 import 'package:flutter/material.dart';
 import 'package:opennutritracker/core/domain/entity/recipe_ingredient_entity.dart';
 import 'package:opennutritracker/core/styles/app_palette.dart';
 import 'package:opennutritracker/core/styles/dimens.dart';
 import 'package:opennutritracker/core/utils/energy_display.dart';
+import 'package:opennutritracker/generated/l10n.dart';
 
 class IngredientListItem extends StatelessWidget {
   final RecipeIngredientEntity ingredient;
@@ -24,6 +26,7 @@ class IngredientListItem extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
 
     final meal = ingredient.snapshotMeal;
+    final unitLabel = foodUnitLabel(S.of(context), ingredient.unit);
     final kcalPer100 = meal.nutriments.energyKcal100 ?? 0;
     final contributionKcal = kcalPer100 * ingredient.convertedAmountG / 100;
     final amountStr = ingredient.amount % 1 == 0
@@ -32,12 +35,15 @@ class IngredientListItem extends StatelessWidget {
 
     return Material(
       color: Colors.transparent,
-      borderRadius: Dimens.borderRadiusM,
+      borderRadius: Dimens.borderRadiusControl,
       child: InkWell(
-        borderRadius: Dimens.borderRadiusM,
+        borderRadius: Dimens.borderRadiusControl,
         onTap: onEdit,
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: Dimens.spacing8, vertical: Dimens.spacing12),
+          padding: const EdgeInsets.symmetric(
+            horizontal: Dimens.spacing8,
+            vertical: Dimens.spacing12,
+          ),
           child: Row(
             children: [
               Container(
@@ -45,7 +51,7 @@ class IngredientListItem extends StatelessWidget {
                 height: 40,
                 decoration: BoxDecoration(
                   color: accent.withValues(alpha: 0.14),
-                  borderRadius: Dimens.borderRadiusS,
+                  borderRadius: Dimens.borderRadiusThumbnail,
                 ),
                 child: Icon(Icons.eco_rounded, color: accent, size: 22),
               ),
@@ -58,22 +64,30 @@ class IngredientListItem extends StatelessWidget {
                       meal.name ?? '?',
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700),
+                      style: textTheme.titleSmall?.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                     const SizedBox(height: 2),
                     Text(
-                      '$amountStr ${ingredient.unit} · '
+                      '$amountStr $unitLabel · '
                       '${EnergyDisplay.formatWithUnit(context, contributionKcal)}',
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: textTheme.bodySmall?.copyWith(color: palette.textMuted),
+                      style: textTheme.bodySmall?.copyWith(
+                        color: palette.textMuted,
+                      ),
                     ),
                   ],
                 ),
               ),
               if (onRemove != null)
                 IconButton(
-                  icon: Icon(Icons.delete_outline_rounded, color: palette.textMuted, size: 22),
+                  icon: Icon(
+                    Icons.delete_outline_rounded,
+                    color: palette.textMuted,
+                    size: 22,
+                  ),
                   onPressed: onRemove,
                 ),
             ],

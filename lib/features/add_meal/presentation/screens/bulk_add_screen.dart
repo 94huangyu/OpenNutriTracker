@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:opennutritracker/core/presentation/widgets/food_library_list.dart';
 import 'dart:math' as math;
 
 import 'package:auto_size_text/auto_size_text.dart';
@@ -593,16 +594,21 @@ class _BulkAddScreenState extends State<BulkAddScreen> {
     // would churn every time the row count changes.
     final list = Semantics(
       identifier: 'bulk-add-row-list',
-      child: ListView.separated(
-        padding: const EdgeInsets.symmetric(vertical: 8),
-        itemCount: state.rows.length + (state.parseErrors.isEmpty ? 0 : 1),
-        separatorBuilder: (_, _) => const Divider(height: 1),
-        itemBuilder: (context, index) {
-          if (index == state.rows.length) {
-            return _buildParseErrors(context, state.parseErrors);
-          }
-          return _buildRow(context, state, index);
-        },
+      child: CustomScrollView(
+        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+        slivers: [
+          SliverPadding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            sliver: FoodListSliver(
+              itemCount: state.rows.length,
+              itemBuilder: (context, index) => _buildRow(context, state, index),
+            ),
+          ),
+          if (state.parseErrors.isNotEmpty)
+            SliverToBoxAdapter(
+              child: _buildParseErrors(context, state.parseErrors),
+            ),
+        ],
       ),
     );
 
@@ -1436,27 +1442,34 @@ class _BulkAddScreenState extends State<BulkAddScreen> {
         // the candidate count.
         child: Semantics(
           identifier: 'bulk-add-candidate-list',
-          child: ListView(
+          child: CustomScrollView(
             shrinkWrap: true,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(16),
-                child: Text(
-                  S.of(context).bulkAddChooseFoodLabel,
-                  style: Theme.of(context).textTheme.titleMedium,
+            slivers: [
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Text(
+                    S.of(context).bulkAddChooseFoodLabel,
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
                 ),
               ),
-              for (var i = 0; i < row.resolved.candidates.length; i++)
-                ListTile(
-                  title: Text(row.resolved.candidates[i].name ?? ''),
-                  subtitle: row.resolved.candidates[i].brands != null
-                      ? Text(row.resolved.candidates[i].brands!)
-                      : null,
-                  trailing: i == row.selectedIndex
-                      ? const Icon(Icons.check)
-                      : null,
-                  onTap: () => Navigator.of(context).pop(i),
+              SliverPadding(
+                padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                sliver: FoodListSliver(
+                  itemCount: row.resolved.candidates.length,
+                  itemBuilder: (context, i) => ListTile(
+                    title: Text(row.resolved.candidates[i].name ?? ''),
+                    subtitle: row.resolved.candidates[i].brands != null
+                        ? Text(row.resolved.candidates[i].brands!)
+                        : null,
+                    trailing: i == row.selectedIndex
+                        ? const Icon(Icons.check)
+                        : null,
+                    onTap: () => Navigator.of(context).pop(i),
+                  ),
                 ),
+              ),
             ],
           ),
         ),

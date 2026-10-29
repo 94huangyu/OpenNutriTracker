@@ -40,7 +40,7 @@ class IntakeCard extends StatelessWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final palette = isDark ? AppPalette.dark : AppPalette.light;
     final textTheme = Theme.of(context).textTheme;
-    final radius = BorderRadius.circular(Dimens.radiusM);
+    final radius = Dimens.borderRadiusCard;
     return Padding(
       padding: const EdgeInsets.symmetric(
         horizontal: Dimens.spacing16,
@@ -57,7 +57,7 @@ class IntakeCard extends StatelessWidget {
               ? () => onLongPressedItem(context)
               : null,
           child: AppCard(
-            borderRadius: Dimens.radiusM,
+            borderRadius: Dimens.radiusCard,
             padding: const EdgeInsets.all(Dimens.spacing12),
             child: Row(
               children: [
@@ -93,7 +93,7 @@ class IntakeCard extends StatelessWidget {
                   ),
                   style: textTheme.labelMedium?.copyWith(
                     color: palette.textStrong,
-                    fontWeight: FontWeight.w700,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
               ],
@@ -143,7 +143,7 @@ class MealThumbnail extends StatelessWidget {
       content = _fallback(context);
     }
     return ClipRRect(
-      borderRadius: BorderRadius.circular(Dimens.radiusS),
+      borderRadius: Dimens.borderRadiusThumbnail,
       child: SizedBox(width: size, height: size, child: content),
     );
   }

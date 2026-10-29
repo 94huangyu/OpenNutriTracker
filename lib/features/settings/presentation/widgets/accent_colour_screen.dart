@@ -87,7 +87,7 @@ class _AccentColourScreenState extends State<AccentColourScreen> {
                       title: Text(
                         S.of(context).settingsMaterialYouTitle,
                         style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                              fontWeight: FontWeight.w700,
+                              fontWeight: FontWeight.w600,
                             ),
                       ),
                       subtitle: Text(
@@ -116,7 +116,7 @@ class _AccentColourScreenState extends State<AccentColourScreen> {
                   S.of(context).settingsAccentPresetsHeader,
                   style: Theme.of(context).textTheme.labelLarge?.copyWith(
                         color: palette.textMuted,
-                        fontWeight: FontWeight.w700,
+                        fontWeight: FontWeight.w600,
                         letterSpacing: 0.3,
                       ),
                 ),
@@ -143,11 +143,11 @@ class _AccentColourScreenState extends State<AccentColourScreen> {
                           'accent-preset-${index.toString().padLeft(2, '0')}',
                       child: InkWell(
                         onTap: () => _selectColor(color),
-                        borderRadius: Dimens.borderRadiusM,
+                        borderRadius: Dimens.borderRadiusControl,
                         child: Container(
                           decoration: BoxDecoration(
                             color: color,
-                            borderRadius: Dimens.borderRadiusM,
+                            borderRadius: Dimens.borderRadiusControl,
                             border: selected
                                 ? Border.all(
                                     color: palette.textStrong,
@@ -178,7 +178,7 @@ class _AccentColourScreenState extends State<AccentColourScreen> {
                     title: Text(
                       S.of(context).settingsAccentCustomColour,
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                            fontWeight: FontWeight.w700,
+                            fontWeight: FontWeight.w600,
                           ),
                     ),
                     subtitle: Text(

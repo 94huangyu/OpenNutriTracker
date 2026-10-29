@@ -1,0 +1,956 @@
+{
+  "date": "2026-10-28",
+  "status": "approved_implemented_local_regression_passed_device_pending",
+  "candidate_keys_reviewed": 82,
+  "decision_counts": {
+    "保留": 17,
+    "条件保留": 6,
+    "缩短": 21,
+    "删除": 4,
+    "旧上游/非当前入口": 18,
+    "移到说明": 2,
+    "字段/标题/校验": 10,
+    "只在空页提示": 1,
+    "保留并折叠": 2,
+    "仅空页保留": 1
+  },
+  "copy_changes_applied": true,
+  "scope": "Visible explanatory/hint/warning candidates in recording, food entry/detail/library/recipes/trends/settings/backup/scanner/bulk input plus clearly labelled legacy and field-label candidates. Code comments and user-entered notes are not UI copy edits.",
+  "additional_dynamic_contexts_reviewed": [
+    "Per-nutrition-basis helper under energy/macronutrient fields: retain, it defines numeric meaning",
+    "Live kJ/kcal conversion reference: retain, it is functional feedback requested by user",
+    "Search source summary/expanded source details: retain a single local-results status summary and avoid repeating it in each source line"
+  ],
+  "items": [
+    {
+      "key": "aiAssistDisclosureCommon",
+      "current": "您的日记和您的个人资料永远不会被发送。营养数值始终来自食物数据库，而非模型。密钥仅存储在本设备上：OpenNutriTracker 永远看不到它，也不会为其使用付费。",
+      "decision": "保留",
+      "reason": "外发内容、目的、密钥/费用或进行中的配置检查影响用户选择；属于条件说明/确认，不放普通页面。",
+      "proposal": "",
+      "files": [
+        "lib/features/settings/presentation/widgets/ai_assist_dialog.dart",
+        "lib/features/settings/presentation/widgets/ai_consent_screen.dart"
+      ],
+      "implementation": "retained_as_reviewed"
+    },
+    {
+      "key": "aiAssistExperimentalNote",
+      "current": "此功能可能会更改或被移除，所提供的服务商和模型也可能随之更改。",
+      "decision": "条件保留",
+      "reason": "仅识别功能未配置/使用前提示；不扩展为其他页面的常驻宣传，不改外发确认。",
+      "proposal": "",
+      "files": [
+        "lib/features/add_meal/presentation/screens/bulk_add_screen.dart",
+        "lib/features/settings/presentation/widgets/ai_assist_dialog.dart",
+        "lib/features/settings/presentation/widgets/ai_consent_screen.dart"
+      ],
+      "implementation": "retained_as_reviewed"
+    },
+    {
+      "key": "aiAssistModelsUnreachableLabel",
+      "current": "无法连接 {host}。它可能已休眠、位于其他网络，或处于未开启的 VPN 之后——请改为手动输入模型名称。",
+      "decision": "缩短",
+      "reason": "异常时保留恢复办法，不猜测休眠/VPN等具体原因。",
+      "proposal": "暂时无法连接服务器，可手动填写模型名称。",
+      "files": [
+        "lib/features/settings/presentation/widgets/ai_assist_dialog.dart"
+      ],
+      "implementation": "shortened",
+      "applied_text": "暂时无法连接 {host}，可手动填写模型名称。"
+    },
+    {
+      "key": "aiAssistProbeRunningLabel",
+      "current": "正在检查该服务器。两项检查依次进行，最多可能需要 {minutes, plural, other{{minutes} 分钟}}——您可以关闭此窗口，回来时结果就在这里。",
+      "decision": "保留",
+      "reason": "外发内容、目的、密钥/费用或进行中的配置检查影响用户选择；属于条件说明/确认，不放普通页面。",
+      "proposal": "",
+      "files": [
+        "lib/features/settings/presentation/widgets/ai_assist_dialog.dart"
+      ],
+      "implementation": "retained_as_reviewed"
+    },
+    {
+      "key": "aiConsentChangeProviderNote",
+      "current": "你之后可以更换服务商。每个服务商的条款都在设置中，在你使用该功能之前，你输入或拍摄的任何内容都不会被发送。",
+      "decision": "保留",
+      "reason": "外发内容、目的、密钥/费用或进行中的配置检查影响用户选择；属于条件说明/确认，不放普通页面。",
+      "proposal": "",
+      "files": [
+        "lib/features/settings/presentation/widgets/ai_consent_screen.dart"
+      ],
+      "implementation": "retained_as_reviewed"
+    },
+    {
+      "key": "aiConsentOwnServerCheckNote",
+      "current": "保存你的服务器地址时，还会询问该服务器提供哪些模型，并进行一次配置检查——只发送一行固定的示例文字和一张本应用自带的示例照片，绝不会发送你自己的任何内容。",
+      "decision": "保留",
+      "reason": "外发内容、目的、密钥/费用或进行中的配置检查影响用户选择；属于条件说明/确认，不放普通页面。",
+      "proposal": "",
+      "files": [
+        "lib/features/settings/presentation/widgets/ai_consent_screen.dart"
+      ],
+      "implementation": "retained_as_reviewed"
+    },
+    {
+      "key": "bulkAddInputHint",
+      "current": "100g 吐司，250ml 牛奶，黑咖啡",
+      "decision": "保留",
+      "reason": "用于说明输入格式或导入格式，不是无关备注。",
+      "proposal": "",
+      "files": [
+        "lib/features/add_meal/presentation/screens/bulk_add_screen.dart"
+      ],
+      "implementation": "retained_as_reviewed"
+    },
+    {
+      "key": "bulkAddModelHintKeyLabel",
+      "current": "使用你自己的 API 密钥",
+      "decision": "条件保留",
+      "reason": "仅识别功能未配置/使用前提示；不扩展为其他页面的常驻宣传，不改外发确认。",
+      "proposal": "",
+      "files": [
+        "lib/features/add_meal/presentation/screens/bulk_add_screen.dart"
+      ],
+      "implementation": "retained_as_reviewed"
+    },
+    {
+      "key": "bulkAddModelHintLabel",
+      "current": "模型可以为你读取这些内容",
+      "decision": "条件保留",
+      "reason": "仅识别功能未配置/使用前提示；不扩展为其他页面的常驻宣传，不改外发确认。",
+      "proposal": "",
+      "files": [
+        "lib/features/add_meal/presentation/screens/bulk_add_screen.dart"
+      ],
+      "implementation": "retained_as_reviewed"
+    },
+    {
+      "key": "bulkAddPhotoDisclosureOpenAI",
+      "current": "该照片将发送给 OpenAI，以识别其中的食物。OpenAI 会将其保留最多 30 天以进行滥用检测；若法律要求，或为保护其服务或第三方免受损害而属合理必要，则保留更久。",
+      "decision": "保留",
+      "reason": "外发内容、目的、密钥/费用或进行中的配置检查影响用户选择；属于条件说明/确认，不放普通页面。",
+      "proposal": "",
+      "files": [
+        "lib/features/add_meal/presentation/screens/bulk_add_screen.dart"
+      ],
+      "implementation": "retained_as_reviewed"
+    },
+    {
+      "key": "customMealBarcodeHint",
+      "current": "扫描或输入条形码，以便日后调用此餐食",
+      "decision": "缩短",
+      "reason": "条码字段已说明对象，保留可输入/扫码即可。",
+      "proposal": "可输入或扫码",
+      "files": [
+        "lib/features/edit_meal/presentation/edit_meal_screen.dart"
+      ],
+      "implementation": "shortened",
+      "applied_text": "可输入或扫码"
+    },
+    {
+      "key": "customMealBasisHelp",
+      "current": "包装大小、单份分量可留空。下方营养值均对应营养基准；更改基准后请核对数值。",
+      "decision": "缩短",
+      "reason": "基准会影响所有营养值，必须保留；压缩重复叙述。",
+      "proposal": "包装与单份可留空；营养值按此基准填写，改基准后请核对。",
+      "files": [
+        "lib/features/edit_meal/presentation/edit_meal_screen.dart"
+      ],
+      "implementation": "shortened",
+      "applied_text": "包装与单份可留空；营养值按此基准填写，改基准后请核对。"
+    },
+    {
+      "key": "customMealCopyHint",
+      "current": "修改后保存为我的食品，已有记录保留原来的营养数据。",
+      "decision": "缩短",
+      "reason": "另存食品与已有记录不联动是操作后果，保留简短说明。",
+      "proposal": "另存为我的食品，不改变已有记录。",
+      "files": [
+        "lib/features/edit_meal/presentation/edit_meal_screen.dart"
+      ],
+      "implementation": "shortened",
+      "applied_text": "另存为我的食品，不改变已有记录。"
+    },
+    {
+      "key": "customMealFormAdvancedHelp",
+      "current": "补充糖、纤维、矿物质和维生素，营养数值仍对应同一基准。",
+      "decision": "删除",
+      "reason": "模式名称、字段分组和营养基准已说明内容，常驻介绍重复。",
+      "proposal": "",
+      "files": [
+        "lib/features/edit_meal/presentation/edit_meal_screen.dart"
+      ],
+      "implementation": "removed_from_visible_surface_key_retained"
+    },
+    {
+      "key": "customMealFormSimpleHelp",
+      "current": "填写规格和基础营养值；包装大小、单份分量与营养基准分别设置。",
+      "decision": "删除",
+      "reason": "模式名称、字段分组和营养基准已说明内容，常驻介绍重复。",
+      "proposal": "",
+      "files": [
+        "lib/features/edit_meal/presentation/edit_meal_screen.dart"
+      ],
+      "implementation": "removed_from_visible_surface_key_retained"
+    },
+    {
+      "key": "customMealNutrientDifferenceHint",
+      "current": "标签热量与三大营养素估算有差异，请核对。膳食纤维、计量口径和舍入都可能导致差异；仍按你填写的热量保存。",
+      "decision": "缩短",
+      "reason": "只在数值差异触发时显示，需保留核对及实际保存口径。",
+      "proposal": "热量与营养素估算有差异，请核对标签；仍按所填热量保存。",
+      "files": [
+        "lib/features/edit_meal/presentation/edit_meal_screen.dart"
+      ],
+      "implementation": "shortened",
+      "applied_text": "热量与营养素估算有差异，请核对标签；仍按所填热量保存。"
+    },
+    {
+      "key": "customMealUnknownNutrientsHint",
+      "current": "不详请留空；已确认没有的营养素请填0。",
+      "decision": "保留",
+      "reason": "空白与0会导致不同统计结果，不能为了简洁删掉。",
+      "proposal": "",
+      "files": [
+        "lib/features/edit_meal/presentation/edit_meal_screen.dart"
+      ],
+      "implementation": "retained_as_reviewed"
+    },
+    {
+      "key": "customMealsMergeConfirmContent",
+      "current": "这会把所有用 {loser} 记录的条目改为显示 {winner},并把 {loser} 从你的自定义食物中移除。此操作无法撤销。",
+      "decision": "保留",
+      "reason": "合并会替换关联名称并移除一项食品，必须在确认时说明影响。",
+      "proposal": "",
+      "files": [
+        "lib/features/recipes/presentation/widgets/custom_meals_tab.dart"
+      ],
+      "implementation": "retained_as_reviewed"
+    },
+    {
+      "key": "energyInputHelp",
+      "current": "输入单位仅用于填写，不影响查看单位。",
+      "decision": "缩短",
+      "reason": "录入和显示单位独立是已确认功能，不能完全删。",
+      "proposal": "录入单位不改变显示单位。",
+      "files": [
+        "lib/features/edit_meal/presentation/edit_meal_screen.dart"
+      ],
+      "implementation": "shortened",
+      "applied_text": "录入单位不改变显示单位。"
+    },
+    {
+      "key": "exportImportCsvRecipesNote",
+      "current": "CSV 会保存活动、饮食日志和已记录的日期。食谱和添加的照片仅保存在 JSON 中——如果想纳入备份，请切换到 JSON。",
+      "decision": "旧上游/非当前入口",
+      "reason": "身体目标、健康同步、旧导入导出或旧外观设置中的文字；不把未展示文字当作当前备注，不借本次审查改动旧功能。",
+      "proposal": "",
+      "files": [
+        "lib/features/settings/presentation/widgets/export_import_dialog.dart"
+      ],
+      "implementation": "retained_as_reviewed"
+    },
+    {
+      "key": "exportImportDescription",
+      "current": "您可以将应用数据导出到zip文件并稍后导入。这在您想要备份数据或传输到另一台设备时很有用。\n\n应用不会使用任何云服务存储您的数据。",
+      "decision": "旧上游/非当前入口",
+      "reason": "身体目标、健康同步、旧导入导出或旧外观设置中的文字；不把未展示文字当作当前备注，不借本次审查改动旧功能。",
+      "proposal": "",
+      "files": [
+        "lib/features/settings/presentation/widgets/export_import_dialog.dart"
+      ],
+      "implementation": "retained_as_reviewed"
+    },
+    {
+      "key": "foodCompositionReviewHint",
+      "current": "请核对营养基准、糖与碳水、饱和脂肪与总脂肪的关系。此提示不会更改填写值。",
+      "decision": "缩短",
+      "reason": "仅有异常时出现，保留核对对象，去掉解释实现的尾句。",
+      "proposal": "请核对营养基准、糖与碳水、饱和脂肪与总脂肪。",
+      "files": [
+        "lib/features/edit_meal/presentation/edit_meal_screen.dart"
+      ],
+      "implementation": "shortened",
+      "applied_text": "请核对营养基准、糖与碳水、饱和脂肪与总脂肪。"
+    },
+    {
+      "key": "foodNutritionScopeHint",
+      "current": "摄入按标示热量计算。4/4/9仅作估算；纤维、糖醇、酒精和取整会造成差异，不自动替换数值。",
+      "decision": "移到说明",
+      "reason": "4/4/9属于计算口径，正常食品详情不必常驻一大段；异常时已有核对提示。",
+      "proposal": "页面撤掉常驻段落，完整口径保留在食品信息/来源说明中。",
+      "files": [
+        "lib/features/meal_detail/meal_detail_screen.dart"
+      ],
+      "implementation": "moved_to_scrollable_nutrition_source_dialog"
+    },
+    {
+      "key": "foodReviewExplanation",
+      "current": "个人核对记录，不代表机构认证。请对照依据检查名称、品牌、规格和已填营养；未知值仍为未知。",
+      "decision": "缩短",
+      "reason": "个人核对不能被误认为认证，依据与未知值含义仍需保留。",
+      "proposal": "这是个人核对记录，并非机构认证；请注明依据，未知值仍保留为空。",
+      "files": [
+        "lib/features/meal_detail/presentation/widgets/personal_food_actions.dart"
+      ],
+      "implementation": "shortened",
+      "applied_text": "这是个人核对记录，并非机构认证；请注明依据，未知值仍保留为空。"
+    },
+    {
+      "key": "foodReviewNote",
+      "current": "依据及核对说明",
+      "decision": "字段/标题/校验",
+      "reason": "这是控件名称、格式或必要校验，不作为可删备注；用户自己填写的描述不改。",
+      "proposal": "",
+      "files": [
+        "lib/features/meal_detail/presentation/widgets/personal_food_actions.dart"
+      ],
+      "implementation": "retained_as_reviewed"
+    },
+    {
+      "key": "foodReviewNoteHint",
+      "current": "例如：包装品牌、日期，以及对照了哪些营养项",
+      "decision": "保留",
+      "reason": "用于说明输入格式或导入格式，不是无关备注。",
+      "proposal": "",
+      "files": [
+        "lib/features/meal_detail/presentation/widgets/personal_food_actions.dart"
+      ],
+      "implementation": "retained_as_reviewed"
+    },
+    {
+      "key": "foodReviewNoteRequired",
+      "current": "请填写依据和核对说明",
+      "decision": "字段/标题/校验",
+      "reason": "这是控件名称、格式或必要校验，不作为可删备注；用户自己填写的描述不改。",
+      "proposal": "",
+      "files": [
+        "lib/features/meal_detail/presentation/widgets/personal_food_actions.dart"
+      ],
+      "implementation": "retained_as_reviewed"
+    },
+    {
+      "key": "foodSourcesHelpText",
+      "current": "搜索结果来自这些食品数据库。Open Food Facts 提供产品和条形码搜索，始终处于启用状态。",
+      "decision": "缩短",
+      "reason": "不重复下方来源开关和“始终启用”的行说明。",
+      "proposal": "选择食品搜索来源；Open Food Facts 提供产品和条码查询。",
+      "files": [
+        "lib/features/settings/presentation/widgets/food_sources_screen.dart"
+      ],
+      "implementation": "shortened",
+      "applied_text": "选择食品搜索来源；Open Food Facts 提供产品和条码查询。"
+    },
+    {
+      "key": "healthSyncDisclosureBody",
+      "current": "OpenNutriTracker 将从 {platform} 读取你已完成的运动记录——类型、发生时间、持续时长以及记录的能量消耗。\n\n运动记录会作为活动写入你的日记，你可以编辑或删除；记录的能量会按你设定的比例提高当天的卡路里目标。",
+      "decision": "旧上游/非当前入口",
+      "reason": "身体目标、健康同步、旧导入导出或旧外观设置中的文字；不把未展示文字当作当前备注，不借本次审查改动旧功能。",
+      "proposal": "",
+      "files": [
+        "lib/features/settings/presentation/widgets/health_disclosure_dialog.dart"
+      ],
+      "implementation": "retained_as_reviewed"
+    },
+    {
+      "key": "healthSyncDisclosureBodyFatAddendum",
+      "current": "OpenNutriTracker 还会读取 {platform} 中最新的体脂率。体脂率用于为你建议这个比例。",
+      "decision": "旧上游/非当前入口",
+      "reason": "身体目标、健康同步、旧导入导出或旧外观设置中的文字；不把未展示文字当作当前备注，不借本次审查改动旧功能。",
+      "proposal": "",
+      "files": [
+        "lib/features/settings/presentation/widgets/health_disclosure_dialog.dart"
+      ],
+      "implementation": "retained_as_reviewed"
+    },
+    {
+      "key": "healthSyncDisclosureFooter",
+      "current": "不会向 {platform} 写回任何内容，也不会把这些数据发送到任何地方——它们都留在本机。\n\n你可以随时关闭；关闭后就不会再读取任何数据。",
+      "decision": "旧上游/非当前入口",
+      "reason": "身体目标、健康同步、旧导入导出或旧外观设置中的文字；不把未展示文字当作当前备注，不借本次审查改动旧功能。",
+      "proposal": "",
+      "files": [
+        "lib/features/settings/presentation/widgets/health_disclosure_dialog.dart"
+      ],
+      "implementation": "retained_as_reviewed"
+    },
+    {
+      "key": "importCustomFoodDataDescription",
+      "current": "从 CSV 文件或粘贴 JSON 导入自己的餐食。下载示例以查看预期格式和必填字段。",
+      "decision": "保留",
+      "reason": "用于说明输入格式或导入格式，不是无关备注。",
+      "proposal": "",
+      "files": [
+        "lib/features/settings/presentation/widgets/import_custom_food_data_dialog.dart"
+      ],
+      "implementation": "retained_as_reviewed"
+    },
+    {
+      "key": "kcalGoalInfoActivityExplanation",
+      "current": "记录的活动所消耗的热量会加到您的目标上，这样在训练日您计划的热量缺口或盈余保持不变。",
+      "decision": "旧上游/非当前入口",
+      "reason": "身体目标、健康同步、旧导入导出或旧外观设置中的文字；不把未展示文字当作当前备注，不借本次审查改动旧功能。",
+      "proposal": "",
+      "files": [
+        "lib/features/settings/presentation/widgets/kcal_goal_info_screen.dart"
+      ],
+      "implementation": "retained_as_reviewed"
+    },
+    {
+      "key": "kcalGoalInfoAdjustmentExplanationFlat",
+      "current": "您的体重目标应用固定的每日调整：减重 −500 千卡，增重 +500 千卡，保持体重为 0。",
+      "decision": "旧上游/非当前入口",
+      "reason": "身体目标、健康同步、旧导入导出或旧外观设置中的文字；不把未展示文字当作当前备注，不借本次审查改动旧功能。",
+      "proposal": "",
+      "files": [
+        "lib/features/settings/presentation/widgets/kcal_goal_info_screen.dart"
+      ],
+      "implementation": "retained_as_reviewed"
+    },
+    {
+      "key": "kcalGoalInfoAdjustmentExplanationWeekly",
+      "current": "每日调整由您设定的每周速度决定。1 千克体脂约储存 7700 千卡，因此每周每千克会使目标每天变动约 1100 千卡。",
+      "decision": "旧上游/非当前入口",
+      "reason": "身体目标、健康同步、旧导入导出或旧外观设置中的文字；不把未展示文字当作当前备注，不借本次审查改动旧功能。",
+      "proposal": "",
+      "files": [
+        "lib/features/settings/presentation/widgets/kcal_goal_info_screen.dart"
+      ],
+      "implementation": "retained_as_reviewed"
+    },
+    {
+      "key": "kcalGoalInfoAveragedNote",
+      "current": "使用平均参考时，您的 TDEE 是男性与女性参考结果的中间值。",
+      "decision": "旧上游/非当前入口",
+      "reason": "身体目标、健康同步、旧导入导出或旧外观设置中的文字；不把未展示文字当作当前备注，不借本次审查改动旧功能。",
+      "proposal": "",
+      "files": [
+        "lib/features/settings/presentation/widgets/kcal_goal_info_screen.dart"
+      ],
+      "implementation": "retained_as_reviewed"
+    },
+    {
+      "key": "kcalGoalInfoEstimateNote",
+      "current": "所有公式都是基于人群的估算——个体需求各不相同。目标只是起点，并非医疗建议。",
+      "decision": "旧上游/非当前入口",
+      "reason": "身体目标、健康同步、旧导入导出或旧外观设置中的文字；不把未展示文字当作当前备注，不借本次审查改动旧功能。",
+      "proposal": "",
+      "files": [
+        "lib/features/settings/presentation/widgets/kcal_goal_info_screen.dart"
+      ],
+      "implementation": "retained_as_reviewed"
+    },
+    {
+      "key": "kcalGoalInfoMacroExplanation",
+      "current": "您的热量目标会按照您的宏量营养素比例分配到碳水化合物、脂肪和蛋白质（默认：碳水 60%、脂肪 25%、蛋白质 15%——可在设置中调整）。克数目标由能量密度得出：碳水化合物和蛋白质每克提供 4 千卡，脂肪每克提供 9 千卡。",
+      "decision": "旧上游/非当前入口",
+      "reason": "身体目标、健康同步、旧导入导出或旧外观设置中的文字；不把未展示文字当作当前备注，不借本次审查改动旧功能。",
+      "proposal": "",
+      "files": [
+        "lib/features/settings/presentation/widgets/kcal_goal_info_screen.dart"
+      ],
+      "implementation": "retained_as_reviewed"
+    },
+    {
+      "key": "kcalGoalInfoManualExplanation",
+      "current": "您在设置中自行设定的固定偏移——当您知道自己的需求与估算不同时使用。",
+      "decision": "旧上游/非当前入口",
+      "reason": "身体目标、健康同步、旧导入导出或旧外观设置中的文字；不把未展示文字当作当前备注，不借本次审查改动旧功能。",
+      "proposal": "",
+      "files": [
+        "lib/features/settings/presentation/widgets/kcal_goal_info_screen.dart"
+      ],
+      "implementation": "retained_as_reviewed"
+    },
+    {
+      "key": "kcalGoalInfoTaperNote",
+      "current": "由于已开启目标体重渐减，调整量会随着接近目标体重而减小（距离超过 5 千克时全额生效，1 千克以内转为维持）。",
+      "decision": "旧上游/非当前入口",
+      "reason": "身体目标、健康同步、旧导入导出或旧外观设置中的文字；不把未展示文字当作当前备注，不借本次审查改动旧功能。",
+      "proposal": "",
+      "files": [
+        "lib/features/settings/presentation/widgets/kcal_goal_info_screen.dart"
+      ],
+      "implementation": "retained_as_reviewed"
+    },
+    {
+      "key": "kcalGoalInfoTdeeExplanation",
+      "current": "您的每日总能量消耗（TDEE）——即您在平常一天中消耗的能量——根据年龄、体重、身高和活动水平，用 IOM 2005 公式估算。",
+      "decision": "旧上游/非当前入口",
+      "reason": "身体目标、健康同步、旧导入导出或旧外观设置中的文字；不把未展示文字当作当前备注，不借本次审查改动旧功能。",
+      "proposal": "",
+      "files": [
+        "lib/features/settings/presentation/widgets/kcal_goal_info_screen.dart"
+      ],
+      "implementation": "retained_as_reviewed"
+    },
+    {
+      "key": "libraryFavoritesHint",
+      "current": "浏览与管理收藏；记录饮食请从日记选择餐次。",
+      "decision": "只在空页提示",
+      "reason": "常驻“从日记选择餐次”重复既定入口；空收藏时更需要知道怎样收藏。",
+      "proposal": "在食品详情中收藏后，会显示在这里。",
+      "files": [
+        "lib/features/add_meal/presentation/widgets/personal_food_list.dart"
+      ],
+      "implementation": "empty_unfiltered_favorites_only",
+      "applied_text": "在食品详情中收藏后，会显示在这里。"
+    },
+    {
+      "key": "m4BackupDescription",
+      "current": "完整 ZIP 包含全部本地资料、日记、食品库、设置和本地照片，并保全既有历史身体与运动数据；不含可重建的公共缓存、密钥和系统权限。",
+      "decision": "缩短",
+      "reason": "完整备份范围和不含权限/密钥是必要信息，去掉旧身体功能的展开介绍。",
+      "proposal": "完整备份包含资料、日记、食品库、设置和照片，不含服务密钥与系统权限。",
+      "files": [
+        "lib/features/settings/presentation/widgets/full_backup_screen.dart"
+      ],
+      "implementation": "shortened",
+      "applied_text": "完整备份包含资料、日记、食品库、设置和照片，不含服务密钥与系统权限。"
+    },
+    {
+      "key": "m4ChartNote",
+      "current": "横条按本期最大的已知每日数值等比例显示。",
+      "decision": "保留并折叠",
+      "reason": "已在“统计说明”内默认折叠；未知、未记录、比例基准都影响理解统计。",
+      "proposal": "",
+      "files": [
+        "lib/features/recording/presentation/recording_trends_page.dart"
+      ],
+      "implementation": "retained_as_reviewed"
+    },
+    {
+      "key": "m4CsvDescription",
+      "current": "CSV 用于数据交换和分析，缺少设置、资料、独立模板、配方和照片，不能作为完整备份。旧版 JSON / CSV ZIP 可在上方选择并预览。",
+      "decision": "缩短",
+      "reason": "最重要的是CSV不能完整恢复，旧格式介绍可在选择后提示。",
+      "proposal": "CSV用于分析，不能完整恢复；完整备份请使用上方ZIP。",
+      "files": [
+        "lib/features/settings/presentation/widgets/full_backup_screen.dart"
+      ],
+      "implementation": "shortened",
+      "applied_text": "CSV用于分析，不能完整恢复；完整备份请使用上方ZIP。"
+    },
+    {
+      "key": "m4LegacyWarning",
+      "current": "这是旧版部分备份，仅将下列数据合入当前本地资料和共享食品库；缺失的设置、其他资料、模板或照片无法补回。",
+      "decision": "缩短",
+      "reason": "旧备份不完整会影响恢复决定，应在预览时明确提醒。",
+      "proposal": "这是旧版部分备份，仅合入下方预览中的数据。",
+      "files": [
+        "lib/features/settings/presentation/widgets/full_backup_screen.dart"
+      ],
+      "implementation": "shortened",
+      "applied_text": "这是旧版部分备份，仅合入下方预览中的数据。"
+    },
+    {
+      "key": "m4PreviewChanged",
+      "current": "预览后本机数据发生变化，请重新选择备份并核对冲突。",
+      "decision": "保留",
+      "reason": "恢复预览后数据已变动，必须阻止按旧预览继续恢复；这是必要校验。",
+      "proposal": "",
+      "files": [
+        "lib/features/settings/presentation/widgets/full_backup_screen.dart"
+      ],
+      "implementation": "retained_as_reviewed"
+    },
+    {
+      "key": "m4PrivacyDescription",
+      "current": "日记、本地资料和个人食品记录保存在本机。食品搜索会访问已启用的数据源。备份文件保存到你选择的位置，不包含服务凭据；恢复备份不会替本机授予隐私同意。",
+      "decision": "保留",
+      "reason": "只在隐私弹窗出现，说明本地存储与食品搜索联网范围，不能用“全离线”替代。",
+      "proposal": "",
+      "files": [
+        "lib/features/recording/presentation/recording_settings.dart"
+      ],
+      "implementation": "retained_as_reviewed"
+    },
+    {
+      "key": "m4ProfileHint",
+      "current": "保存在本机，无需填写身体信息。",
+      "decision": "删除",
+      "reason": "“本地资料”标题和隐私入口已交代本地存储，无需常驻提及身体信息。",
+      "proposal": "",
+      "files": [
+        "lib/features/recording/presentation/recording_settings.dart"
+      ],
+      "implementation": "removed_from_visible_surface_key_retained"
+    },
+    {
+      "key": "m4RestorePreview",
+      "current": "恢复预览",
+      "decision": "字段/标题/校验",
+      "reason": "这是控件名称、格式或必要校验，不作为可删备注；用户自己填写的描述不改。",
+      "proposal": "",
+      "files": [
+        "lib/features/settings/presentation/widgets/full_backup_screen.dart"
+      ],
+      "implementation": "retained_as_reviewed"
+    },
+    {
+      "key": "m4RestoreRules",
+      "current": "按稳定身份合并记录；修改过的同一记录、同名照片按下方策略处理。保留备份未含的本机记录，并按合并后的日记重算每日汇总。本机现存资料的存储位置和当前选择保持，可在“我的”切换资料。隐私同意仍以本机为准。",
+      "decision": "缩短",
+      "reason": "恢复前要说明合并与冲突；稳定身份、汇总重算等实现细节不必常驻。",
+      "proposal": "恢复会合并数据，不清空本机记录；冲突按所选策略处理。",
+      "files": [
+        "lib/features/settings/presentation/widgets/full_backup_screen.dart"
+      ],
+      "implementation": "shortened",
+      "applied_text": "恢复会合并数据，不清空本机记录；冲突按所选策略处理。"
+    },
+    {
+      "key": "m4TrendsNote",
+      "current": "仅统计实际摄入。未记录不代表零摄入；未知营养显示“—”，部分已知的合计标有说明。",
+      "decision": "保留并折叠",
+      "reason": "已在“统计说明”内默认折叠；未知、未记录、比例基准都影响理解统计。",
+      "proposal": "",
+      "files": [
+        "lib/features/recording/presentation/recording_trends_page.dart"
+      ],
+      "implementation": "retained_as_reviewed"
+    },
+    {
+      "key": "machineTranslatedNameHint",
+      "current": "名称为自动翻译",
+      "decision": "条件保留",
+      "reason": "只有自动翻译名称才显示，解释名称可靠性，有实际意义。",
+      "proposal": "",
+      "files": [
+        "lib/features/meal_detail/presentation/widgets/meal_title_expanded.dart"
+      ],
+      "implementation": "retained_as_reviewed"
+    },
+    {
+      "key": "noResultsSubtitle",
+      "current": "没有找到与该搜索匹配的食物。请尝试其他名称、扫描条形码或创建自定义食物。",
+      "decision": "删除",
+      "reason": "仅在扫码/创建按钮已展示时出现，重复空结果标题和下方操作。",
+      "proposal": "",
+      "files": [
+        "lib/features/add_meal/presentation/widgets/no_results_widget.dart"
+      ],
+      "implementation": "removed_from_visible_surface_key_retained"
+    },
+    {
+      "key": "offDisclaimer",
+      "current": "本应用提供的数据来自Open Food Facts数据库。无法保证所提供信息的准确性、完整性或可靠性。数据按\"原样\"提供，数据的原始来源（Open Food Facts）不对因使用数据而产生的任何损害承担责任。",
+      "decision": "移到说明",
+      "reason": "来源和可靠性信息应保留，长段放到来源详情更合适；不删除原信息。",
+      "proposal": "页面短句提示来源，完整说明放入来源详情。",
+      "files": [
+        "lib/features/meal_detail/presentation/widgets/off_disclaimer.dart"
+      ],
+      "implementation": "moved_to_scrollable_nutrition_source_dialog"
+    },
+    {
+      "key": "pasteCodeHint",
+      "current": "在此粘贴分享的餐食代码",
+      "decision": "保留",
+      "reason": "用于说明输入格式或导入格式，不是无关备注。",
+      "proposal": "",
+      "files": [
+        "lib/features/recipes/presentation/screens/import_recipe_scanner_screen.dart"
+      ],
+      "implementation": "retained_as_reviewed"
+    },
+    {
+      "key": "quickAddCarbsHint",
+      "current": "碳水化合物（克，可选）",
+      "decision": "字段/标题/校验",
+      "reason": "这是控件名称、格式或必要校验，不作为可删备注；用户自己填写的描述不改。",
+      "proposal": "",
+      "files": [
+        "lib/features/add_meal/presentation/widgets/quick_add_bottom_sheet.dart"
+      ],
+      "implementation": "retained_as_reviewed"
+    },
+    {
+      "key": "quickAddFatHint",
+      "current": "脂肪（克，可选）",
+      "decision": "字段/标题/校验",
+      "reason": "这是控件名称、格式或必要校验，不作为可删备注；用户自己填写的描述不改。",
+      "proposal": "",
+      "files": [
+        "lib/features/add_meal/presentation/widgets/quick_add_bottom_sheet.dart"
+      ],
+      "implementation": "retained_as_reviewed"
+    },
+    {
+      "key": "quickAddProteinHint",
+      "current": "蛋白质（克，可选）",
+      "decision": "字段/标题/校验",
+      "reason": "这是控件名称、格式或必要校验，不作为可删备注；用户自己填写的描述不改。",
+      "proposal": "",
+      "files": [
+        "lib/features/add_meal/presentation/widgets/quick_add_bottom_sheet.dart"
+      ],
+      "implementation": "retained_as_reviewed"
+    },
+    {
+      "key": "quickAddTitleHint",
+      "current": "标题",
+      "decision": "字段/标题/校验",
+      "reason": "这是控件名称、格式或必要校验，不作为可删备注；用户自己填写的描述不改。",
+      "proposal": "",
+      "files": [
+        "lib/features/add_meal/presentation/widgets/quick_add_bottom_sheet.dart"
+      ],
+      "implementation": "retained_as_reviewed"
+    },
+    {
+      "key": "recipeDescriptionLabel",
+      "current": "描述（可选）",
+      "decision": "字段/标题/校验",
+      "reason": "这是控件名称、格式或必要校验，不作为可删备注；用户自己填写的描述不改。",
+      "proposal": "",
+      "files": [
+        "lib/features/recipes/presentation/screens/recipe_builder_screen.dart"
+      ],
+      "implementation": "retained_as_reviewed"
+    },
+    {
+      "key": "recipeNutritionPreviewLabel",
+      "current": "营养（总计）",
+      "decision": "字段/标题/校验",
+      "reason": "这是控件名称、格式或必要校验，不作为可删备注；用户自己填写的描述不改。",
+      "proposal": "",
+      "files": [
+        "lib/features/recipes/presentation/widgets/recipe_nutrition_summary.dart"
+      ],
+      "implementation": "retained_as_reviewed"
+    },
+    {
+      "key": "recipeSaveForLaterDescription",
+      "current": "开启以将此餐食保留在已保存的列表中，以备下次使用。如果是不会再吃的一次性餐食，请保持关闭。",
+      "decision": "缩短",
+      "reason": "说明勾选影响，去掉重复的使用场景举例。",
+      "proposal": "同时保存到食品库，方便下次使用。",
+      "files": [
+        "lib/features/edit_meal/presentation/edit_meal_screen.dart"
+      ],
+      "implementation": "shortened",
+      "applied_text": "同时保存到食品库，方便下次使用。"
+    },
+    {
+      "key": "recipeServingsCountHelper",
+      "current": "允许按份记录此食谱，而非按克。",
+      "decision": "缩短",
+      "reason": "解释可选份数的作用，避免以为必须填写。",
+      "proposal": "填写后可按份记录。",
+      "files": [
+        "lib/features/recipes/presentation/screens/recipe_builder_screen.dart"
+      ],
+      "implementation": "shortened",
+      "applied_text": "填写后可按份记录。"
+    },
+    {
+      "key": "recipeTagsHelper",
+      "current": "用逗号分隔，例如\"早餐，素食\"",
+      "decision": "保留",
+      "reason": "逗号格式是输入约束，简短示例可避免输错。",
+      "proposal": "",
+      "files": [
+        "lib/features/recipes/presentation/screens/recipe_builder_screen.dart"
+      ],
+      "implementation": "retained_as_reviewed"
+    },
+    {
+      "key": "recipeTotalWeightHelper",
+      "current": "默认值为食材之和。液体按 1 毫升 ≈ 1 克近似计算。",
+      "decision": "保留",
+      "reason": "默认总重量及液体1ml约1g的假设影响营养估算，不能隐去。",
+      "proposal": "",
+      "files": [
+        "lib/features/recipes/presentation/screens/recipe_builder_screen.dart"
+      ],
+      "implementation": "retained_as_reviewed"
+    },
+    {
+      "key": "recipesEmptyHint",
+      "current": "用多种食材组合一道餐品，像普通食物一样重复使用。",
+      "decision": "仅空页保留",
+      "reason": "首次没有配方时解释用途，已有列表不再重复。",
+      "proposal": "",
+      "files": [
+        "lib/features/recipes/presentation/screens/recipes_page.dart"
+      ],
+      "implementation": "retained_as_reviewed"
+    },
+    {
+      "key": "recordingSnapshotHint",
+      "current": "仅修改这条记录，不更改食品资料。",
+      "decision": "缩短",
+      "reason": "区分改记录与改食品资料，保留一句即可。",
+      "proposal": "只改这条记录，食品资料不变。",
+      "files": [
+        "lib/features/recording/presentation/widgets/record_intake_sheet.dart"
+      ],
+      "implementation": "shortened",
+      "applied_text": "只改这条记录，食品资料不变。"
+    },
+    {
+      "key": "scannerManualEntryFieldHint",
+      "current": "8 到 14 位数字",
+      "decision": "保留",
+      "reason": "用于说明输入格式或导入格式，不是无关备注。",
+      "proposal": "",
+      "files": [
+        "lib/features/scanner/scanner_screen.dart"
+      ],
+      "implementation": "retained_as_reviewed"
+    },
+    {
+      "key": "scannerPermissionHelp",
+      "current": "未获得相机权限。点重试可再次请求授权；若系统不再提示，请在系统设置中允许相机。也可返回手动输入条码。",
+      "decision": "条件保留",
+      "reason": "相机不可用时解释恢复操作与手工条码替代入口，非正常态备注。",
+      "proposal": "",
+      "files": [
+        "lib/features/scanner/presentation/widgets/scanner_camera_error.dart"
+      ],
+      "implementation": "retained_as_reviewed"
+    },
+    {
+      "key": "searchSourceDisabled",
+      "current": "{source}：已在设置中关闭，本地食品仍可使用",
+      "decision": "缩短",
+      "reason": "状态需要保留；各来源行不再重复“本地食品仍可用”，摘要保留一次。",
+      "proposal": "按状态显示“搜索中/暂时无法连接/暂无结果/暂不可用/已关闭”；失败行保留重试。",
+      "files": [
+        "lib/features/add_meal/presentation/widgets/search_source_notice.dart"
+      ],
+      "implementation": "shortened",
+      "applied_text": "{source}：已关闭"
+    },
+    {
+      "key": "searchSourceEmpty",
+      "current": "{source}：没有更多在线结果",
+      "decision": "缩短",
+      "reason": "状态需要保留；各来源行不再重复“本地食品仍可用”，摘要保留一次。",
+      "proposal": "按状态显示“搜索中/暂时无法连接/暂无结果/暂不可用/已关闭”；失败行保留重试。",
+      "files": [
+        "lib/features/add_meal/presentation/widgets/search_source_notice.dart"
+      ],
+      "implementation": "shortened",
+      "applied_text": "{source}：暂无结果"
+    },
+    {
+      "key": "searchSourceFailed",
+      "current": "{source}：暂时无法连接，本地结果仍可使用",
+      "decision": "缩短",
+      "reason": "状态需要保留；各来源行不再重复“本地食品仍可用”，摘要保留一次。",
+      "proposal": "按状态显示“搜索中/暂时无法连接/暂无结果/暂不可用/已关闭”；失败行保留重试。",
+      "files": [
+        "lib/features/add_meal/presentation/widgets/search_source_notice.dart"
+      ],
+      "implementation": "shortened",
+      "applied_text": "{source}：暂时无法连接"
+    },
+    {
+      "key": "searchSourceLoading",
+      "current": "{source}：正在联网搜索…",
+      "decision": "缩短",
+      "reason": "状态需要保留；各来源行不再重复“本地食品仍可用”，摘要保留一次。",
+      "proposal": "按状态显示“搜索中/暂时无法连接/暂无结果/暂不可用/已关闭”；失败行保留重试。",
+      "files": [
+        "lib/features/add_meal/presentation/widgets/search_source_notice.dart"
+      ],
+      "implementation": "shortened",
+      "applied_text": "{source}：搜索中…"
+    },
+    {
+      "key": "searchSourceUnconfigured",
+      "current": "{source}：此版本未接入，本地食品仍可使用",
+      "decision": "缩短",
+      "reason": "状态需要保留；各来源行不再重复“本地食品仍可用”，摘要保留一次。",
+      "proposal": "按状态显示“搜索中/暂时无法连接/暂无结果/暂不可用/已关闭”；失败行保留重试。",
+      "files": [
+        "lib/features/add_meal/presentation/widgets/search_source_notice.dart",
+        "lib/features/settings/presentation/widgets/food_sources_screen.dart"
+      ],
+      "implementation": "shortened",
+      "applied_text": "{source}：暂不可用"
+    },
+    {
+      "key": "settingsAccentCustomSubtitle",
+      "current": "打开色相滑块进行精确选择",
+      "decision": "旧上游/非当前入口",
+      "reason": "身体目标、健康同步、旧导入导出或旧外观设置中的文字；不把未展示文字当作当前备注，不借本次审查改动旧功能。",
+      "proposal": "",
+      "files": [
+        "lib/features/settings/presentation/widgets/accent_colour_screen.dart"
+      ],
+      "implementation": "retained_as_reviewed"
+    },
+    {
+      "key": "settingsDayStartDescription",
+      "current": "选择一天开始的时刻。在这个时刻之前记录的餐食和活动将计入前一天 —— 适合上夜班或晚餐较晚的用户。",
+      "decision": "条件保留",
+      "reason": "非零换日时间会改变记录日期归属，配置时应说明。",
+      "proposal": "",
+      "files": [
+        "lib/features/settings/presentation/widgets/diary_day_boundary_dialog.dart"
+      ],
+      "implementation": "retained_as_reviewed"
+    },
+    {
+      "key": "settingsKjOffHint",
+      "current": "关闭时使用 kcal",
+      "decision": "保留",
+      "reason": "“以kJ显示”开关关闭后单位是什么，应直接说明。",
+      "proposal": "",
+      "files": [
+        "lib/features/recording/presentation/recording_settings.dart"
+      ],
+      "implementation": "retained_as_reviewed"
+    },
+    {
+      "key": "settingsMaterialYouSubtitle",
+      "current": "在 Android 12 及更高版本上,使用你壁纸的强调色。",
+      "decision": "旧上游/非当前入口",
+      "reason": "身体目标、健康同步、旧导入导出或旧外观设置中的文字；不把未展示文字当作当前备注，不借本次审查改动旧功能。",
+      "proposal": "",
+      "files": [
+        "lib/features/settings/presentation/widgets/accent_colour_screen.dart"
+      ],
+      "implementation": "retained_as_reviewed"
+    },
+    {
+      "key": "settingsNutrientsHelp",
+      "current": "选择每日面板中显示哪些营养素。隐藏的可以随时重新开启。",
+      "decision": "旧上游/非当前入口",
+      "reason": "身体目标、健康同步、旧导入导出或旧外观设置中的文字；不把未展示文字当作当前备注，不借本次审查改动旧功能。",
+      "proposal": "",
+      "files": [
+        "lib/features/settings/presentation/widgets/nutrient_visibility_screen.dart"
+      ],
+      "implementation": "retained_as_reviewed"
+    },
+    {
+      "key": "settingsWaterGoalDescription",
+      "current": "主屏幕上的饮水提示使用此目标。",
+      "decision": "旧上游/非当前入口",
+      "reason": "身体目标、健康同步、旧导入导出或旧外观设置中的文字；不把未展示文字当作当前备注，不借本次审查改动旧功能。",
+      "proposal": "",
+      "files": [
+        "lib/features/settings/presentation/widgets/water_goal_dialog.dart"
+      ],
+      "implementation": "retained_as_reviewed"
+    },
+    {
+      "key": "trendsExplanation",
+      "current": "统计说明",
+      "decision": "字段/标题/校验",
+      "reason": "这是控件名称、格式或必要校验，不作为可删备注；用户自己填写的描述不改。",
+      "proposal": "",
+      "files": [
+        "lib/features/recording/presentation/recording_trends_page.dart"
+      ],
+      "implementation": "retained_as_reviewed"
+    }
+  ],
+  "approved_date": "2026-10-29",
+  "validation_evidence": "docs/china-fork/evidence/ui-food-list-copy-20261029.json"
+}

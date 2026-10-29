@@ -75,11 +75,13 @@ class _MealSearchBarState extends State<MealSearchBar> {
                 hintStyle: Theme.of(
                   context,
                 ).textTheme.bodyLarge?.copyWith(color: palette.textMuted),
-                prefixIcon: Icon(
-                  Icons.search_rounded,
-                  size: 24,
-                  color: palette.textMuted,
-                ),
+                prefixIcon: widget.outlined
+                    ? null
+                    : Icon(
+                        Icons.search_rounded,
+                        size: 24,
+                        color: palette.textMuted,
+                      ),
                 suffixIcon: widget.onBarcodePressed != null
                     ? Semantics(
                         identifier: 'meal-search-barcode',

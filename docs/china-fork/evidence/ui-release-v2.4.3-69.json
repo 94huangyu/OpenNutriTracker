@@ -1,0 +1,61 @@
+{
+  "date": "2026-10-29",
+  "status": "device_checks_passed_publication_ready",
+  "artifact": {
+    "package": "com.huangyu.shiji",
+    "appName": "食迹",
+    "versionName": "2.4.3",
+    "versionCode": 69,
+    "abi": "arm64-v8a",
+    "minSdk": 26,
+    "targetSdk": 36,
+    "bytes": 48263241,
+    "sha256": "33d8970bd081ebb390c6cd7e0343068d5cba8a5ec4aec68d0096c7dd78522ad8",
+    "certificateSha256": "c578db2e9af3f2c4e0fa06edc05627a17b90dcd9a2db92ff6627934ae65f3f0f",
+    "debuggable": false,
+    "aot": true,
+    "providerAuthorities": [
+      "com.huangyu.shiji.flutter.image_provider",
+      "com.huangyu.shiji.flutter.share_provider",
+      "com.huangyu.shiji.mlkitinitprovider",
+      "com.huangyu.shiji.SentryPerformanceProvider",
+      "com.huangyu.shiji.androidx-startup",
+      "com.huangyu.shiji.SentryNdkPreloadProvider"
+    ],
+    "excludedHealthPermissions": true,
+    "broadPhotoPermissionAbsent": true
+  },
+  "artifact_path": "output/flutter/release-v2.4.3-69-r3/Shiji-v2.4.3-69-android-arm64.apk",
+  "checks": {
+    "full_tests": {
+      "passed": 2804,
+      "skipped": 1,
+      "failed": 0
+    },
+    "analysis_diagnostics": 0,
+    "relevant_unit_checks": 54,
+    "build_inputs": 955,
+    "build_inputs_unchanged": true,
+    "permissions_unchanged": true
+  },
+  "installed_final_r3": true,
+  "installed_r2_tested": true,
+  "r2_evidence": "docs/china-fork/UI_DEVICE_ACCEPTANCE_243.md",
+  "final_r3_device_acceptance": "specified paths passed",
+  "source_published": false,
+  "release_published": false,
+  "limits": [
+    "Specified phone checks and local regressions do not cover every device, language, source, or input method",
+    "gml conditional display branch was locally tested; no synthetic food persisted on the phone",
+    "Original occasional keyboard white block native cause remains uncaptured"
+  ],
+  "final_data_comparison": {
+    "allLogicalDataEqual": true,
+    "allAttachmentsEqual": true,
+    "basis": "fresh complete backup immediately before r3 installation versus final after-test backup",
+    "archiveManifestMetadataExcluded": true
+  },
+  "device_settings": "unchanged from resume initial values",
+  "device_service": "own service stopped",
+  "bounded_app_error_patterns": 0
+}

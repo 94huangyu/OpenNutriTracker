@@ -1,5 +1,7 @@
 # 食迹 Android 正式安装包
 
+2026-10-29更新：食迹2.4.3（69）最终候选已构建并在手机保留数据安装，发布验收见 [UI_DEVICE_ACCEPTANCE_243.md](UI_DEVICE_ACCEPTANCE_243.md)。本轮实际升级使用原包名/签名及递增的versionCode69；待发布标签为`shiji-v2.4.3-69`。以下2.4.1与2.4.0说明保留为历史，不把旧APK当作当前新源码产物。
+
 2026-10-27。食迹2.4.1（67）已发布为[GitHub Release shiji-v2.4.1-67](https://github.com/94huangyu/OpenNutriTracker/releases/tag/shiji-v2.4.1-67)，源码和三个附件核验完成。旧版[shiji-v2.4.0-66](https://github.com/94huangyu/OpenNutriTracker/releases/tag/shiji-v2.4.0-66)保留，不上传应用商店。
 
 - 显示名称：食迹；图标：用户选定的原版C杏白；启动：同款系统静态图标接Flutter金点单次脉冲。

@@ -1,0 +1,180 @@
+<style>
+#shiji-visual-finish{--sv-scale:1;--sv-phone-width:360px}
+#shiji-visual-finish [hidden]{display:none!important}
+#shiji-visual-finish .sv-columns{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px;max-width:760px;margin-inline:auto;padding:12px 0 28px;align-items:stretch}
+#shiji-visual-finish .sv-column{display:flex;flex-direction:column;align-items:center;min-width:0}
+#shiji-visual-finish .sv-caption{align-self:stretch;margin:0 0 12px}
+#shiji-visual-finish .sv-phone{--sv-bg:light-dark(#f5f7f6,#131c18);--sv-surface:light-dark(#ffffff,#1c2821);--sv-fill:light-dark(#edf2ef,#24352b);--sv-border:light-dark(#dfe7e2,#35473b);--sv-text:light-dark(#1e3029,#e9f0eb);--sv-muted:light-dark(#62716a,#b0bfb5);--sv-accent:light-dark(#1f7057,#91d7b0);--sv-on-accent:light-dark(#ffffff,#103424);--sv-shadow:light-dark(#403a2e14,#00000033);--sv-scrim:light-dark(#18251f66,#00000088);--sv-carbs:light-dark(#6b6daa,#b7b4ec);--sv-fat:light-dark(#ab752e,#dfb275);--sv-protein:light-dark(#2c7773,#89cec1);--sv-body-weight:500;--sv-title-weight:700;--sv-number-weight:800;--sv-button-weight:700;--sv-card-radius:26px;--sv-card-shadow:0 6px 18px var(--sv-shadow);--sv-field-radius:14px;--sv-button-radius:20px;--sv-sheet-radius:32px;--sv-dialog-radius:26px;--sv-page-size:23px;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;font-size:calc(14px * var(--sv-scale));line-height:1.5;font-weight:var(--sv-body-weight);color:var(--sv-text);background:var(--sv-bg);border:1px solid var(--sv-border);border-radius:24px;width:100%;max-width:var(--sv-phone-width);min-height:760px;flex:1;position:relative;display:flex;flex-direction:column;isolation:isolate}
+#shiji-visual-finish .sv-proposed{--sv-body-weight:400;--sv-title-weight:600;--sv-number-weight:700;--sv-button-weight:500;--sv-card-radius:16px;--sv-card-shadow:none;--sv-field-radius:12px;--sv-button-radius:12px;--sv-sheet-radius:24px;--sv-dialog-radius:24px;--sv-page-size:22px}
+#shiji-visual-finish .sv-phone *{box-sizing:border-box;min-width:0}
+#shiji-visual-finish .sv-phone button,#shiji-visual-finish .sv-phone input,#shiji-visual-finish .sv-phone select{font:inherit;color:inherit}
+#shiji-visual-finish .sv-phone button{border:0;background:transparent;margin:0}
+#shiji-visual-finish .sv-phone i[data-lucide]{font-style:normal;display:inline-flex;align-items:center;justify-content:center;font-size:19px;line-height:1;width:21px;height:21px;flex-shrink:0}
+#shiji-visual-finish .sv-phone svg{width:21px;height:21px;flex-shrink:0}
+#shiji-visual-finish .sv-status{font-size:.82em;display:flex;justify-content:space-between;gap:12px;padding:10px 18px;min-height:34px}
+#shiji-visual-finish .sv-header{padding:8px 16px 12px;display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:62px}
+#shiji-visual-finish .sv-header h2{font-size:calc(var(--sv-page-size) * var(--sv-scale));line-height:1.3;font-weight:var(--sv-title-weight);margin:0;overflow-wrap:anywhere;flex:1}
+#shiji-visual-finish .sv-header-actions{display:flex;flex-shrink:0;gap:0}
+#shiji-visual-finish .sv-icon-button{display:inline-flex;align-items:center;justify-content:center;min-height:44px;min-width:40px;padding:0 6px}
+#shiji-visual-finish .sv-date{display:flex;align-items:center;justify-content:space-between;gap:4px;padding:0 12px 8px}
+#shiji-visual-finish .sv-date-main{display:flex;gap:6px;justify-content:center;align-items:center;flex-wrap:wrap;text-align:center;font-weight:var(--sv-title-weight)}
+#shiji-visual-finish .sv-date .sv-today{font-size:.9em;color:var(--sv-accent);min-width:44px;min-height:44px;padding:5px}
+#shiji-visual-finish .sv-content{padding:8px 16px 24px;flex:1}
+#shiji-visual-finish .sv-summary{display:grid;grid-template-columns:1fr 1fr;gap:24px;padding:20px;background:var(--sv-surface);border:1px solid var(--sv-border);border-radius:18px;margin-bottom:20px}
+#shiji-visual-finish .sv-energy-wrap{container-type:inline-size}
+#shiji-visual-finish .sv-label{font-size:calc(12px * var(--sv-scale));line-height:1.6;color:var(--sv-muted)}
+#shiji-visual-finish .sv-energy{display:flex;align-items:baseline;gap:4px;white-space:nowrap;margin-top:8px}
+#shiji-visual-finish .sv-energy strong{font-size:min(calc(34px * var(--sv-scale)),30cqw);line-height:1.25;font-weight:700}
+#shiji-visual-finish .sv-energy small{font-size:min(calc(12px * var(--sv-scale)),12cqw);font-weight:var(--sv-body-weight)}
+#shiji-visual-finish .sv-macros{display:flex;flex-direction:column;gap:8px}
+#shiji-visual-finish .sv-macro{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
+#shiji-visual-finish .sv-macro b{font-size:1em;white-space:nowrap;font-weight:600}
+#shiji-visual-finish .sv-meals{background:var(--sv-surface);border:1px solid var(--sv-border);border-radius:18px;padding:0 16px}
+#shiji-visual-finish .sv-meal{display:flex;align-items:center;gap:8px;padding:14px 0;min-height:83px}
+#shiji-visual-finish .sv-meal+.sv-meal{border-top:1px solid var(--sv-border)}
+#shiji-visual-finish .sv-meal-main{flex:1;text-align:left;padding:0;display:block}
+#shiji-visual-finish .sv-meal-title{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:4px}
+#shiji-visual-finish .sv-meal-title b{font-size:calc(16px * var(--sv-scale));font-weight:var(--sv-title-weight)}
+#shiji-visual-finish .sv-meal-title em{font-style:normal;font-size:.9em;white-space:nowrap;font-weight:600}
+#shiji-visual-finish .sv-meal-foods{font-size:.9em;color:var(--sv-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block}
+#shiji-visual-finish .sv-meal .sv-plus{min-width:44px;min-height:44px;border-radius:12px;background:var(--sv-fill);color:var(--sv-accent);display:flex;align-items:center;justify-content:center}
+#shiji-visual-finish .sv-nav{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;padding:10px 6px 16px;background:var(--sv-surface);border-top:1px solid var(--sv-border);border-radius:0 0 24px 24px;margin-top:auto}
+#shiji-visual-finish .sv-nav span{display:flex;flex-direction:column;align-items:center;gap:4px;font-size:.9em;text-align:center;color:var(--sv-muted);overflow-wrap:anywhere}
+#shiji-visual-finish .sv-nav em{display:flex;align-items:center;justify-content:center;width:52px;height:30px;border-radius:10px;font-style:normal}
+#shiji-visual-finish .sv-nav .sv-current{color:var(--sv-text);font-weight:600}
+#shiji-visual-finish .sv-current em{color:var(--sv-accent);background:var(--sv-fill)}
+#shiji-visual-finish .sv-card{background:var(--sv-surface);border:1px solid var(--sv-border);border-radius:var(--sv-card-radius);box-shadow:var(--sv-card-shadow);padding:16px}
+#shiji-visual-finish .sv-section-title{font-size:calc(16px * var(--sv-scale));font-weight:var(--sv-title-weight);margin:0 0 16px;line-height:1.4}
+#shiji-visual-finish .sv-body{margin:0 0 16px;color:var(--sv-muted);overflow-wrap:anywhere}
+#shiji-visual-finish .sv-nutrients{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;text-align:center}
+#shiji-visual-finish .sv-nutrient{min-width:0}
+#shiji-visual-finish .sv-nutrient strong{font-size:calc(21px * var(--sv-scale));font-weight:var(--sv-number-weight);line-height:1.3;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#shiji-visual-finish .sv-nutrient span{font-size:calc(12.5px * var(--sv-scale));display:block;color:var(--sv-muted);overflow-wrap:anywhere}
+#shiji-visual-finish .sv-nutrient:nth-child(1) strong{color:var(--sv-accent)}
+#shiji-visual-finish .sv-nutrient:nth-child(2) strong{color:var(--sv-carbs)}
+#shiji-visual-finish .sv-nutrient:nth-child(3) strong{color:var(--sv-fat)}
+#shiji-visual-finish .sv-nutrient:nth-child(4) strong{color:var(--sv-protein)}
+#shiji-visual-finish .sv-basis{font-size:calc(12.5px * var(--sv-scale));color:var(--sv-muted);border-top:1px solid var(--sv-border);padding-top:16px;margin-top:16px;overflow-wrap:anywhere}
+#shiji-visual-finish .sv-ingredients-title{margin:24px 0 8px;font-size:calc(16px * var(--sv-scale));font-weight:var(--sv-title-weight)}
+#shiji-visual-finish .sv-ingredient{display:flex;align-items:center;gap:12px;padding:12px 8px}
+#shiji-visual-finish .sv-thumb{width:40px;height:40px;flex:0 0 40px;border-radius:14px;background:var(--sv-fill);color:var(--sv-accent);display:flex;align-items:center;justify-content:center}
+#shiji-visual-finish .sv-ingredient-copy{flex:1;min-width:0}
+#shiji-visual-finish .sv-ingredient-copy b{font-size:1em;font-weight:var(--sv-title-weight);display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#shiji-visual-finish .sv-ingredient-copy span{font-size:calc(12.5px * var(--sv-scale));color:var(--sv-muted);display:block;overflow-wrap:anywhere}
+#shiji-visual-finish .sv-primary{display:flex;align-items:center;justify-content:center;gap:8px;min-height:52px;padding:14px 16px!important;width:100%;background:var(--sv-accent)!important;color:var(--sv-on-accent)!important;border-radius:var(--sv-button-radius);font-weight:var(--sv-button-weight)!important;line-height:1.4}
+#shiji-visual-finish .sv-recipe .sv-primary{margin-top:24px}
+#shiji-visual-finish .sv-recipe .sv-header h2{max-height:2.6em;overflow:hidden}
+#shiji-visual-finish .sv-recipe .sv-header-actions .sv-icon-button{min-width:36px}
+#shiji-visual-finish .sv-notice{font-size:.9em;color:var(--sv-accent);min-height:22px;margin-top:12px;overflow-wrap:anywhere}
+#shiji-visual-finish .sv-sheet-phone{background:var(--sv-scrim);border-radius:24px;overflow:clip}
+#shiji-visual-finish .sv-sheet-phone .sv-status,#shiji-visual-finish .sv-sheet-phone .sv-header{background:var(--sv-bg)}
+#shiji-visual-finish .sv-sheet-space{flex:1;min-height:110px;background:var(--sv-scrim)}
+#shiji-visual-finish .sv-sheet{background:var(--sv-surface);border-radius:var(--sv-sheet-radius) var(--sv-sheet-radius) 0 0;padding:24px 24px 24px;position:relative}
+#shiji-visual-finish .sv-handle{width:40px;height:4px;background:var(--sv-border);border-radius:2px;margin:0 auto 20px}
+#shiji-visual-finish .sv-sheet h3{font-size:calc(21px * var(--sv-scale));line-height:1.4;font-weight:var(--sv-title-weight);margin:0 0 16px;overflow-wrap:anywhere}
+#shiji-visual-finish .sv-fields{display:grid;grid-template-columns:3fr 2fr;gap:12px}
+#shiji-visual-finish .sv-field{display:flex;flex-direction:column;gap:6px;color:var(--sv-muted);font-size:1em}
+#shiji-visual-finish .sv-field input,#shiji-visual-finish .sv-field select{border:1px solid var(--sv-border);border-radius:var(--sv-field-radius);min-height:56px;background:var(--sv-fill);color:var(--sv-text);padding:12px;font-size:max(16px,1em);width:100%}
+#shiji-visual-finish .sv-field input:focus-visible,#shiji-visual-finish .sv-field select:focus-visible{border-color:var(--sv-accent)}
+#shiji-visual-finish .sv-sheet .sv-primary{margin-top:24px}
+#shiji-visual-finish .sv-proposed .sv-sheet .sv-primary{margin-top:16px}
+#shiji-visual-finish .sv-proposed .sv-handle{margin-bottom:16px}
+#shiji-visual-finish .sv-ghost{padding:16px;color:var(--sv-muted);font-size:.9em;background:var(--sv-bg)}
+#shiji-visual-finish .sv-ghost b{display:block;font-size:1.1em;font-weight:var(--sv-title-weight);color:var(--sv-text);margin-bottom:8px}
+#shiji-visual-finish .sv-proposed .sv-thumb{border-radius:10px}
+#shiji-visual-finish[data-large=true] .sv-macro{flex-direction:column;gap:0}
+#shiji-visual-finish[data-large=true] .sv-macro b{align-self:flex-end}
+#shiji-visual-finish[data-large=true] .sv-meal-title{flex-wrap:wrap;gap:2px 8px}
+#shiji-visual-finish[data-large=true] .sv-proposed .sv-nutrients{grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+#shiji-visual-finish[data-large=true] .sv-proposed .sv-fields{grid-template-columns:minmax(0,1fr)}
+#shiji-visual-finish[data-narrow=true] .sv-columns{grid-template-columns:minmax(0,1fr);max-width:320px;gap:26px}
+@media(max-width:639px){#shiji-visual-finish .sv-columns{grid-template-columns:minmax(0,1fr);gap:26px}}
+</style>
+<div id="shiji-visual-finish" aria-label="食迹全局视觉规范对比">
+<div class="viz-carousel viz-dotted-background" aria-label="剩余视觉规范对比" data-previous-label="上一组" data-next-label="下一组">
+<section data-variant="首页字重" aria-label="已定稿首页的字重对比">
+<div class="sv-columns">
+<div class="sv-column"><p class="sv-caption text-small">当前 2.4.2 · 布局复刻</p>
+<div class="sv-phone sv-current-style" data-side="current" data-scene="home" aria-label="当前首页">
+<div class="sv-status"><span>9:41</span><span aria-hidden="true">▂ ⌁ ▰</span></div>
+<div class="sv-header"><h2>饮食记录</h2><div class="sv-header-actions"><button class="sv-icon-button cursor-interaction" type="button" data-entry="食品库" aria-label="食品库"><i data-lucide="refrigerator" aria-hidden="true">库</i></button><button class="sv-icon-button cursor-interaction" type="button" data-entry="记录设置" aria-label="记录设置"><i data-lucide="sliders-horizontal" aria-hidden="true">设</i></button></div></div>
+<div class="sv-date"><button class="sv-icon-button cursor-interaction" type="button" data-entry="前一天" aria-label="前一天">‹</button><span class="sv-date-main">2026/10/27</span><button class="sv-today cursor-interaction" type="button" data-entry="今天">今天</button><button class="sv-icon-button cursor-interaction" type="button" data-entry="后一天" aria-label="后一天">›</button></div>
+<div class="sv-content"><div class="sv-summary"><div class="sv-energy-wrap"><div class="sv-label">已摄入热量</div><div class="sv-energy"><strong>785</strong><small>kcal</small></div></div><div class="sv-macros"><div class="sv-macro"><span class="sv-label">碳水</span><b>96.5 g</b></div><div class="sv-macro"><span class="sv-label">蛋白质</span><b>39.2 g</b></div><div class="sv-macro"><span class="sv-label">脂肪</span><b>26.9 g</b></div></div></div>
+<div class="sv-meals"><div class="sv-meal"><button class="sv-meal-main cursor-interaction" type="button" data-entry="早餐详情"><span class="sv-meal-title"><b>早餐</b><em>265 kcal</em></span><span class="sv-meal-foods">原味酸奶、即食燕麦片、蓝莓</span></button><button type="button" class="sv-plus cursor-interaction" data-entry="添加早餐" aria-label="添加早餐">＋</button></div><div class="sv-meal"><button class="sv-meal-main cursor-interaction" type="button" data-entry="午餐详情"><span class="sv-meal-title"><b>午餐</b><em>520 kcal</em></span><span class="sv-meal-foods">米饭、香煎鸡胸肉、清炒西兰花</span></button><button type="button" class="sv-plus cursor-interaction" data-entry="添加午餐" aria-label="添加午餐">＋</button></div><div class="sv-meal"><button class="sv-meal-main cursor-interaction" type="button" data-entry="晚餐详情"><span class="sv-meal-title"><b>晚餐</b><em>0 kcal</em></span><span class="sv-meal-foods">尚未记录</span></button><button type="button" class="sv-plus cursor-interaction" data-entry="添加晚餐" aria-label="添加晚餐">＋</button></div><div class="sv-meal"><button class="sv-meal-main cursor-interaction" type="button" data-entry="零食详情"><span class="sv-meal-title"><b>零食</b><em>0 kcal</em></span><span class="sv-meal-foods">尚未记录</span></button><button type="button" class="sv-plus cursor-interaction" data-entry="添加零食" aria-label="添加零食">＋</button></div></div><div class="sv-notice" role="status" aria-live="polite"></div></div>
+<div class="sv-nav"><span class="sv-current"><em><i data-lucide="calendar-days" aria-hidden="true">日</i></em>日记</span><span><em><i data-lucide="refrigerator" aria-hidden="true">库</i></em>食品库</span><span><em><i data-lucide="chart-no-axes-combined" aria-hidden="true">势</i></em>趋势</span><span><em><i data-lucide="user-round" aria-hidden="true">我</i></em>我的</span></div></div></div>
+<div class="sv-column"><p class="sv-caption text-small">建议规范 · 保留定稿结构</p>
+<div class="sv-phone sv-proposed" data-side="proposed" data-scene="home" aria-label="优化首页">
+<div class="sv-status"><span>9:41</span><span aria-hidden="true">▂ ⌁ ▰</span></div>
+<div class="sv-header"><h2>饮食记录</h2><div class="sv-header-actions"><button class="sv-icon-button cursor-interaction" type="button" data-entry="食品库" aria-label="食品库"><i data-lucide="refrigerator" aria-hidden="true">库</i></button><button class="sv-icon-button cursor-interaction" type="button" data-entry="记录设置" aria-label="记录设置"><i data-lucide="sliders-horizontal" aria-hidden="true">设</i></button></div></div>
+<div class="sv-date"><button class="sv-icon-button cursor-interaction" type="button" data-entry="前一天" aria-label="前一天">‹</button><span class="sv-date-main">2026/10/27</span><button class="sv-today cursor-interaction" type="button" data-entry="今天">今天</button><button class="sv-icon-button cursor-interaction" type="button" data-entry="后一天" aria-label="后一天">›</button></div>
+<div class="sv-content"><div class="sv-summary"><div class="sv-energy-wrap"><div class="sv-label">已摄入热量</div><div class="sv-energy"><strong>785</strong><small>kcal</small></div></div><div class="sv-macros"><div class="sv-macro"><span class="sv-label">碳水</span><b>96.5 g</b></div><div class="sv-macro"><span class="sv-label">蛋白质</span><b>39.2 g</b></div><div class="sv-macro"><span class="sv-label">脂肪</span><b>26.9 g</b></div></div></div>
+<div class="sv-meals"><div class="sv-meal"><button class="sv-meal-main cursor-interaction" type="button" data-entry="早餐详情"><span class="sv-meal-title"><b>早餐</b><em>265 kcal</em></span><span class="sv-meal-foods">原味酸奶、即食燕麦片、蓝莓</span></button><button type="button" class="sv-plus cursor-interaction" data-entry="添加早餐" aria-label="添加早餐">＋</button></div><div class="sv-meal"><button class="sv-meal-main cursor-interaction" type="button" data-entry="午餐详情"><span class="sv-meal-title"><b>午餐</b><em>520 kcal</em></span><span class="sv-meal-foods">米饭、香煎鸡胸肉、清炒西兰花</span></button><button type="button" class="sv-plus cursor-interaction" data-entry="添加午餐" aria-label="添加午餐">＋</button></div><div class="sv-meal"><button class="sv-meal-main cursor-interaction" type="button" data-entry="晚餐详情"><span class="sv-meal-title"><b>晚餐</b><em>0 kcal</em></span><span class="sv-meal-foods">尚未记录</span></button><button type="button" class="sv-plus cursor-interaction" data-entry="添加晚餐" aria-label="添加晚餐">＋</button></div><div class="sv-meal"><button class="sv-meal-main cursor-interaction" type="button" data-entry="零食详情"><span class="sv-meal-title"><b>零食</b><em>0 kcal</em></span><span class="sv-meal-foods">尚未记录</span></button><button type="button" class="sv-plus cursor-interaction" data-entry="添加零食" aria-label="添加零食">＋</button></div></div><div class="sv-notice" role="status" aria-live="polite"></div></div>
+<div class="sv-nav"><span class="sv-current"><em><i data-lucide="calendar-days" aria-hidden="true">日</i></em>日记</span><span><em><i data-lucide="refrigerator" aria-hidden="true">库</i></em>食品库</span><span><em><i data-lucide="chart-no-axes-combined" aria-hidden="true">势</i></em>趋势</span><span><em><i data-lucide="user-round" aria-hidden="true">我</i></em>我的</span></div></div></div>
+</div></section>
+<section data-variant="配方卡片" aria-label="配方详情的字重圆角和阴影对比" hidden>
+<div class="sv-columns">
+<div class="sv-column"><p class="sv-caption text-small">当前 2.4.2 · 布局复刻</p>
+<div class="sv-phone sv-current-style sv-recipe" data-side="current" data-scene="recipe" aria-label="当前配方详情"><div class="sv-status"><span>9:41</span><span aria-hidden="true">▂ ⌁ ▰</span></div><div class="sv-header"><button class="sv-icon-button cursor-interaction" type="button" data-entry="返回食品库" aria-label="返回食品库">‹</button><h2>燕麦酸奶碗</h2><div class="sv-header-actions"><button class="sv-icon-button cursor-interaction" type="button" data-entry="分享食谱" aria-label="分享食谱"><i data-lucide="share-2" aria-hidden="true">享</i></button><button class="sv-icon-button cursor-interaction" type="button" data-entry="编辑食谱" aria-label="编辑食谱"><i data-lucide="pencil" aria-hidden="true">编</i></button><button class="sv-icon-button cursor-interaction" type="button" data-entry="配方更多操作" aria-label="配方更多操作">⋮</button></div></div>
+<div class="sv-content"><p class="sv-body">可提前准备的早餐配方。</p><div class="sv-card"><h3 class="sv-section-title">营养（总计）</h3><div class="sv-nutrients"><div class="sv-nutrient"><strong>270</strong><span>kcal</span></div><div class="sv-nutrient"><strong>30</strong><span>碳水 g</span></div><div class="sv-nutrient"><strong>8</strong><span>脂肪 g</span></div><div class="sv-nutrient"><strong>19</strong><span>蛋白质 g</span></div></div><div class="sv-basis">每 100 克 · 135 kcal · 碳水 15.0g · 脂肪 4.0g · 蛋白质 9.5g</div></div><h3 class="sv-ingredients-title">食材</h3><div class="sv-ingredient"><span class="sv-thumb"><i data-lucide="leaf" aria-hidden="true">食</i></span><div class="sv-ingredient-copy"><b>原味希腊酸奶</b><span>150 g · 145 kcal</span></div></div><div class="sv-ingredient"><span class="sv-thumb"><i data-lucide="leaf" aria-hidden="true">食</i></span><div class="sv-ingredient-copy"><b>即食燕麦片</b><span>30 g · 113 kcal</span></div></div><div class="sv-ingredient"><span class="sv-thumb"><i data-lucide="leaf" aria-hidden="true">食</i></span><div class="sv-ingredient-copy"><b>蓝莓</b><span>20 g · 11 kcal</span></div></div><button class="sv-primary cursor-interaction" type="button" data-entry="记录此食谱">＋ 记录此食谱</button><div class="sv-notice" role="status" aria-live="polite"></div></div></div></div>
+<div class="sv-column"><p class="sv-caption text-small">建议规范 · 细边框与分级字重</p>
+<div class="sv-phone sv-proposed sv-recipe" data-side="proposed" data-scene="recipe" aria-label="优化配方详情"><div class="sv-status"><span>9:41</span><span aria-hidden="true">▂ ⌁ ▰</span></div><div class="sv-header"><button class="sv-icon-button cursor-interaction" type="button" data-entry="返回食品库" aria-label="返回食品库">‹</button><h2>燕麦酸奶碗</h2><div class="sv-header-actions"><button class="sv-icon-button cursor-interaction" type="button" data-entry="分享食谱" aria-label="分享食谱"><i data-lucide="share-2" aria-hidden="true">享</i></button><button class="sv-icon-button cursor-interaction" type="button" data-entry="编辑食谱" aria-label="编辑食谱"><i data-lucide="pencil" aria-hidden="true">编</i></button><button class="sv-icon-button cursor-interaction" type="button" data-entry="配方更多操作" aria-label="配方更多操作">⋮</button></div></div>
+<div class="sv-content"><p class="sv-body">可提前准备的早餐配方。</p><div class="sv-card"><h3 class="sv-section-title">营养（总计）</h3><div class="sv-nutrients"><div class="sv-nutrient"><strong>270</strong><span>kcal</span></div><div class="sv-nutrient"><strong>30</strong><span>碳水 g</span></div><div class="sv-nutrient"><strong>8</strong><span>脂肪 g</span></div><div class="sv-nutrient"><strong>19</strong><span>蛋白质 g</span></div></div><div class="sv-basis">每 100 克 · 135 kcal · 碳水 15.0g · 脂肪 4.0g · 蛋白质 9.5g</div></div><h3 class="sv-ingredients-title">食材</h3><div class="sv-ingredient"><span class="sv-thumb"><i data-lucide="leaf" aria-hidden="true">食</i></span><div class="sv-ingredient-copy"><b>原味希腊酸奶</b><span>150 g · 145 kcal</span></div></div><div class="sv-ingredient"><span class="sv-thumb"><i data-lucide="leaf" aria-hidden="true">食</i></span><div class="sv-ingredient-copy"><b>即食燕麦片</b><span>30 g · 113 kcal</span></div></div><div class="sv-ingredient"><span class="sv-thumb"><i data-lucide="leaf" aria-hidden="true">食</i></span><div class="sv-ingredient-copy"><b>蓝莓</b><span>20 g · 11 kcal</span></div></div><button class="sv-primary cursor-interaction" type="button" data-entry="记录此食谱">＋ 记录此食谱</button><div class="sv-notice" role="status" aria-live="polite"></div></div></div></div>
+</div></section>
+<section data-variant="食材用量弹窗" aria-label="食材用量弹窗的形状与间距对比" hidden>
+<div class="sv-columns">
+<div class="sv-column"><p class="sv-caption text-small">当前 2.4.2 · 布局复刻</p>
+<div class="sv-phone sv-current-style sv-sheet-phone" data-side="current" data-scene="sheet" aria-label="当前食材用量弹窗"><div class="sv-status"><span>9:41</span><span aria-hidden="true">▂ ⌁ ▰</span></div><div class="sv-header"><h2>创建食谱</h2></div><div class="sv-ghost"><b>早餐碗</b>选择食材</div><div class="sv-sheet-space"></div><div class="sv-sheet"><div class="sv-handle" aria-hidden="true"></div><h3>即食燕麦片</h3><div class="sv-fields"><label class="sv-field">数量<input id="sv-current-amount" type="text" inputmode="decimal" value="100" aria-label="当前用量"></label><label class="sv-field">单位<select id="sv-current-unit" aria-label="当前用量单位"><option>g</option><option>kg</option><option>oz</option></select></label></div><button class="sv-primary cursor-interaction" type="button" data-confirm>添加</button><div class="sv-notice" role="status" aria-live="polite"></div></div></div></div>
+<div class="sv-column"><p class="sv-caption text-small">建议规范 · 圆角按用途统一</p>
+<div class="sv-phone sv-proposed sv-sheet-phone" data-side="proposed" data-scene="sheet" aria-label="优化食材用量弹窗"><div class="sv-status"><span>9:41</span><span aria-hidden="true">▂ ⌁ ▰</span></div><div class="sv-header"><h2>创建食谱</h2></div><div class="sv-ghost"><b>早餐碗</b>选择食材</div><div class="sv-sheet-space"></div><div class="sv-sheet"><div class="sv-handle" aria-hidden="true"></div><h3>即食燕麦片</h3><div class="sv-fields"><label class="sv-field">数量<input id="sv-proposed-amount" type="text" inputmode="decimal" value="100" aria-label="优化用量"></label><label class="sv-field">单位<select id="sv-proposed-unit" aria-label="优化用量单位"><option>g</option><option>kg</option><option>oz</option></select></label></div><button class="sv-primary cursor-interaction" type="button" data-confirm>添加</button><div class="sv-notice" role="status" aria-live="polite"></div></div></div></div>
+</div></section>
+</div>
+</div>
+<script>
+(()=>{
+'use strict';
+const root=document.getElementById('shiji-visual-finish');
+if(!root)return;
+const phones=[...root.querySelectorAll('.sv-phone')];
+const prefs={scale:1,narrow:false,appearance:'跟随系统'};
+const saved=window.openai?.widgetState;
+function restore(value){
+ if(value?.modelContent?.kind!=='shiji-visual-finish')return;
+ const p=value.privateContent||{};
+ if(Number.isFinite(p.scale)&&p.scale>=1&&p.scale<=1.6)prefs.scale=p.scale;
+ prefs.narrow=p.narrow===true;
+ if(['跟随系统','浅色','深色'].includes(p.appearance))prefs.appearance=p.appearance;
+}
+function apply(){
+ root.style.setProperty('--sv-scale',String(prefs.scale));
+ root.style.setProperty('--sv-phone-width',prefs.narrow?'320px':'360px');
+ root.dataset.narrow=String(prefs.narrow);root.dataset.large=String(prefs.scale>1.35);
+ for(const phone of phones){
+  if(prefs.appearance==='跟随系统')phone.style.removeProperty('color-scheme');
+  else phone.style.colorScheme=prefs.appearance==='深色'?'dark':'light';
+ }
+}
+function remember(){
+ const api=window.openai;if(!api?.setWidgetState)return;
+ Promise.resolve(api.setWidgetState({modelContent:{kind:'shiji-visual-finish',scope:['G1字体层级','G2卡片与形状','G3间距与大字体'],stage:'proposal_only'},privateContent:{...prefs}})).catch(()=>{});
+}
+restore(saved);apply();
+root.addEventListener('click',event=>{
+ const button=event.target.closest('button');if(!button||!root.contains(button))return;
+ const phone=button.closest('.sv-phone');if(!phone)return;
+ const notice=phone.querySelector('.sv-notice');if(!notice)return;
+ if(button.hasAttribute('data-confirm')){
+  const amount=phone.querySelector('input').value.trim().replace(',','.');
+  const value=Number(amount),unit=phone.querySelector('select').value;
+  if(amount===''||!Number.isFinite(value)||value<=0){notice.textContent='请输入大于 0 的数量';notice.setAttribute('role','alert');}
+  else{notice.textContent='已选择 '+amount+' '+unit+' · 示例配方';notice.setAttribute('role','status');}
+ }else if(button.dataset.entry){notice.textContent='已选择：'+button.dataset.entry;notice.setAttribute('role','status');}
+});
+window.addEventListener('openai:set_globals',event=>{restore(event.detail?.globals?.widgetState);apply();});
+if(globalThis.Tweak){
+ const tweak=new globalThis.Tweak({container:root,onChange:()=>{apply();remember();}});
+ tweak.addSlider(prefs,'scale',{label:'文字大小',min:1,max:1.6,step:.1});
+ tweak.addToggle(prefs,'narrow',{label:'窄屏 320'});
+ tweak.addSelect(prefs,'appearance',{label:'外观',options:['跟随系统','浅色','深色']});
+}
+})();
+</script>

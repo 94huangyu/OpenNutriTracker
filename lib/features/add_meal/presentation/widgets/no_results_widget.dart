@@ -25,7 +25,6 @@ class NoResultsWidget extends StatelessWidget {
           EmptyHint(
             icon: Icons.search_off_rounded,
             title: title ?? S.of(context).noResultsFound,
-            subtitle: showActions ? S.of(context).noResultsSubtitle : null,
           ),
           if (showActions)
             Padding(

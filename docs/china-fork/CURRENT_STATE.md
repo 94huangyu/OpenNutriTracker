@@ -1,20 +1,28 @@
 # 当前状态与续作入口
 
-日期：2026-10-27（北京时间）。
+日期：2026-10-29（北京时间）。
 
-**状态：食迹2.4.1（67）已发布到GitHub，源码与三个发行附件均已核验；本轮发布完成。**
+**状态：全部已确认优化和最终单位显示专项已完成，r3已通过指定手机验收，最终数据与图片核对一致。本地2804项通过、1项跳过。正在执行已授权的GitHub源码与Release发布，尚未宣称发布完成。**
 
 ## 当前续作检查点
 
-- 发布结果：[食迹2.4.1（67）Release](https://github.com/94huangyu/OpenNutriTracker/releases/tag/shiji-v2.4.1-67)，已标记Latest；标签对应源码提交 `bd52462d44b64c85516ae2c682a19036bd939bd7`，源码树 `77e7af4a840d18905af9d0cfc4863fceace0c774`。1233个公开源码文件与审查快照逐项一致，903个APK运行输入/测试指纹一致。三个发行附件的GitHub页面服务端SHA256均与本机一致；完整证据见 `evidence/shiji-github-release-v2.json`。后续收尾提交仅补文档，不移动Release标签。
-- 本轮任务：用户明确要求“更新变更到github，上传新的apk作为release”，授权更新用户Fork默认main并发布 `shiji-v2.4.1-67`。目标 `94huangyu/OpenNutriTracker`，原main基线 `eb34e744afc9f153ff77bd33335e889e64bbc79d`；上游仓库和旧Release/标签不改。
-- 唯一有效APK：`output/flutter/ui-v2-device-20261027/Shiji-v2.4.1-67-android-arm64.apk`，SHA256 `5567bd467323cd6b8cbef48ff6530aacf41edb0e8146b085bb804688b54f71f3`。原r2验收包，不为发布重建；2.4.0/66及首包r1均保留本机，r1不交付。
-- 实施清单：首页H1–H3、添加页A1–A2、单位保护U1和收藏入口简化，以及创建/能量输入C1/E1、趋势T1、设置S1、详情D1、修改记录R1均已完成。设计记录与四份冻结源稿见 `UI_DESIGN_APPROVED.md`、`UI_NEXT_PAGES_APPROVED.md`、`UI_DETAIL_RECORD_PROPOSAL.md` 及 `ui-approved/`。不得用早期预览覆盖定稿。
-- 本轮修复：食品详情默认份量切换为克不再改变实际分量；新增回归先失败后通过，58项相关测试通过，Dart分析无诊断。版本2.4.1/67，包名/正式签名/数据结构不变。公开摘要与输入指纹见 `UI_DEVICE_ACCEPTANCE_V2.md`、`evidence/ui-v2-device-20261027.json`；此前本地UI测试按各阶段记录理解，不相加或冒充全部回归。
-- 数据与隐私：数据保护核验和临时测试数据清理已完成。设备身份、环境、实机截图、详细报告、备份和签名私钥仅保存在本机忽略目录；旧APK、源码快照及签名资产保留。删除流程可能保留零热量日汇总；实际检查细节不在公开源码展开。
-- 范围与授权：既有UI V1/V2全部未提交成果属于本轮发布清单，连同必要测试、文案、版本与设计记录同步；不扩展功能。发布授权已覆盖此前阶段的“暂不发布”限制，不代表未实测路径已通过。相机、在线源、读屏及全部字号方向组合未在本轮复测。
-- 运行任务/恢复：无设备任务。此前临时设置、数据和调试服务已收尾；本轮仅审查、提交和发布，不连接手机。
-- 唯一下一步：按用户后续反馈继续；本次仅完成已授权源码/Release发布，不自行追加功能或设备测试。运行源码、版本、签名及旧版资产保持所列基线。
+- 用户已授权全部改动打包、保留数据手机验收、通过后同步GitHub与上传Release，且已完成Safari登录。验收中追加确认搜索入口精简及内部单位显示专项均已完成，不再有待决定的UI提案。
+- 最终唯一交付APK：`output/flutter/release-v2.4.3-69-r3/Shiji-v2.4.3-69-android-arm64.apk`，48,263,241字节，SHA256`33d8970bd081ebb390c6cd7e0343068d5cba8a5ec4aec68d0096c7dd78522ad8`。2.4.3（69）、原包名及长期正式签名、release/AOT、arm64、API26–36，权限与旧68包一致，无健康/广泛照片权限。r18构建34.0秒，955项输入与私有源码归档已冻结且构建前后相同。旧r1/r2、68及此前APK、签名、备份均保留。
+- 本轮实现：首页换日及误触/请求乱序保护，移除下拉刷新并补齐自动更新，食品库与所有当前可达食品列表整体框/横线，字体圆角/大字配方适配，kJ/kcal录入与单位加宽，备注精简及完整说明入口，搜索框去装饰放大镜/分类“全部”。单位专项将serving显示为“份”、gml显示g/ml，保留存储/选项value/换算；详情见`UI_INTERNAL_LABEL_AUDIT_20261029.md`，不改用户自填单位或食品名称。
+- 最终本地验证：2804项通过、1项跳过（缺上游fullRelease产物；食迹权限与实际APK另行核对通过），静态分析0诊断；54项相关检查与全量重叠不相加。日志`.tools/release/release-243-20261029/full-final-r3.log`和`unit-audit-analysis-final.log`；公开验收证据`evidence/ui-release-v2.4.3-69.json`。
+- 手机已安装并核对最终r3，UID不变、摘要匹配。r2指定手机路径和r3专项均通过：首页左右/短拖/纵向/连续换日，搜索精简，普通/1.6字号列表与kcal、食品库三分类，记录取消/键盘返回/后台恢复、说明弹窗；r3配方用量和两条食材行均显示“份”，整份草稿确认放弃。gml分支由本地回归覆盖，未在手机持久保存合成食品。实际覆盖见`UI_DEVICE_ACCEPTANCE_243.md`，不宣称所有设备或组合已验收。
+- 数据保护：重连后重新导出before-r3-resume完整备份，r3验收后after-tests-r3的全部逻辑数据和附件逐项相同（manifest导出元数据单列）。初始设置保持、App留在首页，独立5038已停，不撤销USB信任。当前进程有界日志未见所查致命/未处理/溢出模式。原偶发白块没有重现，原生原因仍未捕获，继续使用观察。
+- Git发布准备：分支release/shiji-v2.4.0-66、HEAD9730d89d0689253e9c8f6e04709d129277ede7f6；origin/main已再次只读核对同SHA，基础树9530ad098b97f63e871ef96be4b858729a89ccfe。所有授权变更尚未提交，新tag/Release尚未创建；现在进入已授权发布步骤，不重新问权限。
+- GitHub插件支持Git树/提交/分支写入，无Release创建及二进制上传。Safari已登录在94huangyu/OpenNutriTracker的New release页面。只公开源码/测试/脱敏文档与最终APK、公钥证书、SHA256SUMS；私有设备信息、备份、完整日志、签名私钥及环境配置不公开。发布前校验白名单、完整预期树、main租约；后核对tag源码与附件服务端摘要，不移动旧标签。
+- 私有发布准备：`.tools/release/release-243-20261029/`保留release-notes.md、最终artifact/构建输入、prepare_public_tree.py；`.tools/release/device-20261029/`保留设备核对及所有完整备份/截图，目录700/文件600。不要重新构建、替换签名、删旧APK或运行清数据脚本。
+- 运行任务：无构建、测试或设备进程；自有调试服务已停止。当前仅进行GitHub源码和Release发布。
+- 唯一下一步：生成/审查公开树，提交到用户fork的main并核对完整树；Safari发布shiji-v2.4.3-69，上传最终r3三个附件；核对远端tag/资产digest后更新收尾文档和本机Git，不把发布准备误写成已发布。
+
+### 已发布基线与此前阶段（历史）
+
+- 已发布2.4.1（67）：[Release](https://github.com/94huangyu/OpenNutriTracker/releases/tag/shiji-v2.4.1-67)，标签源码提交 `bd52462d44b64c85516ae2c682a19036bd939bd7`。原验收包 `output/flutter/ui-v2-device-20261027/Shiji-v2.4.1-67-android-arm64.apk`，SHA256 `5567bd467323cd6b8cbef48ff6530aacf41edb0e8146b085bb804688b54f71f3`。公开结果见 `evidence/shiji-github-release-v2.json`。后续文档提交不移动标签。
+- 2.4.1范围：首页H1–H3、添加A1–A2、单位U1、收藏简化、创建/能量输入C1/E1、趋势T1、设置S1、详情D1、修改记录R1。冻结设计与实施验收见 `UI_DESIGN_APPROVED.md`、`UI_NEXT_PAGES_APPROVED.md`、`UI_DETAIL_RECORD_PROPOSAL.md`、`UI_DEVICE_ACCEPTANCE_V2.md`。既有数据保护与测试数据清理已完成；相机/在线源/读屏的限制沿用各报告。
+- 食品库阶段：L1–L3原23项相关检查通过、静态分析无诊断，949项运行输入的中间包构建前后一致；阶段记录 `evidence/ui-library-implementation.json` 和 `evidence/ui-library-apk-v2.4.2-68.json` 保留为历史，不把其旧源码指纹当最终G包指纹。
 
 ## 已发布版本基线（2026-10-22，历史记录）
 

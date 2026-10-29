@@ -1,0 +1,60 @@
+{
+  "date": "2026-10-28",
+  "status": "local_implementation_verified_copy_decision_pending_not_built",
+  "base_commit": "9730d89d0689253e9c8f6e04709d129277ede7f6",
+  "uncommitted": true,
+  "implemented": [
+    "Home left swipe next day and right swipe previous day, one day per gesture",
+    "Remove home manual pull refresh, preserve and complete automatic selected-day reload",
+    "Equal-width energy and unit fields; stack on narrow/large-font layouts",
+    "Only latest calendar-day request emits results, including same-day refresh and A-B-A"
+  ],
+  "copy_audit": "ui-copy-audit-20261028.json",
+  "copy_changes_applied": false,
+  "checks": {
+    "related_tests_passed": 58,
+    "new_test_cases": 15,
+    "full_flutter_tests_passed": 2792,
+    "full_flutter_tests_skipped": 1,
+    "skipped_reason": "Upstream fullRelease merged manifest unavailable locally; shijiRelease and source permission guards passed",
+    "dart_analysis_diagnostics": 0,
+    "unit_layout_repeated_with_capture_fonts": 5,
+    "repeated_tests_overlap_full_suite": true,
+    "old_logic_control_failed_cases": 5,
+    "old_logic_control_failed_case_kinds": [
+      "Three compact unit widths",
+      "Two older-same-day request races"
+    ],
+    "temporary_old_logic_comparison_restored_byte_for_byte": true,
+    "whitespace_errors": 0
+  },
+  "source_sha256": {
+    "lib/core/presentation/main_screen.dart": "e5d6f81462a76b45fcab9c092684012e39cdaae52e739039fc8758a92ee814a6",
+    "lib/features/recording/presentation/recording_page.dart": "846fe7dfde296d2993ba81e0920923d4b02ab7a9d471d9085f12a065d2a7ed09",
+    "lib/features/diary/presentation/bloc/calendar_day_bloc.dart": "bab9b1c13f8625de4a67bed500257f65c64c3dbb08cf31161ebe2ac468d81820",
+    "lib/features/edit_meal/presentation/edit_meal_screen.dart": "487b7aa5d17a578b54ab75e903b3f9f592abe688fc78734f7f47728eaffc47bd",
+    "test/features/recording/recording_flow_test.dart": "57196d4a903828f317e5558d78528aec51c1096e80f8b8f6e58f20d9b6e75c04",
+    "test/features/edit_meal/presentation/food_specification_form_test.dart": "9b35fe3f1a32061958dd248093775dad9301d63a37c15169c0b2f80bdf865c25"
+  },
+  "current_installed_artifact": {
+    "versionName": "2.4.2",
+    "versionCode": 68,
+    "sha256": "ac8a3245412d85dbce88bf0e7d91d45e5dee131a44c951013af53441f5e9c6de",
+    "contains_this_new_source": false
+  },
+  "artifact_built_this_session": false,
+  "installed_this_session": false,
+  "github_updated": false,
+  "limits": [
+    "Swipe thresholds/system-edge behavior and final new layout not tested on phone yet",
+    "The installed 68 APK remains the previous keyboard-fix candidate",
+    "Review-only copy audit; user asked to decide before copy changes",
+    "After copy decision, build a separate candidate and increment versionCode for actual upgrade"
+  ],
+  "copy_followup": {
+    "date": "2026-10-29",
+    "status": "approved_and_implemented",
+    "report": "docs/china-fork/UI_FOOD_LIST_AND_COPY_IMPLEMENTATION_20261029.md",
+    "note": "Original counts and fingerprints describe 2026-10-28; final source and regression checks are in the 2026-10-29 evidence."
+  }
+}

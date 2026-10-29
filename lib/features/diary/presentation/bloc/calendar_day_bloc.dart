@@ -40,6 +40,7 @@ class CalendarDayBloc extends Bloc<CalendarDayEvent, CalendarDayState> {
   final AddConfigUsecase _addConfigUsecase;
 
   DateTime? _currentDay;
+  int _loadGeneration = 0;
 
   CalendarDayBloc(
     this._getUserActivityUsecase,
@@ -58,13 +59,13 @@ class CalendarDayBloc extends Bloc<CalendarDayEvent, CalendarDayState> {
     on<LoadCalendarDayEvent>((event, emit) async {
       emit(CalendarDayLoading());
       _currentDay = event.day;
-      await _loadCalendarDay(event.day, emit);
+      await _loadCalendarDay(event.day, emit, ++_loadGeneration);
     });
 
     on<RefreshCalendarDayEvent>((event, emit) async {
       if (_currentDay != null) {
         emit(CalendarDayLoading());
-        await _loadCalendarDay(_currentDay!, emit);
+        await _loadCalendarDay(_currentDay!, emit, ++_loadGeneration);
       }
     });
   }
@@ -72,6 +73,7 @@ class CalendarDayBloc extends Bloc<CalendarDayEvent, CalendarDayState> {
   Future<void> _loadCalendarDay(
     DateTime day,
     Emitter<CalendarDayState> emit,
+    int generation,
   ) async {
     // #139: when the user has a configured day-start offset, the
     // intake/activity queries need to know about it so entries logged
@@ -134,7 +136,7 @@ class CalendarDayBloc extends Bloc<CalendarDayEvent, CalendarDayState> {
         ? configData.targetKcalForMeal(ConfigEntity.mealKeySnack, dailyKcalGoal)
         : 0.0;
 
-    if (_currentDay != day) return;
+    if (_currentDay != day || generation != _loadGeneration) return;
     emit(
       CalendarDayLoaded(
         trackedDayEntity,

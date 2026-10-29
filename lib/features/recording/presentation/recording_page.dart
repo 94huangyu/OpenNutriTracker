@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:opennutritracker/core/domain/entity/intake_entity.dart';
@@ -27,6 +28,10 @@ class _RecordingPageState extends State<RecordingPage>
     with WidgetsBindingObserver {
   late final CalendarDayBloc _bloc;
   DateTime? _day;
+  static final _firstDay = DateTime(2000);
+  static final _lastDay = DateTime(2100);
+  Offset? _swipeOrigin;
+  Offset? _swipePosition;
 
   @override
   void initState() {
@@ -61,8 +66,40 @@ class _RecordingPageState extends State<RecordingPage>
   }
 
   void _selectDay(DateTime day) {
-    setState(() => _day = DateUtils.dateOnly(day));
+    final date = DateUtils.dateOnly(day);
+    setState(
+      () => _day = date.isBefore(_firstDay)
+          ? _firstDay
+          : date.isAfter(_lastDay)
+          ? _lastDay
+          : date,
+    );
     _bloc.add(LoadCalendarDayEvent(_day!));
+  }
+
+  void _shiftDay(int offset) {
+    final date = DateUtils.addDaysToDate(_day!, offset);
+    if (date.isBefore(_firstDay) || date.isAfter(_lastDay)) return;
+    _selectDay(date);
+  }
+
+  void _startDaySwipe(DragStartDetails details) {
+    final insets = MediaQuery.systemGestureInsetsOf(context);
+    final x = details.globalPosition.dx;
+    final width = MediaQuery.sizeOf(context).width;
+    _swipeOrigin = x <= insets.left || x >= width - insets.right
+        ? null
+        : details.globalPosition;
+    _swipePosition = _swipeOrigin;
+  }
+
+  void _finishDaySwipe(DragEndDetails _) {
+    final delta = _swipeOrigin == null || _swipePosition == null
+        ? Offset.zero
+        : _swipePosition! - _swipeOrigin!;
+    _swipeOrigin = _swipePosition = null;
+    if (delta.dx.abs() < 64 || delta.dx.abs() < delta.dy.abs() * 1.4) return;
+    _shiftDay(delta.dx < 0 ? 1 : -1);
   }
 
   Future<void> _add(AddMealType type) async {
@@ -77,6 +114,7 @@ class _RecordingPageState extends State<RecordingPage>
   Widget build(BuildContext context) {
     final s = S.of(context);
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: Text(s.recordingTitle),
         actions: [
@@ -85,9 +123,12 @@ class _RecordingPageState extends State<RecordingPage>
             child: IconButton(
               tooltip: s.recipesLabel,
               icon: const Icon(Icons.kitchen_outlined),
-              onPressed: () => Navigator.of(
-                context,
-              ).pushNamed(NavigationOptions.recipesRoute),
+              onPressed: () async {
+                await Navigator.of(
+                  context,
+                ).pushNamed(NavigationOptions.recipesRoute);
+                if (mounted) _bloc.add(LoadCalendarDayEvent(_day!));
+              },
             ),
           ),
           Semantics(
@@ -95,11 +136,14 @@ class _RecordingPageState extends State<RecordingPage>
             child: IconButton(
               tooltip: s.settingsLabel,
               icon: const Icon(Icons.tune_rounded),
-              onPressed: () => Navigator.of(context).push(
-                MaterialPageRoute<void>(
-                  builder: (_) => const RecordingSettings(),
-                ),
-              ),
+              onPressed: () async {
+                await Navigator.of(context).push(
+                  MaterialPageRoute<void>(
+                    builder: (_) => const RecordingSettings(),
+                  ),
+                );
+                if (mounted) _bloc.add(LoadCalendarDayEvent(_day!));
+              },
             ),
           ),
         ],
@@ -112,59 +156,70 @@ class _RecordingPageState extends State<RecordingPage>
                 children: [
                   _dateBar(context),
                   Expanded(
-                    child: BlocBuilder<CalendarDayBloc, CalendarDayState>(
-                      bloc: _bloc,
-                      builder: (context, state) {
-                        if (state is! CalendarDayLoaded) {
-                          return const Center(
-                            child: CircularProgressIndicator(),
-                          );
-                        }
-                        final groups = [
-                          state.breakfastIntakeList,
-                          state.lunchIntakeList,
-                          state.dinnerIntakeList,
-                          state.snackIntakeList,
-                        ];
-                        final all = groups.expand((items) => items).toList();
-                        return RefreshIndicator(
-                          onRefresh: () async {
-                            final loaded = _bloc.stream.firstWhere(
-                              (state) => state is CalendarDayLoaded,
-                            );
-                            _bloc.add(LoadCalendarDayEvent(_day!));
-                            await loaded;
-                          },
-                          child: ListView(
-                            padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
-                            children: [
-                              RecordingNutrientSummary(items: all),
-                              const SizedBox(height: 20),
-                              AppCard(
-                                shadowed: false,
-                                borderRadius: 18,
-                                child: Column(
-                                  children: [
-                                    for (var i = 0; i < groups.length; i++) ...[
-                                      if (i > 0)
-                                        const Divider(
-                                          height: 1,
-                                          indent: 16,
-                                          endIndent: 16,
+                    child: Semantics(
+                      identifier: 'recording-day-content',
+                      container: true,
+                      child: GestureDetector(
+                        behavior: HitTestBehavior.opaque,
+                        dragStartBehavior: DragStartBehavior.down,
+                        onHorizontalDragStart: _startDaySwipe,
+                        onHorizontalDragUpdate: (details) =>
+                            _swipePosition = details.globalPosition,
+                        onHorizontalDragEnd: _finishDaySwipe,
+                        onHorizontalDragCancel: () =>
+                            _swipeOrigin = _swipePosition = null,
+                        child: BlocBuilder<CalendarDayBloc, CalendarDayState>(
+                          bloc: _bloc,
+                          builder: (context, state) {
+                            if (state is! CalendarDayLoaded) {
+                              return const Center(
+                                child: CircularProgressIndicator(),
+                              );
+                            }
+                            final groups = [
+                              state.breakfastIntakeList,
+                              state.lunchIntakeList,
+                              state.dinnerIntakeList,
+                              state.snackIntakeList,
+                            ];
+                            final all = groups
+                                .expand((items) => items)
+                                .toList();
+                            return ListView(
+                              padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
+                              children: [
+                                RecordingNutrientSummary(items: all),
+                                const SizedBox(height: 20),
+                                AppCard(
+                                  shadowed: false,
+                                  borderRadius: 18,
+                                  child: Column(
+                                    children: [
+                                      for (
+                                        var i = 0;
+                                        i < groups.length;
+                                        i++
+                                      ) ...[
+                                        if (i > 0)
+                                          const Divider(
+                                            height: 1,
+                                            indent: 16,
+                                            endIndent: 16,
+                                          ),
+                                        _meal(
+                                          context,
+                                          AddMealType.values[i],
+                                          groups[i],
                                         ),
-                                      _meal(
-                                        context,
-                                        AddMealType.values[i],
-                                        groups[i],
-                                      ),
+                                      ],
                                     ],
-                                  ],
+                                  ),
                                 ),
-                              ),
-                            ],
-                          ),
-                        );
-                      },
+                              ],
+                            );
+                          },
+                        ),
+                      ),
                     ),
                   ),
                 ],
@@ -180,7 +235,7 @@ class _RecordingPageState extends State<RecordingPage>
           identifier: 'recording-previous-day',
           child: IconButton(
             tooltip: MaterialLocalizations.of(context).previousPageTooltip,
-            onPressed: () => _selectDay(DateUtils.addDaysToDate(_day!, -1)),
+            onPressed: _day!.isAfter(_firstDay) ? () => _shiftDay(-1) : null,
             icon: const Icon(Icons.chevron_left),
           ),
         ),
@@ -200,8 +255,8 @@ class _RecordingPageState extends State<RecordingPage>
                 final date = await showDatePicker(
                   context: context,
                   initialDate: _day!,
-                  firstDate: DateTime(2000),
-                  lastDate: DateTime(2100),
+                  firstDate: _firstDay,
+                  lastDate: _lastDay,
                 );
                 if (date != null && mounted) _selectDay(date);
               },
@@ -212,7 +267,7 @@ class _RecordingPageState extends State<RecordingPage>
           identifier: 'recording-next-day',
           child: IconButton(
             tooltip: MaterialLocalizations.of(context).nextPageTooltip,
-            onPressed: () => _selectDay(DateUtils.addDaysToDate(_day!, 1)),
+            onPressed: _day!.isBefore(_lastDay) ? () => _shiftDay(1) : null,
             icon: const Icon(Icons.chevron_right),
           ),
         ),

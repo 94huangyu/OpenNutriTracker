@@ -1,0 +1,242 @@
+<style>
+#shiji-library-preview{--sl-scale:1;--sl-width:360px}
+#shiji-library-preview [hidden]{display:none!important}
+#shiji-library-preview .sl-compare{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px;padding:12px 0 26px;align-items:stretch;max-width:760px;margin-inline:auto}
+#shiji-library-preview .sl-column{min-width:0;display:flex;flex-direction:column;align-items:center}
+#shiji-library-preview .sl-caption{align-self:stretch;margin:0 0 12px}
+#shiji-library-preview .sl-phone{--sl-bg:light-dark(#f5f7f6,#131c18);--sl-paper:light-dark(#ffffff,#1c2821);--sl-fill:light-dark(#edf2ef,#24352b);--sl-border:light-dark(#dfe7e2,#35473b);--sl-ink:light-dark(#1e3029,#e9f0eb);--sl-muted:light-dark(#62716a,#b0bfb5);--sl-accent:light-dark(#1f7057,#91d7b0);--sl-on:light-dark(#ffffff,#103424);--sl-red:light-dark(#b43c32,#ffb4ab);--sl-red-on:light-dark(#ffffff,#690005);--sl-shadow:light-dark(#403a2e14,#00000033);--sl-scrim:light-dark(#18251f66,#00000088);color:var(--sl-ink);background:var(--sl-bg);font:400 calc(14px * var(--sl-scale))/1.5 -apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;width:100%;max-width:var(--sl-width);min-height:830px;flex:1;border:1px solid var(--sl-border);border-radius:24px;position:relative;display:flex;flex-direction:column;isolation:isolate}
+#shiji-library-preview .sl-phone *{box-sizing:border-box;min-width:0}
+#shiji-library-preview .sl-phone button,#shiji-library-preview .sl-phone input{font:inherit;color:inherit}
+#shiji-library-preview .sl-phone button{border:0;background:none;margin:0}
+#shiji-library-preview .sl-phone i[data-lucide],#shiji-library-preview .sl-phone svg{width:21px;height:21px;flex-shrink:0}
+#shiji-library-preview .sl-phone i[data-lucide]{font-style:normal;display:inline-flex;align-items:center;justify-content:center;line-height:1;font-size:18px}
+#shiji-library-preview .sl-phone .sl-status{display:flex;justify-content:space-between;gap:12px;padding:10px 18px;font-size:.82em;min-height:34px}
+#shiji-library-preview .sl-phone .sl-status-icons{display:flex;gap:6px;align-items:center}
+#shiji-library-preview .sl-phone .sl-status-icons svg{width:13px;height:13px}
+#shiji-library-preview .sl-phone .sl-header{padding:8px 16px 12px;display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:62px;position:relative}
+#shiji-library-preview .sl-phone h2{font-size:1.64em;line-height:1.3;font-weight:500;margin:0;overflow-wrap:anywhere}
+#shiji-library-preview .sl-phone .sl-add{display:flex;align-items:center;justify-content:center;gap:5px;min-height:44px;min-width:44px;padding:8px;color:var(--sl-accent)}
+#shiji-library-preview .sl-phone.sl-new .sl-add{padding:8px 12px;border-radius:12px;background:var(--sl-fill);white-space:nowrap;font-weight:500}
+#shiji-library-preview .sl-phone .sl-tabs{display:flex;gap:2px;border-bottom:1px solid var(--sl-border);padding:0 6px;position:relative}
+#shiji-library-preview .sl-phone .sl-tab{padding:12px 9px;min-height:48px;white-space:nowrap;position:relative;font-weight:500;color:var(--sl-muted)}
+#shiji-library-preview .sl-phone .sl-tab[aria-selected=true]{color:var(--sl-accent)}
+#shiji-library-preview .sl-phone .sl-tab[aria-selected=true]::after{content:"";position:absolute;height:3px;bottom:0;left:9px;right:9px;background:var(--sl-accent);border-radius:4px 4px 0 0}
+#shiji-library-preview .sl-phone.sl-new .sl-tabs{padding:0 16px;gap:6px;border-bottom:0}
+#shiji-library-preview .sl-phone.sl-new .sl-tab{flex:1;padding:12px 1px}
+#shiji-library-preview .sl-phone .sl-content{padding:12px 16px 26px;flex:1}
+#shiji-library-preview .sl-phone .sl-section-head{display:flex;justify-content:space-between;gap:12px;margin:6px 0 12px;color:var(--sl-muted);font-size:.89em}
+#shiji-library-preview .sl-phone .sl-food-list{display:flex;flex-direction:column;gap:8px}
+#shiji-library-preview .sl-phone .sl-food{display:flex;align-items:center;background:var(--sl-paper);border:1px solid var(--sl-border);border-radius:26px;box-shadow:0 6px 18px var(--sl-shadow);position:relative}
+#shiji-library-preview .sl-phone .sl-food-main{display:flex;align-items:center;gap:12px;padding:12px 0 12px 12px;flex:1;text-align:left;min-height:78px}
+#shiji-library-preview .sl-phone .sl-thumb{width:48px;height:48px;flex:0 0 48px;display:flex;align-items:center;justify-content:center;background:var(--sl-fill);border-radius:14px;color:var(--sl-accent)}
+#shiji-library-preview .sl-phone .sl-thumb svg{width:23px;height:23px}
+#shiji-library-preview .sl-phone .sl-food-copy{display:flex;flex-direction:column;flex:1;min-width:0;gap:3px}
+#shiji-library-preview .sl-phone .sl-name{font-size:1.08em;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block}
+#shiji-library-preview .sl-phone .sl-brand,#shiji-library-preview .sl-phone .sl-nutrition{color:var(--sl-muted);font-size:.9em;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#shiji-library-preview .sl-phone .sl-row-actions{display:flex;padding:0 6px 0 2px;flex-shrink:0}
+#shiji-library-preview .sl-phone .sl-icon-button{min-width:40px;min-height:48px;display:flex;align-items:center;justify-content:center;padding:0 6px;color:var(--sl-muted)}
+#shiji-library-preview .sl-phone .sl-icon-button svg{width:21px;height:21px}
+#shiji-library-preview .sl-phone.sl-new .sl-food-list{gap:0;border:1px solid var(--sl-border);border-radius:16px;background:var(--sl-paper);padding:0 12px}
+#shiji-library-preview .sl-phone.sl-new .sl-food{border:0;box-shadow:none;background:none;border-radius:0}
+#shiji-library-preview .sl-phone.sl-new .sl-food+.sl-food{border-top:1px solid var(--sl-border)}
+#shiji-library-preview .sl-phone.sl-new .sl-food-main{padding:14px 0;gap:10px}
+#shiji-library-preview .sl-phone.sl-new .sl-thumb{width:44px;height:44px;flex-basis:44px;border-radius:10px}
+#shiji-library-preview .sl-phone.sl-new .sl-name{white-space:normal;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow-wrap:anywhere;line-height:1.4}
+#shiji-library-preview .sl-phone.sl-new .sl-meta{display:flex;align-items:baseline;gap:2px 8px;flex-wrap:wrap}
+#shiji-library-preview .sl-phone.sl-new .sl-meta .sl-brand{max-width:100%}
+#shiji-library-preview .sl-phone.sl-new .sl-nutrition{white-space:normal}
+#shiji-library-preview .sl-phone.sl-new .sl-row-actions{padding:0 0 0 4px}
+#shiji-library-preview .sl-phone.sl-new .sl-icon-button{min-width:44px}
+#shiji-library-preview .sl-phone .sl-nav{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));padding:10px 6px 16px;gap:4px;background:var(--sl-paper);border-top:1px solid var(--sl-border);border-radius:0 0 24px 24px;margin-top:auto}
+#shiji-library-preview .sl-phone .sl-nav-item{display:flex;align-items:center;flex-direction:column;gap:4px;font-size:.9em;color:var(--sl-muted);text-align:center;overflow-wrap:anywhere}
+#shiji-library-preview .sl-phone .sl-nav-item em{display:flex;align-items:center;justify-content:center;width:52px;height:30px;border-radius:10px;font-style:normal}
+#shiji-library-preview .sl-phone .sl-nav-item.sl-current{color:var(--sl-ink);font-weight:500}
+#shiji-library-preview .sl-phone .sl-current em{background:var(--sl-fill);color:var(--sl-accent)}
+#shiji-library-preview .sl-phone .sl-menu{position:absolute;right:10px;top:56px;z-index:5;background:var(--sl-paper);border:1px solid var(--sl-border);border-radius:12px;padding:6px;box-shadow:0 8px 26px var(--sl-shadow);width:min(244px,calc(100% - 20px))}
+#shiji-library-preview .sl-phone .sl-food .sl-menu{top:52px;right:0}
+#shiji-library-preview .sl-phone .sl-food:nth-last-child(-n+2) .sl-menu{top:auto;bottom:44px}
+#shiji-library-preview .sl-phone .sl-menu button{display:flex;gap:9px;align-items:center;padding:11px 10px;width:100%;text-align:left;min-height:44px;border-radius:7px;overflow-wrap:anywhere}
+#shiji-library-preview .sl-phone .sl-menu button:hover{background:var(--sl-fill)}
+#shiji-library-preview .sl-phone .sl-menu .sl-danger{color:var(--sl-red);border-top:1px solid var(--sl-border);border-radius:0;margin-top:4px}
+#shiji-library-preview .sl-phone .sl-overlay{position:absolute;inset:0;background:var(--sl-scrim);display:flex;align-items:center;justify-content:center;padding:18px;border-radius:24px;z-index:8}
+#shiji-library-preview .sl-phone .sl-dialog{width:100%;max-width:312px;background:var(--sl-paper);border-radius:22px;padding:22px;box-shadow:0 10px 32px var(--sl-shadow)}
+#shiji-library-preview .sl-phone .sl-dialog h3{font-size:1.4em;font-weight:500;line-height:1.4;margin:0 0 14px;overflow-wrap:anywhere}
+#shiji-library-preview .sl-phone .sl-dialog p{margin:0 0 16px;overflow-wrap:anywhere}
+#shiji-library-preview .sl-phone .sl-dialog .sl-selected-name{display:block;font-size:1.08em;font-weight:500;margin:0 0 8px;overflow-wrap:anywhere}
+#shiji-library-preview .sl-phone .sl-dialog .sl-brand{white-space:normal;margin-bottom:16px}
+#shiji-library-preview .sl-phone .sl-dialog-actions{display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap;margin-top:18px}
+#shiji-library-preview .sl-phone .sl-dialog-actions button{min-height:44px;padding:8px 12px;color:var(--sl-accent);border-radius:10px}
+#shiji-library-preview .sl-phone.sl-new .sl-dialog-actions .sl-confirm{color:var(--sl-red)}
+#shiji-library-preview .sl-phone.sl-new .sl-dialog-actions .sl-cancel{border:1px solid var(--sl-border)}
+#shiji-library-preview .sl-phone .sl-note{min-height:22px;margin:14px 0 0;color:var(--sl-accent);font-size:.9em;overflow-wrap:anywhere}
+#shiji-library-preview .sl-phone .sl-empty{text-align:center;color:var(--sl-muted);padding:28px 10px;min-height:100px}
+#shiji-library-preview .sl-phone .sl-search{display:flex;gap:8px;align-items:center;border:1px solid var(--sl-border);background:var(--sl-paper);border-radius:12px;padding:9px 11px;margin:0 0 14px}
+#shiji-library-preview .sl-phone .sl-search input{font-size:max(16px,1em);padding:0;border:0;background:transparent;width:100%;min-height:26px;outline-offset:4px}
+#shiji-library-preview .sl-phone .sl-search svg{color:var(--sl-muted)}
+#shiji-library-preview .sl-phone .sl-fav-note{font-size:.89em;color:var(--sl-muted);margin:0 0 12px}
+#shiji-library-preview .sl-phone .sl-static-menu{background:var(--sl-paper);border:1px solid var(--sl-border);border-radius:12px;padding:6px;margin:12px 0}
+#shiji-library-preview .sl-phone .sl-static-menu button{display:flex;align-items:center;gap:9px;padding:11px 10px;min-height:44px;width:100%;text-align:left}
+#shiji-library-preview .sl-phone .sl-static-menu .sl-danger{border-top:1px solid var(--sl-border);color:var(--sl-red);margin-top:4px}
+@media(max-width:639px){#shiji-library-preview .sl-compare{grid-template-columns:minmax(0,1fr);gap:26px}}
+@media(prefers-reduced-motion:no-preference){#shiji-library-preview .sl-phone .sl-food-main{transition:background-color .12s ease}}
+</style>
+<div id="shiji-library-preview" aria-label="食品库对比显示">
+<div class="viz-carousel viz-dotted-background" aria-label="食品库布局与管理操作对比" data-previous-label="上一组" data-next-label="下一组">
+<section data-variant="食品库列表" aria-label="食品库列表原布局与优化方案">
+<div class="sl-compare">
+<div class="sl-column"><p class="sl-caption text-small">原布局复刻 · 示例食品</p><div class="sl-phone sl-old" data-side="old" data-scene="list" aria-label="原布局食品库"><div class="sl-status">9:41</div><div class="sl-header"><h2>食谱</h2><button type="button" aria-label="添加">＋</button></div><div class="sl-tabs"><button type="button">食谱</button><button type="button" aria-selected="true">自定义餐食</button><button type="button">收藏</button></div><div class="sl-content"><div class="sl-food-list"><div class="sl-food"><div class="sl-food-main"><span class="sl-thumb">酸奶</span><span class="sl-food-copy"><span class="sl-name">原味希腊酸奶</span><span class="sl-brand">示例品牌</span></span></div></div><div class="sl-food"><div class="sl-food-main"><span class="sl-thumb">燕麦</span><span class="sl-food-copy"><span class="sl-name">即食燕麦片</span><span class="sl-brand">示例品牌</span></span></div></div></div></div></div></div>
+<div class="sl-column"><p class="sl-caption text-small">优化方案 · 相同食品与能力</p><div class="sl-phone sl-new" data-side="new" data-scene="list" aria-label="优化方案食品库"><div class="sl-status">9:41</div><div class="sl-header"><h2>食品库</h2><button type="button">＋ 新建</button></div><div class="sl-tabs"><button type="button" aria-selected="true">我的食品</button><button type="button">配方</button><button type="button">收藏</button></div><div class="sl-content"><div class="sl-food-list"><div class="sl-food"><div class="sl-food-main"><span class="sl-thumb">酸奶</span><span class="sl-food-copy"><span class="sl-name">原味希腊酸奶</span><span class="sl-brand">示例品牌</span><span class="sl-nutrition">每 100 g · 97 kcal</span></span></div></div><div class="sl-food"><div class="sl-food-main"><span class="sl-thumb">燕麦</span><span class="sl-food-copy"><span class="sl-name">即食燕麦片</span><span class="sl-brand">示例品牌</span><span class="sl-nutrition">每 100 g · 377 kcal</span></span></div></div></div></div></div></div>
+</div>
+</section>
+<section data-variant="删除确认" aria-label="删除食品原布局与优化方案" hidden>
+<div class="sl-compare">
+<div class="sl-column"><p class="sl-caption text-small">原布局 · 行内直接删除</p><div class="sl-phone sl-old" data-side="old" data-scene="delete" aria-label="原布局删除确认"></div></div>
+<div class="sl-column"><p class="sl-caption text-small">优化方案 · 更多 → 删除 → 确认</p><div class="sl-phone sl-new" data-side="new" data-scene="delete" aria-label="优化方案删除确认"></div></div>
+</div>
+</section>
+</div>
+</div>
+<script>
+(()=>{
+'use strict';
+const root=document.getElementById('shiji-library-preview');
+if(!root)return;
+const foods=[
+{id:'yogurt',name:'原味希腊酸奶',brand:'示例品牌',icon:'milk',kcal:97,unit:'g'},
+{id:'oat',name:'即食燕麦片',brand:'示例品牌',icon:'wheat',kcal:377,unit:'g'},
+{id:'toast',name:'黑芝麻核桃燕麦全麦吐司（低糖款）',brand:'示例烘焙',icon:'sandwich',kcal:268,unit:'g'},
+{id:'soy',name:'无糖豆浆',brand:'自制',icon:'cup-soda',kcal:31,unit:'ml'},
+{id:'rice',name:'米饭',brand:'自制',icon:'cooking-pot',kcal:116,unit:'g'},
+{id:'chicken',name:'香煎鸡胸肉',brand:'自制',icon:'drumstick',kcal:165,unit:'g'}
+];
+const recipes=[
+{id:'recipe-salad',name:'鸡胸肉蔬菜沙拉',brand:'3 种原料',icon:'salad',kcal:486,recipe:true},
+{id:'recipe-oat',name:'燕麦酸奶碗',brand:'4 种原料',icon:'soup',kcal:352,recipe:true},
+{id:'recipe-rice',name:'番茄鸡蛋盖饭',brand:'3 种原料',icon:'cooking-pot',kcal:568,recipe:true}
+];
+const favorites=[foods[0],foods[3]];
+const saved=window.openai?.widgetState;
+const prefs={fontScale:1,narrow:false};
+if(saved?.modelContent?.kind==='shiji-library-comparison'){
+ prefs.fontScale=[1,1.1,1.2,1.3,1.4,1.5,1.6].includes(saved.privateContent?.fontScale)?saved.privateContent.fontScale:1;
+ prefs.narrow=saved.privateContent?.narrow===true;
+}
+const states=new Map();
+for(const phone of root.querySelectorAll('.sl-phone')){
+ const key=phone.dataset.scene+'-'+phone.dataset.side;
+ states.set(key,{category:phone.dataset.scene==='list'&&['foods','recipes','favorites'].includes(saved?.modelContent?.category)?saved.modelContent.category:'foods',menu:null,modal:phone.dataset.scene==='delete'?{type:'delete',id:'yogurt'}:null,removed:[],notice:'',query:''});
+}
+function icon(name){const fallback={'plus':'＋','ellipsis-vertical':'⋮','trash-2':'删','chevron-right':'›','pencil':'编','combine':'合','utensils':'食','book-open':'谱','scan-line':'导','search':'⌕','calendar-days':'日','refrigerator':'库','chart-no-axes-combined':'势','user-round':'我','signal':'▂','wifi':'⌁','battery-full':'▰','milk':'奶','wheat':'麦','sandwich':'食','cup-soda':'饮','cooking-pot':'饭','drumstick':'肉','salad':'蔬','soup':'碗'};return '<i data-lucide="'+name+'" aria-hidden="true">'+(fallback[name]||'·')+'</i>';}
+function safe(value){return String(value).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;');}
+function remember(){
+ const api=window.openai;if(!api?.setWidgetState)return;
+ const category=states.get('list-new').category;
+ Promise.resolve(api.setWidgetState({modelContent:{kind:'shiji-library-comparison',category,scope:['食品库称呼','列表排版','操作与删除']},privateContent:{fontScale:prefs.fontScale,narrow:prefs.narrow}})).catch(()=>{});
+}
+function icons(){if(globalThis.lucide?.createIcons)globalThis.lucide.createIcons({attrs:{width:20,height:20}});}
+function nav(){return '<div class="sl-nav">'+[['日记','calendar-days'],['食品库','refrigerator'],['趋势','chart-no-axes-combined'],['我的','user-round']].map(([t,i])=>'<span class="sl-nav-item '+(t==='食品库'?'sl-current':'')+'"'+(t==='食品库'?' aria-current="page"':'')+'><em>'+icon(i)+'</em>'+t+'</span>').join('')+'</div>';}
+function findFood(id){return [...foods,...recipes].find(f=>f.id===id);}
+function menuButton(action,label,ic,id='',extra=''){return '<button type="button" class="cursor-interaction '+extra+'" data-action="'+action+'"'+(id?' data-id="'+id+'"':'')+'>'+icon(ic)+'<span>'+safe(label)+'</span></button>';}
+function menuHtml(phone,state){
+ const newer=phone.dataset.side==='new';
+ if(state.menu==='add')return '<div class="sl-menu" role="menu" aria-label="新建内容">'+
+ menuButton('navigate',newer?'创建食品':'新建自定义餐食','utensils','create-food')+
+ menuButton('navigate',newer?'创建配方':'创建食谱','book-open','create-recipe')+
+ menuButton('navigate',newer?'导入配方':'导入食谱','scan-line','import-recipe')+'</div>';
+ return '';
+}
+function foodMenu(phone,state,food){
+ const newer=phone.dataset.side==='new';
+ if(state.menu!==food.id)return '';
+ return '<div class="sl-menu" role="menu" aria-label="'+safe(food.name)+'的操作">'+
+ (newer?menuButton('edit','编辑食品','pencil',food.id):'')+
+ menuButton('merge',newer?'与另一项食品合并':'与另一项自定义食物合并','combine',food.id)+
+ (newer?menuButton('delete','删除食品','trash-2',food.id,'sl-danger'):'')+'</div>';
+}
+function row(phone,state,food){
+ const newer=phone.dataset.side==='new',isFavorite=state.category==='favorites',isRecipe=!!food.recipe;
+ const mainAction=isFavorite?'browse':isRecipe?'recipe':'edit';
+ let details=isRecipe?'<span class="sl-brand">'+food.brand+' · '+(newer?'合计 ':'')+food.kcal+' kcal</span>':'<span class="sl-brand">'+food.brand+'</span>';
+ if((newer||isFavorite)&&!isRecipe){const nutrition='<span class="sl-nutrition">每 100 '+food.unit+' · '+food.kcal+'&nbsp;kcal</span>';details=newer?'<span class="sl-meta">'+details+nutrition+'</span>':details+nutrition;}
+ let actions='';
+ if(isFavorite||isRecipe){actions='<span class="sl-icon-button" aria-hidden="true">'+icon('chevron-right')+'</span>';}
+ else actions='<button type="button" class="sl-icon-button cursor-interaction" aria-label="'+safe(food.name)+'的更多操作" aria-expanded="'+(state.menu===food.id)+'" data-action="menu" data-id="'+food.id+'">'+icon('ellipsis-vertical')+'</button>'+
+ (newer?'':'<button type="button" class="sl-icon-button cursor-interaction" aria-label="删除'+safe(food.name)+'" data-action="delete" data-id="'+food.id+'">'+icon('trash-2')+'</button>');
+ return '<div class="sl-food"><button type="button" class="sl-food-main cursor-interaction" data-action="'+mainAction+'" data-id="'+food.id+'" aria-label="'+safe(food.name)+(isFavorite?'，浏览食品':isRecipe?'，查看配方':'，编辑食品')+'"><span class="sl-thumb">'+icon(food.icon)+'</span><span class="sl-food-copy"><span class="sl-name">'+safe(food.name)+'</span>'+details+'</span></button><div class="sl-row-actions">'+actions+'</div>'+foodMenu(phone,state,food)+'</div>';
+}
+function modalHtml(phone,state){
+ const m=state.modal;if(!m)return '';
+ const newer=phone.dataset.side==='new',food=findFood(m.id)||foods[0];
+ let title='',content='',buttons='';
+ if(m.type==='delete'){
+  title=newer?'删除食品？':'删除自定义餐食？';
+  content=(newer?'<span class="sl-selected-name">'+safe(food.name)+'</span><span class="sl-brand">'+food.brand+'</span>':'')+'<p>'+(newer?'仅从食品库移除，已记录的摄入和营养合计会保留。':'仅从食品库删除这个食品，已经记录的摄入和营养合计会保留。')+'</p>';
+  buttons='<button type="button" class="sl-cancel cursor-interaction" data-action="cancel">取消</button><button type="button" class="sl-confirm cursor-interaction" data-action="confirm-delete" data-id="'+food.id+'">删除</button>';
+ }else{
+  title=m.type==='edit'?'编辑食品':m.type==='browse'?'食品详情':m.type==='recipe'?'配方详情':m.type==='merge'?'合并食品':m.type==='navigate'?({'create-food':'创建食品','create-recipe':'创建配方','import-recipe':'导入配方'}[m.id]):'食品库';
+  content='<p>'+(m.type==='navigate'?'此处仅比较食品库入口，后续页面沿用已有界面。':m.type==='merge'?'合并功能保留。本次仅展示操作入口，不执行合并。':safe(food.name))+'</p>';
+  if(m.type==='edit'||m.type==='browse')content+='<p class="sl-brand">'+food.brand+' · 每 100 '+food.unit+' · '+food.kcal+' kcal</p>';
+  buttons='<button type="button" class="sl-cancel cursor-interaction" data-action="cancel">返回</button>';
+ }
+ return '<div class="sl-overlay"><div class="sl-dialog" role="dialog" aria-modal="true" aria-label="'+title+'"><h3>'+title+'</h3>'+content+'<div class="sl-dialog-actions">'+buttons+'</div></div></div>';
+}
+function renderPhone(phone){
+ const state=states.get(phone.dataset.scene+'-'+phone.dataset.side),newer=phone.dataset.side==='new';
+ const cat=state.category;
+ const categories=newer?[['foods','我的食品'],['recipes','配方'],['favorites','收藏']]:[['recipes','食谱'],['foods','自定义餐食'],['favorites','收藏']];
+ let data=(cat==='recipes'?recipes:cat==='favorites'?favorites:foods).filter(f=>!state.removed.includes(f.id));
+ if(cat==='recipes'&&state.query)data=data.filter(f=>f.name.includes(state.query));
+ const label=cat==='foods'?(newer?'我的食品':'自定义餐食'):cat==='recipes'?(newer?'配方':'食谱'):'收藏';
+ phone.innerHTML='<div class="sl-status"><span>9:41</span><span class="sl-status-icons">'+icon('signal')+icon('wifi')+icon('battery-full')+'</span></div>'+
+ '<div class="sl-header"><h2>'+(newer?'食品库':'食谱')+'</h2><button type="button" class="sl-add cursor-interaction" data-action="add" aria-label="'+(newer?'新建食品或配方':'添加')+'" aria-expanded="'+(state.menu==='add')+'">'+icon('plus')+(newer?'<span>新建</span>':'')+'</button>'+menuHtml(phone,state)+'</div>'+
+ '<div class="sl-tabs" role="tablist" aria-label="食品分类">'+categories.map(([id,t])=>'<button type="button" class="sl-tab cursor-interaction" role="tab" aria-selected="'+(cat===id)+'" data-action="category" data-id="'+id+'">'+t+'</button>').join('')+'</div>'+
+ '<div class="sl-content">'+(cat==='recipes'?'<label class="sl-search">'+icon('search')+'<input type="search" data-query="recipes" value="'+safe(state.query)+'" placeholder="'+(newer?'搜索配方':'搜索')+'" aria-label="搜索配方"></label>':'')+
+ (newer?'<div class="sl-section-head"><span>'+label+'</span><span>'+data.length+' 项</span></div>':'')+
+ (newer&&cat==='favorites'?'<p class="sl-fav-note">浏览与管理收藏；记录饮食请从日记选择餐次。</p>':'')+
+ '<div class="sl-food-list">'+(data.length?data.map(f=>row(phone,state,f)).join(''):'<div class="sl-empty">暂无'+label+'</div>')+'</div><p class="sl-note" role="status" aria-live="polite">'+safe(state.notice)+'</p></div>'+nav()+modalHtml(phone,state);
+}
+function renderAll(){for(const phone of root.querySelectorAll('.sl-phone'))renderPhone(phone);icons();}
+function applyPrefs(){root.style.setProperty('--sl-scale',String(prefs.fontScale));root.style.setProperty('--sl-width',prefs.narrow?'320px':'360px');}
+root.addEventListener('click',event=>{
+ const button=event.target.closest('button[data-action]');if(!button||!root.contains(button))return;
+ const phone=button.closest('.sl-phone');if(!phone)return;
+ const state=states.get(phone.dataset.scene+'-'+phone.dataset.side),action=button.dataset.action,id=button.dataset.id;
+ if(action==='category'){
+  for(const other of root.querySelectorAll('.sl-phone[data-scene="'+phone.dataset.scene+'"]')){
+   const target=states.get(other.dataset.scene+'-'+other.dataset.side);target.category=id;target.menu=null;target.modal=null;target.notice='';
+  }
+ }else if(action==='menu'){state.menu=state.menu===id?null:id;
+ }else if(action==='add'){state.menu=state.menu==='add'?null:'add';
+ }else if(action==='cancel'){state.modal=null;state.menu=null;
+ }else if(action==='confirm-delete'){
+  state.removed.push(id);state.modal=null;state.menu=null;state.notice='已删除食品';
+ }else if(['edit','browse','recipe','merge','navigate','delete'].includes(action)){
+  state.modal={type:action,id};state.menu=null;
+ }
+ renderAll();remember();
+});
+root.addEventListener('input',event=>{
+ if(!event.target.matches('input[data-query]'))return;
+ const phone=event.target.closest('.sl-phone'),state=states.get(phone.dataset.scene+'-'+phone.dataset.side);state.query=event.target.value;
+ const list=phone.querySelector('.sl-food-list'),data=recipes.filter(f=>f.name.includes(state.query));list.innerHTML=data.length?data.map(f=>row(phone,state,f)).join(''):'<div class="sl-empty">没有匹配的配方</div>';const count=phone.querySelector('.sl-section-head span:last-child');if(count)count.textContent=data.length+' 项';icons();
+});
+document.addEventListener('keydown',event=>{
+ if(event.key!=='Escape')return;
+ let changed=false;for(const phone of root.querySelectorAll('section[data-variant]:not([hidden]) .sl-phone')){const state=states.get(phone.dataset.scene+'-'+phone.dataset.side);if(state.modal||state.menu){state.modal=null;state.menu=null;changed=true;}}
+ if(changed){renderAll();remember();}
+});
+window.addEventListener('openai:set_globals',event=>{
+ const incoming=event.detail?.globals?.widgetState;
+ if(incoming?.modelContent?.kind!=='shiji-library-comparison')return;
+ const v=incoming.privateContent||{};
+ if(Number.isFinite(v.fontScale)&&v.fontScale>=1&&v.fontScale<=1.6)prefs.fontScale=v.fontScale;
+ prefs.narrow=v.narrow===true;const category=incoming.modelContent.category;if(['foods','recipes','favorites'].includes(category)){for(const side of ['old','new'])states.get('list-'+side).category=category;renderAll();}applyPrefs();
+});
+applyPrefs();renderAll();
+if(globalThis.Tweak){
+ const tweak=new globalThis.Tweak({container:root,onChange:()=>{applyPrefs();remember();}});
+ tweak.addSlider(prefs,'fontScale',{label:'文字大小',min:1,max:1.6,step:.1});
+ tweak.addToggle(prefs,'narrow',{label:'窄屏 320'});
+}
+})();
+</script>

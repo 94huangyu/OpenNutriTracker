@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:opennutritracker/core/utils/locator.dart';
+import 'package:opennutritracker/features/diary/presentation/bloc/calendar_day_bloc.dart';
 import 'package:opennutritracker/features/recording/presentation/recording_page.dart';
 import 'package:opennutritracker/features/recording/presentation/recording_settings.dart';
 import 'package:opennutritracker/features/recording/presentation/recording_trends_page.dart';
@@ -39,6 +41,8 @@ class _MainScreenState extends State<MainScreen> {
       () => KeyedSubtree(key: UniqueKey(), child: _page(_selected)),
     );
     return Scaffold(
+      // The diary has no inline input; late IME metrics must not shrink it.
+      resizeToAvoidBottomInset: _selected != 0,
       body: IndexedStack(
         index: _selected,
         children: [
@@ -51,6 +55,9 @@ class _MainScreenState extends State<MainScreen> {
           height: MediaQuery.textScalerOf(context).scale(64).clamp(80, 120),
           selectedIndex: _selected,
           onDestinationSelected: (index) => setState(() {
+            if (index == 0 && _selected != 0 && _pages.containsKey(0)) {
+              locator<CalendarDayBloc>().add(const RefreshCalendarDayEvent());
+            }
             if (index != _selected && index != 0) _pages.remove(index);
             _selected = index;
           }),

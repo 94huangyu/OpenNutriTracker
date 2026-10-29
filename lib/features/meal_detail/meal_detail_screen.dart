@@ -1,3 +1,4 @@
+import 'package:opennutritracker/core/utils/food_unit_label.dart';
 import 'package:opennutritracker/core/data/data_source/personal_food_data_source.dart';
 import 'package:opennutritracker/features/meal_detail/presentation/widgets/personal_food_actions.dart';
 import 'package:flutter/material.dart';
@@ -21,7 +22,6 @@ import 'package:opennutritracker/features/meal_detail/presentation/widgets/meal_
 import 'package:opennutritracker/features/meal_detail/presentation/widgets/food_portion_summary.dart';
 import 'package:opennutritracker/features/meal_detail/presentation/widgets/meal_detail_nutriments_table.dart';
 import 'package:opennutritracker/features/meal_detail/presentation/widgets/meal_info_button.dart';
-import 'package:opennutritracker/features/meal_detail/presentation/widgets/off_disclaimer.dart';
 import 'package:opennutritracker/generated/l10n.dart';
 
 class MealDetailScreen extends StatefulWidget {
@@ -453,11 +453,11 @@ class _MealDetailScreenState extends State<MealDetailScreen> {
                                 meal.effectiveNutritionBasis
                                     .toString()
                                     .replaceFirst(RegExp(r'\.0$'), ''),
-                                meal.mealUnit ?? 'g/ml',
+                                foodUnitLabel(S.of(context), meal.mealUnit),
                               )
                         : '${S.of(context).recordingThisPortion} · '
                               '${(double.tryParse(totalQuantity) ?? 0).toStringAsFixed(1).replaceFirst(RegExp(r'\.0$'), '')} '
-                              '${meal.mealUnit ?? 'g/ml'}',
+                              '${foodUnitLabel(S.of(context), meal.mealUnit)}',
                     kcal: meal.nutriments.energyKcal100 == null
                         ? null
                         : _browseOnly
@@ -509,11 +509,6 @@ class _MealDetailScreenState extends State<MealDetailScreen> {
                           setState(() => meal = _personalFoods!.apply(meal)),
                     ),
                   const SizedBox(height: 16),
-                  Text(
-                    S.of(context).foodNutritionScopeHint,
-                    style: Theme.of(context).textTheme.bodySmall,
-                  ),
-                  const SizedBox(height: 16),
                   MealInfoButton(
                     url: meal.url,
                     source: meal.source,
@@ -521,11 +516,6 @@ class _MealDetailScreenState extends State<MealDetailScreen> {
                     originalSource: meal.originalSource,
                     originalCode: meal.originalCode,
                   ),
-                  meal.source == MealSourceEntity.off
-                      ? const Column(
-                          children: [SizedBox(height: 32), OffDisclaimer()],
-                        )
-                      : const SizedBox(),
                   const SizedBox(height: 24.0),
                 ],
               ),

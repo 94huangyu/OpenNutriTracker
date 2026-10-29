@@ -1,0 +1,134 @@
+{
+  "date": "2026-10-29",
+  "status": "implemented_local_regression_passed_device_pending",
+  "base_commit": "9730d89d0689253e9c8f6e04709d129277ede7f6",
+  "uncommitted": true,
+  "report": "docs/china-fork/UI_FOOD_LIST_AND_COPY_IMPLEMENTATION_20261029.md",
+  "approved_copy_audit": "docs/china-fork/UI_COPY_AUDIT_20261028.md",
+  "implemented": [
+    "Add-food scan/create equal-width actions aligned with search/results, measured labels determine stacked layout",
+    "Shared lazy whole-food frame with 1px inset separators; zero food rows draw no empty frame",
+    "Add-food merged/filtered search, recent, personal/favorite lists retain content arrangement and plus actions",
+    "Ingredient picker product/reference/recent lists grouped",
+    "Recipe builder/detail ingredient groups use existing SectionGroup",
+    "Bulk-add food rows and candidate picker grouped; errors remain outside food frame",
+    "Custom-food merge candidate picker grouped",
+    "Existing food-library grouped lists reuse shared sliver; meal detail/home groups preserved",
+    "Approved copy removals/shortening, conditional favorite guidance, complete source/calculation info retained in scrollable dialog"
+  ],
+  "checks": {
+    "full_flutter_test": {
+      "passed": 2802,
+      "skipped": 1,
+      "failed": 0,
+      "log_private": ".tools/release/copy-form-20261029/full-final.log",
+      "skip_reason": "Upstream fullRelease merged manifest is absent; source permission guards and available Shiji permission checks remain in the suite"
+    },
+    "dart_analyze": {
+      "exit_code": 0,
+      "diagnostics": 0,
+      "log_private": ".tools/release/copy-form-20261029/analysis-ready.log"
+    },
+    "source_fingerprints_match": true,
+    "diff_whitespace": "passed",
+    "large_list_test": "1000 food items are built lazily; scroll to item 100 and tap preserves index",
+    "screenshots": {
+      "synthetic_only": true,
+      "add_food_variants": [
+        [
+          390,
+          1.0,
+          false
+        ],
+        [
+          320,
+          1.0,
+          false
+        ],
+        [
+          360,
+          1.2,
+          false
+        ],
+        [
+          320,
+          1.6,
+          false
+        ],
+        [
+          390,
+          1.6,
+          false
+        ],
+        [
+          390,
+          2.0,
+          true
+        ]
+      ],
+      "ingredient_picker_variants": [
+        [
+          390,
+          1.0
+        ],
+        [
+          320,
+          2.0
+        ]
+      ],
+      "directory": "output/flutter/copy-form-20261029/after",
+      "visually_reviewed": [
+        "search-collapsed-390.0-1.0-false.png",
+        "search-collapsed-320.0-1.6-false.png",
+        "search-collapsed-390.0-2.0-true.png",
+        "ingredient-search-320.0-2.0-0.png"
+      ]
+    },
+    "necessary_copy_preserved": [
+      "offDisclaimer",
+      "foodNutritionScopeHint",
+      "customMealUnknownNutrientsHint",
+      "m4PrivacyDescription",
+      "m4PreviewChanged",
+      "m4TrendsNote",
+      "m4ChartNote",
+      "recipeTotalWeightHelper"
+    ]
+  },
+  "source_sha256": {
+    "lib/core/presentation/widgets/food_library_list.dart": "86da211ddba4e672d44a77bec42f146c83255534334567c3f7615c182607472f",
+    "lib/core/presentation/widgets/add_item_bottom_sheet.dart": "ea2dd00505a8312cce3080e618b0bbb6a0aeea5968d8d6e901148e455837a8e1",
+    "lib/features/add_meal/presentation/add_meal_screen.dart": "e0e26e60e004782dd51d8e0313b0dc28809da60c83a8de18ee14c7e6f79e5f55",
+    "lib/features/add_meal/presentation/screens/bulk_add_screen.dart": "fc0b1a95d2b01350175c63bfc3e30b30ff53798c2077bfe716d931c5ceed4e5c",
+    "lib/features/add_meal/presentation/widgets/meal_item_card.dart": "e63305cd5418c108470ee710ff5a46bd9c5d03b462bd0b93d113f57f7de88367",
+    "lib/features/add_meal/presentation/widgets/no_results_widget.dart": "9f368cbfed87e7f24f155a7b99897d10a5b166677b61cf8b7c7d994daf45826e",
+    "lib/features/add_meal/presentation/widgets/personal_food_list.dart": "9fda66fdfd6a701f40c1a8de05732bfb585ee0e273e7b12b7e4e6648f4ed536e",
+    "lib/features/edit_meal/presentation/edit_meal_screen.dart": "5543cd596728d007b89f30b6f9013fed9873ed4b6256d384e43a345cc410645f",
+    "lib/features/meal_detail/meal_detail_screen.dart": "01a228604a6711bcacb59869ec32ba7e253c8cf8d41c338f33f4c30f411a03b2",
+    "lib/features/meal_detail/presentation/widgets/meal_info_button.dart": "79b7fc8036686cb8f4d375d1fe9cf12bc63960ff3e047535d06bea80e25086a6",
+    "lib/features/recipes/presentation/screens/recipe_builder_screen.dart": "7dd95ea50d157c36faafa34c26be547a8fb7fa3da947a2e971ef6a4cfcfe41b9",
+    "lib/features/recipes/presentation/screens/recipe_detail_screen.dart": "c064002bec3b165b8e23faca0e81011b673800837b39237db520bbc5f27bbbb3",
+    "lib/features/recipes/presentation/widgets/food_search_tab_view.dart": "e22fb1e331712123ca0bead4767c317b3c8152c59d2be3f7c7d0f485b2276d1b",
+    "lib/features/recipes/presentation/widgets/custom_meals_tab.dart": "ec30deac2124fc580a7441a3c0034c2a2f54acf49e1c31700d0212f5279dee75",
+    "lib/features/recording/presentation/recording_settings.dart": "72800d1f36528bec18f9027e6603de3e6609cde41906a6c5b833ffc052ccfa14",
+    "lib/l10n/intl_zh.arb": "49497ccf65a022cdb5fc1211cefa863514b03f2db6a2d5d311f8d02072bb760d",
+    "lib/l10n/intl_en.arb": "d9c29f21123aac9519cd8ddf8845cd0cc1024bb80f51fd89410e3da2bb73eed9",
+    "test/features/add_meal/search_screen_states_test.dart": "3118300d906830580345254bed3d0e3e3a3870ab95138dd426199989c7c2dd7b",
+    "test/features/meal_detail/meal_source_label_test.dart": "0c1a814ac1cd756aeb1e6c11e23bb647919c4fad66028e6039d5f9b90d8af4fd",
+    "test/features/recipes/presentation/widgets/food_library_test.dart": "c698125379c139adb4273d187c41739e0fed910e171007815335a4b1a30cc1c5",
+    "test/core/presentation/widgets/food_list_group_test.dart": "4a4d7d4fa3dc2d95b88900c5b5b295057c5e979a82f95395d6ab58a86e9d2180",
+    "test/features/recipes/presentation/widgets/food_search_group_test.dart": "acd55b0ad57e833a8a7d1fba37314b2aa7b0821d5841cc23ac85e3385b30ad9b",
+    "test/features/settings/food_sources_availability_test.dart": "4a86e7070089d322af013ad89f4aa4257566e71b2961bb9f6759ef3b050afa3d"
+  },
+  "artifact_built": false,
+  "installed": false,
+  "github_updated": false,
+  "current_phone": "2.4.2 (68), previous keyboard-fix candidate, without this change",
+  "limits": [
+    "No device acceptance of current source; previous 68 device evidence cannot cover new UI",
+    "Current active food-list routes audited; unused upstream HomePage/DiaryPage drag-card UI retained as documented",
+    "Single-food summaries/forms/previews remain separate functional cards",
+    "Synthetic Flutter captures use local QA fonts, so exact OEM glyph metrics still need phone observation",
+    "Occasional keyboard white block native cause was not captured previously; retain existing protection and observe on phone"
+  ]
+}

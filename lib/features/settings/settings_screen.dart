@@ -644,7 +644,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         label,
         style: Theme.of(context).textTheme.titleSmall?.copyWith(
           color: palette.textMuted,
-          fontWeight: FontWeight.w700,
+          fontWeight: FontWeight.w600,
         ),
       ),
     );
@@ -1625,7 +1625,7 @@ class _SettingsTile extends StatelessWidget {
     badge: badge,
     palette: palette,
     style: text.titleMedium?.copyWith(
-      fontWeight: FontWeight.w700,
+      fontWeight: FontWeight.w600,
       color: titleColor,
     ),
   );
@@ -1685,7 +1685,7 @@ class _SettingsSwitchTile extends StatelessWidget {
       secondary: _SettingsIconChip(palette: palette, icon: icon, color: accent),
       title: Text(
         title,
-        style: text.titleMedium?.copyWith(fontWeight: FontWeight.w700),
+        style: text.titleMedium?.copyWith(fontWeight: FontWeight.w600),
       ),
       subtitle: subtitle != null
           ? Text(
@@ -1720,7 +1720,7 @@ class _SettingsIconChip extends StatelessWidget {
       height: 40,
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.12),
-        borderRadius: Dimens.borderRadiusS,
+        borderRadius: Dimens.borderRadiusThumbnail,
       ),
       child: Icon(icon, color: color, size: 22),
     );

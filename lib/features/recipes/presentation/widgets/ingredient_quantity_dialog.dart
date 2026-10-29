@@ -1,3 +1,4 @@
+import 'package:opennutritracker/core/utils/food_unit_label.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:opennutritracker/core/styles/app_palette.dart';
@@ -96,7 +97,11 @@ class _IngredientQuantitySheetState extends State<_IngredientQuantitySheet> {
   DropdownMenuItem<String> _unitItem(String unit) {
     return DropdownMenuItem(
       value: unit,
-      child: Text(unit, maxLines: 1, overflow: TextOverflow.ellipsis),
+      child: Text(
+        foodUnitLabel(S.of(context), unit),
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+      ),
     );
   }
 
@@ -106,101 +111,126 @@ class _IngredientQuantitySheetState extends State<_IngredientQuantitySheet> {
     final palette = isDark ? AppPalette.dark : AppPalette.light;
     final viewInsets = MediaQuery.of(context).viewInsets;
     final fieldBorder = OutlineInputBorder(
-      borderRadius: Dimens.borderRadiusS,
+      borderRadius: Dimens.borderRadiusControl,
       borderSide: BorderSide(color: palette.border, width: Dimens.hairline),
     );
     return Padding(
       padding: EdgeInsets.only(bottom: viewInsets.bottom),
-      child: Container(
-        padding: const EdgeInsets.fromLTRB(Dimens.spacing24, Dimens.spacing24, Dimens.spacing24, Dimens.spacing16),
-        decoration: BoxDecoration(
-          color: palette.surface,
-          borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(Dimens.radiusXL),
-            topRight: Radius.circular(Dimens.radiusXL),
+      child: SingleChildScrollView(
+        child: Container(
+          padding: const EdgeInsets.fromLTRB(
+            Dimens.spacing24,
+            Dimens.spacing24,
+            Dimens.spacing24,
+            Dimens.spacing16,
           ),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Center(
-              child: Container(
-                width: 40,
-                height: 4,
-                decoration: BoxDecoration(
-                  color: palette.border,
-                  borderRadius: BorderRadius.circular(2),
+          decoration: BoxDecoration(
+            color: palette.surface,
+            borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(Dimens.radiusModal),
+              topRight: Radius.circular(Dimens.radiusModal),
+            ),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Center(
+                child: Container(
+                  width: 40,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: palette.border,
+                    borderRadius: BorderRadius.circular(2),
+                  ),
                 ),
               ),
-            ),
-            const SizedBox(height: Dimens.spacing20),
-            Text(
-              widget.meal.name ?? '?',
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
-            const SizedBox(height: Dimens.spacing16),
-            Row(
-              children: [
-                Expanded(
-                  flex: 3,
-                  child: TextFormField(
-                    controller: _amountController,
-                    autofocus: true,
-                    keyboardType: const TextInputType.numberWithOptions(
-                      decimal: true,
-                    ),
-                    inputFormatters: [
-                      FilteringTextInputFormatter.allow(
-                        RegExp(r'^\d+([.,]\d{0,2})?$'),
+              const SizedBox(height: Dimens.spacing16),
+              Text(
+                widget.meal.name ?? '?',
+                style: Theme.of(
+                  context,
+                ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
+              const SizedBox(height: Dimens.spacing16),
+              LayoutBuilder(
+                builder: (context, constraints) {
+                  final amountField = Semantics(
+                    identifier: 'recipe-ingredient-amount',
+                    child: TextFormField(
+                      controller: _amountController,
+                      autofocus: true,
+                      keyboardType: const TextInputType.numberWithOptions(
+                        decimal: true,
                       ),
+                      inputFormatters: [
+                        FilteringTextInputFormatter.allow(
+                          RegExp(r'^\d+([.,]\d{0,2})?$'),
+                        ),
+                      ],
+                      decoration: InputDecoration(
+                        labelText: S.of(context).recipeIngredientAmountLabel,
+                        border: fieldBorder,
+                        enabledBorder: fieldBorder,
+                      ),
+                    ),
+                  );
+                  final unitField = Semantics(
+                    identifier: 'recipe-ingredient-unit',
+                    child: DropdownButtonFormField<String>(
+                      isExpanded: true,
+                      itemHeight: null,
+                      initialValue: _unit,
+                      borderRadius: Dimens.borderRadiusControl,
+                      decoration: InputDecoration(
+                        labelText: S.of(context).recipeIngredientUnitLabel,
+                        border: fieldBorder,
+                        enabledBorder: fieldBorder,
+                      ),
+                      items: _unitItems(context),
+                      onChanged: (value) {
+                        if (value != null) setState(() => _unit = value);
+                      },
+                    ),
+                  );
+                  if (constraints.maxWidth < 260 ||
+                      MediaQuery.textScalerOf(context).scale(16) > 22) {
+                    return Column(
+                      children: [
+                        amountField,
+                        const SizedBox(height: 12),
+                        unitField,
+                      ],
+                    );
+                  }
+                  return Row(
+                    children: [
+                      Expanded(flex: 3, child: amountField),
+                      const SizedBox(width: 12),
+                      Expanded(flex: 2, child: unitField),
                     ],
-                    decoration: InputDecoration(
-                      labelText: S.of(context).recipeIngredientAmountLabel,
-                      border: fieldBorder,
-                      enabledBorder: fieldBorder,
-                    ),
-                  ),
-                ),
-                const SizedBox(width: Dimens.spacing12),
-                Expanded(
-                  flex: 2,
-                  child: DropdownButtonFormField<String>(
-                    isExpanded: true,
-                    itemHeight: null,
-                    initialValue: _unit,
-                    borderRadius: Dimens.borderRadiusM,
-                    decoration: InputDecoration(
-                      labelText: S.of(context).recipeIngredientUnitLabel,
-                      border: fieldBorder,
-                      enabledBorder: fieldBorder,
-                    ),
-                    items: _unitItems(context),
-                    onChanged: (value) {
-                      if (value != null) {
-                        setState(() => _unit = value);
-                      }
-                    },
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: Dimens.spacing24),
-            SizedBox(
-              width: double.infinity,
-              child: FilledButton(
-                style: FilledButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: Dimens.spacing16),
-                  shape: Dimens.shapeM,
-                ),
-                onPressed: _onConfirm,
-                child: Text(S.of(context).addLabel),
+                  );
+                },
               ),
-            ),
-            const SizedBox(height: Dimens.spacing8),
-          ],
+              const SizedBox(height: Dimens.spacing16),
+              SizedBox(
+                width: double.infinity,
+                child: FilledButton(
+                  style: FilledButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(
+                      vertical: Dimens.spacing16,
+                    ),
+                    shape: Dimens.shapeControl,
+                  ),
+                  onPressed: _onConfirm,
+                  child: Text(S.of(context).addLabel),
+                ),
+              ),
+              const SizedBox(height: Dimens.spacing8),
+            ],
+          ),
         ),
       ),
     );
@@ -213,8 +243,8 @@ class _IngredientQuantitySheetState extends State<_IngredientQuantitySheet> {
       Navigator.of(context).pop();
       return;
     }
-    Navigator.of(context).pop(
-      IngredientQuantitySelection(amount: amount, unit: _unit),
-    );
+    Navigator.of(
+      context,
+    ).pop(IngredientQuantitySelection(amount: amount, unit: _unit));
   }
 }

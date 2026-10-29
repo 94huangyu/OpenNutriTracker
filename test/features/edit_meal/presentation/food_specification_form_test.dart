@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get_it/get_it.dart';
@@ -594,4 +595,38 @@ void main() {
     await save(tester);
     expect(meals.saved.last.nutriments.energyKcal100, 0);
   });
+  for (final variant in [
+    (360.0, 1.0),
+    (390.0, 1.0),
+    (390.0, 1.2),
+    (320.0, 1.6),
+    (320.0, 2.0),
+  ]) {
+    testWidgets('energy unit is complete after kJ to kcal at $variant', (
+      tester,
+    ) async {
+      await pumpEditor(
+        tester,
+        width: variant.$1,
+        scale: variant.$2,
+        useDefaultInput: true,
+      );
+      await selectEnergyUnit(tester, false);
+      final label = find.descendant(
+        of: identified('edit-meal-energy-unit'),
+        matching: find.text('kcal'),
+      );
+      expect(label, findsOneWidget);
+      final paragraph = tester.renderObject<RenderParagraph>(label);
+      expect(
+        paragraph.size.width,
+        greaterThanOrEqualTo(
+          paragraph.getMaxIntrinsicWidth(double.infinity) - .01,
+        ),
+      );
+      expect(paragraph.didExceedMaxLines, isFalse);
+      expect(tester.takeException(), isNull);
+      await capture(tester, 'energy-unit-${variant.$1}-${variant.$2}');
+    });
+  }
 }

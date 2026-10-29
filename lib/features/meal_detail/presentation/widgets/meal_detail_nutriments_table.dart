@@ -1,3 +1,4 @@
+import 'package:opennutritracker/core/utils/food_unit_label.dart';
 import 'package:flutter/material.dart';
 import 'package:opennutritracker/core/presentation/widgets/app_card.dart';
 import 'package:opennutritracker/core/styles/app_palette.dart';
@@ -33,11 +34,11 @@ class MealDetailNutrimentsTable extends StatelessWidget {
     final textStyleBold = Theme.of(context)
             .textTheme
             .bodyMedium
-            ?.copyWith(fontWeight: FontWeight.w700, color: palette.textMuted) ??
+            ?.copyWith(fontWeight: FontWeight.w600, color: palette.textMuted) ??
         const TextStyle();
 
     final headerText = usesImperialUnits && servingQuantity != null
-        ? "${S.of(context).perServingLabel} (${servingQuantity!.roundToPrecision(1)}${servingUnit ?? 'g/ml'})"
+        ? "${S.of(context).perServingLabel} (${servingQuantity!.roundToPrecision(1)}${foodUnitLabel(S.of(context), servingUnit)})"
         : S.of(context).per100gmlLabel;
 
     final n = product.nutriments;
@@ -125,7 +126,7 @@ class MealDetailNutrimentsTable extends StatelessWidget {
                 style: Theme.of(context)
                     .textTheme
                     .titleMedium
-                    ?.copyWith(fontWeight: FontWeight.w700),
+                    ?.copyWith(fontWeight: FontWeight.w600),
               ),
               initiallyExpanded: hasMicroData,
               children: [

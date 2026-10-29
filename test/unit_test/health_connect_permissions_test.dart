@@ -118,9 +118,11 @@ void main() {
   final pluginPermissions = <String, Set<String>>{};
   var pluginManifestsRead = 0;
   if (pluginListPresent) {
-    final plugins = ((jsonDecode(pluginList.readAsStringSync())
-            as Map<String, dynamic>)['plugins']
-        as Map<String, dynamic>)['android'] as List<dynamic>;
+    final plugins =
+        ((jsonDecode(pluginList.readAsStringSync())
+                    as Map<String, dynamic>)['plugins']
+                as Map<String, dynamic>)['android']
+            as List<dynamic>;
     for (final plugin in plugins.cast<Map<String, dynamic>>()) {
       final root = (plugin['path'] as String).replaceAll(RegExp(r'/+$'), '');
       // Only the source sets Gradle merges into a release build. `debug`,
@@ -129,8 +131,9 @@ void main() {
       // it would be a false alarm, and the app's own debug/profile manifests
       // are excluded for the same reason.
       for (final sourceSet in const ['main', 'release']) {
-        final pluginManifest =
-            File('$root/android/src/$sourceSet/AndroidManifest.xml');
+        final pluginManifest = File(
+          '$root/android/src/$sourceSet/AndroidManifest.xml',
+        );
         if (!pluginManifest.existsSync()) continue;
         pluginManifestsRead++;
         final found = healthIn(pluginManifest.readAsStringSync()).kept
@@ -154,11 +157,7 @@ void main() {
 
     test('the three permissions Play refused are not declared', () {
       expect(
-        declared.intersection({
-          'READ_BODY_FAT',
-          'READ_DISTANCE',
-          'READ_STEPS',
-        }),
+        declared.intersection({'READ_BODY_FAT', 'READ_DISTANCE', 'READ_STEPS'}),
         isEmpty,
         reason:
             'Play enforced against these on 8 Sept 2026 as excessive for the '
@@ -234,33 +233,40 @@ void main() {
   // that release was known to be clean.
   group('the merged manifest Gradle produced', () {
     // AGP has used both spellings for this directory; take whichever exists.
-    final mergedManifests = [
-      'build/app/intermediates/merged_manifest',
-      'build/app/intermediates/merged_manifests',
-    ]
-        .map(Directory.new)
-        .where((directory) => directory.existsSync())
-        .expand((directory) => directory.listSync(recursive: true))
-        .whereType<File>()
-        .where((file) => file.path.endsWith('AndroidManifest.xml'))
-        .toList();
+    final mergedManifests =
+        [
+              'build/app/intermediates/merged_manifest',
+              'build/app/intermediates/merged_manifests',
+            ]
+            .map(Directory.new)
+            .where((directory) => directory.existsSync())
+            .expand((directory) => directory.listSync(recursive: true))
+            .whereType<File>()
+            .where((file) => file.path.endsWith('AndroidManifest.xml'))
+            .toList();
 
     test('declares those two health permissions and no others', () {
+      // The upstream full flavor and this fork's recording-only shiji flavor
+      // intentionally ship different permissions; never mix their artifacts.
+      final fullManifests = mergedManifests.where(
+        (file) =>
+            file.path.split(Platform.pathSeparator).contains('fullRelease'),
+      );
       // Not a failure: the Android build is not a precondition for the unit
       // suite, and `linux-checks` never runs one. Silence would be, though —
       // a skipped guard that reads as a passing one is the failure mode this
       // whole file exists to prevent, which is why this announces itself
       // rather than quietly returning.
-      if (mergedManifests.isEmpty) {
+      if (fullManifests.isEmpty) {
         markTestSkipped(
-          'No merged manifest under build/ — run '
-          '`flutter build apk --debug --flavor develop` to exercise this. '
+          'No fullRelease merged manifest under build/ — run '
+          '`flutter build apk --release --flavor full` to exercise this. '
           'Checks (1) and (2) above still ran.',
         );
         return;
       }
 
-      for (final mergedManifest in mergedManifests) {
+      for (final mergedManifest in fullManifests) {
         // The shared matcher, not a pattern of its own: attribute order and
         // quote style are free in XML, and the check that decides what
         // actually shipped is the last place to be picky about spelling.
@@ -273,6 +279,24 @@ void main() {
               'predict. Find what contributed it — it need not be a Flutter '
               'plugin — and either drop it or get the Play Console '
               'declaration to cover it before this ships.',
+        );
+      }
+    });
+
+    test('shijiRelease declares no health permissions', () {
+      final shijiManifests = mergedManifests.where(
+        (file) =>
+            file.path.split(Platform.pathSeparator).contains('shijiRelease'),
+      );
+      if (shijiManifests.isEmpty) {
+        markTestSkipped('No shijiRelease merged manifest under build/.');
+        return;
+      }
+      for (final manifest in shijiManifests) {
+        expect(
+          healthIn(manifest.readAsStringSync()).kept,
+          isEmpty,
+          reason: '${manifest.path} must remain recording-only.',
         );
       }
     });

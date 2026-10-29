@@ -1,9 +1,9 @@
+import 'package:opennutritracker/core/presentation/widgets/food_library_list.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
-import 'package:opennutritracker/core/presentation/widgets/app_card.dart';
 import 'package:opennutritracker/core/presentation/widgets/error_dialog.dart';
 import 'package:opennutritracker/core/styles/app_palette.dart';
 import 'package:opennutritracker/core/styles/dimens.dart';
@@ -139,28 +139,47 @@ class _FoodSearchTabViewState extends State<FoodSearchTabView>
           }
           if (state is ProductsLoadedState) {
             if (state.query != query) return _pendingSpinner;
-            return ListView(
-              children: [
-                for (final meal in state.products)
-                  _PickableMealCard(meal: meal, onTap: widget.onMealSelected),
-                SearchSourceNotice(
-                  sourceId: 'off',
-                  source: 'Open Food Facts',
-                  status: state.remoteStatus,
-                  onRetry: () =>
-                      _productsBloc.add(const RefreshProductsEvent()),
-                ),
-                if (state.products.isEmpty &&
-                    state.remoteStatus != SearchRemoteStatus.loading)
-                  NoResultsWidget(
-                    title:
-                        state.remoteStatus == SearchRemoteStatus.empty ||
-                            state.remoteStatus ==
-                                SearchRemoteStatus.notRequested
-                        ? null
-                        : S.of(context).noLocalSearchResults,
+            return Semantics(
+              identifier: 'ingredient-products-results',
+              child: CustomScrollView(
+                keyboardDismissBehavior:
+                    ScrollViewKeyboardDismissBehavior.onDrag,
+                slivers: [
+                  FoodListSliver(
+                    itemCount: state.products.length,
+                    itemBuilder: (context, index) => _PickableMealCard(
+                      meal: state.products[index],
+                      onTap: widget.onMealSelected,
+                    ),
                   ),
-              ],
+                  SliverToBoxAdapter(
+                    child: SearchSourceNotice(
+                      sourceId: 'off',
+                      source: 'Open Food Facts',
+                      status: state.remoteStatus,
+                      onRetry: () =>
+                          _productsBloc.add(const RefreshProductsEvent()),
+                    ),
+                  ),
+                  if (state.products.isEmpty &&
+                      state.remoteStatus != SearchRemoteStatus.loading)
+                    SliverToBoxAdapter(
+                      child: NoResultsWidget(
+                        title:
+                            state.remoteStatus == SearchRemoteStatus.empty ||
+                                state.remoteStatus ==
+                                    SearchRemoteStatus.notRequested
+                            ? null
+                            : S.of(context).noLocalSearchResults,
+                      ),
+                    ),
+                  SliverToBoxAdapter(
+                    child: SizedBox(
+                      height: MediaQuery.viewInsetsOf(context).bottom + 16,
+                    ),
+                  ),
+                ],
+              ),
             );
           }
           if (state is ProductsFailedState) {
@@ -192,27 +211,46 @@ class _FoodSearchTabViewState extends State<FoodSearchTabView>
           }
           if (state is FoodLoadedState) {
             if (state.query != query) return _pendingSpinner;
-            return ListView(
-              children: [
-                for (final meal in state.food)
-                  _PickableMealCard(meal: meal, onTap: widget.onMealSelected),
-                SearchSourceNotice(
-                  sourceId: 'reference',
-                  source: S.of(context).referenceFoodSourceLabel,
-                  status: state.remoteStatus,
-                  onRetry: () => _foodBloc.add(const RefreshFoodEvent()),
-                ),
-                if (state.food.isEmpty &&
-                    state.remoteStatus != SearchRemoteStatus.loading)
-                  NoResultsWidget(
-                    title:
-                        state.remoteStatus == SearchRemoteStatus.empty ||
-                            state.remoteStatus ==
-                                SearchRemoteStatus.notRequested
-                        ? null
-                        : S.of(context).noLocalSearchResults,
+            return Semantics(
+              identifier: 'ingredient-food-results',
+              child: CustomScrollView(
+                keyboardDismissBehavior:
+                    ScrollViewKeyboardDismissBehavior.onDrag,
+                slivers: [
+                  FoodListSliver(
+                    itemCount: state.food.length,
+                    itemBuilder: (context, index) => _PickableMealCard(
+                      meal: state.food[index],
+                      onTap: widget.onMealSelected,
+                    ),
                   ),
-              ],
+                  SliverToBoxAdapter(
+                    child: SearchSourceNotice(
+                      sourceId: 'reference',
+                      source: S.of(context).referenceFoodSourceLabel,
+                      status: state.remoteStatus,
+                      onRetry: () => _foodBloc.add(const RefreshFoodEvent()),
+                    ),
+                  ),
+                  if (state.food.isEmpty &&
+                      state.remoteStatus != SearchRemoteStatus.loading)
+                    SliverToBoxAdapter(
+                      child: NoResultsWidget(
+                        title:
+                            state.remoteStatus == SearchRemoteStatus.empty ||
+                                state.remoteStatus ==
+                                    SearchRemoteStatus.notRequested
+                            ? null
+                            : S.of(context).noLocalSearchResults,
+                      ),
+                    ),
+                  SliverToBoxAdapter(
+                    child: SizedBox(
+                      height: MediaQuery.viewInsetsOf(context).bottom + 16,
+                    ),
+                  ),
+                ],
+              ),
             );
           }
           if (state is FoodFailedState) {
@@ -249,11 +287,24 @@ class _FoodSearchTabViewState extends State<FoodSearchTabView>
         }
         if (state is RecentMealLoadedState) {
           if (state.recentMeals.isEmpty) return const NoResultsWidget();
-          return ListView.builder(
-            itemCount: state.recentMeals.length,
-            itemBuilder: (context, index) => _PickableMealCard(
-              meal: state.recentMeals[index],
-              onTap: widget.onMealSelected,
+          return Semantics(
+            identifier: 'ingredient-recent-results',
+            child: CustomScrollView(
+              keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+              slivers: [
+                FoodListSliver(
+                  itemCount: state.recentMeals.length,
+                  itemBuilder: (context, index) => _PickableMealCard(
+                    meal: state.recentMeals[index],
+                    onTap: widget.onMealSelected,
+                  ),
+                ),
+                SliverToBoxAdapter(
+                  child: SizedBox(
+                    height: MediaQuery.viewInsetsOf(context).bottom + 16,
+                  ),
+                ),
+              ],
             ),
           );
         }
@@ -306,65 +357,68 @@ class _PickableMealCard extends StatelessWidget {
     final accent = Theme.of(context).colorScheme.primary;
     final textTheme = Theme.of(context).textTheme;
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: Dimens.spacing8, vertical: Dimens.spacing4),
-      child: AppCard(
-        padding: EdgeInsets.zero,
-        child: InkWell(
-          borderRadius: Dimens.borderRadiusL,
-          onTap: () => onTap(meal),
-          child: Padding(
-            padding: const EdgeInsets.all(Dimens.spacing12),
-            child: Row(
-              children: [
-                meal.thumbnailImageUrl != null
-                    ? ClipRRect(
-                        borderRadius: Dimens.borderRadiusS,
-                        child: CachedNetworkImage(
-                          cacheManager: locator<CacheManager>(),
-                          fit: BoxFit.cover,
-                          width: 52,
-                          height: 52,
-                          imageUrl: meal.thumbnailImageUrl ?? '',
-                        ),
-                      )
-                    : Container(
+    return Material(
+      color: Colors.transparent,
+      borderRadius: Dimens.borderRadiusCard,
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        borderRadius: Dimens.borderRadiusCard,
+        onTap: () => onTap(meal),
+        child: Padding(
+          padding: const EdgeInsets.all(Dimens.spacing12),
+          child: Row(
+            children: [
+              meal.thumbnailImageUrl != null
+                  ? ClipRRect(
+                      borderRadius: Dimens.borderRadiusThumbnail,
+                      child: CachedNetworkImage(
+                        cacheManager: locator<CacheManager>(),
+                        fit: BoxFit.cover,
                         width: 52,
                         height: 52,
-                        decoration: BoxDecoration(
-                          color: accent.withValues(alpha: 0.14),
-                          borderRadius: Dimens.borderRadiusS,
-                        ),
-                        child: Icon(
-                          meal.source == MealSourceEntity.recipe
-                              ? Icons.menu_book_rounded
-                              : Icons.restaurant_rounded,
-                          color: accent,
-                          size: 24,
+                        imageUrl: meal.thumbnailImageUrl ?? '',
+                      ),
+                    )
+                  : Container(
+                      width: 52,
+                      height: 52,
+                      decoration: BoxDecoration(
+                        color: accent.withValues(alpha: 0.14),
+                        borderRadius: Dimens.borderRadiusThumbnail,
+                      ),
+                      child: Icon(
+                        meal.source == MealSourceEntity.recipe
+                            ? Icons.menu_book_rounded
+                            : Icons.restaurant_rounded,
+                        color: accent,
+                        size: 24,
+                      ),
+                    ),
+              const SizedBox(width: Dimens.spacing12),
+              Expanded(
+                child: AutoSizeText.rich(
+                  TextSpan(
+                    text: meal.name ?? '?',
+                    style: textTheme.titleSmall?.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
+                    children: [
+                      TextSpan(
+                        text: ' ${meal.brands ?? ''}',
+                        style: textTheme.bodyMedium?.copyWith(
+                          color: palette.textMuted,
                         ),
                       ),
-                const SizedBox(width: Dimens.spacing12),
-                Expanded(
-                  child: AutoSizeText.rich(
-                    TextSpan(
-                      text: meal.name ?? '?',
-                      style: textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700),
-                      children: [
-                        TextSpan(
-                          text: ' ${meal.brands ?? ''}',
-                          style: textTheme.bodyMedium?.copyWith(color: palette.textMuted),
-                        ),
-                      ],
-                    ),
-                    style: textTheme.titleSmall,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
+                    ],
                   ),
+                  style: textTheme.titleSmall,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                 ),
-                const SizedBox(width: Dimens.spacing8),
-                Icon(Icons.add_circle_outline_rounded, color: accent, size: 24),
-              ],
-            ),
+              ),
+              const SizedBox(width: Dimens.spacing8),
+              Icon(Icons.add_circle_outline_rounded, color: accent, size: 24),
+            ],
           ),
         ),
       ),

@@ -3,6 +3,7 @@ import 'package:opennutritracker/features/add_meal/presentation/add_meal_type.da
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:opennutritracker/core/domain/usecase/delete_recipe_usecase.dart';
+import 'package:opennutritracker/core/presentation/widgets/food_library_list.dart';
 import 'package:opennutritracker/core/domain/usecase/get_config_usecase.dart';
 import 'package:opennutritracker/core/domain/entity/intake_type_entity.dart';
 import 'package:opennutritracker/core/styles/app_palette.dart';
@@ -44,7 +45,7 @@ class _RecipesPageState extends State<RecipesPage>
     WidgetsBinding.instance.addObserver(this);
     _bloc = locator<RecipesBloc>();
     _customMealsBloc = locator<CustomMealsBloc>()..add(LoadCustomMealsEvent());
-    _tabController = TabController(length: 3, vsync: this);
+    _tabController = TabController(length: 3, initialIndex: 1, vsync: this);
     _searchController = TextEditingController();
     _bloc.add(const LoadRecipesEvent());
     _loadConfig();
@@ -75,49 +76,80 @@ class _RecipesPageState extends State<RecipesPage>
 
   @override
   Widget build(BuildContext context) {
+    final tabStyle = Theme.of(context).textTheme.titleSmall;
+    final tabsNeedScroll =
+        [
+          S.of(context).myFoodLabel,
+          S.of(context).libraryRecipes,
+          S.of(context).foodFavorites,
+        ].any((label) {
+          final painter = TextPainter(
+            text: TextSpan(text: label, style: tabStyle),
+            textDirection: Directionality.of(context),
+            textScaler: MediaQuery.textScalerOf(context),
+          )..layout();
+          final needsScroll =
+              painter.width + 32 > MediaQuery.sizeOf(context).width / 3;
+          painter.dispose();
+          return needsScroll;
+        });
     // Standalone pushed screen (reached from Add and from You): it owns its
     // Scaffold + AppBar, so the title bar clears the status bar / notch on
     // iPhone and the create/import actions live where you'd expect them.
     return Scaffold(
       appBar: AppBar(
-        title: Text(S.of(context).recipesLabel),
+        title: Text(
+          S.of(context).m4Library,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
         actions: [
-          PopupMenuButton<_RecipesAction>(
-            tooltip: S.of(context).addLabel,
-            icon: const Icon(Icons.add),
-            onSelected: (action) => _onAddSelected(context, action),
-            itemBuilder: (context) => [
-              PopupMenuItem(
-                value: _RecipesAction.newRecipe,
-                child: Row(
-                  children: [
-                    const Icon(Icons.menu_book_outlined),
-                    const SizedBox(width: Dimens.spacing12),
-                    Text(S.of(context).createRecipeTitle),
-                  ],
+          Semantics(
+            identifier: 'library-new',
+            child: PopupMenuButton<_RecipesAction>(
+              tooltip: S.of(context).libraryNew,
+              onSelected: (action) => _onAddSelected(context, action),
+              itemBuilder: (context) => [
+                PopupMenuItem(
+                  value: _RecipesAction.newCustomMeal,
+                  child: Text(S.of(context).libraryCreateFood),
+                ),
+                PopupMenuItem(
+                  value: _RecipesAction.newRecipe,
+                  child: Text(S.of(context).libraryCreateRecipe),
+                ),
+                PopupMenuItem(
+                  value: _RecipesAction.importRecipe,
+                  child: Text(S.of(context).libraryImportRecipe),
+                ),
+              ],
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                child: Align(
+                  widthFactor: 1,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 8,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.surfaceContainerHighest,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(Icons.add, size: 20),
+                        const SizedBox(width: 4),
+                        Text(S.of(context).libraryNew),
+                      ],
+                    ),
+                  ),
                 ),
               ),
-              PopupMenuItem(
-                value: _RecipesAction.newCustomMeal,
-                child: Row(
-                  children: [
-                    const Icon(Icons.restaurant_outlined),
-                    const SizedBox(width: Dimens.spacing12),
-                    Text(S.of(context).newCustomMealLabel),
-                  ],
-                ),
-              ),
-              PopupMenuItem(
-                value: _RecipesAction.importRecipe,
-                child: Row(
-                  children: [
-                    const Icon(Icons.qr_code_scanner_outlined),
-                    const SizedBox(width: Dimens.spacing12),
-                    Text(S.of(context).importRecipeLabel),
-                  ],
-                ),
-              ),
-            ],
+            ),
           ),
         ],
       ),
@@ -127,11 +159,21 @@ class _RecipesPageState extends State<RecipesPage>
           children: [
             TabBar(
               controller: _tabController,
-              isScrollable: true,
-              tabAlignment: TabAlignment.start,
+              isScrollable: tabsNeedScroll,
+              tabAlignment: tabsNeedScroll
+                  ? TabAlignment.start
+                  : TabAlignment.fill,
+              labelStyle: tabStyle,
+              dividerHeight: 0,
               tabs: [
-                Tab(text: S.of(context).recipesLabel),
-                Tab(text: S.of(context).settingsCustomMealsLabel),
+                Semantics(
+                  identifier: 'library-my-foods',
+                  child: Tab(text: S.of(context).myFoodLabel),
+                ),
+                Semantics(
+                  identifier: 'library-recipes',
+                  child: Tab(text: S.of(context).libraryRecipes),
+                ),
                 Semantics(
                   identifier: 'library-favorites',
                   child: Tab(text: S.of(context).foodFavorites),
@@ -142,8 +184,8 @@ class _RecipesPageState extends State<RecipesPage>
               child: TabBarView(
                 controller: _tabController,
                 children: [
-                  _buildRecipesTab(),
                   CustomMealsTab(usesImperialUnits: _usesImperialUnits),
+                  _buildRecipesTab(),
                   PersonalFoodList(
                     day: DateTime.now(),
                     addMealType: AddMealType.breakfastType,
@@ -248,7 +290,7 @@ class _RecipesPageState extends State<RecipesPage>
                     isDense: true,
                     filled: true,
                     fillColor: palette.surfaceMuted,
-                    hintText: S.of(context).searchLabel,
+                    hintText: S.of(context).librarySearchRecipes,
                     prefixIcon: Icon(
                       Icons.search_rounded,
                       color: palette.textMuted,
@@ -266,11 +308,11 @@ class _RecipesPageState extends State<RecipesPage>
                           )
                         : null,
                     border: OutlineInputBorder(
-                      borderRadius: Dimens.borderRadiusM,
+                      borderRadius: Dimens.borderRadiusControl,
                       borderSide: BorderSide.none,
                     ),
                     enabledBorder: OutlineInputBorder(
-                      borderRadius: Dimens.borderRadiusM,
+                      borderRadius: Dimens.borderRadiusControl,
                       borderSide: BorderSide.none,
                     ),
                   ),
@@ -292,8 +334,7 @@ class _RecipesPageState extends State<RecipesPage>
                         child: ChoiceChip(
                           label: Text(S.of(context).recipesFilterAllLabel),
                           selected: _activeTag == null,
-                          onSelected: (_) =>
-                              setState(() => _activeTag = null),
+                          onSelected: (_) => setState(() => _activeTag = null),
                         ),
                       ),
                       for (final tag in allTags)
@@ -319,9 +360,7 @@ class _RecipesPageState extends State<RecipesPage>
                           padding: const EdgeInsets.all(Dimens.spacing32),
                           child: Text(
                             S.of(context).recipesEmptyLabel,
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyLarge
+                            style: Theme.of(context).textTheme.bodyLarge
                                 ?.copyWith(color: palette.textMuted),
                           ),
                         ),
@@ -330,10 +369,8 @@ class _RecipesPageState extends State<RecipesPage>
                         children: [
                           if (_selectionMode) _buildSelectionBar(context),
                           Expanded(
-                            child: ListView.builder(
-                              padding: const EdgeInsets.symmetric(
-                                vertical: Dimens.spacing8,
-                              ),
+                            child: FoodLibraryList(
+                              title: S.of(context).libraryRecipes,
                               itemCount: filtered.length,
                               itemBuilder: (context, index) {
                                 final recipe = filtered[index];
@@ -398,7 +435,7 @@ class _RecipesPageState extends State<RecipesPage>
       ),
       decoration: BoxDecoration(
         color: accent.withValues(alpha: 0.12),
-        borderRadius: Dimens.borderRadiusM,
+        borderRadius: Dimens.borderRadiusControl,
       ),
       child: Row(
         children: [
@@ -414,7 +451,7 @@ class _RecipesPageState extends State<RecipesPage>
               overflow: TextOverflow.ellipsis,
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     color: accent,
-                    fontWeight: FontWeight.w700,
+                    fontWeight: FontWeight.w600,
                   ),
             ),
           ),
@@ -481,7 +518,7 @@ class _RecipesPageState extends State<RecipesPage>
               S.of(context).recipesEmptyLabel,
               style: Theme.of(
                 context,
-              ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
+              ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: Dimens.spacing8),

@@ -53,7 +53,7 @@ class FoodPortionSummary extends StatelessWidget {
             text: kcal == null
                 ? '—'
                 : EnergyDisplay.convert(context, kcal!).round().toString(),
-            style: theme.textTheme.headlineMedium,
+            style: theme.textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.w700),
             children: [
               TextSpan(
                 text: ' ${EnergyDisplay.unitLabel(context)}',

@@ -1,3 +1,4 @@
+import 'package:opennutritracker/core/utils/food_unit_label.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:opennutritracker/core/styles/app_palette.dart';
@@ -111,8 +112,8 @@ class _MealDetailBottomSheetState extends State<MealDetailBottomSheet> {
             ),
             color: palette.surface,
             borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(Dimens.radiusL),
-              topRight: Radius.circular(Dimens.radiusL),
+              topLeft: Radius.circular(Dimens.radiusModal),
+              topRight: Radius.circular(Dimens.radiusModal),
             ),
           ),
           child: SafeArea(
@@ -175,7 +176,7 @@ class _MealDetailBottomSheetState extends State<MealDetailBottomSheet> {
                                               vertical: 16,
                                             ),
                                         border: const OutlineInputBorder(
-                                          borderRadius: Dimens.borderRadiusM,
+                                          borderRadius: Dimens.borderRadiusControl,
                                         ),
                                         labelText: S.of(context).quantityLabel,
                                       ),
@@ -205,7 +206,7 @@ class _MealDetailBottomSheetState extends State<MealDetailBottomSheet> {
                                               vertical: 16,
                                             ),
                                         border: const OutlineInputBorder(
-                                          borderRadius: Dimens.borderRadiusM,
+                                          borderRadius: Dimens.borderRadiusControl,
                                         ),
                                         labelText: S.of(context).unitLabel,
                                       ),
@@ -257,7 +258,7 @@ class _MealDetailBottomSheetState extends State<MealDetailBottomSheet> {
                             child: Text(
                               '1 ${S.of(context).servingLabel} = '
                               '${widget.product.scalableServingQuantity!.toString().replaceFirst(RegExp(r"\.0$"), "")} '
-                              '${widget.product.servingUnit ?? widget.product.mealUnit ?? S.of(context).gramMilliliterUnit}',
+                              '${foodUnitLabel(S.of(context), widget.product.servingUnit ?? widget.product.mealUnit)}',
                               style: Theme.of(context).textTheme.bodySmall,
                             ),
                           ),
@@ -465,7 +466,7 @@ class _MealDetailBottomSheetState extends State<MealDetailBottomSheet> {
         ? S.of(context).servingLabel
         : (servingSize != null && servingSize.trim().isNotEmpty)
         ? localizeServingLabel(S.of(context), servingSize)
-        : '${S.of(context).servingLabel} (${widget.product.servingQuantity} ${widget.product.servingUnit})';
+        : '${S.of(context).servingLabel} (${widget.product.servingQuantity} ${foodUnitLabel(S.of(context), widget.product.servingUnit)})';
     return DropdownMenuItem(
       value: UnitDropdownItem.serving.toString(),
       child: Text(servingText, overflow: TextOverflow.ellipsis, maxLines: 1),

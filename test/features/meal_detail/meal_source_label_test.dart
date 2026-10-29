@@ -71,10 +71,76 @@ void main() {
       expect(find.textContaining('已核验'), findsNothing);
       if (entry.$1 != null) {
         expect(
-          tester.widget<TextButton>(find.byType(TextButton)).onPressed != null,
+          tester
+                  .widget<TextButton>(
+                    find.descendant(
+                      of: find.byWidgetPredicate(
+                        (w) =>
+                            w is Semantics &&
+                            w.properties.identifier == 'meal-info-source',
+                      ),
+                      matching: find.byType(TextButton),
+                    ),
+                  )
+                  .onPressed !=
+              null,
           entry.$4,
         );
       }
     });
+  }
+
+  for (final source in [MealSourceEntity.off, MealSourceEntity.custom]) {
+    testWidgets(
+      'nutrition and source details stay available on demand $source',
+      (tester) async {
+        tester.view.physicalSize = const Size(320, 740);
+        tester.view.devicePixelRatio = 1;
+        addTearDown(tester.view.reset);
+        await tester.pumpWidget(
+          MaterialApp(
+            locale: const Locale('zh'),
+            supportedLocales: S.supportedLocales,
+            localizationsDelegates: const [
+              S.delegate,
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+            builder: (context, child) => MediaQuery(
+              data: MediaQuery.of(
+                context,
+              ).copyWith(textScaler: TextScaler.linear(2)),
+              child: child!,
+            ),
+            home: Scaffold(
+              body: SingleChildScrollView(
+                child: MealInfoButton(url: null, source: source),
+              ),
+            ),
+          ),
+        );
+        await tester.pumpAndSettle();
+        expect(find.textContaining('4/4/9'), findsNothing);
+        expect(find.textContaining('无法保证'), findsNothing);
+        await tester.tap(
+          find.byWidgetPredicate(
+            (w) =>
+                w is Semantics &&
+                w.properties.identifier == 'meal-nutrition-source-info',
+          ),
+        );
+        await tester.pumpAndSettle();
+        expect(find.textContaining('4/4/9'), findsOneWidget);
+        expect(
+          find.textContaining('无法保证'),
+          source == MealSourceEntity.off ? findsOneWidget : findsNothing,
+        );
+        expect(tester.takeException(), isNull);
+        await tester.tap(find.text('关闭'));
+        await tester.pumpAndSettle();
+        expect(find.byType(AlertDialog), findsNothing);
+      },
+    );
   }
 }

@@ -282,7 +282,7 @@ class _EditMealScreenState extends State<EditMealScreen> {
             overflow: TextOverflow.ellipsis,
             style: Theme.of(
               context,
-            ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w800),
+            ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600),
           ),
         ),
         body: SafeArea(
@@ -432,13 +432,6 @@ class _EditMealScreenState extends State<EditMealScreen> {
             },
           ),
         ),
-        const SizedBox(height: 8),
-        Text(
-          isSimple
-              ? S.of(context).customMealFormSimpleHelp
-              : S.of(context).customMealFormAdvancedHelp,
-          style: Theme.of(context).textTheme.bodySmall,
-        ),
         const SizedBox(height: 16),
         _section(S.of(context).foodBasicInformation, [
           Semantics(
@@ -448,7 +441,7 @@ class _EditMealScreenState extends State<EditMealScreen> {
               decoration: InputDecoration(
                 labelText: S.of(context).mealNameLabel,
                 border: const OutlineInputBorder(
-                  borderRadius: Dimens.borderRadiusM,
+                  borderRadius: Dimens.borderRadiusControl,
                 ),
               ),
               keyboardType: TextInputType.text,
@@ -462,7 +455,7 @@ class _EditMealScreenState extends State<EditMealScreen> {
               decoration: InputDecoration(
                 labelText: S.of(context).mealBrandsLabel,
                 border: const OutlineInputBorder(
-                  borderRadius: Dimens.borderRadiusM,
+                  borderRadius: Dimens.borderRadiusControl,
                 ),
               ),
               keyboardType: TextInputType.text,
@@ -480,7 +473,7 @@ class _EditMealScreenState extends State<EditMealScreen> {
                 labelText: S.of(context).customMealBarcodeLabel,
                 hintText: S.of(context).customMealBarcodeHint,
                 border: const OutlineInputBorder(
-                  borderRadius: Dimens.borderRadiusM,
+                  borderRadius: Dimens.borderRadiusControl,
                 ),
                 suffixIcon: Semantics(
                   identifier: 'edit-meal-barcode-scan',
@@ -550,7 +543,7 @@ class _EditMealScreenState extends State<EditMealScreen> {
                       '${S.of(context).mealEnergyLabel} ($energyUnitSuffix)',
                   helperText: energyHelper,
                   border: const OutlineInputBorder(
-                    borderRadius: Dimens.borderRadiusM,
+                    borderRadius: Dimens.borderRadiusControl,
                   ),
                 ),
                 keyboardType: const TextInputType.numberWithOptions(
@@ -567,7 +560,7 @@ class _EditMealScreenState extends State<EditMealScreen> {
                 decoration: InputDecoration(
                   labelText: S.of(context).energyInputUnit,
                   border: const OutlineInputBorder(
-                    borderRadius: Dimens.borderRadiusM,
+                    borderRadius: Dimens.borderRadiusControl,
                   ),
                 ),
                 items: const [
@@ -577,7 +570,7 @@ class _EditMealScreenState extends State<EditMealScreen> {
                 onChanged: _switchEnergyUnit,
               ),
             ),
-          ], compactUnit: true),
+          ]),
           const SizedBox(height: 8),
           if (_readEnergyKcal() case final kcal?
               when kcal.isFinite && kcal >= 0)
@@ -605,7 +598,7 @@ class _EditMealScreenState extends State<EditMealScreen> {
                   suffixText: 'g',
                   helperText: macroHelper,
                   border: const OutlineInputBorder(
-                    borderRadius: Dimens.borderRadiusM,
+                    borderRadius: Dimens.borderRadiusControl,
                   ),
                 ),
                 keyboardType: const TextInputType.numberWithOptions(
@@ -624,7 +617,7 @@ class _EditMealScreenState extends State<EditMealScreen> {
                   suffixText: 'g',
                   helperText: macroHelper,
                   border: const OutlineInputBorder(
-                    borderRadius: Dimens.borderRadiusM,
+                    borderRadius: Dimens.borderRadiusControl,
                   ),
                 ),
                 keyboardType: const TextInputType.numberWithOptions(
@@ -643,7 +636,7 @@ class _EditMealScreenState extends State<EditMealScreen> {
                   suffixText: 'g',
                   helperText: macroHelper,
                   border: const OutlineInputBorder(
-                    borderRadius: Dimens.borderRadiusM,
+                    borderRadius: Dimens.borderRadiusControl,
                   ),
                 ),
                 keyboardType: const TextInputType.numberWithOptions(
@@ -693,7 +686,7 @@ class _EditMealScreenState extends State<EditMealScreen> {
               S.of(context).micronutrientsLabel,
               style: Theme.of(
                 context,
-              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
+              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
             ),
             const SizedBox(height: 8),
             for (final field in [
@@ -850,37 +843,26 @@ class _EditMealScreenState extends State<EditMealScreen> {
     ),
   );
 
-  Widget _responsiveFields(List<Widget> children, {bool compactUnit = false}) =>
-      LayoutBuilder(
-        builder: (context, constraints) {
-          final columns =
-              constraints.maxWidth >= 280 &&
-                  MediaQuery.textScalerOf(context).scale(14) <= 18
-              ? 2
-              : 1;
-          if (compactUnit && columns == 2) {
-            return Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(flex: 7, child: children[0]),
-                const SizedBox(width: 12),
-                Expanded(flex: 3, child: children[1]),
-              ],
-            );
-          }
-          return Wrap(
-            spacing: 12,
-            runSpacing: 16,
-            children: [
-              for (final child in children)
-                SizedBox(
-                  width: (constraints.maxWidth - (columns - 1) * 12) / columns,
-                  child: child,
-                ),
-            ],
-          );
-        },
+  Widget _responsiveFields(List<Widget> children) => LayoutBuilder(
+    builder: (context, constraints) {
+      final columns =
+          constraints.maxWidth >= 280 &&
+              MediaQuery.textScalerOf(context).scale(14) <= 18
+          ? 2
+          : 1;
+      return Wrap(
+        spacing: 12,
+        runSpacing: 16,
+        children: [
+          for (final child in children)
+            SizedBox(
+              width: (constraints.maxWidth - (columns - 1) * 12) / columns,
+              child: child,
+            ),
+        ],
       );
+    },
+  );
 
   Widget _buildMicroField(
     TextEditingController controller,
@@ -895,7 +877,9 @@ class _EditMealScreenState extends State<EditMealScreen> {
         labelText: label,
         suffixText: unit,
         helperText: helperText,
-        border: const OutlineInputBorder(borderRadius: Dimens.borderRadiusM),
+        border: const OutlineInputBorder(
+          borderRadius: Dimens.borderRadiusControl,
+        ),
       ),
       keyboardType: const TextInputType.numberWithOptions(decimal: true),
     );
@@ -940,7 +924,7 @@ class _EditMealScreenState extends State<EditMealScreen> {
                 vertical: 16,
               ),
               border: const OutlineInputBorder(
-                borderRadius: Dimens.borderRadiusM,
+                borderRadius: Dimens.borderRadiusControl,
               ),
             ),
             keyboardType: const TextInputType.numberWithOptions(decimal: true),
@@ -1279,7 +1263,7 @@ class _SaveForLaterField extends StatelessWidget {
                   Text(
                     s.recipeSaveForLaterLabel,
                     style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                      fontWeight: FontWeight.w700,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
                   const SizedBox(height: Dimens.spacing4),

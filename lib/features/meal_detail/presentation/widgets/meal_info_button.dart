@@ -3,6 +3,7 @@ import 'package:opennutritracker/core/utils/off_const.dart';
 import 'package:opennutritracker/features/add_meal/data/dto/fdc/fdc_const.dart';
 import 'package:opennutritracker/features/add_meal/data/dto/sp/sp_const.dart';
 import 'package:opennutritracker/features/add_meal/domain/entity/meal_entity.dart';
+import 'package:opennutritracker/features/meal_detail/presentation/widgets/off_disclaimer.dart';
 import 'package:opennutritracker/generated/l10n.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -28,7 +29,47 @@ class MealInfoButton extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) => Column(
+    mainAxisSize: MainAxisSize.min,
+    children: [
+      _buildSource(context),
+      Semantics(
+        identifier: 'meal-nutrition-source-info',
+        child: TextButton.icon(
+          icon: const Icon(Icons.info_outline_rounded, size: 20),
+          label: Text(S.of(context).foodNutritionSourceInfo),
+          onPressed: () => showDialog<void>(
+            context: context,
+            builder: (context) => AlertDialog(
+              title: Text(S.of(context).foodNutritionSourceInfo),
+              content: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(S.of(context).foodNutritionScopeHint),
+                    if (source == MealSourceEntity.off ||
+                        originalSource == 'off') ...[
+                      const SizedBox(height: 16),
+                      const OffDisclaimer(),
+                    ],
+                  ],
+                ),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: Text(S.of(context).dialogCloseLabel),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    ],
+  );
+
+  Widget _buildSource(BuildContext context) {
     final accent = Theme.of(context).colorScheme.primary;
     final infoUrl = _getInfoUrl();
     final uri = Uri.tryParse(infoUrl);
@@ -62,7 +103,7 @@ class MealInfoButton extends StatelessWidget {
               : '${S.of(context).myFoodLabel} · ${S.of(context).customMealReference(reference)}',
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
             color: accent,
-            fontWeight: FontWeight.w700,
+            fontWeight: FontWeight.w500,
           ),
           textAlign: TextAlign.center,
         ),
@@ -88,7 +129,8 @@ class MealInfoButton extends StatelessWidget {
       case MealSourceEntity.fdc:
         // Foods without a per-item detail page (BLS, INDB, TBCA...) link
         // to their database's website instead.
-        siteUrl = url ??
+        siteUrl =
+            url ??
             SPConst.foodSourceWebsites[backendSource] ??
             FDCConst.fdcWebsiteUrl;
         break;

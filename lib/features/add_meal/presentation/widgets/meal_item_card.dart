@@ -1,8 +1,9 @@
+import 'package:opennutritracker/core/utils/food_unit_label.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
-import 'package:opennutritracker/core/presentation/widgets/app_card.dart';
+import 'package:opennutritracker/core/presentation/widgets/food_library_list.dart';
 import 'package:opennutritracker/core/presentation/widgets/intake_card.dart';
 import 'package:opennutritracker/core/utils/energy_display.dart';
 import 'package:opennutritracker/core/styles/app_palette.dart';
@@ -51,70 +52,91 @@ class MealItemCard extends StatelessWidget {
             mealEntity.source == MealSourceEntity.fdc)
         ? resolveFoodEmoji(mealEntity.name)
         : null;
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: Dimens.spacing8),
-      child: AppCard(
-        shadowed: false,
-        borderRadius: 16,
+    if (browseOnly) {
+      return FoodLibraryTile(
+        title: mealEntity.name ?? '?',
+        brand: mealEntity.brands,
+        detail: _nutritionSummary(context),
+        leading: SizedBox.square(
+          dimension: 44,
+          child: FittedBox(
+            child: _buildThumbnail(context, palette, accent, isRecipe, emoji),
+          ),
+        ),
+        trailing: Icon(
+          Icons.chevron_right_rounded,
+          color: palette.textMuted,
+          size: 24,
+        ),
         onTap: () => _onItemPressed(context),
-        padding: const EdgeInsets.all(Dimens.spacing12),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Row(
-              children: [
-                _buildThumbnail(context, palette, accent, isRecipe, emoji),
-                const SizedBox(width: Dimens.spacing16),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      _buildTitle(context, palette),
-                      if (!stacked) ...[
-                        const SizedBox(height: Dimens.spacing4),
-                        Text(
-                          _nutritionSummary(context),
-                          style: Theme.of(context).textTheme.bodyMedium,
-                        ),
-                        const SizedBox(height: Dimens.spacing4),
-                        _buildSubtitle(context, palette, accent, isRecipe),
+      );
+    }
+    return Material(
+      color: Colors.transparent,
+      borderRadius: Dimens.borderRadiusCard,
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        onTap: () => _onItemPressed(context),
+        child: Padding(
+          padding: const EdgeInsets.all(Dimens.spacing12),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Row(
+                children: [
+                  _buildThumbnail(context, palette, accent, isRecipe, emoji),
+                  const SizedBox(width: Dimens.spacing16),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        _buildTitle(context, palette),
+                        if (!stacked) ...[
+                          const SizedBox(height: Dimens.spacing4),
+                          Text(
+                            _nutritionSummary(context),
+                            style: Theme.of(context).textTheme.bodyMedium,
+                          ),
+                          const SizedBox(height: Dimens.spacing4),
+                          _buildSubtitle(context, palette, accent, isRecipe),
+                        ],
                       ],
-                    ],
-                  ),
-                ),
-                const SizedBox(width: Dimens.spacing8),
-                if (!browseOnly)
-                  Semantics(
-                    identifier: 'meal-item-add',
-                    child: IconButton(
-                      tooltip: S.of(context).addLabel,
-                      style: IconButton.styleFrom(
-                        foregroundColor: Theme.of(
-                          context,
-                        ).colorScheme.onPrimary,
-                        backgroundColor: accent,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                      icon: const Icon(Icons.add_rounded, size: 24),
-                      onPressed: () => _onItemPressed(context),
                     ),
                   ),
-              ],
-            ),
-            if (stacked) ...[
-              const SizedBox(height: 8),
-              Text(
-                _nutritionSummary(context),
-                style: Theme.of(context).textTheme.bodyMedium,
+                  const SizedBox(width: Dimens.spacing8),
+                  if (!browseOnly)
+                    Semantics(
+                      identifier: 'meal-item-add',
+                      child: IconButton(
+                        tooltip: S.of(context).addLabel,
+                        style: IconButton.styleFrom(
+                          foregroundColor: Theme.of(
+                            context,
+                          ).colorScheme.onPrimary,
+                          backgroundColor: accent,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        icon: const Icon(Icons.add_rounded, size: 24),
+                        onPressed: () => _onItemPressed(context),
+                      ),
+                    ),
+                ],
               ),
-              const SizedBox(height: 4),
-              _buildSubtitle(context, palette, accent, isRecipe),
+              if (stacked) ...[
+                const SizedBox(height: 8),
+                Text(
+                  _nutritionSummary(context),
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
+                const SizedBox(height: 4),
+                _buildSubtitle(context, palette, accent, isRecipe),
+              ],
             ],
-          ],
+          ),
         ),
       ),
     );
@@ -125,7 +147,7 @@ class MealItemCard extends StatelessWidget {
         TextSpan(
           text: mealEntity.name ?? "?",
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
-            fontWeight: FontWeight.w700,
+            fontWeight: FontWeight.w600,
             color: palette.textStrong,
           ),
           children: [
@@ -151,7 +173,7 @@ class MealItemCard extends StatelessWidget {
     if (mealEntity.localImagePath != null) {
       return MealThumbnail(meal: mealEntity, size: Dimens.mealThumb);
     }
-    final radius = BorderRadius.circular(Dimens.radiusM);
+    final radius = Dimens.borderRadiusThumbnail;
     if (mealEntity.thumbnailImageUrl != null) {
       return ClipRRect(
         borderRadius: radius,
@@ -237,7 +259,7 @@ class MealItemCard extends StatelessWidget {
         if (package != null && package.isFinite && package > 0)
           Text(
             '${S.of(context).mealSizeLabel} ${_number(package)} '
-            '${mealEntity.mealUnit ?? "g/ml"}',
+            '${foodUnitLabel(S.of(context), mealEntity.mealUnit)}',
           ),
       ],
     );
@@ -252,7 +274,7 @@ class MealItemCard extends StatelessWidget {
     final energy = kcal100 != null && kcal100.isFinite && kcal100 >= 0
         ? EnergyDisplay.formatRoundedWithUnit(context, kcal100 * basis / 100)
         : '— ${EnergyDisplay.unitLabel(context)}';
-    return '${S.of(context).customMealNutritionBasis(basis.toString().replaceFirst(RegExp(r"\.0$"), ""), mealEntity.mealUnit ?? "g/ml")} · $energy';
+    return '${S.of(context).customMealNutritionBasis(basis.toString().replaceFirst(RegExp(r"\.0$"), ""), foodUnitLabel(S.of(context), mealEntity.mealUnit))} · $energy';
   }
 
   /// Personal foods take precedence over their retained public reference.
@@ -293,7 +315,7 @@ class MealItemCard extends StatelessWidget {
         label,
         style: Theme.of(context).textTheme.labelSmall?.copyWith(
           color: foreground,
-          fontWeight: FontWeight.w700,
+          fontWeight: FontWeight.w600,
         ),
       ),
     );

@@ -1,0 +1,52 @@
+{
+  "date": "2026-10-27",
+  "status": "apk_verified_device_acceptance_pending",
+  "base_commit": "9730d89d0689253e9c8f6e04709d129277ede7f6",
+  "worktree_uncommitted": true,
+  "artifact": {
+    "appName": "食迹",
+    "package": "com.huangyu.shiji",
+    "versionName": "2.4.2",
+    "versionCode": 68,
+    "abi": "arm64-v8a",
+    "minSdk": 26,
+    "targetSdk": 36,
+    "bytes": 48263241,
+    "sha256": "d94b48d756a13fa478ecd276e5162fd3fcd13aafc4cb85df19546354970bdd88",
+    "certificateSha256": "c578db2e9af3f2c4e0fa06edc05627a17b90dcd9a2db92ff6627934ae65f3f0f",
+    "debuggable": false,
+    "aot": true
+  },
+  "checks": {
+    "same_release_signing_certificate": true,
+    "permissions_unchanged_from_2_4_1": true,
+    "source_inputs_unchanged_during_build": 949,
+    "related_tests_previously_passed": 23,
+    "implementation_evidence": "ui-library-implementation.json",
+    "temporary_build_configuration_restored": true,
+    "previous_apks_preserved": true,
+    "device_detected": false,
+    "installed": false,
+    "device_acceptance_passed": false,
+    "github_updated": false
+  },
+  "source_sha256": {
+    "lib/core/presentation/widgets/food_library_list.dart": "7ce04c15e1cfadf313bfcbdc81ef09f0fe2b50baf1e5071924167496234dc0d0",
+    "lib/features/add_meal/presentation/widgets/meal_item_card.dart": "134f15c73a2f44456fcf277b9935ec4dc6895e193a9e579f7118d1f7d58f199e",
+    "lib/features/add_meal/presentation/widgets/personal_food_list.dart": "63699dc1903968fa6d466aba773b86d5edbd6895fe49c5e6959f05e127be7600",
+    "lib/features/recipes/presentation/screens/recipes_page.dart": "b27c577126fc9eea539471e18ea0414efd6ee926a6784d4a8ef12eb9d1422d6d",
+    "lib/features/recipes/presentation/widgets/custom_meals_tab.dart": "706ede37a03db4ae3e287312c80a0aa14fae014e80dddd8914260e775630c4a3",
+    "lib/features/recipes/presentation/widgets/recipe_list_item.dart": "fd4bf2a0a3c1bf4b69a250ade6f894936cf058ac631d308c62890ea7bea8be01",
+    "lib/l10n/intl_en.arb": "d21a51307dd61627906396ebd258279fa5cf13d4f2cd9aa648f875174813fae7",
+    "lib/l10n/intl_zh.arb": "68052cc311709db4c4e9d6a008235ff148c72e002151f0cd3db6c6fc2f0cd473",
+    "test/features/recipes/presentation/widgets/food_library_test.dart": "b1cdaf1347581a6b0e2e309840686bb3c05e2721d1ecaacd2b5fba82f2fd352e",
+    "pubspec.yaml": "3ea3143228021aaa316f30fd9caec35e043c8eba8e394198cbb61e88500342b0"
+  },
+  "limits": [
+    "No USB device was detected during this build session",
+    "No device data was read or modified and no install was attempted",
+    "Component tests and APK verification do not establish phone acceptance"
+  ],
+  "device_followup": "ui-device-v2.4.2-68.json",
+  "stage_note": "Original checks in this file describe the build/local-test stage; follow the device followup for subsequent install and targeted phone checks."
+}

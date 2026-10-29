@@ -16,21 +16,21 @@ TextTheme appTextTheme(AppPalette p) {
         color: color ?? p.textStrong,
       );
   return TextTheme(
-    displayLarge: s(57, FontWeight.w800, spacing: -1),
-    displayMedium: s(45, FontWeight.w800, spacing: -0.5),
-    displaySmall: s(36, FontWeight.w800),
-    headlineLarge: s(32, FontWeight.w800),
-    headlineMedium: s(28, FontWeight.w700),
-    headlineSmall: s(23, FontWeight.w700),
-    titleLarge: s(21, FontWeight.w700),
-    titleMedium: s(16, FontWeight.w700),
+    displayLarge: s(57, FontWeight.w700, spacing: -1),
+    displayMedium: s(45, FontWeight.w700, spacing: -0.5),
+    displaySmall: s(36, FontWeight.w700),
+    headlineLarge: s(32, FontWeight.w700),
+    headlineMedium: s(28, FontWeight.w600),
+    headlineSmall: s(22, FontWeight.w600),
+    titleLarge: s(21, FontWeight.w600),
+    titleMedium: s(16, FontWeight.w600),
     titleSmall: s(14, FontWeight.w600),
-    bodyLarge: s(16, FontWeight.w500),
-    bodyMedium: s(14, FontWeight.w500),
-    bodySmall: s(12.5, FontWeight.w500, color: p.textMuted),
-    labelLarge: s(15, FontWeight.w700),
-    labelMedium: s(13, FontWeight.w700),
-    labelSmall: s(11.5, FontWeight.w700, color: p.textMuted),
+    bodyLarge: s(16, FontWeight.w400),
+    bodyMedium: s(14, FontWeight.w400),
+    bodySmall: s(12.5, FontWeight.w400, color: p.textMuted),
+    labelLarge: s(15, FontWeight.w500),
+    labelMedium: s(13, FontWeight.w500),
+    labelSmall: s(11.5, FontWeight.w500, color: p.textMuted),
   );
 }
 
@@ -40,9 +40,7 @@ TextTheme appTextTheme(AppPalette p) {
 ThemeData buildAppTheme(AppPalette p) {
   final scheme = p.colorScheme;
   final text = appTextTheme(p);
-  const pill = RoundedRectangleBorder(
-    borderRadius: BorderRadius.all(Radius.circular(12)),
-  );
+  const pill = RoundedRectangleBorder(borderRadius: Dimens.borderRadiusControl);
   return ThemeData(
     useMaterial3: true,
     colorScheme: scheme,
@@ -54,7 +52,7 @@ ThemeData buildAppTheme(AppPalette p) {
       surfaceTintColor: Colors.transparent,
       elevation: 0,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: Dimens.borderRadiusCard,
         side: BorderSide(color: p.border, width: Dimens.hairline),
       ),
       margin: EdgeInsets.zero,
@@ -86,7 +84,9 @@ ThemeData buildAppTheme(AppPalette p) {
       focusElevation: 0,
       hoverElevation: 0,
       highlightElevation: 0,
-      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(22))),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(Radius.circular(22)),
+      ),
     ),
     filledButtonTheme: FilledButtonThemeData(
       style: FilledButton.styleFrom(
@@ -105,6 +105,22 @@ ThemeData buildAppTheme(AppPalette p) {
         shape: pill,
       ),
     ),
+    outlinedButtonTheme: OutlinedButtonThemeData(
+      style: OutlinedButton.styleFrom(
+        minimumSize: const Size(64, Dimens.minTouchTarget),
+        shape: pill,
+        textStyle: text.labelLarge,
+      ),
+    ),
+    elevatedButtonTheme: ElevatedButtonThemeData(
+      style: ElevatedButton.styleFrom(
+        minimumSize: const Size(64, Dimens.minTouchTarget),
+        shape: pill,
+        textStyle: text.labelLarge,
+        elevation: 0,
+      ),
+    ),
+    popupMenuTheme: const PopupMenuThemeData(shape: Dimens.shapeControl),
     inputDecorationTheme: InputDecorationThemeData(
       filled: true,
       fillColor: p.surfaceMuted,
@@ -113,15 +129,15 @@ ThemeData buildAppTheme(AppPalette p) {
         vertical: Dimens.spacing12,
       ),
       border: const OutlineInputBorder(
-        borderRadius: BorderRadius.all(Radius.circular(10)),
+        borderRadius: Dimens.borderRadiusControl,
         borderSide: BorderSide.none,
       ),
       enabledBorder: const OutlineInputBorder(
-        borderRadius: BorderRadius.all(Radius.circular(10)),
+        borderRadius: Dimens.borderRadiusControl,
         borderSide: BorderSide.none,
       ),
       focusedBorder: OutlineInputBorder(
-        borderRadius: const BorderRadius.all(Radius.circular(10)),
+        borderRadius: Dimens.borderRadiusControl,
         borderSide: BorderSide(color: p.accent, width: 2),
       ),
     ),
@@ -133,14 +149,20 @@ ThemeData buildAppTheme(AppPalette p) {
     dialogTheme: DialogThemeData(
       backgroundColor: p.surface,
       surfaceTintColor: Colors.transparent,
-      shape: const RoundedRectangleBorder(borderRadius: Dimens.borderRadiusL),
+      shape: const RoundedRectangleBorder(
+        borderRadius: Dimens.borderRadiusModal,
+      ),
     ),
-    listTileTheme: const ListTileThemeData(shape: RoundedRectangleBorder(borderRadius: Dimens.borderRadiusM)),
+    listTileTheme: const ListTileThemeData(
+      shape: RoundedRectangleBorder(borderRadius: Dimens.borderRadiusControl),
+    ),
     bottomSheetTheme: BottomSheetThemeData(
       backgroundColor: p.surface,
       surfaceTintColor: Colors.transparent,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(Dimens.radiusXL)),
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(Dimens.radiusModal),
+        ),
       ),
     ),
     pageTransitionsTheme: const PageTransitionsTheme(

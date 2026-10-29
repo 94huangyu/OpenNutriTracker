@@ -1,3 +1,4 @@
+import 'package:opennutritracker/core/presentation/widgets/food_library_list.dart';
 import 'package:opennutritracker/core/data/data_source/personal_food_data_source.dart';
 import 'package:opennutritracker/features/add_meal/presentation/widgets/personal_food_list.dart';
 import 'package:flutter/material.dart';
@@ -100,7 +101,8 @@ class _AddMealScreenState extends State<AddMealScreen> {
       foregroundColor: palette.textStrong,
       side: BorderSide(color: palette.border),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      minimumSize: const Size(0, 44),
+      minimumSize: const Size(0, 48),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
       textStyle: Theme.of(
         context,
       ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500),
@@ -184,36 +186,69 @@ class _AddMealScreenState extends State<AddMealScreen> {
               const SizedBox(height: Dimens.spacing12),
               BlocBuilder<AddMealBloc, AddMealState>(
                 bloc: _addMealBloc,
-                builder: (context, state) => Wrap(
-                  spacing: 12,
-                  runSpacing: 4,
-                  children: [
-                    Semantics(
-                      identifier: 'add-meal-scan',
-                      child: OutlinedButton.icon(
-                        style: secondaryAction,
-                        onPressed: _onBarcodeIconPressed,
-                        icon: const Icon(
-                          Icons.qr_code_scanner_rounded,
-                          size: 18,
+                builder: (context, state) => LayoutBuilder(
+                  builder: (context, constraints) {
+                    var buttonWidth = 0.0;
+                    for (final label in [
+                      S.of(context).recordingScanFood,
+                      S.of(context).noResultsCreateCustomFood,
+                    ]) {
+                      final painter = TextPainter(
+                        text: TextSpan(
+                          text: label,
+                          style: secondaryAction.textStyle?.resolve({}),
                         ),
-                        label: Text(S.of(context).recordingScanFood),
-                      ),
-                    ),
-                    Semantics(
-                      identifier: 'add-meal-custom-add',
-                      child: OutlinedButton.icon(
-                        style: secondaryAction,
-                        onPressed: state is AddMealLoadedState
-                            ? () => _onCustomAddButtonPressed(
-                                state.usesImperialUnits,
-                              )
-                            : null,
-                        icon: const Icon(Icons.add_rounded, size: 18),
-                        label: Text(S.of(context).noResultsCreateCustomFood),
-                      ),
-                    ),
-                  ],
+                        textDirection: Directionality.of(context),
+                        textScaler: MediaQuery.textScalerOf(context),
+                      )..layout();
+                      // Icon, icon gap and the explicit horizontal padding.
+                      final width = painter.width + 18 + 8 + 24;
+                      if (width > buttonWidth) buttonWidth = width;
+                      painter.dispose();
+                    }
+                    final width = constraints.maxWidth >= buttonWidth * 2 + 12
+                        ? (constraints.maxWidth - 12) / 2
+                        : constraints.maxWidth;
+                    return Wrap(
+                      spacing: 12,
+                      runSpacing: 8,
+                      children: [
+                        SizedBox(
+                          width: width,
+                          child: Semantics(
+                            identifier: 'add-meal-scan',
+                            child: OutlinedButton.icon(
+                              style: secondaryAction,
+                              onPressed: _onBarcodeIconPressed,
+                              icon: const Icon(
+                                Icons.qr_code_scanner_rounded,
+                                size: 18,
+                              ),
+                              label: Text(S.of(context).recordingScanFood),
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          width: width,
+                          child: Semantics(
+                            identifier: 'add-meal-custom-add',
+                            child: OutlinedButton.icon(
+                              style: secondaryAction,
+                              onPressed: state is AddMealLoadedState
+                                  ? () => _onCustomAddButtonPressed(
+                                      state.usesImperialUnits,
+                                    )
+                                  : null,
+                              icon: const Icon(Icons.add_rounded, size: 18),
+                              label: Text(
+                                S.of(context).noResultsCreateCustomFood,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    );
+                  },
                 ),
               ),
               const SizedBox(height: 12),
@@ -362,7 +397,7 @@ class _AddMealScreenState extends State<AddMealScreen> {
         scrollDirection: Axis.horizontal,
         child: Row(
           children: [
-            chip(_SearchSource.all, S.of(context).searchLabel),
+            chip(_SearchSource.all, S.of(context).allItemsLabel),
             chip(_SearchSource.recent, S.of(context).recentlyAddedLabel),
             chip(_SearchSource.favorites, S.of(context).foodFavorites),
             if (_source == _SearchSource.mine)
@@ -383,7 +418,7 @@ class _AddMealScreenState extends State<AddMealScreen> {
     child: Text(
       S.of(context).searchResultsLabel,
       style: Theme.of(context).textTheme.titleMedium?.copyWith(
-        fontWeight: FontWeight.w700,
+        fontWeight: FontWeight.w600,
         color: palette.textMuted,
       ),
     ),
@@ -446,56 +481,68 @@ class _AddMealScreenState extends State<AddMealScreen> {
         SearchRemoteStatus.disabled,
       ].contains(source.$2),
     );
-    return ListView(
-      keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-      padding: EdgeInsets.only(
-        bottom: MediaQuery.viewInsetsOf(context).bottom + 16,
+    return Semantics(
+      identifier: 'add-food-search-results',
+      child: CustomScrollView(
+        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+        slivers: [
+          FoodListSliver(
+            itemCount: merged.length,
+            itemBuilder: (context, index) => MealItemCard(
+              day: _day,
+              mealEntity: merged[index],
+              addMealType: _mealType,
+              usesImperialUnits: imperial,
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: Semantics(
+              identifier: 'search-source-details',
+              child: ExpansionTile(
+                tilePadding: EdgeInsets.zero,
+                title: Text(
+                  incomplete
+                      ? S.of(context).searchSourcesIncomplete
+                      : pending
+                      ? S.of(context).searchSourcesPending
+                      : S.of(context).recordingFoodSources,
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
+                leading: Icon(
+                  incomplete ? Icons.info_outline : Icons.cloud_outlined,
+                  size: 18,
+                ),
+                children: [
+                  for (var i = 0; i < statuses.length; i++)
+                    if (i == 0 ||
+                        statuses[i].$2 != SearchRemoteStatus.notRequested)
+                      SearchSourceNotice(
+                        sourceId: statuses[i].$1 == 'Open Food Facts'
+                            ? 'off'
+                            : 'reference',
+                        source: statuses[i].$1,
+                        status: statuses[i].$2,
+                        onRetry: statuses[i].$3,
+                      ),
+                ],
+              ),
+            ),
+          ),
+          if (merged.isEmpty && !pending)
+            SliverToBoxAdapter(
+              child: NoResultsWidget(
+                title: incomplete ? S.of(context).noLocalSearchResults : null,
+                onScanBarcode: _onBarcodeIconPressed,
+                onCreateCustomFood: () => _onCustomAddButtonPressed(imperial),
+              ),
+            ),
+          SliverToBoxAdapter(
+            child: SizedBox(
+              height: MediaQuery.viewInsetsOf(context).bottom + 16,
+            ),
+          ),
+        ],
       ),
-      children: [
-        for (final meal in merged)
-          MealItemCard(
-            day: _day,
-            mealEntity: meal,
-            addMealType: _mealType,
-            usesImperialUnits: imperial,
-          ),
-        Semantics(
-          identifier: 'search-source-details',
-          child: ExpansionTile(
-            tilePadding: EdgeInsets.zero,
-            title: Text(
-              incomplete
-                  ? S.of(context).searchSourcesIncomplete
-                  : pending
-                  ? S.of(context).searchSourcesPending
-                  : S.of(context).recordingFoodSources,
-              style: Theme.of(context).textTheme.bodySmall,
-            ),
-            leading: Icon(
-              incomplete ? Icons.info_outline : Icons.cloud_outlined,
-              size: 18,
-            ),
-            children: [
-              for (var i = 0; i < statuses.length; i++)
-                if (i == 0 || statuses[i].$2 != SearchRemoteStatus.notRequested)
-                  SearchSourceNotice(
-                    sourceId: statuses[i].$1 == 'Open Food Facts'
-                        ? 'off'
-                        : 'reference',
-                    source: statuses[i].$1,
-                    status: statuses[i].$2,
-                    onRetry: statuses[i].$3,
-                  ),
-            ],
-          ),
-        ),
-        if (merged.isEmpty && !pending)
-          NoResultsWidget(
-            title: incomplete ? S.of(context).noLocalSearchResults : null,
-            onScanBarcode: _onBarcodeIconPressed,
-            onCreateCustomFood: () => _onCustomAddButtonPressed(imperial),
-          ),
-      ],
     );
   }
 
@@ -544,18 +591,34 @@ class _AddMealScreenState extends State<AddMealScreen> {
               );
             } else if (state is RecentMealLoadedState) {
               if (state.recentMeals.isNotEmpty) {
-                return ListView.builder(
-                  itemCount: state.recentMeals.length,
-                  itemBuilder: (context, index) {
-                    return MealItemCard(
-                      day: _day,
-                      mealEntity:
-                          _personalFoods?.apply(state.recentMeals[index]) ??
-                          state.recentMeals[index],
-                      addMealType: _mealType,
-                      usesImperialUnits: state.usesImperialUnits,
-                    );
-                  },
+                return Semantics(
+                  identifier: 'add-food-recent-results',
+                  child: CustomScrollView(
+                    keyboardDismissBehavior:
+                        ScrollViewKeyboardDismissBehavior.onDrag,
+                    slivers: [
+                      FoodListSliver(
+                        itemCount: state.recentMeals.length,
+                        itemBuilder: (context, index) {
+                          return MealItemCard(
+                            day: _day,
+                            mealEntity:
+                                _personalFoods?.apply(
+                                  state.recentMeals[index],
+                                ) ??
+                                state.recentMeals[index],
+                            addMealType: _mealType,
+                            usesImperialUnits: state.usesImperialUnits,
+                          );
+                        },
+                      ),
+                      SliverToBoxAdapter(
+                        child: SizedBox(
+                          height: MediaQuery.viewInsetsOf(context).bottom + 16,
+                        ),
+                      ),
+                    ],
+                  ),
                 );
               }
               if (query.trim().isEmpty) {

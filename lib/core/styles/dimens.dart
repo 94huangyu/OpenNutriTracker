@@ -18,14 +18,49 @@ abstract final class Dimens {
   static const double radiusL = 26;
   static const double radiusXL = 32;
 
-  static const BorderRadius borderRadiusS = BorderRadius.all(Radius.circular(radiusS));
-  static const BorderRadius borderRadiusM = BorderRadius.all(Radius.circular(radiusM));
-  static const BorderRadius borderRadiusL = BorderRadius.all(Radius.circular(radiusL));
-  static const BorderRadius borderRadiusXL = BorderRadius.all(Radius.circular(radiusXL));
+  // Component roles stay separate from legacy size-based radii.
+  static const double radiusCard = 16;
+  static const double radiusControl = 12;
+  static const double radiusModal = 24;
+  static const double radiusThumbnail = 10;
+  static const BorderRadius borderRadiusCard = BorderRadius.all(
+    Radius.circular(radiusCard),
+  );
+  static const BorderRadius borderRadiusControl = BorderRadius.all(
+    Radius.circular(radiusControl),
+  );
+  static const BorderRadius borderRadiusModal = BorderRadius.all(
+    Radius.circular(radiusModal),
+  );
+  static const BorderRadius borderRadiusThumbnail = BorderRadius.all(
+    Radius.circular(radiusThumbnail),
+  );
+  static const RoundedRectangleBorder shapeControl = RoundedRectangleBorder(
+    borderRadius: borderRadiusControl,
+  );
 
-  static const RoundedRectangleBorder shapeM = RoundedRectangleBorder(borderRadius: borderRadiusM);
-  static const RoundedRectangleBorder shapeL = RoundedRectangleBorder(borderRadius: borderRadiusL);
-  static const RoundedRectangleBorder shapeXL = RoundedRectangleBorder(borderRadius: borderRadiusXL);
+  static const BorderRadius borderRadiusS = BorderRadius.all(
+    Radius.circular(radiusS),
+  );
+  static const BorderRadius borderRadiusM = BorderRadius.all(
+    Radius.circular(radiusM),
+  );
+  static const BorderRadius borderRadiusL = BorderRadius.all(
+    Radius.circular(radiusL),
+  );
+  static const BorderRadius borderRadiusXL = BorderRadius.all(
+    Radius.circular(radiusXL),
+  );
+
+  static const RoundedRectangleBorder shapeM = RoundedRectangleBorder(
+    borderRadius: borderRadiusM,
+  );
+  static const RoundedRectangleBorder shapeL = RoundedRectangleBorder(
+    borderRadius: borderRadiusL,
+  );
+  static const RoundedRectangleBorder shapeXL = RoundedRectangleBorder(
+    borderRadius: borderRadiusXL,
+  );
 
   static const double hairline = 1;
   static const double minTouchTarget = 52;

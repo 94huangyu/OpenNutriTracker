@@ -1,8 +1,14 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get_it/get_it.dart';
 import 'package:provider/provider.dart';
+import 'package:opennutritracker/core/data/data_source/custom_meal_data_source.dart';
+import 'package:opennutritracker/core/data/dbo/meal_dbo.dart';
+import 'package:opennutritracker/core/domain/entity/recipe_entity.dart';
+import 'package:opennutritracker/core/domain/usecase/get_all_recipes_usecase.dart';
+import 'package:opennutritracker/core/domain/usecase/merge_custom_meals_usecase.dart';
 import 'package:opennutritracker/core/data/repository/intake_repository.dart';
 import 'package:opennutritracker/core/data/repository/user_repository.dart';
 import 'package:opennutritracker/core/data/repository/user_activity_repository.dart';
@@ -38,6 +44,9 @@ import 'package:opennutritracker/features/add_meal/presentation/add_meal_screen.
 import 'package:opennutritracker/features/add_meal/presentation/add_meal_type.dart';
 import 'package:opennutritracker/generated/l10n.dart';
 import 'package:opennutritracker/features/meal_detail/presentation/widgets/food_portion_summary.dart';
+import 'package:opennutritracker/features/add_meal/domain/usecase/search_products_usecase.dart';
+import 'package:opennutritracker/features/recipes/presentation/bloc/recipes_bloc.dart';
+import 'package:opennutritracker/features/settings/presentation/bloc/custom_meals_bloc.dart';
 
 import '../../helpers/widget_capture.dart';
 
@@ -59,6 +68,37 @@ class _Unused extends Fake
 }
 
 class _ActivityRepository extends Fake implements UserActivityRepository {}
+
+class _Library extends Fake
+    implements
+        GetAllRecipesUseCase,
+        CustomMealDataSource,
+        MergeCustomMealsUseCase,
+        SearchProductsUseCase {
+  @override
+  List<MealDBO> getAllCustomMeals() => [];
+
+  @override
+  Future<List<MealEntity>> getPersonalMeals(
+    String query, {
+    bool favoritesOnly = false,
+  }) async => [];
+
+  @override
+  List<RecipeEntity> getAll() => [
+    RecipeEntity(
+      id: 'recipe',
+      name: '测试配方',
+      description: null,
+      servingsCount: null,
+      ingredients: const [],
+      totalWeightG: 100,
+      aggregatedNutrimentsPer100: a.nutriments,
+      createdAt: day,
+      updatedAt: day,
+    ),
+  ];
+}
 
 class _Config extends Fake implements GetConfigUsecase {
   @override
@@ -109,6 +149,7 @@ IntakeEntity intake(
 );
 
 class _Intakes extends Fake implements IntakeRepository {
+  Future<void> Function(IntakeTypeEntity, DateTime)? beforeRead;
   final items = [
     intake('a1', a, 15, IntakeTypeEntity.breakfast),
     intake('a2', a, 7.5, IntakeTypeEntity.breakfast),
@@ -120,12 +161,19 @@ class _Intakes extends Fake implements IntakeRepository {
     DateTime dateTime, {
     int dayStartOffsetHours = 0,
     int dayStartOffsetMinutes = 0,
-  }) async => items
-      .where((i) => i.type == type && DateUtils.isSameDay(i.dateTime, dateTime))
-      .toList();
+  }) async {
+    final result = items
+        .where(
+          (i) => i.type == type && DateUtils.isSameDay(i.dateTime, dateTime),
+        )
+        .toList();
+    await beforeRead?.call(type, dateTime);
+    return result;
+  }
 }
 
 class _DayBloc extends CalendarDayBloc {
+  void showLoading() => emit(CalendarDayLoading());
   Map<String, dynamic>? updated;
   IntakeEntity? deleted;
   IntakeEntity? restored;
@@ -207,6 +255,16 @@ Finder identified(String id) => find.byWidgetPredicate(
   (w) => w is Semantics && w.properties.identifier == id,
 );
 
+Future<void> settleDay(WidgetTester tester, CalendarDayBloc bloc) async {
+  await tester.runAsync(() async {
+    await Future<void>.delayed(Duration.zero);
+    if (bloc.state is! CalendarDayLoaded) {
+      await bloc.stream.firstWhere((state) => state is CalendarDayLoaded);
+    }
+  });
+  await tester.pumpAndSettle();
+}
+
 void main() {
   final getIt = GetIt.instance;
   final capture = GlobalKey();
@@ -268,6 +326,11 @@ void main() {
               child: child!,
             ),
             onGenerateRoute: (settings) {
+              if (settings.name == NavigationOptions.recipesRoute) {
+                return MaterialPageRoute<void>(
+                  builder: (_) => const Scaffold(body: Text('library-route')),
+                );
+              }
               if (settings.name == NavigationOptions.addMealRoute) {
                 added = settings.arguments as AddMealScreenArguments;
                 return MaterialPageRoute(
@@ -730,4 +793,326 @@ void main() {
     await captureWidget(tester, capture, 'recording-detail-narrow-long-name');
     expect(tester.takeException(), isNull);
   });
+  for (final mealDetail in [false, true]) {
+    for (final safeBottom in [0.0, 24.0]) {
+      testWidgets(
+        'read-only ${mealDetail ? "meal detail" : "home"} keeps its viewport after input route closes with delayed IME metrics ($safeBottom)',
+        (tester) async {
+          tester.view.viewPadding = FakeViewPadding(bottom: safeBottom);
+          tester.view.padding = FakeViewPadding(bottom: safeBottom);
+          await pump(tester, width: 320, scale: 1.6);
+          if (mealDetail) {
+            await tester.tap(identified('recording-meal-breakfastType'));
+            await tester.pumpAndSettle();
+          }
+          final viewport = find.byType(ListView).first;
+          final before = tester.getRect(viewport);
+          final navigator = tester.state<NavigatorState>(
+            find.byType(Navigator),
+          );
+          navigator.push<void>(
+            MaterialPageRoute<void>(
+              builder: (_) => const Scaffold(body: TextField(autofocus: true)),
+            ),
+          );
+          await tester.pumpAndSettle();
+          await tester.enterText(find.byType(TextField), '米饭');
+          tester.view.viewInsets = const FakeViewPadding(bottom: 300);
+          tester.view.padding = FakeViewPadding.zero;
+          await tester.pumpAndSettle();
+          navigator.pop();
+          tester.testTextInput.hide();
+          await tester.pumpAndSettle();
+          expect(find.byType(TextField), findsNothing);
+          expect(tester.testTextInput.isVisible, isFalse);
+          final whileMetricsDelayed = tester.getRect(viewport);
+          await captureWidget(
+            tester,
+            capture,
+            'keyboard-return-${mealDetail ? "meal" : "home"}-$safeBottom',
+          );
+          tester.view.viewInsets = FakeViewPadding.zero;
+          tester.view.padding = FakeViewPadding(bottom: safeBottom);
+          await tester.pumpAndSettle();
+          expect(tester.getRect(viewport), before);
+          expect(whileMetricsDelayed, before);
+          expect(tester.takeException(), isNull);
+        },
+      );
+    }
+  }
+
+  for (final save in [false, true]) {
+    testWidgets(
+      'record sheet ${save ? "save" : "cancel"} keeps keyboard avoidance without shrinking returned pages',
+      (tester) async {
+        await pump(tester, width: 320, scale: 1.6);
+        final homeViewport = tester.getRect(find.byType(ListView).first);
+        await tester.tap(identified('recording-meal-breakfastType'));
+        await tester.pumpAndSettle();
+        final mealViewport = tester.getRect(find.byType(ListView).first);
+        await tester.tap(find.text('测试食品A').first);
+        await tester.pumpAndSettle();
+        await tester.enterText(
+          find.descendant(
+            of: identified('recording-edit-quantity'),
+            matching: find.byType(TextField),
+          ),
+          '12.5',
+        );
+        tester.view.viewInsets = const FakeViewPadding(bottom: 260);
+        await tester.pumpAndSettle();
+        final action = identified(
+          save ? 'recording-save-intake' : 'recording-cancel-intake',
+        );
+        await tester.ensureVisible(action);
+        await tester.pumpAndSettle();
+        expect(tester.getRect(action).bottom, lessThanOrEqualTo(640));
+        await tester.tap(action);
+        await tester.pumpAndSettle();
+        expect(find.byType(TextField), findsNothing);
+        expect(bloc.updated?['amount'], save ? 12.5 : null);
+        expect(tester.getRect(find.byType(ListView).first), mealViewport);
+        await tester.tap(find.byType(BackButton));
+        await tester.pumpAndSettle();
+        expect(tester.getRect(find.byType(ListView).first), homeViewport);
+        tester.view.viewInsets = FakeViewPadding.zero;
+        await tester.pumpAndSettle();
+        expect(tester.getRect(find.byType(ListView).first), homeViewport);
+        expect(tester.takeException(), isNull);
+      },
+    );
+  }
+
+  testWidgets(
+    'input tabs keep keyboard avoidance and returning home leaves no gap',
+    (tester) async {
+      final data = _Library();
+      final recipes = RecipesBloc(data);
+      final custom = CustomMealsBloc(data, data);
+      getIt.registerSingleton(recipes);
+      getIt.registerSingleton(custom);
+      getIt.registerSingleton<SearchProductsUseCase>(data);
+      addTearDown(() async {
+        await recipes.close();
+        await custom.close();
+      });
+      await pump(tester);
+      final homeViewport = tester.getRect(find.byType(ListView).first);
+      await tester.tap(find.byIcon(Icons.kitchen_outlined).last);
+      await tester.pumpAndSettle();
+      final field = find.byType(TextField).first;
+      final libraryScaffold = find
+          .ancestor(of: field, matching: find.byType(Scaffold))
+          .first;
+      final scaffold = tester.widget<Scaffold>(libraryScaffold);
+      final body = find.byWidget(scaffold.body!);
+      final bodyBeforeKeyboard = tester.getRect(body);
+      await tester.tap(field);
+      await tester.pump();
+      expect(
+        tester
+            .widget<EditableText>(find.byType(EditableText).first)
+            .focusNode
+            .hasFocus,
+        isTrue,
+      );
+      tester.view.viewInsets = const FakeViewPadding(bottom: 300);
+      await tester.pumpAndSettle();
+      expect(tester.getRect(body).height, lessThan(bodyBeforeKeyboard.height));
+      intakes.items[0] = intake('a1', a, 30, IntakeTypeEntity.breakfast);
+      await tester.tap(find.byIcon(Icons.today_outlined));
+      await settleDay(tester, bloc);
+      final hiddenFields = tester.widgetList<EditableText>(
+        find.byType(EditableText, skipOffstage: false),
+      );
+      expect(hiddenFields.any((field) => field.focusNode.hasFocus), isFalse);
+      expect(tester.getRect(find.byType(ListView).first), homeViewport);
+      expect(find.text('575 kcal', findRichText: true), findsOneWidget);
+      expect(tester.takeException(), isNull);
+    },
+  );
+  String shownDay(WidgetTester tester) => tester
+      .widget<Text>(
+        find.descendant(
+          of: identified('recording-date'),
+          matching: find.byType(Text),
+        ),
+      )
+      .data!;
+
+  testWidgets(
+    'returning from food library reloads the selected day automatically',
+    (tester) async {
+      await pump(tester);
+      await tester.tap(identified('recording-food-library'));
+      await tester.pumpAndSettle();
+      expect(find.text('library-route'), findsOneWidget);
+      intakes.items[0] = intake('a1', a, 30, IntakeTypeEntity.breakfast);
+      tester.state<NavigatorState>(find.byType(Navigator)).pop();
+      await settleDay(tester, bloc);
+      expect(find.text('575 kcal', findRichText: true), findsOneWidget);
+      expect(shownDay(tester), '2026年10月15日');
+    },
+  );
+
+  Future<void> dayDrag(
+    WidgetTester tester,
+    Offset delta, {
+    double? startX,
+  }) async {
+    final area = tester.getRect(identified('recording-day-content'));
+    await tester.dragFrom(
+      Offset(startX ?? area.center.dx, area.top + 60),
+      delta,
+    );
+    await settleDay(tester, bloc);
+  }
+
+  testWidgets('swipe changes one day and each plus retains that date', (
+    tester,
+  ) async {
+    await pump(tester);
+    expect(find.byType(RefreshIndicator), findsNothing);
+    await dayDrag(tester, const Offset(500, 0));
+    await tester.pumpAndSettle();
+    expect(shownDay(tester), '2026年10月14日');
+    await tester.tap(identified('recording-add-dinnerType'));
+    await tester.pumpAndSettle();
+    expect(added!.day, DateTime(2026, 10, 14));
+    expect(added!.mealType, AddMealType.dinnerType);
+    tester.state<NavigatorState>(find.byType(Navigator)).pop();
+    await tester.pumpAndSettle();
+    await dayDrag(tester, const Offset(-160, 0));
+    await tester.pumpAndSettle();
+    expect(shownDay(tester), '2026年10月15日');
+    expect(find.text('495 kcal', findRichText: true), findsOneWidget);
+    await dayDrag(tester, const Offset(-160, 0));
+    await tester.pumpAndSettle();
+    expect(shownDay(tester), '2026年10月16日');
+  });
+
+  testWidgets(
+    'short, vertical, diagonal and system edge drags do not change day',
+    (tester) async {
+      tester.view.systemGestureInsets = const FakeViewPadding(
+        left: 24,
+        right: 24,
+      );
+      await pump(tester, width: 320, scale: 1.6);
+      final before = shownDay(tester);
+      for (final delta in [
+        const Offset(45, 0),
+        const Offset(0, 140),
+        const Offset(40, 140),
+        const Offset(100, 100),
+      ]) {
+        await dayDrag(tester, delta);
+        await tester.pumpAndSettle();
+        expect(shownDay(tester), before);
+      }
+      await dayDrag(tester, const Offset(160, 0), startX: 8);
+      await tester.pumpAndSettle();
+      expect(shownDay(tester), before);
+      await dayDrag(tester, const Offset(-160, 0), startX: 312);
+      await tester.pumpAndSettle();
+      expect(shownDay(tester), before);
+      expect(find.byType(RefreshIndicator), findsNothing);
+      expect(tester.takeException(), isNull);
+    },
+  );
+
+  testWidgets('loading surface still accepts a date swipe', (tester) async {
+    await pump(tester);
+    await tester.runAsync(() async {
+      bloc.showLoading();
+      await Future<void>.delayed(Duration.zero);
+    });
+    await tester.pump();
+    expect(find.byType(CircularProgressIndicator), findsOneWidget);
+    await dayDrag(tester, const Offset(160, 0));
+    expect(shownDay(tester), '2026年10月14日');
+    await tester.pumpWidget(const SizedBox.shrink());
+  });
+
+  for (final dates in [
+    (DateTime(2026, 1, 1), '2025年12月31日'),
+    (DateTime(2028, 3, 1), '2028年2月29日'),
+  ]) {
+    testWidgets('swipe follows calendar boundaries from ${dates.$1}', (
+      tester,
+    ) async {
+      DayBoundaryCalc.clock = () => dates.$1;
+      await pump(tester);
+      await dayDrag(tester, const Offset(160, 0));
+      await tester.pumpAndSettle();
+      expect(shownDay(tester), dates.$2);
+    });
+  }
+
+  for (final first in [true, false]) {
+    testWidgets(
+      'date limit keeps arrows, swipe and picker consistent ($first)',
+      (tester) async {
+        DayBoundaryCalc.clock = () => first ? DateTime(2000) : DateTime(2100);
+        await pump(tester);
+        final before = shownDay(tester);
+        final arrow = find.descendant(
+          of: identified(
+            first ? 'recording-previous-day' : 'recording-next-day',
+          ),
+          matching: find.byType(IconButton),
+        );
+        expect(tester.widget<IconButton>(arrow).onPressed, isNull);
+        await dayDrag(tester, Offset(first ? 160 : -160, 0));
+        await tester.pumpAndSettle();
+        expect(shownDay(tester), before);
+        await tester.tap(identified('recording-date'));
+        await tester.pumpAndSettle();
+        expect(find.byType(DatePickerDialog), findsOneWidget);
+        expect(tester.takeException(), isNull);
+      },
+    );
+  }
+
+  for (final refresh in [false, true]) {
+    test(
+      'latest request wins even after returning to the same date (refresh=$refresh)',
+      () async {
+        final started = Completer<void>();
+        final release = Completer<void>();
+        var firstRead = true;
+        intakes.beforeRead = (type, _) async {
+          if (type == IntakeTypeEntity.breakfast && firstRead) {
+            firstRead = false;
+            started.complete();
+            await release.future;
+          }
+        };
+        bloc.add(LoadCalendarDayEvent(day));
+        try {
+          await started.future;
+          intakes.items[0] = intake('fresh', a, 30, IntakeTypeEntity.breakfast);
+          final loaded = bloc.stream.firstWhere(
+            (state) => state is CalendarDayLoaded,
+          );
+          if (refresh) {
+            bloc.add(const RefreshCalendarDayEvent());
+          } else {
+            bloc.add(LoadCalendarDayEvent(DateUtils.addDaysToDate(day, 1)));
+            bloc.add(LoadCalendarDayEvent(day));
+          }
+          await loaded;
+        } finally {
+          release.complete();
+        }
+        // The released queries only schedule microtasks; let them all drain.
+        await Future<void>.delayed(Duration.zero);
+        expect(
+          (bloc.state as CalendarDayLoaded).breakfastIntakeList.first.amount,
+          30,
+        );
+      },
+    );
+  }
 }

@@ -1,3 +1,4 @@
+import 'package:opennutritracker/core/utils/food_unit_label.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -185,6 +186,7 @@ class _RecordingMealPageState extends State<RecordingMealPage> {
               ? _items(state)
               : <IntakeEntity>[];
           return Scaffold(
+            resizeToAvoidBottomInset: false,
             appBar: AppBar(
               title: Text(widget.type.getTypeName(context)),
               actions: [
@@ -322,7 +324,7 @@ class _RecordingMealPageState extends State<RecordingMealPage> {
         serving.isFinite &&
         serving > 0;
     final quantity = usesServing ? item.amount / serving : item.amount;
-    final unit = usesServing ? s.servingLabel : (item.meal.mealUnit ?? 'g/ml');
+    final unit = foodUnitLabel(s, usesServing ? 'serving' : item.meal.mealUnit);
     return InkWell(
       key: ValueKey(item.id),
       onTap: _busy

@@ -32,7 +32,7 @@ class MealTitleExpanded extends StatelessWidget {
                 text: meal.name ?? '',
                 style: Theme.of(context).textTheme.displaySmall?.copyWith(
                       color: palette.textStrong,
-                      fontWeight: FontWeight.w800,
+                      fontWeight: FontWeight.w600,
                     ),
                 children: [
                   TextSpan(

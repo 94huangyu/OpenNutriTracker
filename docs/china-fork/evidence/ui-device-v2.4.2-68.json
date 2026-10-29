@@ -1,0 +1,71 @@
+{
+  "date": "2026-10-28",
+  "status": "installed_targeted_device_checks_passed_daily_observation_pending",
+  "base_commit": "9730d89d0689253e9c8f6e04709d129277ede7f6",
+  "source_uncommitted": true,
+  "artifact": {
+    "package": "com.huangyu.shiji",
+    "appName": "食迹",
+    "versionName": "2.4.2",
+    "versionCode": 68,
+    "abi": "arm64-v8a",
+    "minSdk": 26,
+    "targetSdk": 36,
+    "bytes": 48263241,
+    "sha256": "ac8a3245412d85dbce88bf0e7d91d45e5dee131a44c951013af53441f5e9c6de",
+    "certificateSha256": "c578db2e9af3f2c4e0fa06edc05627a17b90dcd9a2db92ff6627934ae65f3f0f",
+    "debuggable": false,
+    "aot": true,
+    "excludedHealthPermissions": true,
+    "broadPhotoPermissionAbsent": true
+  },
+  "artifact_path": "output/flutter/ui-keyboard-fix-v2.4.2-68/Shiji-v2.4.2-68-android-arm64.apk",
+  "upgrade": {
+    "from_version": "2.4.1",
+    "from_version_code": 67,
+    "to_version": "2.4.2",
+    "to_version_code": 68,
+    "same_package_and_signing": true,
+    "uid_unchanged": true,
+    "installed_apk_matches_candidate": true,
+    "data_cleared": false,
+    "uninstalled": false,
+    "full_backup_before_and_after_upgrade": true,
+    "all_exported_datasets_exactly_equal_after_upgrade": true,
+    "all_image_attachments_equal_after_upgrade": true
+  },
+  "device_checks": {
+    "search_keyboard_open_close_and_home_return": "passed in observed state",
+    "record_edit_cancel": "passed; changed draft quantity was discarded",
+    "record_edit_save": "passed with original quantity unchanged; no changed-quantity save claim",
+    "meal_detail_viewport_after_cancel_and_save": "unchanged in observed states",
+    "home_and_meal_detail_background_resume": "passed in observed states",
+    "food_library_my_foods_recipes_favorites_navigation": "passed; recipes and favorites were empty",
+    "food_library_new_menu": "passed; entry menu only",
+    "food_library_delete_confirmation_cancel": "passed; no deletion confirmed",
+    "system_font_scale_1_6": "checked library, home scroll to final meal, ingredient quantity sheet with keyboard, two-column recipe nutrition",
+    "recipe_ingredient_quantity": "150.5 entered in a temporary draft, added to draft, then entire draft discarded; no recipe saved",
+    "all_device_font_and_other_temporary_settings_restored": true,
+    "final_full_backup_equal_to_original_datasets": true,
+    "final_full_backup_equal_to_original_attachments": true,
+    "bounded_current_process_log_error_patterns": [],
+    "original_intermitttent_white_block_captured": false
+  },
+  "cleanup": {
+    "home_left_visible": true,
+    "own_adb_service_stopped": true,
+    "test_recipe_persisted": false,
+    "new_intake_created": false,
+    "user_food_deleted_or_merged": false,
+    "backups_preserved_privately": true,
+    "private_device_identity_logs_screenshots_and_user_data_not_published": true
+  },
+  "source_and_local_checks": "ui-bottom-occlusion-fix.json",
+  "limits": [
+    "Observed flows passed; intermittent original incident and its native IME cause were not captured",
+    "No claim that all device, locale, font, dark-theme or orientation combinations were tested",
+    "Actual food creation, merge, committed deletion and recipe persistence were not retested on user data; related local regression remains the evidence for those paths",
+    "Real scanner, image picker, online source availability and screen readers were not revalidated",
+    "Home swipe feature is still proposal only; no GitHub commit or Release in this session"
+  ]
+}

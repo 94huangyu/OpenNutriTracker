@@ -74,13 +74,13 @@ void main() {
           .toList();
       expect(switches.first.value, isTrue); // OFF needs no backend account.
       if (!configured) {
-        expect(find.textContaining('此版本未接入'), findsOneWidget);
+        expect(find.textContaining('暂不可用'), findsOneWidget);
         expect(
           switches.skip(1).every((s) => s.onChanged == null && !s.value),
           isTrue,
         );
       } else {
-        expect(find.textContaining('此版本未接入'), findsNothing);
+        expect(find.textContaining('暂不可用'), findsNothing);
         expect(switches.skip(1).every((s) => s.onChanged != null), isTrue);
       }
       expect(tester.takeException(), isNull);

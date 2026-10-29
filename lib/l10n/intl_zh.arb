@@ -9,7 +9,7 @@
   "additionalInfoLabelFDC": "更多信息请查看\nFoodData Central",
   "additionalInfoLabelSource": "更多信息请查看\n{sourceName}",
   "foodSourcesAlwaysEnabledLabel": "始终启用",
-  "foodSourcesHelpText": "搜索结果来自这些食品数据库。Open Food Facts 提供产品和条形码搜索，始终处于启用状态。",
+  "foodSourcesHelpText": "选择食品搜索来源；Open Food Facts 提供产品和条码查询。",
   "machineTranslatedNameHint": "名称为自动翻译",
   "measureUnitBar": "{count, plural, other{条}}",
   "@measureUnitBar": {
@@ -209,7 +209,7 @@
   "customActivityPickFromTemplate": "从已保存的模板中选择",
   "customActivitySaveAsTemplate": "保存为模板以便下次使用",
   "customActivityTemplatesEmpty": "你还没有保存任何模板。勾选「保存为模板以便下次使用」以便日后记住自定义活动。",
-  "customMealBarcodeHint": "扫描或输入条形码，以便日后调用此餐食",
+  "customMealBarcodeHint": "可输入或扫码",
   "customMealBarcodeInvalid": "条形码必须为 8 到 14 位数字",
   "customMealBarcodeLabel": "条形码",
   "customMealBarcodeScanButton": "扫描条形码",
@@ -879,10 +879,10 @@
   "recipeNutritionPer100Label": "每 100 克",
   "recipeNutritionPreviewLabel": "营养（总计）",
   "recipeSaveErrorLabel": "无法保存食谱。",
-  "recipeSaveForLaterDescription": "开启以将此餐食保留在已保存的列表中，以备下次使用。如果是不会再吃的一次性餐食，请保持关闭。",
+  "recipeSaveForLaterDescription": "同时保存到食品库，方便下次使用。",
   "recipeSaveForLaterLabel": "保存以备下次",
   "recipeSaveLabel": "保存食谱",
-  "recipeServingsCountHelper": "允许按份记录此食谱，而非按克。",
+  "recipeServingsCountHelper": "填写后可按份记录。",
   "recipeServingsCountLabel": "份数（可选）",
   "recipeTagsHelper": "用逗号分隔，例如\"早餐，素食\"",
   "recipeTagsLabel": "标签",
@@ -1270,7 +1270,7 @@
   "aiAssistProbePhotoFailedLabel": "已检查——该模型对照片没有返回任何条目，因此该服务器不提供照片识别。",
   "aiAssistLoadModelsLabel": "加载模型",
   "aiAssistPickModelLabel": "请选择模型",
-  "aiAssistModelsUnreachableLabel": "无法连接 {host}。它可能已休眠、位于其他网络，或处于未开启的 VPN 之后——请改为手动输入模型名称。",
+  "aiAssistModelsUnreachableLabel": "暂时无法连接 {host}，可手动填写模型名称。",
   "aiAssistModelsEmptyLabel": "{host} 已响应，但未列出任何模型。请手动输入模型名称。",
   "aiAssistModelsRejectedLabel": "{host} 已响应，但返回的不是模型列表。请检查地址，或手动输入模型名称。",
   "aiAssistModelsInsecureLabel": "未发送任何内容：该地址是公网地址且未加密。请使用 https，或手动输入模型名称。",
@@ -1328,7 +1328,7 @@
   "healthSyncUnavailableLabel": "此设备上无法使用健康数据。导入锻炼需要 Android 上的 Health Connect 或 iOS 上的 Apple Health。",
   "sourcesEnergyCompensationTitle": "锻炼热量计入比例",
   "sourcesEnergyCompensationDescription": "导入的锻炼计入的热量少于设备报告的数值。人体会在一天中的其余时间少消耗热量来补偿运动，平均约为 28%，体脂率越高补偿越多。建议值来自该研究，你可以在设置 → 健康同步中修改。热量数值由记录该锻炼的应用或设备提供，并非由应用内的 MET 公式计算。",
-  "customMealBasisHelp": "包装大小、单份分量可留空。下方营养值均对应营养基准；更改基准后请核对数值。",
+  "customMealBasisHelp": "包装与单份可留空；营养值按此基准填写，改基准后请核对。",
   "customMealQuantityInvalid": "{field}请填写大于0的有效数值。",
   "@customMealQuantityInvalid": {
     "placeholders": {
@@ -1339,7 +1339,7 @@
   },
   "customMealNutrientInvalid": "营养值请填写不小于0的有效数值；不详可留空。",
   "customMealUnknownNutrientsHint": "不详请留空；已确认没有的营养素请填0。",
-  "customMealNutrientDifferenceHint": "标签热量与三大营养素估算有差异，请核对。膳食纤维、计量口径和舍入都可能导致差异；仍按你填写的热量保存。",
+  "customMealNutrientDifferenceHint": "热量与营养素估算有差异，请核对标签；仍按所填热量保存。",
   "customMealBarcodeInUse": "该条码或名称已关联另一食品，未保存。请更改它，或编辑已有食品。",
   "recordingTitle": "饮食记录",
   "recordingConsumed": "已摄入热量",
@@ -1363,10 +1363,10 @@
   "recordingRestored": "已恢复记录",
   "recordingRepeated": "已添加记录",
   "recordingUndoFailed": "恢复失败，请点撤销重试",
-  "customMealCopyHint": "修改后保存为我的食品，已有记录保留原来的营养数据。",
+  "customMealCopyHint": "另存为我的食品，不改变已有记录。",
   "customMealReference": "原始参考：{source}",
   "referenceFoodSourceLabel": "参考食品库",
-  "searchSourceLoading": "{source}：正在联网搜索…",
+  "searchSourceLoading": "{source}：搜索中…",
   "@searchSourceLoading": {
     "placeholders": {
       "source": {
@@ -1374,7 +1374,7 @@
       }
     }
   },
-  "searchSourceEmpty": "{source}：没有更多在线结果",
+  "searchSourceEmpty": "{source}：暂无结果",
   "@searchSourceEmpty": {
     "placeholders": {
       "source": {
@@ -1382,7 +1382,7 @@
       }
     }
   },
-  "searchSourceFailed": "{source}：暂时无法连接，本地结果仍可使用",
+  "searchSourceFailed": "{source}：暂时无法连接",
   "@searchSourceFailed": {
     "placeholders": {
       "source": {
@@ -1390,7 +1390,7 @@
       }
     }
   },
-  "searchSourceUnconfigured": "{source}：此版本未接入，本地食品仍可使用",
+  "searchSourceUnconfigured": "{source}：暂不可用",
   "@searchSourceUnconfigured": {
     "placeholders": {
       "source": {
@@ -1398,7 +1398,7 @@
       }
     }
   },
-  "searchSourceDisabled": "{source}：已在设置中关闭，本地食品仍可使用",
+  "searchSourceDisabled": "{source}：已关闭",
   "@searchSourceDisabled": {
     "placeholders": {
       "source": {
@@ -1416,7 +1416,7 @@
   "foodPersonalReview": "个人核对",
   "foodPersonallyReviewed": "我已核对",
   "foodNotReviewed": "尚未个人核对",
-  "foodReviewExplanation": "个人核对记录，不代表机构认证。请对照依据检查名称、品牌、规格和已填营养；未知值仍为未知。",
+  "foodReviewExplanation": "这是个人核对记录，并非机构认证；请注明依据，未知值仍保留为空。",
   "foodReviewSource": "核对依据类型",
   "foodReviewPackage": "食品包装",
   "foodReviewManufacturer": "厂家资料",
@@ -1431,22 +1431,22 @@
   "foodPersonalIdentityMissing": "此条目缺少稳定编号，请先另存我的版本，再收藏或核对。",
   "foodDataChangedReview": "食品资料已变化，请对照当前数值重新核对。",
   "foodNutritionScopeHint": "摄入按标示热量计算。4/4/9仅作估算；纤维、糖醇、酒精和取整会造成差异，不自动替换数值。",
-  "foodCompositionReviewHint": "请核对营养基准、糖与碳水、饱和脂肪与总脂肪的关系。此提示不会更改填写值。",
+  "foodCompositionReviewHint": "请核对营养基准、糖与碳水、饱和脂肪与总脂肪。",
   "m4My": "我的",
   "m4Library": "食品库",
   "m4LocalProfile": "本地资料",
   "m4ProfileName": "资料名称（选填）",
   "m4ProfileHint": "保存在本机，无需填写身体信息。",
   "m4BackupTitle": "备份与恢复",
-  "m4BackupDescription": "完整 ZIP 包含全部本地资料、日记、食品库、设置和本地照片，并保全既有历史身体与运动数据；不含可重建的公共缓存、密钥和系统权限。",
+  "m4BackupDescription": "完整备份包含资料、日记、食品库、设置和照片，不含服务密钥与系统权限。",
   "m4BackupPrivacy": "导出文件未加密，可能包含私人记录和照片，请妥善保管。",
   "m4ExportFull": "导出完整备份",
   "m4ChooseRestore": "选择 ZIP，预览恢复内容",
-  "m4CsvDescription": "CSV 用于数据交换和分析，缺少设置、资料、独立模板、配方和照片，不能作为完整备份。旧版 JSON / CSV ZIP 可在上方选择并预览。",
+  "m4CsvDescription": "CSV用于分析，不能完整恢复；完整备份请使用上方ZIP。",
   "m4ExportCsv": "导出 CSV 数据",
   "m4RestorePreview": "恢复预览",
-  "m4LegacyWarning": "这是旧版部分备份，仅将下列数据合入当前本地资料和共享食品库；缺失的设置、其他资料、模板或照片无法补回。",
-  "m4RestoreRules": "按稳定身份合并记录；修改过的同一记录、同名照片按下方策略处理。保留备份未含的本机记录，并按合并后的日记重算每日汇总。本机现存资料的存储位置和当前选择保持，可在“我的”切换资料。隐私同意仍以本机为准。",
+  "m4LegacyWarning": "这是旧版部分备份，仅合入下方预览中的数据。",
+  "m4RestoreRules": "恢复会合并数据，不清空本机记录；冲突按所选策略处理。",
   "m4New": "新增记录",
   "m4Conflicts": "内容冲突",
   "m4Unchanged": "相同记录",
@@ -1498,14 +1498,14 @@
   "foodBasicInformation": "基本信息",
   "foodSpecifications": "食品规格",
   "energyInputUnit": "输入单位",
-  "energyInputHelp": "输入单位仅用于填写，不影响查看单位。",
+  "energyInputHelp": "录入单位不改变显示单位。",
   "settingsDisplayRecording": "显示与记录",
   "settingsDataPrivacy": "数据与隐私",
   "settingsKjOffHint": "关闭时使用 kcal",
   "foodDetailTitle": "食品详情",
   "recordingEditTitle": "修改记录",
   "recordingThisPortion": "本次摄入",
-  "recordingSnapshotHint": "仅修改这条记录，不更改食品资料。",
+  "recordingSnapshotHint": "只改这条记录，食品资料不变。",
   "recordingAddToMeal": "添加到{meal}",
   "recordingDestination": "{date} · {meal}",
   "trendsExplanation": "统计说明",
@@ -1525,5 +1525,31 @@
         "type": "String"
       }
     }
-  }
+  },
+  "libraryNew": "新建",
+  "libraryRecipes": "配方",
+  "libraryCreateFood": "创建食品",
+  "libraryCreateRecipe": "创建配方",
+  "libraryImportRecipe": "导入配方",
+  "libraryDeleteFoodTitle": "删除食品？",
+  "libraryMergeFood": "与另一项食品合并",
+  "libraryFavoritesHint": "在食品详情中收藏后，会显示在这里。",
+  "librarySearchRecipes": "搜索配方",
+  "libraryTotalEnergy": "合计 {energy}",
+  "libraryItemCount": "{count} 项",
+  "@libraryTotalEnergy": {
+    "placeholders": {
+      "energy": {
+        "type": "String"
+      }
+    }
+  },
+  "@libraryItemCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "foodNutritionSourceInfo": "营养与来源说明"
 }

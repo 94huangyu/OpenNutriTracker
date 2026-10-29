@@ -38,7 +38,7 @@ class PlaceholderCard extends StatelessWidget {
         child: AppCard(
           color: palette.surfaceMuted,
           bordered: false,
-          borderRadius: Dimens.radiusM,
+          borderRadius: Dimens.radiusCard,
           onTap: onTap,
           padding: const EdgeInsets.symmetric(vertical: Dimens.spacing12),
           child: Center(

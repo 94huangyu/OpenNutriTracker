@@ -1,3 +1,4 @@
+import 'package:opennutritracker/core/presentation/widgets/section_group.dart';
 import 'package:flutter/material.dart';
 import 'package:opennutritracker/core/domain/entity/intake_entity.dart';
 import 'package:opennutritracker/core/domain/entity/intake_type_entity.dart';
@@ -247,6 +248,9 @@ class AddItemBottomSheet extends StatelessWidget {
                     ),
               ),
             ),
+            Semantics(
+              identifier: 'add-item-recent-food-list',
+              child: SectionGroup(tiles: [
             for (final intake in recent)
               MealItemCard(
                 day: day,
@@ -254,6 +258,8 @@ class AddItemBottomSheet extends StatelessWidget {
                 addMealType: AddMealExtension.fromIntakeTypeEntity(intake.type),
                 usesImperialUnits: usesImperialUnits,
               ),
+              ]),
+            ),
             const Divider(indent: 16, endIndent: 16),
           ],
         );

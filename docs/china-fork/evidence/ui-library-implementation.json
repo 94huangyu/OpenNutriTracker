@@ -1,0 +1,60 @@
+{
+  "date": "2026-10-27",
+  "status": "implemented_local_checks_passed_device_acceptance_pending",
+  "base_commit": "9730d89d0689253e9c8f6e04709d129277ede7f6",
+  "scope": [
+    "L1 library labels and entry menu",
+    "L2 grouped list and true nutrition basis",
+    "L3 existing edit merge and deletion flows"
+  ],
+  "approved_preview": {
+    "path": "docs/china-fork/ui-approved/shiji-library-comparison.html",
+    "sha256": "e62984596b6597ac8339dc05504e4558134f7e5a532ea576390644f039e01b28"
+  },
+  "source_sha256": {
+    "lib/core/presentation/widgets/food_library_list.dart": "7ce04c15e1cfadf313bfcbdc81ef09f0fe2b50baf1e5071924167496234dc0d0",
+    "lib/features/add_meal/presentation/widgets/meal_item_card.dart": "134f15c73a2f44456fcf277b9935ec4dc6895e193a9e579f7118d1f7d58f199e",
+    "lib/features/add_meal/presentation/widgets/personal_food_list.dart": "63699dc1903968fa6d466aba773b86d5edbd6895fe49c5e6959f05e127be7600",
+    "lib/features/recipes/presentation/screens/recipes_page.dart": "b27c577126fc9eea539471e18ea0414efd6ee926a6784d4a8ef12eb9d1422d6d",
+    "lib/features/recipes/presentation/widgets/custom_meals_tab.dart": "706ede37a03db4ae3e287312c80a0aa14fae014e80dddd8914260e775630c4a3",
+    "lib/features/recipes/presentation/widgets/recipe_list_item.dart": "fd4bf2a0a3c1bf4b69a250ade6f894936cf058ac631d308c62890ea7bea8be01",
+    "lib/l10n/intl_en.arb": "d21a51307dd61627906396ebd258279fa5cf13d4f2cd9aa648f875174813fae7",
+    "lib/l10n/intl_zh.arb": "68052cc311709db4c4e9d6a008235ff148c72e002151f0cd3db6c6fc2f0cd473",
+    "test/features/recipes/presentation/widgets/food_library_test.dart": "b1cdaf1347581a6b0e2e309840686bb3c05e2721d1ecaacd2b5fba82f2fd352e"
+  },
+  "validation": {
+    "related_tests_passed": 23,
+    "new_widget_scenarios_included": 3,
+    "capture_rerun_scenarios_not_additive": 3,
+    "widget_sizes_and_scales": [
+      [
+        390,
+        1.0,
+        "light"
+      ],
+      [
+        320,
+        1.6,
+        "light"
+      ],
+      [
+        320,
+        2.0,
+        "dark"
+      ]
+    ],
+    "dart_analysis_diagnostics": 0,
+    "previous_frozen_assets_unchanged": 14,
+    "previous_frozen_fragments_unchanged": 4,
+    "recording_and_storage_logic_unchanged": true,
+    "default_category": "recipes_preserved",
+    "apk_built": false,
+    "device_tested": false,
+    "github_updated": false
+  },
+  "limits": [
+    "Synthetic fixtures and widget captures only; no phone acceptance",
+    "Online services, camera, screen readers and all locale combinations were not retested",
+    "No model, storage migration, app version, package or signing changes"
+  ]
+}

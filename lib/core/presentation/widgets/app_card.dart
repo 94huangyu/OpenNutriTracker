@@ -2,12 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:opennutritracker/core/styles/app_palette.dart';
 import 'package:opennutritracker/core/styles/dimens.dart';
 
-/// The one card surface of the friendly-flat design: a rounded tile with a
-/// hairline border and a single soft, low shadow. Quiet depth — enough to lift
-/// content off the warm canvas without the heaviness of clay or stacked elevation.
+/// The shared flat card: a small corner radius and a hairline border.
 ///
 /// Pass [color] for a tinted tile (e.g. a macro card); the border and shadow
-/// adapt to the active light/dark palette.
+/// adapt to the active light/dark palette. Shadows are opt-in.
 class AppCard extends StatelessWidget {
   final Widget? child;
   final Color? color;
@@ -23,13 +21,13 @@ class AppCard extends StatelessWidget {
     super.key,
     this.child,
     this.color,
-    this.borderRadius = Dimens.radiusL,
+    this.borderRadius = Dimens.radiusCard,
     this.padding,
     this.width,
     this.height,
     this.onTap,
     this.bordered = true,
-    this.shadowed = true,
+    this.shadowed = false,
   });
 
   @override

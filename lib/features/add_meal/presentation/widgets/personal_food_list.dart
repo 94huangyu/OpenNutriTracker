@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:opennutritracker/core/presentation/widgets/food_library_list.dart';
 import 'package:opennutritracker/core/data/data_source/personal_food_data_source.dart';
 import 'package:opennutritracker/core/domain/usecase/get_config_usecase.dart';
 import 'package:opennutritracker/core/utils/locator.dart';
@@ -77,24 +78,65 @@ class _PersonalFoodListState extends State<PersonalFoodList> {
         return const Center(child: CircularProgressIndicator());
       }
       if (result.$1.isEmpty) {
-        return Center(child: Text(S.of(context).foodPersonalEmpty));
+        return Center(
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(S.of(context).foodPersonalEmpty),
+                if (widget.favoritesOnly && widget.query.trim().isEmpty) ...[
+                  const SizedBox(height: 8),
+                  Text(
+                    S.of(context).libraryFavoritesHint,
+                    style: Theme.of(context).textTheme.bodySmall,
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ],
+            ),
+          ),
+        );
+      }
+      if (widget.browseOnly) {
+        return Semantics(
+          identifier: 'personal-food-list',
+          child: FoodLibraryList(
+            title: S.of(context).foodFavorites,
+            itemCount: result.$1.length,
+            itemBuilder: (context, i) => MealItemCard(
+              day: widget.day,
+              addMealType: widget.addMealType,
+              mealEntity: result.$1[i],
+              usesImperialUnits: result.$2,
+              browseOnly: true,
+              onReturn: _reload,
+            ),
+          ),
+        );
       }
       return Semantics(
         identifier: 'personal-food-list',
-        child: ListView.builder(
+        child: CustomScrollView(
           keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-          padding: EdgeInsets.only(
-            bottom: MediaQuery.viewInsetsOf(context).bottom + 16,
-          ),
-          itemCount: result.$1.length,
-          itemBuilder: (context, i) => MealItemCard(
-            day: widget.day,
-            addMealType: widget.addMealType,
-            mealEntity: result.$1[i],
-            usesImperialUnits: result.$2,
-            browseOnly: widget.browseOnly,
-            onReturn: _reload,
-          ),
+          slivers: [
+            FoodListSliver(
+              itemCount: result.$1.length,
+              itemBuilder: (context, i) => MealItemCard(
+                day: widget.day,
+                addMealType: widget.addMealType,
+                mealEntity: result.$1[i],
+                usesImperialUnits: result.$2,
+                browseOnly: widget.browseOnly,
+                onReturn: _reload,
+              ),
+            ),
+            SliverToBoxAdapter(
+              child: SizedBox(
+                height: MediaQuery.viewInsetsOf(context).bottom + 16,
+              ),
+            ),
+          ],
         ),
       );
     },

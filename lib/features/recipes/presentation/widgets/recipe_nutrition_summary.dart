@@ -34,8 +34,9 @@ class RecipeNutritionSummary extends StatelessWidget {
     final usesKilojoules = context.watch<EnergyUnitProvider>().usesKilojoules;
     final energyLabel = usesKilojoules ? s.kjLabel : s.kcalLabel;
     final energyTotalKcal = _total(nutrimentsPer100.energyKcal100);
-    final energyTotalDisplay =
-        usesKilojoules ? UnitCalc.kcalToKj(energyTotalKcal) : energyTotalKcal;
+    final energyTotalDisplay = usesKilojoules
+        ? UnitCalc.kcalToKj(energyTotalKcal)
+        : energyTotalKcal;
     final energyPer100Kcal = nutrimentsPer100.energyKcal100 ?? 0;
     final energyPer100Display = usesKilojoules
         ? UnitCalc.kcalToKj(energyPer100Kcal)
@@ -47,54 +48,93 @@ class RecipeNutritionSummary extends StatelessWidget {
         children: [
           Text(
             s.recipeNutritionPreviewLabel,
-            style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
+            style: theme.textTheme.titleMedium?.copyWith(
+              fontWeight: FontWeight.w600,
+            ),
           ),
           const SizedBox(height: Dimens.spacing16),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
-                child: _NutrientCell(
+          LayoutBuilder(
+            builder: (context, constraints) {
+              final cells = <_NutrientCell>[
+                _NutrientCell(
                   value: energyTotalDisplay,
                   label: energyLabel,
                   color: accent,
                   palette: palette,
                 ),
-              ),
-              Expanded(
-                child: _NutrientCell(
+                _NutrientCell(
                   value: _total(nutrimentsPer100.carbohydrates100),
                   label: '${s.carbsLabel} g',
                   color: palette.carbs,
                   palette: palette,
                 ),
-              ),
-              Expanded(
-                child: _NutrientCell(
+                _NutrientCell(
                   value: _total(nutrimentsPer100.fat100),
                   label: '${s.fatLabel} g',
                   color: palette.fat,
                   palette: palette,
                 ),
-              ),
-              Expanded(
-                child: _NutrientCell(
+                _NutrientCell(
                   value: _total(nutrimentsPer100.proteins100),
                   label: '${s.proteinLabel} g',
                   color: palette.protein,
                   palette: palette,
                 ),
-              ),
-            ],
+              ];
+              var cellWidth = 64.0;
+              for (final cell in cells) {
+                for (final text in [
+                  (
+                    cell.value.toStringAsFixed(0),
+                    theme.textTheme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  (cell.label, theme.textTheme.bodySmall),
+                ]) {
+                  final painter = TextPainter(
+                    text: TextSpan(text: text.$1, style: text.$2),
+                    textDirection: Directionality.of(context),
+                    textScaler: MediaQuery.textScalerOf(context),
+                  )..layout();
+                  if (painter.width + 4 > cellWidth) {
+                    cellWidth = painter.width + 4;
+                  }
+                  painter.dispose();
+                }
+              }
+              final columns = constraints.maxWidth >= cellWidth * 4 + 24
+                  ? 4
+                  : constraints.maxWidth >= cellWidth * 2 + 8
+                  ? 2
+                  : 1;
+              return Wrap(
+                spacing: 8,
+                runSpacing: 16,
+                children: [
+                  for (final cell in cells)
+                    SizedBox(
+                      width:
+                          (constraints.maxWidth - (columns - 1) * 8) / columns,
+                      child: cell,
+                    ),
+                ],
+              );
+            },
           ),
-          Divider(height: Dimens.spacing24 + Dimens.spacing8, color: palette.border),
+          Divider(
+            height: Dimens.spacing24 + Dimens.spacing8,
+            color: palette.border,
+          ),
           Text(
             '${s.recipeNutritionPer100Label} · '
             '${energyPer100Display.toStringAsFixed(0)} $energyLabel · '
             '${s.carbsLabelShort.toUpperCase()} ${(nutrimentsPer100.carbohydrates100 ?? 0).toStringAsFixed(1)}g · '
             '${s.fatLabelShort.toUpperCase()} ${(nutrimentsPer100.fat100 ?? 0).toStringAsFixed(1)}g · '
             '${s.proteinLabelShort.toUpperCase()} ${(nutrimentsPer100.proteins100 ?? 0).toStringAsFixed(1)}g',
-            style: theme.textTheme.bodySmall?.copyWith(color: palette.textMuted),
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: palette.textMuted,
+            ),
           ),
         ],
       ),
@@ -122,15 +162,14 @@ class _NutrientCell extends StatelessWidget {
       children: [
         Text(
           value.toStringAsFixed(0),
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-          style: textTheme.titleLarge?.copyWith(color: color, fontWeight: FontWeight.w800),
+          style: textTheme.titleLarge?.copyWith(
+            color: color,
+            fontWeight: FontWeight.w700,
+          ),
         ),
         const SizedBox(height: 2),
         Text(
           label,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
           textAlign: TextAlign.center,
           style: textTheme.bodySmall?.copyWith(color: palette.textMuted),
         ),
